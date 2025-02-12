@@ -1,0 +1,9 @@
+{
+  "build": {
+    "command": "npm run build",
+    "output": "dist",
+    "env": {
+      "BOLT_DEPLOY_URL": "BOLT_DEPLOY_URL"
+    }
+  }
+}

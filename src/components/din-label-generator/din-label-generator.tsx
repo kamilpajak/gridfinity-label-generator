@@ -2,13 +2,14 @@ import { component$, useSignal, $, useTask$ } from '@builder.io/qwik';
 import { dinStandards, type DINStandard } from '~/data/din-standards';
 
 export const DINLabelGenerator = component$(() => {
+  // Signals for user inputs
   const selectedType = useSignal('Screw');
   const selectedSystem = useSignal('Metric');
-  const threadSize = useSignal('');
-  const hardwareStandard = useSignal('');
+  const threadSize = useSignal('');         // Top text (np. rozmiar gwintu)
+  const hardwareStandard = useSignal('');   // Bottom text (np. "DIN 439")
   const notes = useSignal('');
   const standardImage = useSignal<HTMLImageElement | null>(null);
-  const labelWidth = useSignal(40); // width in mm
+  const labelWidth = useSignal(40);          // Szerokość etykiety w mm
   const length = useSignal('');
   const isLoading = useSignal(false);
   const labelPreviewUrl = useSignal<string>('');
@@ -16,7 +17,7 @@ export const DINLabelGenerator = component$(() => {
   const metricThreadSizes = ['M3', 'M4', 'M5', 'M6', 'M8', 'M10', 'M12', 'M16', 'M20'];
   const imperialThreadSizes = ['#4', '#6', '#8', '#10', '1/4"', '5/16"', '3/8"', '1/2"', '5/8"'];
 
-  // Load DIN standard image when hardware standard or type changes
+  // Load DIN standard image when hardwareStandard or selectedType changes
   useTask$(({ track }) => {
     track(() => hardwareStandard.value);
     track(() => selectedType.value);
@@ -45,60 +46,89 @@ export const DINLabelGenerator = component$(() => {
     }
   });
 
-  // QRL function for drawing the label.
-  // Przyjmuje jako argumenty wszystkie niezbędne wartości, aby nie "chwytac" zmiennych z zewnętrznego zakresu.
+  /**
+   * QRL function to draw the label on a canvas.
+   * Layout logic:
+   * - The canvas is sized based on labelWidth (in mm) and a fixed height (10mm).
+   * - The DIN image is drawn on the left, zachowując oryginalne proporcje (wysokość = etykieta).
+   * - Ustalony jest stały odstęp (10px) między obrazkiem a obszarem tekstowym.
+   * - W obszarze tekstowym (prawa strona) obie linie tekstu są poziomo wyśrodkowane:
+   *    - Górna linia (thread size) rysowana od góry (textBaseline = 'top')
+   *    - Dolna linia (DIN standard) rysowana od dołu (textBaseline = 'bottom')
+   * Czcionka użyta do rysowania to "Noto Sans" z wagą 900, co odpowiada podanemu stylowi.
+   */
   const drawLabel = $(
       (
           standardImg: HTMLImageElement | null,
           thread: string,
           hwStandard: string,
-          width: number
+          labelWidthMm: number
       ): string | null => {
         if (!standardImg) {
           console.error("No DIN image available, cannot draw label.");
           return null;
         }
+
+        // Constants for conversion and dimensions
         const dpi = 360;
         const mmToInch = 25.4;
-        // Fixed label height is 10mm
-        const heightPx = Math.round((10 / mmToInch) * dpi);
-        const widthPx = Math.round((width / mmToInch) * dpi);
+        const labelHeightMm = 10; // fixed label height in mm
+        const labelHeightPx = Math.round((labelHeightMm / mmToInch) * dpi);
+        const labelWidthPx = Math.round((labelWidthMm / mmToInch) * dpi);
+
+        // Create canvas and get context
         const canvas = document.createElement('canvas');
-        canvas.width = widthPx;
-        canvas.height = heightPx;
+        canvas.width = labelWidthPx;
+        canvas.height = labelHeightPx;
         const ctx = canvas.getContext('2d');
         if (!ctx) return null;
+
         // Draw white background
         ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, widthPx, heightPx);
-        // Draw DIN image on the left side
-        const imgHeight = heightPx;
-        const imgWidth = imgHeight;
-        ctx.drawImage(standardImg, 0, 0, imgWidth, imgHeight);
-        // Set text properties
-        ctx.font = `${heightPx * 0.4}px Arial`;
+        ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
+
+        // Draw DIN image (icon) on the left with original proportions
+        const naturalWidth = standardImg.naturalWidth;
+        const naturalHeight = standardImg.naturalHeight;
+        const aspectRatio = naturalWidth / naturalHeight;
+        const drawnImgHeight = labelHeightPx; // icon's height equals label height
+        const drawnImgWidth = Math.round(drawnImgHeight * aspectRatio);
+        ctx.drawImage(standardImg, 0, 0, drawnImgWidth, drawnImgHeight);
+        console.log("DIN image drawn with size:", drawnImgWidth, "x", drawnImgHeight);
+
+        // Define a fixed gap (in px) between icon and text area
+        const gapPx = 10;
+        const textAreaX = drawnImgWidth + gapPx;
+        const textAreaWidth = labelWidthPx - textAreaX;
+        console.log("Text area starts at x =", textAreaX, "with width =", textAreaWidth);
+
+        // Prepare font size proportional to label height
+        const fontSize = labelHeightPx * 0.4; // przykładowa wartość
+        // Używamy czcionki "Noto Sans" z wagą 900 – reszta właściwości (np. font-optical-sizing, font-variation-settings)
+        // musi być zadeklarowana globalnie w CSS lub załadowana przez @font-face.
+        ctx.font = `900 ${fontSize}px "Noto Sans", serif`;
         ctx.fillStyle = 'black';
-        // Calculate margins in pixels (4mm from top and 4mm from bottom)
-        const marginPx = Math.round((4 / mmToInch) * dpi);
-        const topY = marginPx;             // 4mm from top
-        const bottomY = heightPx - marginPx; // 4mm from bottom
-        const textX = imgWidth + 10;         // Text starts a bit right to the image
-        // Draw thread size in the top row (if provided)
-        if (thread) {
-          ctx.textBaseline = 'top'; // Align text to the top
-          ctx.fillText(thread, textX, topY);
-          console.log("Thread size drawn at top row:", thread);
-        } else {
-          console.warn("Thread size value is empty.");
-        }
-        // Draw DIN standard text in the bottom row (if provided)
-        if (hwStandard) {
-          ctx.textBaseline = 'bottom'; // Align text to the bottom
-          ctx.fillText(hwStandard, textX, bottomY);
-          console.log("DIN standard drawn at bottom row:", hwStandard);
-        } else {
-          console.warn("DIN standard value is empty.");
-        }
+
+        // --- Draw top text (thread) centered horizontally in the text area ---
+        ctx.textBaseline = 'top'; // tekst zaczyna się od górnej krawędzi
+        const topText = thread;
+        const topMetrics = ctx.measureText(topText);
+        const topTextWidth = topMetrics.width;
+        const topTextX = textAreaX + (textAreaWidth - topTextWidth) / 2;
+        // rysujemy tekst przy y = 0 (górna krawędź)
+        ctx.fillText(topText, topTextX, 0);
+        console.log("Top text drawn at:", topTextX, 0, "text:", topText);
+
+        // --- Draw bottom text (DIN standard) centered horizontally in the text area ---
+        ctx.textBaseline = 'bottom'; // tekst wyrównany do dolnej krawędzi
+        const bottomText = hwStandard;
+        const bottomMetrics = ctx.measureText(bottomText);
+        const bottomTextWidth = bottomMetrics.width;
+        const bottomTextX = textAreaX + (textAreaWidth - bottomTextWidth) / 2;
+        // rysujemy tekst przy y = labelHeightPx (dolna krawędź)
+        ctx.fillText(bottomText, bottomTextX, labelHeightPx);
+        console.log("Bottom text drawn at:", bottomTextX, labelHeightPx, "text:", bottomText);
+
         return canvas.toDataURL('image/png');
       }
   );
@@ -151,10 +181,10 @@ export const DINLabelGenerator = component$(() => {
     return Object.values(requiredFields).every(Boolean);
   };
 
-  // Dynamicznie obliczamy wymiary etykiety w pikselach na podstawie wartości w mm
+  // Dynamic calculation of preview dimensions in pixels
   const dpi = 360;
   const mmToInch = 25.4;
-  const labelHeightPx = Math.round((10 / mmToInch) * dpi); // 10mm wysokości
+  const labelHeightPx = Math.round((10 / mmToInch) * dpi); // 10 mm height
   const labelWidthPx = Math.round((labelWidth.value / mmToInch) * dpi);
 
   return (

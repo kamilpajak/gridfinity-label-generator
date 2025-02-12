@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wdth,wght@0,75,900;1,75,900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

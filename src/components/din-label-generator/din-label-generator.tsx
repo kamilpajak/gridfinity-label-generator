@@ -250,7 +250,7 @@ export const DINLabelGenerator = component$(() => {
                 console.error("Failed to load Oswald:", err);
             });
 
-        // Generujemy podgląd tylko, gdy wszystkie wymagane pola są wypełnione:
+        // Generate preview only when required fields are filled
         if (
             threadSize.value === '' ||
             hardwareStandard.value === '' ||
@@ -260,17 +260,27 @@ export const DINLabelGenerator = component$(() => {
             return;
         }
 
-        const topLabelText =
-            selectedType.value === 'Screw' && length.value
-                ? selectedSystem.value === 'Metric'
-                    ? `${threadSize.value} × ${length.value}`
-                    : `${threadSize.value} × ${length.value}″`
-                : threadSize.value || "Default top text";
+        let topLabelText: string;
+        if (selectedType.value === 'Screw' && length.value !== '') {
+            if (selectedSystem.value === 'Metric') {
+                topLabelText = `${threadSize.value} × ${length.value}`;
+            } else {
+                topLabelText = `${threadSize.value} × ${length.value}″`;
+            }
+        } else {
+            topLabelText = threadSize.value || "Default top text";
+        }
 
-        const bottomLabelText =
-            hardwareStandard.value
-                ? hardwareStandard.value + (notes.value ? ` ${notes.value}` : '')
-                : "Default bottom text";
+        let bottomLabelText: string;
+        if (hardwareStandard.value !== '') {
+            if (notes.value !== '') {
+                bottomLabelText = hardwareStandard.value + ` ${notes.value}`;
+            } else {
+                bottomLabelText = hardwareStandard.value;
+            }
+        } else {
+            bottomLabelText = "Default bottom text";
+        }
 
         const previewUrl = await drawLabel(
             standardImage.value,
@@ -286,19 +296,28 @@ export const DINLabelGenerator = component$(() => {
         }
     });
 
-
     const generateLabel = $(async () => {
-        const topLabelText =
-            selectedType.value === 'Screw' && length.value
-                ? selectedSystem.value === 'Metric'
-                    ? `${threadSize.value} × ${length.value}`
-                    : `${threadSize.value} × ${length.value}″`
-                : threadSize.value || "Default top text";
+        let topLabelText: string;
+        if (selectedType.value === 'Screw' && length.value !== '') {
+            if (selectedSystem.value === 'Metric') {
+                topLabelText = `${threadSize.value} × ${length.value}`;
+            } else {
+                topLabelText = `${threadSize.value} × ${length.value}″`;
+            }
+        } else {
+            topLabelText = threadSize.value || "Default top text";
+        }
 
-        const bottomLabelText =
-            hardwareStandard.value
-                ? hardwareStandard.value + (notes.value ? ` ${notes.value}` : '')
-                : "Default bottom text";
+        let bottomLabelText: string;
+        if (hardwareStandard.value !== '') {
+            if (notes.value !== '') {
+                bottomLabelText = hardwareStandard.value + ` ${notes.value}`;
+            } else {
+                bottomLabelText = hardwareStandard.value;
+            }
+        } else {
+            bottomLabelText = "Default bottom text";
+        }
 
         const dataUrl = await drawLabel(
             standardImage.value,
@@ -326,7 +345,7 @@ export const DINLabelGenerator = component$(() => {
         return Object.values(requiredFields).every(Boolean);
     };
 
-    // Obliczanie szerokości podglądu etykiety (wysokość jest stała: 10mm)
+    // Calculate preview width (height is constant: 10mm)
     const labelWidthPx = mmToPx(labelWidth.value);
 
     return (
@@ -342,6 +361,7 @@ export const DINLabelGenerator = component$(() => {
                                     if (selectedType.value !== type) {
                                         console.log("Selected hardware type:", type);
                                         selectedType.value = type;
+                                        // Reset form when type changes
                                         threadSize.value = "";
                                         hardwareStandard.value = "";
                                         length.value = "";
@@ -374,6 +394,7 @@ export const DINLabelGenerator = component$(() => {
                                     console.log("Selected measurement system:", system.value);
                                     if (selectedSystem.value !== system.value) {
                                         selectedSystem.value = system.value;
+                                        // Reset form only on system change
                                         threadSize.value = "";
                                         hardwareStandard.value = "";
                                         length.value = "";
@@ -529,8 +550,7 @@ export const DINLabelGenerator = component$(() => {
 
                 {/* Preview Area */}
                 <div
-                    class="mt-8 p-8 bg-[#F8FAFC] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[200px]"
-                >
+                    class="mt-8 p-8 bg-[#F8FAFC] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[200px]">
                     {isLoading.value && <div class="text-gray-600">Loading image...</div>}
                     {!isLoading.value && labelPreviewUrl.value && (
                         <div class="inline-block">
@@ -538,7 +558,7 @@ export const DINLabelGenerator = component$(() => {
                                 src={labelPreviewUrl.value}
                                 alt="Label Preview"
                                 width={labelWidthPx}
-                                height={mmToPx(10)} // stała wysokość: 10mm
+                                height={mmToPx(10)} // fixed height: 10mm
                                 class="max-w-full"
                             />
                         </div>

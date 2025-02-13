@@ -39,7 +39,7 @@ export const DINLabelGenerator = component$(() => {
     const hardwareStandard = useSignal(''); // Standard (dolna linia)
     const notes = useSignal('');
     const standardImage = useSignal<HTMLImageElement | null>(null);
-    const labelWidth = useSignal(55); // Szerokość etykiety w mm (domyślnie 55)
+    const labelWidth = useSignal(55); // Szerokość etykiety w mm
     const length = useSignal('');
     const isLoading = useSignal(false);
     const labelPreviewUrl = useSignal<string>('');
@@ -231,6 +231,7 @@ export const DINLabelGenerator = component$(() => {
     );
 
     // eslint-disable-next-line qwik/no-use-visible-task
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(async ({track}) => {
         track(() => standardImage.value);
         track(() => threadSize.value);
@@ -265,7 +266,20 @@ export const DINLabelGenerator = component$(() => {
                 console.error("Failed to load Oswald:", err);
             });
 
-        // Tworzenie tekstu górnej linii
+        // Generujemy podgląd tylko, gdy wszystkie wymagane pola są wypełnione:
+        // - Thread size nie jest puste,
+        // - Hardware standard nie jest puste,
+        // - Jeśli typ to 'Screw', to także length musi być podane.
+        if (
+            threadSize.value === '' ||
+            hardwareStandard.value === '' ||
+            (selectedType.value === 'Screw' && length.value === '')
+        ) {
+            labelPreviewUrl.value = "";
+            return;
+        }
+
+        // Inline tworzenie tekstu górnej linii
         const topLabelText =
             selectedType.value === 'Screw' && length.value
                 ? selectedSystem.value === 'Metric'
@@ -273,7 +287,7 @@ export const DINLabelGenerator = component$(() => {
                     : `${threadSize.value} × ${length.value}″`
                 : threadSize.value || "Default top text";
 
-        // Tworzenie tekstu dolnej linii – hardware standard z additional notes
+        // Inline tworzenie tekstu dolnej linii – hardware standard + additional notes
         const bottomLabelText =
             hardwareStandard.value
                 ? hardwareStandard.value + (notes.value ? ` ${notes.value}` : '')
@@ -292,6 +306,7 @@ export const DINLabelGenerator = component$(() => {
             labelPreviewUrl.value = '';
         }
     });
+
 
     const generateLabel = $(async () => {
         const topLabelText =
@@ -340,7 +355,7 @@ export const DINLabelGenerator = component$(() => {
             <div class="space-y-6">
                 {/* Hardware Type */}
                 <div>
-                    <div class="text-sm font-medium text-gray-700 mb-2">Hardware Type</div>
+                    <div class="text-sm font-medium text-gray-700 mb-2">Hardware Type *</div>
                     <div class="grid grid-cols-3 gap-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
                         {['Screw', 'Nut', 'Washer'].map((type) => (
                             <button
@@ -375,7 +390,7 @@ export const DINLabelGenerator = component$(() => {
                                 onClick$={() => {
                                     console.log("Selected measurement system:", system.value);
                                     selectedSystem.value = system.value;
-                                    // Resetowanie formularza i podglądu
+                                    // Reset formularza i podglądu
                                     threadSize.value = "";
                                     hardwareStandard.value = "";
                                     length.value = "";
@@ -397,6 +412,7 @@ export const DINLabelGenerator = component$(() => {
                 {/* Thread Size */}
                 <div>
                     <select
+                        required
                         class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         value={threadSize.value}
                         onChange$={(e) => {
@@ -418,6 +434,7 @@ export const DINLabelGenerator = component$(() => {
                     <div>
                         <input
                             type="text"
+                            required
                             placeholder={
                                 selectedSystem.value === 'Metric'
                                     ? 'Length (e.g., 10)'
@@ -436,6 +453,7 @@ export const DINLabelGenerator = component$(() => {
                 {/* Hardware Standard */}
                 <div>
                     <select
+                        required
                         class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         value={hardwareStandard.value}
                         onChange$={(e) => {
@@ -480,15 +498,10 @@ export const DINLabelGenerator = component$(() => {
                                 class="w-20 p-2 bg-white border border-gray-200 rounded text-right text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                 value={labelWidth.value}
                                 onInput$={(e) => {
-                                    let newValue = parseInt((e.target as HTMLInputElement).value) || 0;
-                                    // Opcjonalnie: klamrowanie wartości, jeśli użytkownik wpisze wartość spoza zakresu
-                                    if (newValue < 40) newValue = 40;
-                                    if (newValue > 100) newValue = 100;
-                                    console.log("Set label width (number):", newValue);
-                                    labelWidth.value = newValue;
+                                    console.log("Set label width (number):", (e.target as HTMLInputElement).value);
+                                    labelWidth.value = parseInt((e.target as HTMLInputElement).value) || 0;
                                 }}
                             />
-
                             <span class="text-sm text-gray-600">mm</span>
                         </div>
                     </div>

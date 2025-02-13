@@ -1,15 +1,15 @@
-import { component$, useSignal, $, useTask$ } from '@builder.io/qwik';
+import { component$, useSignal, $, useTask$, useVisibleTask$ } from '@builder.io/qwik';
 import { dinStandards, type DINStandard } from '~/data/din-standards';
 
 export const DINLabelGenerator = component$(() => {
   // Signals for user inputs
   const selectedType = useSignal('Screw');
   const selectedSystem = useSignal('Metric');
-  const threadSize = useSignal('');         // Top text (np. rozmiar gwintu)
-  const hardwareStandard = useSignal('');   // Bottom text (np. "DIN 439")
+  const threadSize = useSignal('');         // Top text (e.g., thread size)
+  const hardwareStandard = useSignal('');   // Bottom text (e.g., "DIN 439")
   const notes = useSignal('');
   const standardImage = useSignal<HTMLImageElement | null>(null);
-  const labelWidth = useSignal(40);          // Szerokość etykiety w mm
+  const labelWidth = useSignal(40);          // Label width in mm
   const length = useSignal('');
   const isLoading = useSignal(false);
   const labelPreviewUrl = useSignal<string>('');
@@ -46,99 +46,129 @@ export const DINLabelGenerator = component$(() => {
     }
   });
 
-  /**
-   * QRL function to draw the label on a canvas.
-   * Layout logic:
-   * - The canvas is sized based on labelWidth (in mm) and a fixed height (10mm).
-   * - The DIN image is drawn on the left, zachowując oryginalne proporcje (wysokość = etykieta).
-   * - Ustalony jest stały odstęp (10px) między obrazkiem a obszarem tekstowym.
-   * - W obszarze tekstowym (prawa strona) obie linie tekstu są poziomo wyśrodkowane:
-   *    - Górna linia (thread size) rysowana od góry (textBaseline = 'top')
-   *    - Dolna linia (DIN standard) rysowana od dołu (textBaseline = 'bottom')
-   * Czcionka użyta do rysowania to "Noto Sans" z wagą 900, co odpowiada podanemu stylowi.
-   */
-  const drawLabel = $(
-      (
-          standardImg: HTMLImageElement | null,
-          thread: string,
-          hwStandard: string,
-          labelWidthMm: number
-      ): string | null => {
-        if (!standardImg) {
-          console.error("No DIN image available, cannot draw label.");
-          return null;
-        }
+  const drawLabel = $((
+      standardImg: HTMLImageElement | null,
+      thread: string,
+      hwStandard: string,
+      labelWidthMm: number
+  ): string | null => {
+    if (!standardImg) {
+      console.error("No DIN image available, cannot draw label.");
+      return null;
+    }
 
-        // Constants for conversion and dimensions
-        const dpi = 360;
-        const mmToInch = 25.4;
-        const labelHeightMm = 10; // fixed label height in mm
-        const labelHeightPx = Math.round((labelHeightMm / mmToInch) * dpi);
-        const labelWidthPx = Math.round((labelWidthMm / mmToInch) * dpi);
+    // Constants for conversion and fixed label dimensions
+    const dpi = 360;
+    const mmToInch = 25.4;
+    const labelHeightMm = 10; // fixed label height in mm
+    const labelHeightPx = Math.round((labelHeightMm / mmToInch) * dpi);
+    const labelWidthPx = Math.round((labelWidthMm / mmToInch) * dpi);
 
-        // Create canvas and get context
-        const canvas = document.createElement('canvas');
-        canvas.width = labelWidthPx;
-        canvas.height = labelHeightPx;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return null;
+    console.log(`Drawing label with dimensions: ${labelWidthPx}px x ${labelHeightPx}px`);
 
-        // Draw white background
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
+    // Create canvas and get context
+    const canvas = document.createElement('canvas');
+    canvas.width = labelWidthPx;
+    canvas.height = labelHeightPx;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      console.error("Could not get canvas context.");
+      return null;
+    }
 
-        // Draw DIN image (icon) on the left with original proportions
-        const naturalWidth = standardImg.naturalWidth;
-        const naturalHeight = standardImg.naturalHeight;
-        const aspectRatio = naturalWidth / naturalHeight;
-        const drawnImgHeight = labelHeightPx; // icon's height equals label height
-        const drawnImgWidth = Math.round(drawnImgHeight * aspectRatio);
-        ctx.drawImage(standardImg, 0, 0, drawnImgWidth, drawnImgHeight);
-        console.log("DIN image drawn with size:", drawnImgWidth, "x", drawnImgHeight);
+    // Draw white background
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
 
-        // Define a fixed gap (in px) between icon and text area
-        const gapPx = 10;
-        const textAreaX = drawnImgWidth + gapPx;
-        const textAreaWidth = labelWidthPx - textAreaX;
-        console.log("Text area starts at x =", textAreaX, "with width =", textAreaWidth);
+    // --- Set fixed font size corresponding to 4mm ---
+    const fixedFontSize = Math.round((4 / mmToInch) * dpi);
+    console.log(`Fixed font size for 4mm: ${fixedFontSize}px`);
 
-        // Prepare font size proportional to label height
-        const fontSize = labelHeightPx * 0.4; // przykładowa wartość
-        // Używamy czcionki "Noto Sans" z wagą 900 – reszta właściwości (np. font-optical-sizing, font-variation-settings)
-        // musi być zadeklarowana globalnie w CSS lub załadowana przez @font-face.
-        ctx.font = `900 ${fontSize}px "Noto Sans", serif`;
-        ctx.fillStyle = 'black';
+    // Set font before drawing text
+    ctx.font = `900 ${fixedFontSize}px "Noto Sans", serif`;
+    ctx.fillStyle = 'black';
 
-        // --- Draw top text (thread) centered horizontally in the text area ---
-        ctx.textBaseline = 'top'; // tekst zaczyna się od górnej krawędzi
-        const topText = thread;
-        const topMetrics = ctx.measureText(topText);
-        const topTextWidth = topMetrics.width;
-        const topTextX = textAreaX + (textAreaWidth - topTextWidth) / 2;
-        // rysujemy tekst przy y = 0 (górna krawędź)
-        ctx.fillText(topText, topTextX, 0);
-        console.log("Top text drawn at:", topTextX, 0, "text:", topText);
+    // Log font status
+    if (document.fonts) {
+      console.log("document.fonts status:", document.fonts.status);
+      const fontReady = document.fonts.check(`900 ${fixedFontSize}px "Noto Sans", serif`);
+      console.log("Is 'Noto Sans' with weight 900 ready?", fontReady);
+    } else {
+      console.warn("document.fonts API is not available.");
+    }
 
-        // --- Draw bottom text (DIN standard) centered horizontally in the text area ---
-        ctx.textBaseline = 'bottom'; // tekst wyrównany do dolnej krawędzi
-        const bottomText = hwStandard;
-        const bottomMetrics = ctx.measureText(bottomText);
-        const bottomTextWidth = bottomMetrics.width;
-        const bottomTextX = textAreaX + (textAreaWidth - bottomTextWidth) / 2;
-        // rysujemy tekst przy y = labelHeightPx (dolna krawędź)
-        ctx.fillText(bottomText, bottomTextX, labelHeightPx);
-        console.log("Bottom text drawn at:", bottomTextX, labelHeightPx, "text:", bottomText);
+    // --- Reserve space for text ---
+    const topTextWidth = ctx.measureText(thread).width;
+    const bottomTextWidth = ctx.measureText(hwStandard).width;
+    console.log(`Measured top text width: ${topTextWidth}px, bottom text width: ${bottomTextWidth}px`);
 
-        return canvas.toDataURL('image/png');
+    const textPadding = 10; // additional horizontal padding
+    const neededTextWidth = Math.max(topTextWidth, bottomTextWidth) + textPadding;
+
+    // Fixed gap between image and text area
+    const gapPx = 10;
+    const availableForImage = labelWidthPx - gapPx - neededTextWidth;
+    console.log(`Available width for image: ${availableForImage}px`);
+
+    // --- Draw image preserving original aspect ratio ---
+    const naturalWidth = standardImg.naturalWidth;
+    const naturalHeight = standardImg.naturalHeight;
+    const aspectRatio = naturalWidth / naturalHeight;
+    let drawnImgWidth = 0;
+    let drawnImgHeight = 0;
+    if (availableForImage > 0) {
+      const idealImgWidth = labelHeightPx * aspectRatio;
+      if (idealImgWidth <= availableForImage) {
+        drawnImgWidth = Math.round(idealImgWidth);
+        drawnImgHeight = labelHeightPx;
+      } else {
+        drawnImgWidth = availableForImage;
+        drawnImgHeight = Math.round(availableForImage / aspectRatio);
       }
-  );
+      const imgY = (labelHeightPx - drawnImgHeight) / 2;
+      ctx.drawImage(standardImg, 0, imgY, drawnImgWidth, drawnImgHeight);
+      console.log("DIN image drawn with preserved aspect ratio:", drawnImgWidth, "x", drawnImgHeight);
+    } else {
+      console.warn("Not enough space for image, prioritizing text area.");
+    }
+
+    // --- Text area ---
+    const textAreaX = drawnImgWidth > 0 ? drawnImgWidth + gapPx : 0;
+    const textAreaWidth = labelWidthPx - textAreaX;
+    console.log("Text area starts at x =", textAreaX, "with width =", textAreaWidth);
+
+    // --- Draw top text ---
+    ctx.textBaseline = 'top';
+    const topTextX = textAreaX + (textAreaWidth - topTextWidth) / 2;
+    ctx.fillText(thread, topTextX, 0);
+    console.log("Top text drawn at:", topTextX, 0, "text:", thread);
+
+    // --- Draw bottom text ---
+    ctx.textBaseline = 'bottom';
+    const bottomTextX = textAreaX + (textAreaWidth - bottomTextWidth) / 2;
+    ctx.fillText(hwStandard, bottomTextX, labelHeightPx);
+    console.log("Bottom text drawn at:", bottomTextX, labelHeightPx, "text:", hwStandard);
+
+    return canvas.toDataURL('image/png');
+  });
 
   // Update label preview whenever relevant values change.
-  useTask$(async ({ track }) => {
+  // Używamy useVisibleTask$, aby kod korzystający z document wykonywał się tylko po stronie klienta.
+  useVisibleTask$(async ({ track }) => {
     track(() => standardImage.value);
     track(() => threadSize.value);
     track(() => hardwareStandard.value);
     track(() => labelWidth.value);
+
+    // Wait for font to be loaded before drawing label.
+    await document.fonts.load(`900 57px "Noto Sans"`)
+        .then(() => {
+          console.log("Noto Sans loaded, redrawing canvas...");
+        })
+        .catch((err) => {
+          console.error("Failed to load Noto Sans:", err);
+        });
+
     const previewUrl = await drawLabel(
         standardImage.value,
         threadSize.value,

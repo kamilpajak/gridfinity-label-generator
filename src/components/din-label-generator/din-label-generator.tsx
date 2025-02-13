@@ -18,7 +18,8 @@ function computeDynamicFontSize(
     const baseSize = desiredHeight;
     ctx.font = `900 ${baseSize}px "Noto Sans", serif`;
     const metrics = ctx.measureText(sampleText);
-    const effectiveHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    const effectiveHeight =
+        metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     if (effectiveHeight === 0) {
         return baseSize;
     }
@@ -32,17 +33,17 @@ export const DINLabelGenerator = component$(() => {
     // Signals for user inputs
     const selectedType = useSignal('Screw');
     const selectedSystem = useSignal('Metric');
-    const threadSize = useSignal('');         // Top text (e.g., thread size)
-    const hardwareStandard = useSignal('');   // Bottom text (np. "DIN 963")
+    const threadSize = useSignal(''); // Top text (e.g., thread size)
+    const hardwareStandard = useSignal(''); // Bottom text (np. "DIN 963")
     const notes = useSignal('');
     const standardImage = useSignal<HTMLImageElement | null>(null);
-    const labelWidth = useSignal(55);          // Label width in mm
+    const labelWidth = useSignal(55); // Label width in mm
     const length = useSignal('');
     const isLoading = useSignal(false);
     const labelPreviewUrl = useSignal<string>('');
 
     const metricThreadSizes = ['M3', 'M4', 'M5', 'M6', 'M8', 'M10', 'M12', 'M16', 'M20'];
-    const imperialThreadSizes = ['#4', '#6', '#8', '#10', '1/4"', '5/16"', '3/8"', '1/2"', '5/8"'];
+    const imperialThreadSizes = ['#4', '#6', '#8', '#10', '1/4″', '5/16″', '3/8″', '1/2″', '5/8″'];
 
     // Ładowanie obrazu DIN – wykonujemy to tylko po stronie klienta
     useVisibleTask$(({track}) => {
@@ -80,7 +81,6 @@ export const DINLabelGenerator = component$(() => {
             hwStandard: string,
             labelWidthMm: number
         ): string | null => {
-            // Log passed values
             console.log("drawLabel called with:", {
                 standardImgExists: !!standardImg,
                 thread,
@@ -93,7 +93,7 @@ export const DINLabelGenerator = component$(() => {
                 return null;
             }
 
-            // Fallback texts if needed
+            // Używamy fallbacków, jeśli teksty nie są ustawione
             const topText = thread || "Default top text";
             const bottomText = hwStandard || "Default bottom text";
 
@@ -125,7 +125,6 @@ export const DINLabelGenerator = component$(() => {
 
             // --- Compute dynamic font size for top text ---
             const topDynamicFontSize = computeDynamicFontSize(ctx, desiredTextHeight, topText);
-            // Set font and measure top text metrics
             ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
             const topMetrics = ctx.measureText(topText);
             console.log(
@@ -206,7 +205,7 @@ export const DINLabelGenerator = component$(() => {
             ctx.textBaseline = "alphabetic";
 
             // Draw top text so that its top edge is at y = 0.
-            // That is, set baseline = topMetrics.actualBoundingBoxAscent.
+            // Set baseline = topMetrics.actualBoundingBoxAscent.
             ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
             const topTextX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
             const topBaselineY = topMetrics.actualBoundingBoxAscent;
@@ -214,13 +213,16 @@ export const DINLabelGenerator = component$(() => {
             console.log("Top text drawn at: x =", topTextX, `, y = ${topBaselineY}px; text: "${topText}"`);
 
             // Log effective height of top text in mm
-            const effectiveTopHeightPx = topMetrics.actualBoundingBoxAscent + topMetrics.actualBoundingBoxDescent;
+            const effectiveTopHeightPx =
+                topMetrics.actualBoundingBoxAscent + topMetrics.actualBoundingBoxDescent;
             console.log(
-                `Effective top text height: ${effectiveTopHeightPx}px (${pxToMm(effectiveTopHeightPx).toFixed(2)}mm)`
+                `Effective top text height: ${effectiveTopHeightPx}px (${pxToMm(effectiveTopHeightPx).toFixed(
+                    2
+                )}mm)`
             );
 
             // Draw bottom text so that its bottom edge is at y = labelHeightPx.
-            // That is, set baseline = labelHeightPx - bottomMetrics.actualBoundingBoxDescent.
+            // Set baseline = labelHeightPx - bottomMetrics.actualBoundingBoxDescent.
             ctx.font = `900 ${bottomDynamicFontSize}px "Noto Sans", serif`;
             const bottomTextX = textAreaX + (textAreaWidth - bottomMetrics.width) / 2;
             const bottomBaselineY = labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
@@ -232,9 +234,12 @@ export const DINLabelGenerator = component$(() => {
             );
 
             // Log effective height of bottom text in mm
-            const effectiveBottomHeightPx = bottomMetrics.actualBoundingBoxAscent + bottomMetrics.actualBoundingBoxDescent;
+            const effectiveBottomHeightPx =
+                bottomMetrics.actualBoundingBoxAscent + bottomMetrics.actualBoundingBoxDescent;
             console.log(
-                `Effective bottom text height: ${effectiveBottomHeightPx}px (${pxToMm(effectiveBottomHeightPx).toFixed(2)}mm)`
+                `Effective bottom text height: ${effectiveBottomHeightPx}px (${pxToMm(effectiveBottomHeightPx).toFixed(
+                    2
+                )}mm)`
             );
 
             // Rezultat:
@@ -251,15 +256,20 @@ export const DINLabelGenerator = component$(() => {
         track(() => threadSize.value);
         track(() => hardwareStandard.value);
         track(() => labelWidth.value);
+        track(() => length.value);
+        track(() => notes.value);
 
         console.log("Before drawing label, values are:", {
             thread: threadSize.value,
             hwStandard: hardwareStandard.value,
             labelWidth: labelWidth.value,
-            standardImageExists: !!standardImage.value
+            length: length.value,
+            notes: notes.value,
+            standardImageExists: !!standardImage.value,
         });
 
-        await document.fonts.load(`900 57px "Noto Sans"`)
+        await document.fonts
+            .load(`900 57px "Noto Sans"`)
             .then(() => {
                 console.log("Noto Sans loaded, redrawing canvas...");
             })
@@ -267,10 +277,24 @@ export const DINLabelGenerator = component$(() => {
                 console.error("Failed to load Noto Sans:", err);
             });
 
+        // Obliczanie górnej linii tekstu (dla śruby)
+        const topLabelText =
+            selectedType.value === 'Screw' && length.value
+                ? selectedSystem.value === 'Metric'
+                    ? `${threadSize.value} × ${length.value}`
+                    : `${threadSize.value} × ${length.value}″`
+                : threadSize.value || "Default top text";
+
+        // Łączymy hardwareStandard z additional notes dla dolnej linii
+        const bottomLabelText =
+            hardwareStandard.value
+                ? hardwareStandard.value + (notes.value ? ` ${notes.value}` : '')
+                : "Default bottom text";
+
         const previewUrl = await drawLabel(
             standardImage.value,
-            threadSize.value,
-            hardwareStandard.value,
+            topLabelText,
+            bottomLabelText,
             labelWidth.value
         );
         if (previewUrl) {
@@ -281,12 +305,24 @@ export const DINLabelGenerator = component$(() => {
         }
     });
 
-    // Generowanie etykiety do pobrania
+    // Przy generowaniu etykiety do pobrania
     const generateLabel = $(async () => {
+        const topLabelText =
+            selectedType.value === 'Screw' && length.value
+                ? selectedSystem.value === 'Metric'
+                    ? `${threadSize.value} × ${length.value}`
+                    : `${threadSize.value} × ${length.value}″`
+                : threadSize.value || "Default top text";
+
+        const bottomLabelText =
+            hardwareStandard.value
+                ? hardwareStandard.value + (notes.value ? ` ${notes.value}` : '')
+                : "Default bottom text";
+
         const dataUrl = await drawLabel(
             standardImage.value,
-            threadSize.value,
-            hardwareStandard.value,
+            topLabelText,
+            bottomLabelText,
             labelWidth.value
         );
         if (!dataUrl) {
@@ -390,7 +426,11 @@ export const DINLabelGenerator = component$(() => {
                     <div>
                         <input
                             type="text"
-                            placeholder={`Length (e.g., 3/8", 10mm)`}
+                            placeholder={
+                                selectedSystem.value === 'Metric'
+                                    ? 'Length (e.g., 10)'
+                                    : 'Length (e.g., 3/8″)'
+                            }
                             class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                             value={length.value}
                             onInput$={(e) => {
@@ -464,7 +504,9 @@ export const DINLabelGenerator = component$(() => {
                             labelWidth.value = parseInt((e.target as HTMLInputElement).value);
                         }}
                     />
-                    <div class="text-xs text-gray-500">Label height is 10mm - perfect for 12mm tape labels</div>
+                    <div class="text-xs text-gray-500">
+                        Label height is 10mm - perfect for 12mm tape labels
+                    </div>
                 </div>
 
                 {/* Buttons */}
@@ -489,17 +531,15 @@ export const DINLabelGenerator = component$(() => {
                 {/* Preview Area */}
                 <div
                     class="mt-8 p-8 bg-[#F8FAFC] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[200px]">
-                    {isLoading.value && (
-                        <div class="text-gray-600">Loading image...</div>
-                    )}
+                    {isLoading.value && <div class="text-gray-600">Loading image...</div>}
                     {!isLoading.value && labelPreviewUrl.value && (
                         <div class="inline-block">
                             <img
                                 src={labelPreviewUrl.value}
                                 alt="Label Preview"
                                 width={labelWidthPx}
-                                height={labelHeightPx} // wysokość wyliczona na podstawie 10mm
-                                class="max-w-full"      // usunięto h-auto, by wysokość była stała
+                                height={labelHeightPx} // stała wysokość, wyliczona na podstawie 10mm
+                                class="max-w-full"
                             />
                         </div>
                     )}
@@ -507,9 +547,11 @@ export const DINLabelGenerator = component$(() => {
                         <div class="text-gray-500 flex items-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                  fill="currentColor">
-                                <path fill-rule="evenodd"
-                                      d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z"
-                                      clip-rule="evenodd"/>
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z"
+                                    clip-rule="evenodd"
+                                />
                                 <path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/>
                             </svg>
                             Fill the form above to generate a label preview

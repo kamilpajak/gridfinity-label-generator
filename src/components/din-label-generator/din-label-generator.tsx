@@ -1,3 +1,9 @@
+// Utility function to convert millimeters to pixels.
+function mmToPx(mm: number, dpi: number = 360): number {
+  const mmToInch = 25.4;
+  return Math.round((mm / mmToInch) * dpi);
+}
+
 import { component$, useSignal, $, useTask$, useVisibleTask$ } from '@builder.io/qwik';
 import { dinStandards, type DINStandard } from '~/data/din-standards';
 
@@ -9,7 +15,7 @@ export const DINLabelGenerator = component$(() => {
   const hardwareStandard = useSignal('');   // Bottom text (e.g., "DIN 439")
   const notes = useSignal('');
   const standardImage = useSignal<HTMLImageElement | null>(null);
-  const labelWidth = useSignal(40);          // Label width in mm
+  const labelWidth = useSignal(55);          // Label width in mm
   const length = useSignal('');
   const isLoading = useSignal(false);
   const labelPreviewUrl = useSignal<string>('');
@@ -57,16 +63,13 @@ export const DINLabelGenerator = component$(() => {
       return null;
     }
 
-    // Constants for conversion and fixed label dimensions
-    const dpi = 360;
-    const mmToInch = 25.4;
-    const labelHeightMm = 10; // fixed label height in mm
-    const labelHeightPx = Math.round((labelHeightMm / mmToInch) * dpi);
-    const labelWidthPx = Math.round((labelWidthMm / mmToInch) * dpi);
+    // Ustalanie wymiarów etykiety (10 mm wysokości)
+    const labelHeightPx = mmToPx(10);
+    const labelWidthPx = mmToPx(labelWidthMm);
 
     console.log(`Drawing label with dimensions: ${labelWidthPx}px x ${labelHeightPx}px`);
 
-    // Create canvas and get context
+    // Tworzenie canvasa i kontekstu
     const canvas = document.createElement('canvas');
     canvas.width = labelWidthPx;
     canvas.height = labelHeightPx;
@@ -76,19 +79,19 @@ export const DINLabelGenerator = component$(() => {
       return null;
     }
 
-    // Draw white background
+    // Rysowanie białego tła
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
 
-    // --- Set fixed font size corresponding to 4mm ---
-    const fixedFontSize = Math.round((4 / mmToInch) * dpi);
+    // Ustalenie rozmiaru czcionki odpowiadającego 4mm
+    const fixedFontSize = mmToPx(4);
     console.log(`Fixed font size for 4mm: ${fixedFontSize}px`);
 
-    // Set font before drawing text
+    // Ustawienie czcionki przed rysowaniem tekstu
     ctx.font = `900 ${fixedFontSize}px "Noto Sans", serif`;
     ctx.fillStyle = 'black';
 
-    // Log font status
+    // Logowanie statusu czcionki
     if (document.fonts) {
       console.log("document.fonts status:", document.fonts.status);
       const fontReady = document.fonts.check(`900 ${fixedFontSize}px "Noto Sans", serif`);
@@ -97,20 +100,20 @@ export const DINLabelGenerator = component$(() => {
       console.warn("document.fonts API is not available.");
     }
 
-    // --- Reserve space for text ---
+    // Rezerwacja miejsca na tekst
     const topTextWidth = ctx.measureText(thread).width;
     const bottomTextWidth = ctx.measureText(hwStandard).width;
     console.log(`Measured top text width: ${topTextWidth}px, bottom text width: ${bottomTextWidth}px`);
 
-    const textPadding = 10; // additional horizontal padding
+    const textPadding = 10; // dodatkowy poziomy padding
     const neededTextWidth = Math.max(topTextWidth, bottomTextWidth) + textPadding;
 
-    // Fixed gap between image and text area
-    const gapPx = 10;
+    // Stała przerwa między obrazkiem a obszarem tekstowym
+    const gapPx = 1;
     const availableForImage = labelWidthPx - gapPx - neededTextWidth;
     console.log(`Available width for image: ${availableForImage}px`);
 
-    // --- Draw image preserving original aspect ratio ---
+    // Rysowanie obrazka z zachowaniem oryginalnych proporcji
     const naturalWidth = standardImg.naturalWidth;
     const naturalHeight = standardImg.naturalHeight;
     const aspectRatio = naturalWidth / naturalHeight;
@@ -132,18 +135,18 @@ export const DINLabelGenerator = component$(() => {
       console.warn("Not enough space for image, prioritizing text area.");
     }
 
-    // --- Text area ---
+    // Obszar tekstowy
     const textAreaX = drawnImgWidth > 0 ? drawnImgWidth + gapPx : 0;
     const textAreaWidth = labelWidthPx - textAreaX;
     console.log("Text area starts at x =", textAreaX, "with width =", textAreaWidth);
 
-    // --- Draw top text ---
+    // Rysowanie górnego tekstu
     ctx.textBaseline = 'top';
     const topTextX = textAreaX + (textAreaWidth - topTextWidth) / 2;
     ctx.fillText(thread, topTextX, 0);
     console.log("Top text drawn at:", topTextX, 0, "text:", thread);
 
-    // --- Draw bottom text ---
+    // Rysowanie dolnego tekstu
     ctx.textBaseline = 'bottom';
     const bottomTextX = textAreaX + (textAreaWidth - bottomTextWidth) / 2;
     ctx.fillText(hwStandard, bottomTextX, labelHeightPx);
@@ -212,10 +215,8 @@ export const DINLabelGenerator = component$(() => {
   };
 
   // Dynamic calculation of preview dimensions in pixels
-  const dpi = 360;
-  const mmToInch = 25.4;
-  const labelHeightPx = Math.round((10 / mmToInch) * dpi); // 10 mm height
-  const labelWidthPx = Math.round((labelWidth.value / mmToInch) * dpi);
+  const labelHeightPx = mmToPx(10); // 10 mm height
+  const labelWidthPx = mmToPx(labelWidth.value);
 
   return (
       <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
@@ -392,9 +393,10 @@ export const DINLabelGenerator = component$(() => {
 
           {/* Preview Area */}
           <div class="mt-8 p-8 bg-[#F8FAFC] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[200px]">
-            {isLoading.value ? (
+            {isLoading.value && (
                 <div class="text-gray-600">Loading image...</div>
-            ) : labelPreviewUrl.value ? (
+            )}
+            {!isLoading.value && labelPreviewUrl.value && (
                 <div class="inline-block">
                   <img
                       src={labelPreviewUrl.value}
@@ -404,7 +406,8 @@ export const DINLabelGenerator = component$(() => {
                       class="max-w-full h-auto"
                   />
                 </div>
-            ) : (
+            )}
+            {!isLoading.value && !labelPreviewUrl.value && (
                 <div class="text-gray-500 flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd" />

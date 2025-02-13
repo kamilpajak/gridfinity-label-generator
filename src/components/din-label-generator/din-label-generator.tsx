@@ -303,7 +303,7 @@ export const DINLabelGenerator = component$(() => {
             labelPreviewUrl.value = '';
         }
     });
-    
+
 
     const generateLabel = $(async () => {
         const topLabelText =
@@ -493,8 +493,15 @@ export const DINLabelGenerator = component$(() => {
                                 class="w-20 p-2 bg-white border border-gray-200 rounded text-right text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                 value={labelWidth.value}
                                 onInput$={(e) => {
-                                    console.log("Set label width (number):", (e.target as HTMLInputElement).value);
-                                    labelWidth.value = parseInt((e.target as HTMLInputElement).value) || 0;
+                                    let newValue = parseInt((e.target as HTMLInputElement).value) || 0;
+                                    // Klamrowanie wartości do zakresu 40-100
+                                    if (newValue < 40) {
+                                        newValue = 40;
+                                    } else if (newValue > 100) {
+                                        newValue = 100;
+                                    }
+                                    console.log("Set label width (number):", newValue);
+                                    labelWidth.value = newValue;
                                 }}
                             />
                             <span class="text-sm text-gray-600">mm</span>

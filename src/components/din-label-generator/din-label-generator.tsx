@@ -20,8 +20,7 @@ function computeDynamicFontSize(
     // Ustawiamy tymczasowo font, aby zmierzyć metryki
     ctx.font = `900 ${baseSize}px "${fontFamily}", serif`;
     const metrics = ctx.measureText(sampleText);
-    const effectiveHeight =
-        metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    const effectiveHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     if (effectiveHeight === 0) {
         return baseSize;
     }
@@ -127,9 +126,7 @@ export const DINLabelGenerator = component$(() => {
             ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
             const topMetrics = ctx.measureText(topText);
             console.log(
-                `Top text: font size ${topDynamicFontSize.toFixed(
-                    2
-                )}px, ascent = ${topMetrics.actualBoundingBoxAscent.toFixed(
+                `Top text: font size ${topDynamicFontSize.toFixed(2)}px, ascent = ${topMetrics.actualBoundingBoxAscent.toFixed(
                     2
                 )}px, descent = ${topMetrics.actualBoundingBoxDescent.toFixed(2)}px`
             );
@@ -139,9 +136,7 @@ export const DINLabelGenerator = component$(() => {
             ctx.font = `900 ${bottomDynamicFontSize}px "Oswald", sans-serif`;
             const bottomMetrics = ctx.measureText(bottomText);
             console.log(
-                `Bottom text: font size ${bottomDynamicFontSize.toFixed(
-                    2
-                )}px, ascent = ${bottomMetrics.actualBoundingBoxAscent.toFixed(
+                `Bottom text: font size ${bottomDynamicFontSize.toFixed(2)}px, ascent = ${bottomMetrics.actualBoundingBoxAscent.toFixed(
                     2
                 )}px, descent = ${bottomMetrics.actualBoundingBoxDescent.toFixed(2)}px`
             );
@@ -151,12 +146,10 @@ export const DINLabelGenerator = component$(() => {
             const neededTextWidth = Math.max(topMetrics.width, bottomMetrics.width) + textPadding;
 
             // Stały odstęp między obrazkiem a obszarem tekstu
-            const gapPx = 1;
+            const gapPx = mmToPx(2);
             const availableForImage = labelWidthPx - gapPx - neededTextWidth;
             console.log(
-                `Available width for image: ${availableForImage}px (${pxToMm(availableForImage).toFixed(
-                    2
-                )}mm)`
+                `Available width for image: ${availableForImage}px (${pxToMm(availableForImage).toFixed(2)}mm)`
             );
 
             // Rysowanie obrazu DIN (jeśli jest miejsce)
@@ -193,9 +186,7 @@ export const DINLabelGenerator = component$(() => {
             console.log(
                 "Text area starts at x =",
                 textAreaX,
-                `(${pxToMm(textAreaX).toFixed(2)}mm) with width = ${textAreaWidth}px (${pxToMm(
-                    textAreaWidth
-                ).toFixed(2)}mm)`
+                `(${pxToMm(textAreaX).toFixed(2)}mm) with width = ${textAreaWidth}px (${pxToMm(textAreaWidth).toFixed(2)}mm)`
             );
 
             // Rysowanie tekstów
@@ -208,8 +199,7 @@ export const DINLabelGenerator = component$(() => {
             const topBaselineY = topMetrics.actualBoundingBoxAscent;
             ctx.fillText(topText, topTextX, topBaselineY);
             console.log("Top text drawn at: x =", topTextX, `, y = ${topBaselineY}px; text: "${topText}"`);
-            const effectiveTopHeightPx =
-                topMetrics.actualBoundingBoxAscent + topMetrics.actualBoundingBoxDescent;
+            const effectiveTopHeightPx = topMetrics.actualBoundingBoxAscent + topMetrics.actualBoundingBoxDescent;
             console.log(
                 `Effective top text height: ${effectiveTopHeightPx}px (${pxToMm(effectiveTopHeightPx).toFixed(2)}mm)`
             );
@@ -220,8 +210,7 @@ export const DINLabelGenerator = component$(() => {
             const bottomBaselineY = labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
             ctx.fillText(bottomText, bottomTextX, bottomBaselineY);
             console.log("Bottom text drawn at: x =", bottomTextX, `, y = ${bottomBaselineY}px; text: "${bottomText}"`);
-            const effectiveBottomHeightPx =
-                bottomMetrics.actualBoundingBoxAscent + bottomMetrics.actualBoundingBoxDescent;
+            const effectiveBottomHeightPx = bottomMetrics.actualBoundingBoxAscent + bottomMetrics.actualBoundingBoxDescent;
             console.log(
                 `Effective bottom text height: ${effectiveBottomHeightPx}px (${pxToMm(effectiveBottomHeightPx).toFixed(2)}mm)`
             );
@@ -230,7 +219,6 @@ export const DINLabelGenerator = component$(() => {
         }
     );
 
-    // eslint-disable-next-line qwik/no-use-visible-task
     // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(async ({track}) => {
         track(() => standardImage.value);
@@ -266,7 +254,10 @@ export const DINLabelGenerator = component$(() => {
                 console.error("Failed to load Oswald:", err);
             });
 
-        // Generujemy podgląd tylko, gdy wszystkie wymagane pola są wypełnione
+        // Generujemy podgląd tylko, gdy wszystkie wymagane pola są wypełnione:
+        // - Thread size nie jest puste,
+        // - Hardware standard nie jest puste,
+        // - Jeśli typ to 'Screw', to także length musi być podane.
         if (
             threadSize.value === '' ||
             hardwareStandard.value === '' ||
@@ -303,7 +294,6 @@ export const DINLabelGenerator = component$(() => {
             labelPreviewUrl.value = '';
         }
     });
-
 
     const generateLabel = $(async () => {
         const topLabelText =
@@ -384,13 +374,14 @@ export const DINLabelGenerator = component$(() => {
                                 key={system.value}
                                 onClick$={() => {
                                     console.log("Selected measurement system:", system.value);
-                                    selectedSystem.value = system.value;
-                                    // Reset formularza i podglądu
-                                    threadSize.value = "";
-                                    hardwareStandard.value = "";
-                                    length.value = "";
-                                    notes.value = "";
-                                    labelPreviewUrl.value = "";
+                                    if (selectedSystem.value !== system.value) {
+                                        selectedSystem.value = system.value;
+                                        threadSize.value = "";
+                                        hardwareStandard.value = "";
+                                        length.value = "";
+                                        notes.value = "";
+                                        labelPreviewUrl.value = "";
+                                    }
                                 }}
                                 class={{
                                     'py-3 px-4 text-center transition-colors font-medium': true,
@@ -494,12 +485,8 @@ export const DINLabelGenerator = component$(() => {
                                 value={labelWidth.value}
                                 onInput$={(e) => {
                                     let newValue = parseInt((e.target as HTMLInputElement).value) || 0;
-                                    // Klamrowanie wartości do zakresu 40-100
-                                    if (newValue < 40) {
-                                        newValue = 40;
-                                    } else if (newValue > 100) {
-                                        newValue = 100;
-                                    }
+                                    if (newValue < 40) newValue = 40;
+                                    if (newValue > 100) newValue = 100;
                                     console.log("Set label width (number):", newValue);
                                     labelWidth.value = newValue;
                                 }}
@@ -544,7 +531,8 @@ export const DINLabelGenerator = component$(() => {
 
                 {/* Preview Area */}
                 <div
-                    class="mt-8 p-8 bg-[#F8FAFC] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[200px]">
+                    class="mt-8 p-8 bg-[#F8FAFC] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[200px]"
+                >
                     {isLoading.value && <div class="text-gray-600">Loading image...</div>}
                     {!isLoading.value && labelPreviewUrl.value && (
                         <div class="inline-block">

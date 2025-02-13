@@ -22,8 +22,7 @@ function computeDynamicFontSize(
     if (effectiveHeight === 0) {
         return baseSize;
     }
-    const newSize = baseSize * (desiredHeight / effectiveHeight);
-    return newSize;
+    return baseSize * (desiredHeight / effectiveHeight);
 }
 
 import {$, component$, useSignal, useVisibleTask$} from '@builder.io/qwik';
@@ -81,7 +80,7 @@ export const DINLabelGenerator = component$(() => {
             hwStandard: string,
             labelWidthMm: number
         ): string | null => {
-            // Logowanie przekazanych wartości
+            // Log passed values
             console.log("drawLabel called with:", {
                 standardImgExists: !!standardImg,
                 thread,
@@ -94,27 +93,20 @@ export const DINLabelGenerator = component$(() => {
                 return null;
             }
 
-            // Używamy fallbacku dla górnego tekstu, jeśli thread jest pusty
+            // Fallback texts if needed
             const topText = thread || "Default top text";
-            if (!thread) {
-                console.warn(
-                    "Wartość thread (górny tekst) jest pusta – używam fallbacku:",
-                    topText
-                );
-            }
+            const bottomText = hwStandard || "Default bottom text";
 
-            // Ustalanie wymiarów etykiety (wysokość 10mm)
+            // Define label dimensions: height = 10mm, width as specified
             const labelHeightPx = mmToPx(10);
             const labelWidthPx = mmToPx(labelWidthMm);
             console.log(
-                `Drawing label with dimensions: ${labelWidthPx}px (${pxToMm(
-                    labelWidthPx
-                ).toFixed(2)}mm) x ${labelHeightPx}px (${pxToMm(labelHeightPx).toFixed(
+                `Drawing label with dimensions: ${labelWidthPx}px (${pxToMm(labelWidthPx).toFixed(
                     2
-                )}mm)`
+                )}mm) x ${labelHeightPx}px (${pxToMm(labelHeightPx).toFixed(2)}mm)`
             );
 
-            // Tworzenie canvasa i kontekstu
+            // Create canvas and context
             const canvas = document.createElement("canvas");
             canvas.width = labelWidthPx;
             canvas.height = labelHeightPx;
@@ -124,63 +116,53 @@ export const DINLabelGenerator = component$(() => {
                 return null;
             }
 
-            // Rysowanie białego tła
+            // Draw white background
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
 
-            // Obliczenie dynamicznego rozmiaru czcionki (efektywna wysokość ≈ 4mm)
-            const desiredTextHeight = mmToPx(4);
-            const sampleText = hwStandard || topText || "A";
-            const dynamicFontSize = computeDynamicFontSize(ctx, desiredTextHeight, sampleText);
-            ctx.font = `900 ${dynamicFontSize}px "Noto Sans", serif`;
+            // Desired effective text height for each text line: 4.5mm
+            const desiredTextHeight = mmToPx(4.5);
+
+            // --- Compute dynamic font size for top text ---
+            const topDynamicFontSize = computeDynamicFontSize(ctx, desiredTextHeight, topText);
+            // Set font and measure top text metrics
+            ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
+            const topMetrics = ctx.measureText(topText);
             console.log(
-                `Dynamic font size computed: ${dynamicFontSize.toFixed(
+                `Top text: font size ${topDynamicFontSize.toFixed(
                     2
-                )}px, desired: ${desiredTextHeight}px (${pxToMm(desiredTextHeight).toFixed(
+                )}px, ascent = ${topMetrics.actualBoundingBoxAscent.toFixed(
+                    2
+                )}px, descent = ${topMetrics.actualBoundingBoxDescent.toFixed(2)}px`
+            );
+
+            // --- Compute dynamic font size for bottom text ---
+            const bottomDynamicFontSize = computeDynamicFontSize(ctx, desiredTextHeight, bottomText);
+            ctx.font = `900 ${bottomDynamicFontSize}px "Noto Sans", serif`;
+            const bottomMetrics = ctx.measureText(bottomText);
+            console.log(
+                `Bottom text: font size ${bottomDynamicFontSize.toFixed(
+                    2
+                )}px, ascent = ${bottomMetrics.actualBoundingBoxAscent.toFixed(
+                    2
+                )}px, descent = ${bottomMetrics.actualBoundingBoxDescent.toFixed(2)}px`
+            );
+
+            // Calculate maximum horizontal space needed by texts (with some padding)
+            const textPadding = 10; // additional horizontal padding in pixels
+            const neededTextWidth = Math.max(topMetrics.width, bottomMetrics.width) + textPadding;
+
+            // Constant gap between image and text area (if image is present)
+            const gapPx = 1;
+            // Calculate available width for the image
+            const availableForImage = labelWidthPx - gapPx - neededTextWidth;
+            console.log(
+                `Available width for image: ${availableForImage}px (${pxToMm(availableForImage).toFixed(
                     2
                 )}mm)`
             );
 
-            // Pomiar metryk tekstu
-            const topMetrics = ctx.measureText(topText);
-            const bottomMetrics = ctx.measureText(hwStandard);
-            console.log(
-                `Top text metrics: width = ${topMetrics.width.toFixed(2)}px (${pxToMm(
-                    topMetrics.width
-                ).toFixed(2)}mm), ascent = ${topMetrics.actualBoundingBoxAscent.toFixed(
-                    2
-                )}px (${pxToMm(topMetrics.actualBoundingBoxAscent).toFixed(
-                    2
-                )}mm), descent = ${topMetrics.actualBoundingBoxDescent.toFixed(
-                    2
-                )}px (${pxToMm(topMetrics.actualBoundingBoxDescent).toFixed(2)}mm)`
-            );
-            console.log(
-                `Bottom text metrics: width = ${bottomMetrics.width.toFixed(2)}px (${pxToMm(
-                    bottomMetrics.width
-                ).toFixed(2)}mm), ascent = ${bottomMetrics.actualBoundingBoxAscent.toFixed(
-                    2
-                )}px (${pxToMm(bottomMetrics.actualBoundingBoxAscent).toFixed(
-                    2
-                )}mm), descent = ${bottomMetrics.actualBoundingBoxDescent.toFixed(
-                    2
-                )}px (${pxToMm(bottomMetrics.actualBoundingBoxDescent).toFixed(2)}mm)`
-            );
-
-            // Obliczenie potrzebnej szerokości tekstu (z dodatkowym paddingiem)
-            const textPadding = 10; // dodatkowy poziomy padding
-            const neededTextWidth = Math.max(topMetrics.width, bottomMetrics.width) + textPadding;
-
-            // Stała przerwa między obrazkiem a obszarem tekstowym
-            const gapPx = 1;
-            const availableForImage = labelWidthPx - gapPx - neededTextWidth;
-            console.log(
-                `Available width for image: ${availableForImage}px (${pxToMm(
-                    availableForImage
-                ).toFixed(2)}mm)`
-            );
-
-            // Rysowanie obrazu DIN z zachowaniem oryginalnych proporcji
+            // --- Draw DIN image (if space available) ---
             let drawnImgWidth = 0;
             let drawnImgHeight = 0;
             if (availableForImage > 0) {
@@ -208,39 +190,56 @@ export const DINLabelGenerator = component$(() => {
                 console.warn("Not enough space for image, prioritizing text area.");
             }
 
-            // Obliczenie obszaru tekstowego
+            // Calculate text area dimensions (to the right of the image)
             const textAreaX = drawnImgWidth > 0 ? drawnImgWidth + gapPx : 0;
             const textAreaWidth = labelWidthPx - textAreaX;
             console.log(
-                "Text area starts at: x =",
+                "Text area starts at x =",
                 textAreaX,
                 `(${pxToMm(textAreaX).toFixed(2)}mm) with width = ${textAreaWidth}px (${pxToMm(
                     textAreaWidth
                 ).toFixed(2)}mm)`
             );
 
-            // Ustawienie koloru tekstu
+            // --- Draw the texts with the desired vertical layout ---
             ctx.fillStyle = "black";
-            // Ustawienie baseline na "alphabetic" aby operować na metrykach
             ctx.textBaseline = "alphabetic";
 
-            // Rysowanie górnego tekstu, tak aby dotykał górnej krawędzi
-            // Ustawiamy y = topMetrics.actualBoundingBoxAscent (wtedy: y - ascent = 0)
+            // Draw top text so that its top edge is at y = 0.
+            // That is, set baseline = topMetrics.actualBoundingBoxAscent.
+            ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
             const topTextX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
-            const topY = topMetrics.actualBoundingBoxAscent;
-            ctx.fillText(topText, topTextX, topY);
-            console.log("Top text drawn at: x =", topTextX, `, y = ${topY}px; text: "${topText}"`);
+            const topBaselineY = topMetrics.actualBoundingBoxAscent;
+            ctx.fillText(topText, topTextX, topBaselineY);
+            console.log("Top text drawn at: x =", topTextX, `, y = ${topBaselineY}px; text: "${topText}"`);
 
-            // Rysowanie dolnego tekstu, tak aby dotykał dolnej krawędzi
-            // Ustawiamy y = labelHeightPx - bottomMetrics.actualBoundingBoxDescent (dolna krawędź = y + descent)
+            // Log effective height of top text in mm
+            const effectiveTopHeightPx = topMetrics.actualBoundingBoxAscent + topMetrics.actualBoundingBoxDescent;
+            console.log(
+                `Effective top text height: ${effectiveTopHeightPx}px (${pxToMm(effectiveTopHeightPx).toFixed(2)}mm)`
+            );
+
+            // Draw bottom text so that its bottom edge is at y = labelHeightPx.
+            // That is, set baseline = labelHeightPx - bottomMetrics.actualBoundingBoxDescent.
+            ctx.font = `900 ${bottomDynamicFontSize}px "Noto Sans", serif`;
             const bottomTextX = textAreaX + (textAreaWidth - bottomMetrics.width) / 2;
-            const bottomY = labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
-            ctx.fillText(hwStandard, bottomTextX, bottomY);
+            const bottomBaselineY = labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
+            ctx.fillText(bottomText, bottomTextX, bottomBaselineY);
             console.log(
                 "Bottom text drawn at: x =",
                 bottomTextX,
-                `, y = ${bottomY}px; text: "${hwStandard}"`
+                `, y = ${bottomBaselineY}px; text: "${bottomText}"`
             );
+
+            // Log effective height of bottom text in mm
+            const effectiveBottomHeightPx = bottomMetrics.actualBoundingBoxAscent + bottomMetrics.actualBoundingBoxDescent;
+            console.log(
+                `Effective bottom text height: ${effectiveBottomHeightPx}px (${pxToMm(effectiveBottomHeightPx).toFixed(2)}mm)`
+            );
+
+            // Rezultat:
+            // Każda linia tekstu ma efektywną wysokość ~4.5mm.
+            // Całkowita wysokość etykiety wynosi 10mm, więc przerwa pomiędzy liniami wynosi 10mm - 4.5mm - 4.5mm = 1mm.
 
             return canvas.toDataURL("image/png");
         }
@@ -499,8 +498,8 @@ export const DINLabelGenerator = component$(() => {
                                 src={labelPreviewUrl.value}
                                 alt="Label Preview"
                                 width={labelWidthPx}
-                                height={labelHeightPx}
-                                class="max-w-full h-auto"
+                                height={labelHeightPx} // wysokość wyliczona na podstawie 10mm
+                                class="max-w-full"      // usunięto h-auto, by wysokość była stała
                             />
                         </div>
                     )}

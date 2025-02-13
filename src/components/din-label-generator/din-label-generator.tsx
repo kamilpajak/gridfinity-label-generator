@@ -13,10 +13,12 @@ function pxToMm(px: number, dpi: number = 360): number {
 function computeDynamicFontSize(
     ctx: CanvasRenderingContext2D,
     desiredHeight: number,
-    sampleText: string
+    sampleText: string,
+    fontFamily: string
 ): number {
     const baseSize = desiredHeight;
-    ctx.font = `900 ${baseSize}px "Noto Sans", serif`;
+    // Ustawiamy tymczasowo font, aby zmierzyć metryki
+    ctx.font = `900 ${baseSize}px "${fontFamily}", serif`;
     const metrics = ctx.measureText(sampleText);
     const effectiveHeight =
         metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
@@ -33,11 +35,11 @@ export const DINLabelGenerator = component$(() => {
     // Signals for user inputs
     const selectedType = useSignal('Screw');
     const selectedSystem = useSignal('Metric');
-    const threadSize = useSignal(''); // Top text (e.g., thread size)
-    const hardwareStandard = useSignal(''); // Bottom text (np. "DIN 963")
+    const threadSize = useSignal(''); // Gwint (górna linia)
+    const hardwareStandard = useSignal(''); // Standard (dolna linia)
     const notes = useSignal('');
     const standardImage = useSignal<HTMLImageElement | null>(null);
-    const labelWidth = useSignal(55); // Label width in mm
+    const labelWidth = useSignal(55); // Szerokość etykiety w mm (domyślnie 55)
     const length = useSignal('');
     const isLoading = useSignal(false);
     const labelPreviewUrl = useSignal<string>('');
@@ -45,7 +47,8 @@ export const DINLabelGenerator = component$(() => {
     const metricThreadSizes = ['M3', 'M4', 'M5', 'M6', 'M8', 'M10', 'M12', 'M16', 'M20'];
     const imperialThreadSizes = ['#4', '#6', '#8', '#10', '1/4″', '5/16″', '3/8″', '1/2″', '5/8″'];
 
-    // Ładowanie obrazu DIN – wykonujemy to tylko po stronie klienta
+    // Ładowanie obrazu DIN – tylko po stronie klienta
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(({track}) => {
         track(() => hardwareStandard.value);
         track(() => selectedType.value);
@@ -77,14 +80,14 @@ export const DINLabelGenerator = component$(() => {
     const drawLabel = $(
         (
             standardImg: HTMLImageElement | null,
-            thread: string,
-            hwStandard: string,
+            topText: string,
+            bottomText: string,
             labelWidthMm: number
         ): string | null => {
             console.log("drawLabel called with:", {
                 standardImgExists: !!standardImg,
-                thread,
-                hwStandard,
+                topText,
+                bottomText,
                 labelWidthMm,
             });
 
@@ -93,11 +96,7 @@ export const DINLabelGenerator = component$(() => {
                 return null;
             }
 
-            // Używamy fallbacków, jeśli teksty nie są ustawione
-            const topText = thread || "Default top text";
-            const bottomText = hwStandard || "Default bottom text";
-
-            // Define label dimensions: height = 10mm, width as specified
+            // Wymiary etykiety: wysokość = 10mm, szerokość jak podana
             const labelHeightPx = mmToPx(10);
             const labelWidthPx = mmToPx(labelWidthMm);
             console.log(
@@ -106,7 +105,7 @@ export const DINLabelGenerator = component$(() => {
                 )}mm) x ${labelHeightPx}px (${pxToMm(labelHeightPx).toFixed(2)}mm)`
             );
 
-            // Create canvas and context
+            // Tworzenie canvasa i kontekstu
             const canvas = document.createElement("canvas");
             canvas.width = labelWidthPx;
             canvas.height = labelHeightPx;
@@ -116,15 +115,15 @@ export const DINLabelGenerator = component$(() => {
                 return null;
             }
 
-            // Draw white background
+            // Rysowanie białego tła
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
 
-            // Desired effective text height for each text line: 4.5mm
+            // Docelowa efektywna wysokość tekstu: 4.5mm
             const desiredTextHeight = mmToPx(4.5);
 
-            // --- Compute dynamic font size for top text ---
-            const topDynamicFontSize = computeDynamicFontSize(ctx, desiredTextHeight, topText);
+            // Top text (Noto Sans)
+            const topDynamicFontSize = computeDynamicFontSize(ctx, desiredTextHeight, topText, "Noto Sans");
             ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
             const topMetrics = ctx.measureText(topText);
             console.log(
@@ -135,9 +134,9 @@ export const DINLabelGenerator = component$(() => {
                 )}px, descent = ${topMetrics.actualBoundingBoxDescent.toFixed(2)}px`
             );
 
-            // --- Compute dynamic font size for bottom text ---
-            const bottomDynamicFontSize = computeDynamicFontSize(ctx, desiredTextHeight, bottomText);
-            ctx.font = `900 ${bottomDynamicFontSize}px "Noto Sans", serif`;
+            // Bottom text (Oswald)
+            const bottomDynamicFontSize = computeDynamicFontSize(ctx, desiredTextHeight, bottomText, "Oswald");
+            ctx.font = `900 ${bottomDynamicFontSize}px "Oswald", sans-serif`;
             const bottomMetrics = ctx.measureText(bottomText);
             console.log(
                 `Bottom text: font size ${bottomDynamicFontSize.toFixed(
@@ -147,13 +146,12 @@ export const DINLabelGenerator = component$(() => {
                 )}px, descent = ${bottomMetrics.actualBoundingBoxDescent.toFixed(2)}px`
             );
 
-            // Calculate maximum horizontal space needed by texts (with some padding)
-            const textPadding = 10; // additional horizontal padding in pixels
+            // Obliczenie potrzebnej szerokości na tekst (z paddingiem)
+            const textPadding = 10;
             const neededTextWidth = Math.max(topMetrics.width, bottomMetrics.width) + textPadding;
 
-            // Constant gap between image and text area (if image is present)
+            // Stały odstęp między obrazkiem a obszarem tekstu
             const gapPx = 1;
-            // Calculate available width for the image
             const availableForImage = labelWidthPx - gapPx - neededTextWidth;
             console.log(
                 `Available width for image: ${availableForImage}px (${pxToMm(availableForImage).toFixed(
@@ -161,7 +159,7 @@ export const DINLabelGenerator = component$(() => {
                 )}mm)`
             );
 
-            // --- Draw DIN image (if space available) ---
+            // Rysowanie obrazu DIN (jeśli jest miejsce)
             let drawnImgWidth = 0;
             let drawnImgHeight = 0;
             if (availableForImage > 0) {
@@ -189,7 +187,7 @@ export const DINLabelGenerator = component$(() => {
                 console.warn("Not enough space for image, prioritizing text area.");
             }
 
-            // Calculate text area dimensions (to the right of the image)
+            // Obliczenie obszaru tekstowego (na prawo od obrazka)
             const textAreaX = drawnImgWidth > 0 ? drawnImgWidth + gapPx : 0;
             const textAreaWidth = labelWidthPx - textAreaX;
             console.log(
@@ -200,57 +198,39 @@ export const DINLabelGenerator = component$(() => {
                 ).toFixed(2)}mm)`
             );
 
-            // --- Draw the texts with the desired vertical layout ---
+            // Rysowanie tekstów
             ctx.fillStyle = "black";
             ctx.textBaseline = "alphabetic";
 
-            // Draw top text so that its top edge is at y = 0.
-            // Set baseline = topMetrics.actualBoundingBoxAscent.
+            // Top text – baseline ustawiony na topMetrics.actualBoundingBoxAscent (górna krawędź = 0)
             ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
             const topTextX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
             const topBaselineY = topMetrics.actualBoundingBoxAscent;
             ctx.fillText(topText, topTextX, topBaselineY);
             console.log("Top text drawn at: x =", topTextX, `, y = ${topBaselineY}px; text: "${topText}"`);
-
-            // Log effective height of top text in mm
             const effectiveTopHeightPx =
                 topMetrics.actualBoundingBoxAscent + topMetrics.actualBoundingBoxDescent;
             console.log(
-                `Effective top text height: ${effectiveTopHeightPx}px (${pxToMm(effectiveTopHeightPx).toFixed(
-                    2
-                )}mm)`
+                `Effective top text height: ${effectiveTopHeightPx}px (${pxToMm(effectiveTopHeightPx).toFixed(2)}mm)`
             );
 
-            // Draw bottom text so that its bottom edge is at y = labelHeightPx.
-            // Set baseline = labelHeightPx - bottomMetrics.actualBoundingBoxDescent.
-            ctx.font = `900 ${bottomDynamicFontSize}px "Noto Sans", serif`;
+            // Bottom text – baseline ustawiony na (labelHeightPx - bottomMetrics.actualBoundingBoxDescent) (dolna krawędź = 10mm)
+            ctx.font = `900 ${bottomDynamicFontSize}px "Oswald", sans-serif`;
             const bottomTextX = textAreaX + (textAreaWidth - bottomMetrics.width) / 2;
             const bottomBaselineY = labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
             ctx.fillText(bottomText, bottomTextX, bottomBaselineY);
-            console.log(
-                "Bottom text drawn at: x =",
-                bottomTextX,
-                `, y = ${bottomBaselineY}px; text: "${bottomText}"`
-            );
-
-            // Log effective height of bottom text in mm
+            console.log("Bottom text drawn at: x =", bottomTextX, `, y = ${bottomBaselineY}px; text: "${bottomText}"`);
             const effectiveBottomHeightPx =
                 bottomMetrics.actualBoundingBoxAscent + bottomMetrics.actualBoundingBoxDescent;
             console.log(
-                `Effective bottom text height: ${effectiveBottomHeightPx}px (${pxToMm(effectiveBottomHeightPx).toFixed(
-                    2
-                )}mm)`
+                `Effective bottom text height: ${effectiveBottomHeightPx}px (${pxToMm(effectiveBottomHeightPx).toFixed(2)}mm)`
             );
-
-            // Rezultat:
-            // Każda linia tekstu ma efektywną wysokość ~4.5mm.
-            // Całkowita wysokość etykiety wynosi 10mm, więc przerwa pomiędzy liniami wynosi 10mm - 4.5mm - 4.5mm = 1mm.
 
             return canvas.toDataURL("image/png");
         }
     );
 
-    // Aktualizacja podglądu etykiety – wykonywana po stronie klienta
+    // eslint-disable-next-line qwik/no-use-visible-task
     useVisibleTask$(async ({track}) => {
         track(() => standardImage.value);
         track(() => threadSize.value);
@@ -276,8 +256,16 @@ export const DINLabelGenerator = component$(() => {
             .catch((err) => {
                 console.error("Failed to load Noto Sans:", err);
             });
+        await document.fonts
+            .load('900 57px "Oswald", sans-serif')
+            .then(() => {
+                console.log("Oswald loaded, redrawing canvas...");
+            })
+            .catch((err) => {
+                console.error("Failed to load Oswald:", err);
+            });
 
-        // Obliczanie górnej linii tekstu (dla śruby)
+        // Tworzenie tekstu górnej linii
         const topLabelText =
             selectedType.value === 'Screw' && length.value
                 ? selectedSystem.value === 'Metric'
@@ -285,7 +273,7 @@ export const DINLabelGenerator = component$(() => {
                     : `${threadSize.value} × ${length.value}″`
                 : threadSize.value || "Default top text";
 
-        // Łączymy hardwareStandard z additional notes dla dolnej linii
+        // Tworzenie tekstu dolnej linii – hardware standard z additional notes
         const bottomLabelText =
             hardwareStandard.value
                 ? hardwareStandard.value + (notes.value ? ` ${notes.value}` : '')
@@ -305,7 +293,6 @@ export const DINLabelGenerator = component$(() => {
         }
     });
 
-    // Przy generowaniu etykiety do pobrania
     const generateLabel = $(async () => {
         const topLabelText =
             selectedType.value === 'Screw' && length.value
@@ -345,8 +332,7 @@ export const DINLabelGenerator = component$(() => {
         return Object.values(requiredFields).every(Boolean);
     };
 
-    // Dynamiczna kalkulacja wymiarów podglądu w pikselach
-    const labelHeightPx = mmToPx(10);
+    // Obliczanie szerokości podglądu etykiety (wysokość jest stała: 10mm)
     const labelWidthPx = mmToPx(labelWidth.value);
 
     return (
@@ -389,6 +375,12 @@ export const DINLabelGenerator = component$(() => {
                                 onClick$={() => {
                                     console.log("Selected measurement system:", system.value);
                                     selectedSystem.value = system.value;
+                                    // Resetowanie formularza i podglądu
+                                    threadSize.value = "";
+                                    hardwareStandard.value = "";
+                                    length.value = "";
+                                    notes.value = "";
+                                    labelPreviewUrl.value = "";
                                 }}
                                 class={{
                                     'py-3 px-4 text-center transition-colors font-medium': true,
@@ -483,19 +475,26 @@ export const DINLabelGenerator = component$(() => {
                         <div class="flex items-center gap-2">
                             <input
                                 type="number"
+                                min="40"
+                                max="100"
                                 class="w-20 p-2 bg-white border border-gray-200 rounded text-right text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                 value={labelWidth.value}
                                 onInput$={(e) => {
-                                    console.log("Set label width (number):", (e.target as HTMLInputElement).value);
-                                    labelWidth.value = parseInt((e.target as HTMLInputElement).value) || 0;
+                                    let newValue = parseInt((e.target as HTMLInputElement).value) || 0;
+                                    // Opcjonalnie: klamrowanie wartości, jeśli użytkownik wpisze wartość spoza zakresu
+                                    if (newValue < 40) newValue = 40;
+                                    if (newValue > 100) newValue = 100;
+                                    console.log("Set label width (number):", newValue);
+                                    labelWidth.value = newValue;
                                 }}
                             />
+
                             <span class="text-sm text-gray-600">mm</span>
                         </div>
                     </div>
                     <input
                         type="range"
-                        min="20"
+                        min="40"
                         max="100"
                         value={labelWidth.value}
                         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
@@ -516,7 +515,7 @@ export const DINLabelGenerator = component$(() => {
                         onClick$={generateLabel}
                         disabled={isLoading.value || !isFormValid()}
                     >
-                        Generate Label
+                        Download Label
                     </button>
                     <a
                         href="https://www.buymeacoffee.com"
@@ -538,7 +537,7 @@ export const DINLabelGenerator = component$(() => {
                                 src={labelPreviewUrl.value}
                                 alt="Label Preview"
                                 width={labelWidthPx}
-                                height={labelHeightPx} // stała wysokość, wyliczona na podstawie 10mm
+                                height={mmToPx(10)} // stała wysokość: 10mm
                                 class="max-w-full"
                             />
                         </div>
@@ -549,8 +548,8 @@ export const DINLabelGenerator = component$(() => {
                                  fill="currentColor">
                                 <path
                                     fill-rule="evenodd"
-                                    d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z"
                                     clip-rule="evenodd"
+                                    d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z"
                                 />
                                 <path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"/>
                             </svg>

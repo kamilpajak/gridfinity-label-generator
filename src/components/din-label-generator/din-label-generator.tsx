@@ -345,13 +345,12 @@ export const DINLabelGenerator = component$(() => {
         return Object.values(requiredFields).every(Boolean);
     };
 
-    // Calculate preview width (height is constant: 10mm)
     const labelWidthPx = mmToPx(labelWidth.value);
 
     return (
         <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
             <div class="space-y-6">
-                {/* Hardware Type */}
+                {/* Hardware Type (no header) */}
                 <div>
                     <div class="grid grid-cols-3 gap-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
                         {['Screw', 'Nut', 'Washer'].map((type) => (
@@ -361,7 +360,7 @@ export const DINLabelGenerator = component$(() => {
                                     if (selectedType.value !== type) {
                                         console.log("Selected hardware type:", type);
                                         selectedType.value = type;
-                                        // Reset form when type changes
+                                        // Reset form on type change
                                         threadSize.value = "";
                                         hardwareStandard.value = "";
                                         length.value = "";
@@ -381,7 +380,7 @@ export const DINLabelGenerator = component$(() => {
                     </div>
                 </div>
 
-                {/* Measurement System */}
+                {/* Measurement System (no header) */}
                 <div>
                     <div class="grid grid-cols-2 gap-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
                         {[
@@ -530,7 +529,7 @@ export const DINLabelGenerator = component$(() => {
                 </div>
 
                 {/* Buttons */}
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-[1fr_217px] gap-4">
                     <button
                         class="w-full bg-[#2D3748] text-white p-3 rounded-lg hover:bg-[#1A202C] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                         onClick$={generateLabel}
@@ -538,13 +537,14 @@ export const DINLabelGenerator = component$(() => {
                     >
                         Download Label
                     </button>
-                    <a
-                        href="https://www.buymeacoffee.com"
-                        target="_blank"
-                        class="w-full bg-[#FFD644] text-gray-900 p-3 rounded-lg hover:bg-[#FFE066] transition-colors text-center flex items-center justify-center gap-2 font-medium"
-                    >
-                        <span class="material-icons">coffee</span>
-                        Buy me a coffee
+                    <a href="https://www.buymeacoffee.com/kamilpajak" target="_blank">
+                        <img
+                            src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+                            alt="Buy Me A Coffee"
+                            width="217"
+                            height="60"
+                            style="height: 60px !important; width: 217px !important;"
+                        />
                     </a>
                 </div>
 

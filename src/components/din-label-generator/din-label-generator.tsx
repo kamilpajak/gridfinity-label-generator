@@ -266,16 +266,13 @@ export const DINLabelGenerator = component$(() => {
                 console.error("Failed to load Oswald:", err);
             });
 
-        // Generujemy podgląd tylko, gdy wszystkie wymagane pola są wypełnione:
-        // - Thread size nie jest puste,
-        // - Hardware standard nie jest puste,
-        // - Jeśli typ to 'Screw', to także length musi być podane.
+        // Generujemy podgląd tylko, gdy wszystkie wymagane pola są wypełnione
         if (
             threadSize.value === '' ||
             hardwareStandard.value === '' ||
-            (selectedType.value === 'Screw' && length.value === '')
+            (selectedType.value === 'Screw' && length.value === '') ||
+            !standardImage.value
         ) {
-            labelPreviewUrl.value = "";
             return;
         }
 
@@ -306,7 +303,7 @@ export const DINLabelGenerator = component$(() => {
             labelPreviewUrl.value = '';
         }
     });
-
+    
 
     const generateLabel = $(async () => {
         const topLabelText =
@@ -355,7 +352,6 @@ export const DINLabelGenerator = component$(() => {
             <div class="space-y-6">
                 {/* Hardware Type */}
                 <div>
-                    <div class="text-sm font-medium text-gray-700 mb-2">Hardware Type *</div>
                     <div class="grid grid-cols-3 gap-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
                         {['Screw', 'Nut', 'Washer'].map((type) => (
                             <button
@@ -379,7 +375,6 @@ export const DINLabelGenerator = component$(() => {
 
                 {/* Measurement System */}
                 <div>
-                    <div class="text-sm font-medium text-gray-700 mb-2">Measurement System</div>
                     <div class="grid grid-cols-2 gap-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
                         {[
                             {value: 'Metric', label: 'Metric'},
@@ -557,8 +552,8 @@ export const DINLabelGenerator = component$(() => {
                     )}
                     {!isLoading.value && !labelPreviewUrl.value && (
                         <div class="text-gray-500 flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                 fill="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                 class="h-5 w-5">
                                 <path
                                     fill-rule="evenodd"
                                     clip-rule="evenodd"

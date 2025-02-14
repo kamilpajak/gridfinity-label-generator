@@ -39,7 +39,7 @@ export const DINLabelGenerator = component$(() => {
   const hardwareStandard = useSignal(""); // Bottom text
   const notes = useSignal("");
   const standardImage = useSignal<HTMLImageElement | null>(null);
-  const labelWidth = useSignal(55); // in mm
+  const labelWidth = useSignal(55); // in mm (user-selected value, final printed label will be adjusted)
   const length = useSignal("");
   const isLoading = useSignal(false);
   const labelPreviewUrl = useSignal<string>("");
@@ -118,9 +118,12 @@ export const DINLabelGenerator = component$(() => {
         return null;
       }
 
-      // Label dimensions: height = 10mm, width as specified
+      // Label dimensions: height = 10mm.
+      // Adjust width: subtract 4mm (2mm from the left + 2mm from the right),
+      // so that the final print (after the printer's margins are added) matches the width specified in the form.
       const labelHeightPx = mmToPx(10);
-      const labelWidthPx = mmToPx(labelWidthMm);
+      const effectiveLabelWidthMm = labelWidthMm - 4; // effective drawing width
+      const labelWidthPx = mmToPx(effectiveLabelWidthMm);
       console.log(
         `Drawing label with dimensions: ${labelWidthPx}px (${pxToMm(
           labelWidthPx,

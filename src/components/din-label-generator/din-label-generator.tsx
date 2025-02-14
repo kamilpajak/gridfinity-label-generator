@@ -1,48 +1,24 @@
-// Utility function to convert millimeters to pixels.
-function mmToPx(mm: number, dpi: number = 360): number {
-  const mmToInch = 25.4;
-  return Math.round((mm / mmToInch) * dpi);
-}
-
-// Utility function to convert pixels to millimeters.
-function pxToMm(px: number, dpi: number = 360): number {
-  return (px * 25.4) / dpi;
-}
-
-// Compute a dynamic font size so that effective text height ≈ desiredHeight
-function computeDynamicFontSize(
-  ctx: CanvasRenderingContext2D,
-  desiredHeight: number,
-  sampleText: string,
-  fontFamily: string,
-): number {
-  const baseSize = desiredHeight;
-  // Set temporary font to measure metrics
-  ctx.font = `900 ${baseSize}px "${fontFamily}", serif`;
-  const metrics = ctx.measureText(sampleText);
-  const effectiveHeight =
-    metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-  if (effectiveHeight === 0) {
-    return baseSize;
-  }
-  return baseSize * (desiredHeight / effectiveHeight);
-}
-
+// file: src/components/din-label-generator/din-label-generator.tsx
 import { $, component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { mmToPx } from "~/lib/utils";
+import { drawLabel, getLabelTexts } from "~/lib/labelGenerator";
 import { type DINStandard, dinStandards } from "~/data/din-standards";
 
 export const DINLabelGenerator = component$(() => {
-  // Signals for user inputs
+  // Signals for user inputs.
   const selectedType = useSignal("Screw");
   const selectedSystem = useSignal("Metric");
-  const threadSize = useSignal(""); // Top text
-  const hardwareStandard = useSignal(""); // Bottom text
+  const threadSize = useSignal(""); // Top text.
+  const hardwareStandard = useSignal(""); // Bottom text.
   const notes = useSignal("");
   const standardImage = useSignal<HTMLImageElement | null>(null);
-  const labelWidth = useSignal(55); // in mm (user-selected value, final printed label will be adjusted)
+  const labelWidth = useSignal(55); // in mm.
   const length = useSignal("");
   const isLoading = useSignal(false);
   const labelPreviewUrl = useSignal<string>("");
+
+  // Nowy sygnał dla przełącznika włączającego/wyłączającego nazwę standardu.
+  const showStandardName = useSignal(true);
 
   const metricThreadSizes = [
     "M1.4",
@@ -71,7 +47,7 @@ export const DINLabelGenerator = component$(() => {
     "5/8″",
   ];
 
-  // Load DIN image – only on client side
+  // Load DIN image – only on client side.
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(({ track }) => {
     track(() => hardwareStandard.value);
@@ -103,174 +79,7 @@ export const DINLabelGenerator = component$(() => {
     }
   });
 
-  const drawLabel = $(
-    (
-      standardImg: HTMLImageElement | null,
-      topText: string,
-      bottomText: string,
-      labelWidthMm: number,
-    ): string | null => {
-      console.log("drawLabel called with:", {
-        standardImgExists: !!standardImg,
-        topText,
-        bottomText,
-        labelWidthMm,
-      });
-
-      if (!standardImg) {
-        console.error("No DIN image available, cannot draw label.");
-        return null;
-      }
-
-      // Label dimensions: height = 10mm.
-      // Adjust width: subtract 4mm (2mm from the left + 2mm from the right),
-      // so that the final print (after the printer's margins are added) matches the width specified in the form.
-      const labelHeightPx = mmToPx(10);
-      const effectiveLabelWidthMm = labelWidthMm - 4; // effective drawing width
-      const labelWidthPx = mmToPx(effectiveLabelWidthMm);
-      console.log(
-        `Drawing label with dimensions: ${labelWidthPx}px (${pxToMm(
-          labelWidthPx,
-        ).toFixed(
-          2,
-        )}mm) x ${labelHeightPx}px (${pxToMm(labelHeightPx).toFixed(2)}mm)`,
-      );
-
-      const canvas = document.createElement("canvas");
-      canvas.width = labelWidthPx;
-      canvas.height = labelHeightPx;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        console.error("Could not get canvas context.");
-        return null;
-      }
-
-      // Draw white background
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
-
-      // Desired effective text height: 4.5mm
-      const desiredTextHeight = mmToPx(4.5);
-
-      // Top text (Noto Sans)
-      const topDynamicFontSize = computeDynamicFontSize(
-        ctx,
-        desiredTextHeight,
-        topText,
-        "Noto Sans",
-      );
-      ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
-      const topMetrics = ctx.measureText(topText);
-      console.log(
-        `Top text: font size ${topDynamicFontSize.toFixed(2)}px, ascent = ${topMetrics.actualBoundingBoxAscent.toFixed(
-          2,
-        )}px, descent = ${topMetrics.actualBoundingBoxDescent.toFixed(2)}px`,
-      );
-
-      // Bottom text (Oswald)
-      const bottomDynamicFontSize = computeDynamicFontSize(
-        ctx,
-        desiredTextHeight,
-        bottomText,
-        "Oswald",
-      );
-      ctx.font = `900 ${bottomDynamicFontSize}px "Oswald", sans-serif`;
-      const bottomMetrics = ctx.measureText(bottomText);
-      console.log(
-        `Bottom text: font size ${bottomDynamicFontSize.toFixed(2)}px, ascent = ${bottomMetrics.actualBoundingBoxAscent.toFixed(
-          2,
-        )}px, descent = ${bottomMetrics.actualBoundingBoxDescent.toFixed(2)}px`,
-      );
-
-      // Calculate required text width (with padding)
-      const textPadding = 10;
-      const neededTextWidth =
-        Math.max(topMetrics.width, bottomMetrics.width) + textPadding;
-
-      // Gap between image and text area (2mm)
-      const gapPx = mmToPx(2);
-      const availableForImage = labelWidthPx - gapPx - neededTextWidth;
-      console.log(
-        `Available width for image: ${availableForImage}px (${pxToMm(availableForImage).toFixed(2)}mm)`,
-      );
-
-      let drawnImgWidth = 0;
-      let drawnImgHeight = 0;
-      if (availableForImage > 0) {
-        const naturalWidth = standardImg.naturalWidth;
-        const naturalHeight = standardImg.naturalHeight;
-        const aspectRatio = naturalWidth / naturalHeight;
-        const idealImgWidth = labelHeightPx * aspectRatio;
-        if (idealImgWidth <= availableForImage) {
-          drawnImgWidth = Math.round(idealImgWidth);
-          drawnImgHeight = labelHeightPx;
-        } else {
-          drawnImgWidth = availableForImage;
-          drawnImgHeight = Math.round(availableForImage / aspectRatio);
-        }
-        const imgY = (labelHeightPx - drawnImgHeight) / 2;
-        ctx.drawImage(standardImg, 0, imgY, drawnImgWidth, drawnImgHeight);
-        console.log(
-          "DIN image drawn with preserved aspect ratio:",
-          drawnImgWidth,
-          "x",
-          drawnImgHeight,
-          `(${pxToMm(drawnImgWidth).toFixed(2)}mm x ${pxToMm(drawnImgHeight).toFixed(2)}mm)`,
-        );
-      } else {
-        console.warn("Not enough space for image, prioritizing text area.");
-      }
-
-      const textAreaX = drawnImgWidth > 0 ? drawnImgWidth + gapPx : 0;
-      const textAreaWidth = labelWidthPx - textAreaX;
-      console.log(
-        "Text area starts at x =",
-        textAreaX,
-        `(${pxToMm(textAreaX).toFixed(2)}mm) with width = ${textAreaWidth}px (${pxToMm(textAreaWidth).toFixed(2)}mm)`,
-      );
-
-      ctx.fillStyle = "black";
-      ctx.textBaseline = "alphabetic";
-
-      // Draw top text
-      ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
-      const topTextX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
-      const topBaselineY = topMetrics.actualBoundingBoxAscent;
-      ctx.fillText(topText, topTextX, topBaselineY);
-      console.log(
-        "Top text drawn at: x =",
-        topTextX,
-        `, y = ${topBaselineY}px; text: "${topText}"`,
-      );
-      const effectiveTopHeightPx =
-        topMetrics.actualBoundingBoxAscent +
-        topMetrics.actualBoundingBoxDescent;
-      console.log(
-        `Effective top text height: ${effectiveTopHeightPx}px (${pxToMm(effectiveTopHeightPx).toFixed(2)}mm)`,
-      );
-
-      // Draw bottom text
-      ctx.font = `900 ${bottomDynamicFontSize}px "Oswald", sans-serif`;
-      const bottomTextX = textAreaX + (textAreaWidth - bottomMetrics.width) / 2;
-      const bottomBaselineY =
-        labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
-      ctx.fillText(bottomText, bottomTextX, bottomBaselineY);
-      console.log(
-        "Bottom text drawn at: x =",
-        bottomTextX,
-        `, y = ${bottomBaselineY}px; text: "${bottomText}"`,
-      );
-      const effectiveBottomHeightPx =
-        bottomMetrics.actualBoundingBoxAscent +
-        bottomMetrics.actualBoundingBoxDescent;
-      console.log(
-        `Effective bottom text height: ${effectiveBottomHeightPx}px (${pxToMm(effectiveBottomHeightPx).toFixed(2)}mm)`,
-      );
-
-      return canvas.toDataURL("image/png");
-    },
-  );
-
+  // Re-render preview on form changes.
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(async ({ track }) => {
     track(() => threadSize.value);
@@ -279,6 +88,7 @@ export const DINLabelGenerator = component$(() => {
     track(() => length.value);
     track(() => notes.value);
     track(() => standardImage.value);
+    track(() => showStandardName.value);
 
     console.log("Before drawing label, values are:", {
       thread: threadSize.value,
@@ -287,26 +97,15 @@ export const DINLabelGenerator = component$(() => {
       length: length.value,
       notes: notes.value,
       standardImageExists: !!standardImage.value,
+      showStandardName: showStandardName.value,
     });
 
-    await document.fonts
-      .load(`900 57px "Noto Sans"`)
-      .then(() => {
-        console.log("Noto Sans loaded, redrawing canvas...");
-      })
-      .catch((err) => {
-        console.error("Failed to load Noto Sans:", err);
-      });
-    await document.fonts
-      .load('900 57px "Oswald", sans-serif')
-      .then(() => {
-        console.log("Oswald loaded, redrawing canvas...");
-      })
-      .catch((err) => {
-        console.error("Failed to load Oswald:", err);
-      });
+    await Promise.all([
+      document.fonts.load(`900 57px "Noto Sans"`),
+      document.fonts.load('900 57px "Oswald", sans-serif'),
+    ]).catch((err) => console.error("Failed to load fonts:", err));
 
-    // Generate preview only when required fields are filled
+    // Generate preview only when required fields are filled.
     if (
       threadSize.value === "" ||
       hardwareStandard.value === "" ||
@@ -316,32 +115,20 @@ export const DINLabelGenerator = component$(() => {
       return;
     }
 
-    let topLabelText: string;
-    if (selectedType.value === "Screw" && length.value !== "") {
-      if (selectedSystem.value === "Metric") {
-        topLabelText = `${threadSize.value} × ${length.value}`;
-      } else {
-        topLabelText = `${threadSize.value} × ${length.value}″`;
-      }
-    } else {
-      topLabelText = threadSize.value || "Default top text";
-    }
+    const { topText, bottomText } = getLabelTexts(
+      selectedType.value,
+      selectedSystem.value,
+      threadSize.value,
+      length.value,
+      hardwareStandard.value,
+      notes.value,
+      showStandardName.value,
+    );
 
-    let bottomLabelText: string;
-    if (hardwareStandard.value !== "") {
-      if (notes.value !== "") {
-        bottomLabelText = hardwareStandard.value + ` ${notes.value}`;
-      } else {
-        bottomLabelText = hardwareStandard.value;
-      }
-    } else {
-      bottomLabelText = "Default bottom text";
-    }
-
-    const previewUrl = await drawLabel(
+    const previewUrl = drawLabel(
       standardImage.value,
-      topLabelText,
-      bottomLabelText,
+      topText,
+      bottomText,
       labelWidth.value,
     );
     if (previewUrl) {
@@ -352,33 +139,21 @@ export const DINLabelGenerator = component$(() => {
     }
   });
 
+  // Generate label and initiate download.
   const generateLabel = $(async () => {
-    let topLabelText: string;
-    if (selectedType.value === "Screw" && length.value !== "") {
-      if (selectedSystem.value === "Metric") {
-        topLabelText = `${threadSize.value} × ${length.value}`;
-      } else {
-        topLabelText = `${threadSize.value} × ${length.value}″`;
-      }
-    } else {
-      topLabelText = threadSize.value || "Default top text";
-    }
-
-    let bottomLabelText: string;
-    if (hardwareStandard.value !== "") {
-      if (notes.value !== "") {
-        bottomLabelText = hardwareStandard.value + ` ${notes.value}`;
-      } else {
-        bottomLabelText = hardwareStandard.value;
-      }
-    } else {
-      bottomLabelText = "Default bottom text";
-    }
-
-    const dataUrl = await drawLabel(
+    const { topText, bottomText } = getLabelTexts(
+      selectedType.value,
+      selectedSystem.value,
+      threadSize.value,
+      length.value,
+      hardwareStandard.value,
+      notes.value,
+      showStandardName.value,
+    );
+    const dataUrl = drawLabel(
       standardImage.value,
-      topLabelText,
-      bottomLabelText,
+      topText,
+      bottomText,
       labelWidth.value,
     );
     if (!dataUrl) {
@@ -406,7 +181,7 @@ export const DINLabelGenerator = component$(() => {
   return (
     <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
       <div class="space-y-6">
-        {/* Hardware Type (no header) */}
+        {/* Hardware Type */}
         <div>
           <div class="grid grid-cols-3 gap-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
             {["Screw", "Nut", "Washer"].map((type) => (
@@ -416,7 +191,7 @@ export const DINLabelGenerator = component$(() => {
                   if (selectedType.value !== type) {
                     console.log("Selected hardware type:", type);
                     selectedType.value = type;
-                    // Reset form on type change
+                    // Reset form on type change.
                     threadSize.value = "";
                     hardwareStandard.value = "";
                     length.value = "";
@@ -437,7 +212,7 @@ export const DINLabelGenerator = component$(() => {
           </div>
         </div>
 
-        {/* Measurement System (no header) */}
+        {/* Measurement System */}
         <div>
           <div class="grid grid-cols-2 gap-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
             {[
@@ -450,7 +225,7 @@ export const DINLabelGenerator = component$(() => {
                   console.log("Selected measurement system:", system.value);
                   if (selectedSystem.value !== system.value) {
                     selectedSystem.value = system.value;
-                    // Reset form only on system change
+                    // Reset form on system change.
                     threadSize.value = "";
                     hardwareStandard.value = "";
                     length.value = "";
@@ -545,6 +320,20 @@ export const DINLabelGenerator = component$(() => {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Switch do włączania/wyłączania nazwy standardu */}
+        <div class="flex items-center gap-2">
+          <label class="text-gray-700">Pokaż nazwę standardu</label>
+          <input
+            type="checkbox"
+            checked={showStandardName.value}
+            onChange$={(e) => {
+              showStandardName.value = (e.target as HTMLInputElement).checked;
+              console.log("Show standard name:", showStandardName.value);
+            }}
+            class="h-5 w-5"
+          />
         </div>
 
         {/* Additional Notes */}

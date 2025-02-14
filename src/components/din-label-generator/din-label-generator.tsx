@@ -45,6 +45,10 @@ export const DINLabelGenerator = component$(() => {
   const labelPreviewUrl = useSignal<string>("");
 
   const metricThreadSizes = [
+    "M1.4",
+    "M1.6",
+    "M2",
+    "M2.5",
     "M3",
     "M4",
     "M5",

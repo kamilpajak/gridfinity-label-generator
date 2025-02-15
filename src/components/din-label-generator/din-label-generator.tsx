@@ -471,6 +471,8 @@ export const DINLabelGenerator = component$(() => {
                     <img
                       src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
                       alt="Buy Me A Coffee"
+                      width="217"
+                      height="60"
                       class="w-full"
                       style={{ height: "60px", maxWidth: "217px" }}
                     />

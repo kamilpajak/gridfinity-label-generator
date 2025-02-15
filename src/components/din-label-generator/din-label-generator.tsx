@@ -171,9 +171,7 @@ export const DINLabelGenerator = component$(() => {
     }
     console.log("Label generated successfully, initiating download...");
     const link = document.createElement("a");
-    link.download = `${hardwareStandard.value
-      .toLowerCase()
-      .replace(" ", "_")}_label.png`;
+    link.download = `${hardwareStandard.value.toLowerCase().replace(" ", "_")}_label.png`;
     link.href = dataUrl;
     link.click();
   });
@@ -205,23 +203,23 @@ export const DINLabelGenerator = component$(() => {
       <div class="max-w-5xl mx-auto">
         {/* Header with title and subtitle */}
         <div class="text-center mb-6">
-          <h1 class="text-4xl font-bold text-gray-800">
+          <h1 class="text-3xl md:text-4xl font-bold text-gray-900">
             Gridfinity Label Generator
           </h1>
-          <p class="text-xl text-gray-600 mt-2">
+          <p class="text-lg md:text-xl text-gray-600 mt-2">
             Beautifully Simple Labels for Your Gridfinity System
           </p>
         </div>
 
         {/* Main Container */}
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div class="grid grid-cols-3 divide-x divide-gray-100">
+          <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-100">
             {/* Left side (form section) */}
-            <div class="col-span-2 p-8 space-y-6">
+            <div class="p-4 md:p-8 space-y-6 md:col-span-2">
               {/* Hardware Type & Measurement System */}
-              <div class="grid grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {/* Hardware Type */}
-                <div class="grid grid-cols-3 gap-0.5 bg-gray-50 p-0.5 rounded-lg">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-0.5 bg-gray-50 p-0.5 rounded-lg">
                   {["Screw", "Nut", "Washer"].map((type) => (
                     <button
                       key={type}
@@ -252,7 +250,7 @@ export const DINLabelGenerator = component$(() => {
                 </div>
 
                 {/* Measurement System */}
-                <div class="grid grid-cols-2 gap-0.5 bg-gray-50 p-0.5 rounded-lg">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-0.5 bg-gray-50 p-0.5 rounded-lg">
                   {["Metric", "Imperial"].map((system) => (
                     <button
                       key={system}
@@ -307,7 +305,7 @@ export const DINLabelGenerator = component$(() => {
                   ))}
                 </select>
 
-                {/* If 'Screw', show Length input; otherwise show a Notes input here */}
+                {/* If 'Screw', show Length input; otherwise show a Notes input */}
                 {selectedType.value === "Screw" ? (
                   <input
                     type="text"
@@ -444,16 +442,9 @@ export const DINLabelGenerator = component$(() => {
                 </div>
 
                 {/* Download & BuyMeACoffee */}
-                <div class="grid grid-cols-[1fr,217px] gap-4">
+                <div class="flex flex-col md:flex-row gap-4">
                   <button
-                    class={{
-                      "w-full flex items-center justify-center gap-3 h-[60px] rounded-lg text-base font-medium transition-all":
-                        true,
-                      "bg-blue-600 text-white hover:bg-blue-700":
-                        isFormValid() && !isLoading.value,
-                      "bg-gray-100 text-gray-400 cursor-not-allowed":
-                        !isFormValid() || isLoading.value,
-                    }}
+                    class="w-full flex items-center justify-center gap-3 h-[60px] rounded-lg text-base font-medium transition-all bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick$={generateLabel}
                     disabled={isLoading.value || !isFormValid()}
                   >
@@ -475,12 +466,13 @@ export const DINLabelGenerator = component$(() => {
                   <a
                     href="https://www.buymeacoffee.com/kamilpajak"
                     target="_blank"
-                    class="inline-block"
+                    class="w-full md:w-[217px] inline-block"
                   >
                     <img
                       src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
                       alt="Buy Me A Coffee"
-                      style={{ height: "60px", width: "217px" }}
+                      class="w-full"
+                      style={{ height: "60px", maxWidth: "217px" }}
                     />
                   </a>
                 </div>
@@ -489,7 +481,7 @@ export const DINLabelGenerator = component$(() => {
             {/* End of left side */}
 
             {/* Right side (settings panel) */}
-            <div class="bg-gray-50 p-8 space-y-6">
+            <div class="p-4 md:p-8 space-y-6">
               <div class="flex items-center gap-3 text-gray-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

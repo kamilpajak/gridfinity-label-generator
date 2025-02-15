@@ -452,19 +452,20 @@ export const DINLabelGenerator = component$(() => {
         </div>
 
         {/* Preview Area */}
-        <div class="mt-8 p-8 bg-[#F8FAFC] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[200px]">
+        <div class="p-4 bg-white shadow-lg rounded-lg border border-gray-300 flex items-center justify-center">
           {isLoading.value && <div class="text-gray-600">Loading image...</div>}
-          {!isLoading.value && labelPreviewUrl.value ? (
-            <div class="inline-block">
-              <img
-                src={labelPreviewUrl.value}
-                alt="Label Preview"
-                width={labelWidthPx}
-                height={mmToPx(10)} // fixed height: 10mm
-                class="max-w-full"
-              />
-            </div>
-          ) : (
+
+          {!isLoading.value && labelPreviewUrl.value && (
+            <img
+              src={labelPreviewUrl.value}
+              alt="Label Preview"
+              width={labelWidthPx}
+              height={mmToPx(10)}
+              class="max-w-full"
+            />
+          )}
+
+          {!isLoading.value && !labelPreviewUrl.value && (
             <div class="text-gray-500 flex items-center gap-2">
               Fill the form above to generate a label preview
             </div>

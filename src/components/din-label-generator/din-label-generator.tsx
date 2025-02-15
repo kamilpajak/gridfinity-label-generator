@@ -203,11 +203,13 @@ export const DINLabelGenerator = component$(() => {
   return (
     <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4">
       <div class="max-w-5xl mx-auto">
-        {/* Header (removed DIN Label Generator) */}
+        {/* Header with title and subtitle */}
         <div class="text-center mb-6">
-          {/* Subheader remains */}
-          <p class="text-lg text-gray-600 mt-2">
-            Create standardized labels for hardware components
+          <h1 class="text-4xl font-bold text-gray-800">
+            Gridfinity Label Generator
+          </h1>
+          <p class="text-xl text-gray-600 mt-2">
+            Beautifully Simple Labels for Your Gridfinity System
           </p>
         </div>
 
@@ -484,26 +486,23 @@ export const DINLabelGenerator = component$(() => {
                 </div>
               </div>
             </div>
+            {/* End of left side */}
 
             {/* Right side (settings panel) */}
             <div class="bg-gray-50 p-8 space-y-6">
               <div class="flex items-center gap-3 text-gray-700">
                 <svg
-                  class="w-6 h-6"
+                  xmlns="http://www.w3.org/2000/svg"
                   fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.5"
                   viewBox="0 0 24 24"
+                  stroke-width={1.5}
+                  stroke="currentColor"
+                  class="w-6 h-6"
                 >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="M12 3c1.306 0 2.417.835 2.83 2H19a1 1 0 011 1v2c0 .552-.448 1-1 1h-4.17c-.413 1.165-1.524 2-2.83 2s-2.417-.835-2.83-2H5a1 1 0 01-1-1V6c0-.552.448-1 1-1h4.17c.413-1.165 1.524-2 2.83-2z"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M5 15h4.17c.413-1.165 1.524-2 2.83-2s2.417.835 2.83 2H19a1 1 0 011 1v2c0 .552-.448 1-1 1h-4.17c-.413 1.165-1.524 2-2.83 2s-2.417-.835-2.83-2H5a1 1 0 01-1-1v-2c0-.552.448-1 1-1z"
+                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
                   />
                 </svg>
                 <h3 class="text-lg font-medium">Label Settings</h3>
@@ -514,16 +513,17 @@ export const DINLabelGenerator = component$(() => {
                 <div class="flex items-center justify-between bg-white h-[60px] px-4 rounded-lg border border-gray-200">
                   <div class="flex items-center gap-3">
                     <svg
-                      class="w-5 h-5 text-gray-600"
+                      xmlns="http://www.w3.org/2000/svg"
                       fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
                       viewBox="0 0 24 24"
+                      stroke-width={1.5}
+                      stroke="currentColor"
+                      class="w-6 h-6"
                     >
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                        d="M4 6h16M4 12h16M4 18h16"
+                        d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5-3.9 19.5m-2.1-19.5-3.9 19.5"
                       />
                     </svg>
                     <span class="text-base text-gray-700">Standard</span>
@@ -543,12 +543,7 @@ export const DINLabelGenerator = component$(() => {
                       }}
                       class="sr-only peer"
                     />
-                    <div
-                      class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full
-                             peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px]
-                             after:left-[2px] after:bg-white after:border-gray-300 after:border
-                             after:rounded-full after:h-5 after:w-5 after:transition-all"
-                    />
+                    <div class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                   </label>
                 </div>
 
@@ -556,16 +551,17 @@ export const DINLabelGenerator = component$(() => {
                 <div class="flex items-center justify-between bg-white h-[60px] px-4 rounded-lg border border-gray-200">
                   <div class="flex items-center gap-3">
                     <svg
-                      class="w-5 h-5 text-gray-600"
+                      xmlns="http://www.w3.org/2000/svg"
                       fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.5"
                       viewBox="0 0 24 24"
+                      stroke-width={1.5}
+                      stroke="currentColor"
+                      class="w-6 h-6"
                     >
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                        d="M3 8l7.89 5.26a3 3 0 003.22 0L22 8m-9 4.5V21"
+                        d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
                       />
                     </svg>
                     <span class="text-base text-gray-700">Image</span>
@@ -582,12 +578,7 @@ export const DINLabelGenerator = component$(() => {
                       }}
                       class="sr-only peer"
                     />
-                    <div
-                      class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full
-                             peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px]
-                             after:left-[2px] after:bg-white after:border-gray-300 after:border
-                             after:rounded-full after:h-5 after:w-5 after:transition-all"
-                    />
+                    <div class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
                   </label>
                 </div>
 
@@ -630,7 +621,7 @@ export const DINLabelGenerator = component$(() => {
                 </div>
               </div>
             </div>
-            {/* End of right side */}
+            {/* End of left side */}
           </div>
         </div>
       </div>

@@ -20,7 +20,6 @@ export function computeDynamicFontSize(
     // Set temporary font for measurement.
     ctx.font = `900 ${baseSize}px "${fontFamily}", serif`;
     const metrics = ctx.measureText(sampleText);
-    const effectiveHeight =
-        metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    const effectiveHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
     return effectiveHeight === 0 ? baseSize : baseSize * (desiredHeight / effectiveHeight);
 }

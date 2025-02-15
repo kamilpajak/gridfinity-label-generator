@@ -1,7 +1,6 @@
 // file: src/lib/labelGenerator.tsx
 import {computeDynamicFontSize, mmToPx} from "./utils";
 
-// Generate top and bottom label texts based on form values.
 export function getLabelTexts(
     selectedType: string,
     selectedSystem: string,
@@ -21,7 +20,7 @@ export function getLabelTexts(
         topText = threadSize || "Default top text";
     }
 
-    // If switch is off, pomijamy nazwę standardu.
+    // If toggle is off, skip standard name.
     let bottomText: string;
     if (showStandardName) {
         bottomText = hardwareStandard
@@ -40,19 +39,19 @@ export function drawLabel(
     standardImg: HTMLImageElement | null,
     topText: string,
     bottomText: string,
-    labelWidthMm: number
+    labelWidthMm: number,
+    showImage: boolean
 ): string | null {
     if (!standardImg) {
         console.error("No DIN image available, cannot draw label.");
         return null;
     }
 
-    // Ustal wymiary etykiety: stała wysokość 10mm, a szerokość etykiety to (labelWidthMm - 4mm marginesów)
+    // Etykieta: stała wysokość 10mm, szerokość = (labelWidthMm - 4mm marginesów)
     const labelHeightPx = mmToPx(10);
-    const effectiveLabelWidthMm = labelWidthMm - 4; // marginesy: 2mm z lewej i prawej
+    const effectiveLabelWidthMm = labelWidthMm - 4;
     const labelWidthPx = mmToPx(effectiveLabelWidthMm);
 
-    // Utwórz canvas.
     const canvas = document.createElement("canvas");
     canvas.width = labelWidthPx;
     canvas.height = labelHeightPx;
@@ -66,21 +65,25 @@ export function drawLabel(
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
 
-    // Ustal stały gap między obrazkiem a obszarem tekstowym – domyślnie 2mm.
+    // Ustal gap między obrazkiem a tekstem (domyślnie 2mm).
     let gapPx = mmToPx(2);
-    const textPadding = 10; // dodatkowy padding przy pomiarze szerokości tekstu
+    const textPadding = 10; // dodatkowy padding przy pomiarze tekstu
 
-    // Ustal tryb: jeśli dolny tekst jest pusty, to tryb jednoliniowy, inaczej dwuliniowy.
+    // Jeśli obrazek ma być wyłączony, ustaw gap na 0.
+    if (!showImage) {
+        gapPx = 0;
+    }
+
+    // Ustal tryb tekstowy: jednoliniowy jeśli dolny tekst jest pusty.
     const isSingleLine = bottomText.trim() === "";
-    // Docelowa wysokość tekstu (dla każdej linii) wynosi 4mm niezależnie od trybu.
+    // Każda linia ma maksymalną wysokość 4mm.
     const desiredTextHeight = mmToPx(4);
 
-    // Oblicz rozmiary tekstu przy zadanej docelowej wysokości.
-    // Dla górnego tekstu:
+    // Oblicz rozmiary tekstu przy zadanej wysokości.
     let topFontSize = computeDynamicFontSize(ctx, desiredTextHeight, topText, "Noto Sans");
     ctx.font = `900 ${topFontSize}px "Noto Sans", serif`;
     let topMetrics = ctx.measureText(topText);
-    // Dla dolnego tekstu, jeśli tryb dwuliniowy:
+
     let bottomMetrics;
     let bottomFontSize = 0;
     if (!isSingleLine) {
@@ -89,60 +92,56 @@ export function drawLabel(
         bottomMetrics = ctx.measureText(bottomText);
     }
 
-    // Szerokość wymaganego obszaru tekstowego = max(szerokość górnego, dolnego tekstu) + padding.
     const measuredTextWidth = isSingleLine
         ? topMetrics.width
         : Math.max(topMetrics.width, bottomMetrics!.width);
     const textAreaWidthNeeded = measuredTextWidth + textPadding;
 
-    // Oblicz dostępny obszar na obrazek: cała szerokość etykiety minus gap i wymagana szerokość tekstu.
-    let availableForImage = labelWidthPx - gapPx - textAreaWidthNeeded;
-    // Upewnij się, że nie jest ujemny.
+    // Oblicz dostępny obszar na obrazek.
+    let availableForImage = showImage ? labelWidthPx - gapPx - textAreaWidthNeeded : 0;
     if (availableForImage < 0) {
         availableForImage = 0;
         gapPx = 0;
     }
 
-    // Oblicz rozmiar obrazka:
-    // Domyślnie obrazek ma być rysowany na pełną wysokość etykiety (labelHeightPx)
-    // i jego szerokość = labelHeightPx * aspectRatio.
-    const aspectRatio = standardImg.naturalWidth / standardImg.naturalHeight;
-    let drawnImgHeight = labelHeightPx;
-    let drawnImgWidth = Math.round(labelHeightPx * aspectRatio);
-    // Jeśli szerokość obrazka przekracza dostępny obszar, skaluj proporcjonalnie.
-    if (drawnImgWidth > availableForImage) {
-        drawnImgWidth = availableForImage;
-        drawnImgHeight = Math.round(availableForImage / aspectRatio);
+    // Oblicz rozmiar obrazka (jeśli ma być rysowany).
+    let drawnImgWidth = 0;
+    let drawnImgHeight = 0;
+    if (showImage) {
+        const aspectRatio = standardImg.naturalWidth / standardImg.naturalHeight;
+        drawnImgHeight = labelHeightPx;
+        drawnImgWidth = Math.round(labelHeightPx * aspectRatio);
+        if (drawnImgWidth > availableForImage) {
+            drawnImgWidth = availableForImage;
+            drawnImgHeight = Math.round(availableForImage / aspectRatio);
+        }
+        // Narysuj obrazek, centrowany pionowo.
+        const imgY = (labelHeightPx - drawnImgHeight) / 2;
+        ctx.drawImage(standardImg, 0, imgY, drawnImgWidth, drawnImgHeight);
     }
 
-    // Narysuj obrazek: centrowany pionowo w wyznaczonym obszarze.
-    const imgY = (labelHeightPx - drawnImgHeight) / 2;
-    ctx.drawImage(standardImg, 0, imgY, drawnImgWidth, drawnImgHeight);
-
-    // Obszar tekstowy zaczyna się na prawo od obrazka (z gapem).
-    const textAreaX = drawnImgWidth + gapPx;
+    // Obszar tekstowy zaczyna się po obrazie (jeśli obrazek jest wyświetlony) lub od lewej krawędzi.
+    const textAreaX = showImage ? drawnImgWidth + gapPx : 0;
     const textAreaWidth = labelWidthPx - textAreaX;
 
     ctx.fillStyle = "black";
     ctx.textBaseline = "alphabetic";
 
     if (isSingleLine) {
-        // Tryb jednoliniowy: mamy tylko górny tekst o docelowej wysokości 4mm.
+        // Tryb jednoliniowy: skalujemy tekst, by mieścił się w dostępnej przestrzeni.
         if (topMetrics.width > textAreaWidth) {
             const scaleFactor = textAreaWidth / topMetrics.width;
             topFontSize *= scaleFactor;
             ctx.font = `900 ${topFontSize}px "Noto Sans", serif`;
             topMetrics = ctx.measureText(topText);
         }
-        // Wycentruj poziomo w obszarze tekstowym.
         const topTextX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
-        // Wycentruj pionowo całą linię tekstu w etykiecie.
+        // Wycentruj pionowo całą linię (w obrębie etykiety).
         const verticalOffset = (labelHeightPx - desiredTextHeight) / 2;
         const baseline = verticalOffset + topMetrics.actualBoundingBoxAscent;
         ctx.fillText(topText, topTextX, baseline);
     } else {
-        // Tryb dwuliniowy: każda linia ma docelową wysokość 4mm.
-        // Górna linia (Noto Sans):
+        // Tryb dwuliniowy.
         let topFontSizeLine = computeDynamicFontSize(ctx, desiredTextHeight, topText, "Noto Sans");
         ctx.font = `900 ${topFontSizeLine}px "Noto Sans", serif`;
         topMetrics = ctx.measureText(topText);
@@ -153,11 +152,10 @@ export function drawLabel(
             topMetrics = ctx.measureText(topText);
         }
         const topTextX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
-        // Ustaw baseline tak, aby górna krawędź tekstu stykała się z górną krawędzią etykiety.
+        // Górna linia: baseline ustawiamy tak, aby górna krawędź dotykała górnej krawędzi.
         const topBaseline = topMetrics.actualBoundingBoxAscent;
         ctx.fillText(topText, topTextX, topBaseline);
 
-        // Dolna linia (Oswald):
         let bottomFontSizeLine = computeDynamicFontSize(ctx, desiredTextHeight, bottomText, "Oswald");
         ctx.font = `900 ${bottomFontSizeLine}px "Oswald", sans-serif`;
         bottomMetrics = ctx.measureText(bottomText);
@@ -168,7 +166,7 @@ export function drawLabel(
             bottomMetrics = ctx.measureText(bottomText);
         }
         const bottomTextX = textAreaX + (textAreaWidth - bottomMetrics.width) / 2;
-        // Ustaw baseline dolnego tekstu tak, aby dolna krawędź dotykała dolnej krawędzi etykiety.
+        // Dolna linia: baseline ustawiamy tak, aby dolna krawędź dotykała dolnej krawędzi etykiety.
         const bottomBaseline = labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
         ctx.fillText(bottomText, bottomTextX, bottomBaseline);
     }

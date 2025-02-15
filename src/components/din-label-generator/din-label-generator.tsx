@@ -17,8 +17,10 @@ export const DINLabelGenerator = component$(() => {
   const isLoading = useSignal(false);
   const labelPreviewUrl = useSignal<string>("");
 
-  // Nowy sygnał dla przełącznika włączającego/wyłączającego nazwę standardu.
+  // Signal for toggling the standard name.
   const showStandardName = useSignal(true);
+  // Signal for toggling the image.
+  const showImage = useSignal(true);
 
   const metricThreadSizes = [
     "M1.4",
@@ -89,6 +91,7 @@ export const DINLabelGenerator = component$(() => {
     track(() => notes.value);
     track(() => standardImage.value);
     track(() => showStandardName.value);
+    track(() => showImage.value);
 
     console.log("Before drawing label, values are:", {
       thread: threadSize.value,
@@ -98,6 +101,7 @@ export const DINLabelGenerator = component$(() => {
       notes: notes.value,
       standardImageExists: !!standardImage.value,
       showStandardName: showStandardName.value,
+      showImage: showImage.value,
     });
 
     await Promise.all([
@@ -130,6 +134,7 @@ export const DINLabelGenerator = component$(() => {
       topText,
       bottomText,
       labelWidth.value,
+      showImage.value,
     );
     if (previewUrl) {
       labelPreviewUrl.value = previewUrl;
@@ -155,6 +160,7 @@ export const DINLabelGenerator = component$(() => {
       topText,
       bottomText,
       labelWidth.value,
+      showImage.value,
     );
     if (!dataUrl) {
       console.error("Label generation failed: No valid label drawn.");
@@ -322,18 +328,48 @@ export const DINLabelGenerator = component$(() => {
           </select>
         </div>
 
-        {/* Switch do włączania/wyłączania nazwy standardu */}
+        {/* Toggle for showing/hiding the standard name */}
         <div class="flex items-center gap-2">
-          <label class="text-gray-700">Pokaż nazwę standardu</label>
-          <input
-            type="checkbox"
-            checked={showStandardName.value}
-            onChange$={(e) => {
-              showStandardName.value = (e.target as HTMLInputElement).checked;
-              console.log("Show standard name:", showStandardName.value);
-            }}
-            class="h-5 w-5"
-          />
+          <span class="text-gray-700">Show standard name</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showStandardName.value}
+              onChange$={(e) => {
+                showStandardName.value = (e.target as HTMLInputElement).checked;
+                console.log("Show standard name:", showStandardName.value);
+              }}
+              class="sr-only peer"
+            />
+            <div
+              class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full dark:bg-gray-700
+                        peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+                        after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600
+                        peer-checked:bg-blue-600"
+            ></div>
+          </label>
+        </div>
+
+        {/* Toggle for showing/hiding the image */}
+        <div class="flex items-center gap-2">
+          <span class="text-gray-700">Show image</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showImage.value}
+              onChange$={(e) => {
+                showImage.value = (e.target as HTMLInputElement).checked;
+                console.log("Show image:", showImage.value);
+              }}
+              class="sr-only peer"
+            />
+            <div
+              class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full dark:bg-gray-700
+                        peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+                        after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600
+                        peer-checked:bg-blue-600"
+            ></div>
+          </label>
         </div>
 
         {/* Additional Notes */}
@@ -418,7 +454,7 @@ export const DINLabelGenerator = component$(() => {
         {/* Preview Area */}
         <div class="mt-8 p-8 bg-[#F8FAFC] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[200px]">
           {isLoading.value && <div class="text-gray-600">Loading image...</div>}
-          {!isLoading.value && labelPreviewUrl.value && (
+          {!isLoading.value && labelPreviewUrl.value ? (
             <div class="inline-block">
               <img
                 src={labelPreviewUrl.value}
@@ -428,22 +464,8 @@ export const DINLabelGenerator = component$(() => {
                 class="max-w-full"
               />
             </div>
-          )}
-          {!isLoading.value && !labelPreviewUrl.value && (
+          ) : (
             <div class="text-gray-500 flex items-center gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                class="h-5 w-5"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z"
-                />
-                <path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z" />
-              </svg>
               Fill the form above to generate a label preview
             </div>
           )}

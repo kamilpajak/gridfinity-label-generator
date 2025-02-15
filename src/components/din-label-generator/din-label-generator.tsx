@@ -377,9 +377,9 @@ export const DINLabelGenerator = component$(() => {
               {/* Preview + Download */}
               <div class="space-y-4">
                 {/* Preview area */}
-                <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <div class="bg-white rounded-lg p-4">
                   {isLoading.value && (
-                    <div class="flex flex-col items-center justify-center p-4 text-center">
+                    <div class="flex flex-col items-center justify-center">
                       <svg
                         class="w-5 h-5 animate-spin"
                         viewBox="0 0 24 24"
@@ -404,17 +404,19 @@ export const DINLabelGenerator = component$(() => {
                   )}
 
                   {!isLoading.value && labelPreviewUrl.value && (
-                    <img
-                      src={labelPreviewUrl.value}
-                      alt="Label Preview"
-                      width={labelWidthPx}
-                      height={mmToPx(10)}
-                      class="w-full"
-                    />
+                    <div class="inline-block p-2 shadow-lg rounded">
+                      <img
+                        src={labelPreviewUrl.value}
+                        alt="Label Preview"
+                        width={labelWidthPx}
+                        height={mmToPx(10)}
+                        class="block"
+                      />
+                    </div>
                   )}
 
                   {!isLoading.value && !labelPreviewUrl.value && (
-                    <div class="flex flex-row items-center justify-center p-4 text-center text-gray-500 gap-3">
+                    <div class="flex flex-row items-center justify-center text-center text-gray-500 gap-3">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"

@@ -484,7 +484,7 @@ export const DINLabelGenerator = component$(() => {
             {/* End of left side */}
 
             {/* Right side (settings panel) */}
-            <div class="p-4 md:p-8 space-y-6">
+            <div class="bg-gray-50 p-4 md:p-8 space-y-6">
               <div class="flex items-center gap-3 text-gray-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

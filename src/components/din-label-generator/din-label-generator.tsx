@@ -1,49 +1,29 @@
-// Utility function to convert millimeters to pixels.
-function mmToPx(mm: number, dpi: number = 360): number {
-  const mmToInch = 25.4;
-  return Math.round((mm / mmToInch) * dpi);
-}
-
-// Utility function to convert pixels to millimeters.
-function pxToMm(px: number, dpi: number = 360): number {
-  return (px * 25.4) / dpi;
-}
-
-// Compute a dynamic font size so that effective text height ≈ desiredHeight
-function computeDynamicFontSize(
-  ctx: CanvasRenderingContext2D,
-  desiredHeight: number,
-  sampleText: string,
-  fontFamily: string,
-): number {
-  const baseSize = desiredHeight;
-  // Set temporary font to measure metrics
-  ctx.font = `900 ${baseSize}px "${fontFamily}", serif`;
-  const metrics = ctx.measureText(sampleText);
-  const effectiveHeight =
-    metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-  if (effectiveHeight === 0) {
-    return baseSize;
-  }
-  return baseSize * (desiredHeight / effectiveHeight);
-}
+// file: src/components/din-label-generator/din-label-generator.tsx
 
 import { $, component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
+import { mmToPx } from "~/lib/utils";
+import { drawLabel, getLabelTexts } from "~/lib/labelGenerator";
 import { type DINStandard, dinStandards } from "~/data/din-standards";
 
 export const DINLabelGenerator = component$(() => {
   // Signals for user inputs
   const selectedType = useSignal("Screw");
   const selectedSystem = useSignal("Metric");
-  const threadSize = useSignal(""); // Top text
-  const hardwareStandard = useSignal(""); // Bottom text
+  const threadSize = useSignal(""); // top text
+  const hardwareStandard = useSignal(""); // bottom text
   const notes = useSignal("");
   const standardImage = useSignal<HTMLImageElement | null>(null);
-  const labelWidth = useSignal(55); // in mm (user-selected value, final printed label will be adjusted)
+  const labelWidth = useSignal(55); // in mm
   const length = useSignal("");
   const isLoading = useSignal(false);
   const labelPreviewUrl = useSignal<string>("");
 
+  // Signal for toggling the standard name
+  const showStandardName = useSignal(true);
+  // Signal for toggling the image
+  const showImage = useSignal(true);
+
+  // Example thread sizes
   const metricThreadSizes = [
     "M1.4",
     "M1.6",
@@ -103,174 +83,7 @@ export const DINLabelGenerator = component$(() => {
     }
   });
 
-  const drawLabel = $(
-    (
-      standardImg: HTMLImageElement | null,
-      topText: string,
-      bottomText: string,
-      labelWidthMm: number,
-    ): string | null => {
-      console.log("drawLabel called with:", {
-        standardImgExists: !!standardImg,
-        topText,
-        bottomText,
-        labelWidthMm,
-      });
-
-      if (!standardImg) {
-        console.error("No DIN image available, cannot draw label.");
-        return null;
-      }
-
-      // Label dimensions: height = 10mm.
-      // Adjust width: subtract 4mm (2mm from the left + 2mm from the right),
-      // so that the final print (after the printer's margins are added) matches the width specified in the form.
-      const labelHeightPx = mmToPx(10);
-      const effectiveLabelWidthMm = labelWidthMm - 4; // effective drawing width
-      const labelWidthPx = mmToPx(effectiveLabelWidthMm);
-      console.log(
-        `Drawing label with dimensions: ${labelWidthPx}px (${pxToMm(
-          labelWidthPx,
-        ).toFixed(
-          2,
-        )}mm) x ${labelHeightPx}px (${pxToMm(labelHeightPx).toFixed(2)}mm)`,
-      );
-
-      const canvas = document.createElement("canvas");
-      canvas.width = labelWidthPx;
-      canvas.height = labelHeightPx;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        console.error("Could not get canvas context.");
-        return null;
-      }
-
-      // Draw white background
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
-
-      // Desired effective text height: 4.5mm
-      const desiredTextHeight = mmToPx(4.5);
-
-      // Top text (Noto Sans)
-      const topDynamicFontSize = computeDynamicFontSize(
-        ctx,
-        desiredTextHeight,
-        topText,
-        "Noto Sans",
-      );
-      ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
-      const topMetrics = ctx.measureText(topText);
-      console.log(
-        `Top text: font size ${topDynamicFontSize.toFixed(2)}px, ascent = ${topMetrics.actualBoundingBoxAscent.toFixed(
-          2,
-        )}px, descent = ${topMetrics.actualBoundingBoxDescent.toFixed(2)}px`,
-      );
-
-      // Bottom text (Oswald)
-      const bottomDynamicFontSize = computeDynamicFontSize(
-        ctx,
-        desiredTextHeight,
-        bottomText,
-        "Oswald",
-      );
-      ctx.font = `900 ${bottomDynamicFontSize}px "Oswald", sans-serif`;
-      const bottomMetrics = ctx.measureText(bottomText);
-      console.log(
-        `Bottom text: font size ${bottomDynamicFontSize.toFixed(2)}px, ascent = ${bottomMetrics.actualBoundingBoxAscent.toFixed(
-          2,
-        )}px, descent = ${bottomMetrics.actualBoundingBoxDescent.toFixed(2)}px`,
-      );
-
-      // Calculate required text width (with padding)
-      const textPadding = 10;
-      const neededTextWidth =
-        Math.max(topMetrics.width, bottomMetrics.width) + textPadding;
-
-      // Gap between image and text area (2mm)
-      const gapPx = mmToPx(2);
-      const availableForImage = labelWidthPx - gapPx - neededTextWidth;
-      console.log(
-        `Available width for image: ${availableForImage}px (${pxToMm(availableForImage).toFixed(2)}mm)`,
-      );
-
-      let drawnImgWidth = 0;
-      let drawnImgHeight = 0;
-      if (availableForImage > 0) {
-        const naturalWidth = standardImg.naturalWidth;
-        const naturalHeight = standardImg.naturalHeight;
-        const aspectRatio = naturalWidth / naturalHeight;
-        const idealImgWidth = labelHeightPx * aspectRatio;
-        if (idealImgWidth <= availableForImage) {
-          drawnImgWidth = Math.round(idealImgWidth);
-          drawnImgHeight = labelHeightPx;
-        } else {
-          drawnImgWidth = availableForImage;
-          drawnImgHeight = Math.round(availableForImage / aspectRatio);
-        }
-        const imgY = (labelHeightPx - drawnImgHeight) / 2;
-        ctx.drawImage(standardImg, 0, imgY, drawnImgWidth, drawnImgHeight);
-        console.log(
-          "DIN image drawn with preserved aspect ratio:",
-          drawnImgWidth,
-          "x",
-          drawnImgHeight,
-          `(${pxToMm(drawnImgWidth).toFixed(2)}mm x ${pxToMm(drawnImgHeight).toFixed(2)}mm)`,
-        );
-      } else {
-        console.warn("Not enough space for image, prioritizing text area.");
-      }
-
-      const textAreaX = drawnImgWidth > 0 ? drawnImgWidth + gapPx : 0;
-      const textAreaWidth = labelWidthPx - textAreaX;
-      console.log(
-        "Text area starts at x =",
-        textAreaX,
-        `(${pxToMm(textAreaX).toFixed(2)}mm) with width = ${textAreaWidth}px (${pxToMm(textAreaWidth).toFixed(2)}mm)`,
-      );
-
-      ctx.fillStyle = "black";
-      ctx.textBaseline = "alphabetic";
-
-      // Draw top text
-      ctx.font = `900 ${topDynamicFontSize}px "Noto Sans", serif`;
-      const topTextX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
-      const topBaselineY = topMetrics.actualBoundingBoxAscent;
-      ctx.fillText(topText, topTextX, topBaselineY);
-      console.log(
-        "Top text drawn at: x =",
-        topTextX,
-        `, y = ${topBaselineY}px; text: "${topText}"`,
-      );
-      const effectiveTopHeightPx =
-        topMetrics.actualBoundingBoxAscent +
-        topMetrics.actualBoundingBoxDescent;
-      console.log(
-        `Effective top text height: ${effectiveTopHeightPx}px (${pxToMm(effectiveTopHeightPx).toFixed(2)}mm)`,
-      );
-
-      // Draw bottom text
-      ctx.font = `900 ${bottomDynamicFontSize}px "Oswald", sans-serif`;
-      const bottomTextX = textAreaX + (textAreaWidth - bottomMetrics.width) / 2;
-      const bottomBaselineY =
-        labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
-      ctx.fillText(bottomText, bottomTextX, bottomBaselineY);
-      console.log(
-        "Bottom text drawn at: x =",
-        bottomTextX,
-        `, y = ${bottomBaselineY}px; text: "${bottomText}"`,
-      );
-      const effectiveBottomHeightPx =
-        bottomMetrics.actualBoundingBoxAscent +
-        bottomMetrics.actualBoundingBoxDescent;
-      console.log(
-        `Effective bottom text height: ${effectiveBottomHeightPx}px (${pxToMm(effectiveBottomHeightPx).toFixed(2)}mm)`,
-      );
-
-      return canvas.toDataURL("image/png");
-    },
-  );
-
+  // Re-render preview on form changes
   // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(async ({ track }) => {
     track(() => threadSize.value);
@@ -279,6 +92,8 @@ export const DINLabelGenerator = component$(() => {
     track(() => length.value);
     track(() => notes.value);
     track(() => standardImage.value);
+    track(() => showStandardName.value);
+    track(() => showImage.value);
 
     console.log("Before drawing label, values are:", {
       thread: threadSize.value,
@@ -287,24 +102,15 @@ export const DINLabelGenerator = component$(() => {
       length: length.value,
       notes: notes.value,
       standardImageExists: !!standardImage.value,
+      showStandardName: showStandardName.value,
+      showImage: showImage.value,
     });
 
-    await document.fonts
-      .load(`900 57px "Noto Sans"`)
-      .then(() => {
-        console.log("Noto Sans loaded, redrawing canvas...");
-      })
-      .catch((err) => {
-        console.error("Failed to load Noto Sans:", err);
-      });
-    await document.fonts
-      .load('900 57px "Oswald", sans-serif')
-      .then(() => {
-        console.log("Oswald loaded, redrawing canvas...");
-      })
-      .catch((err) => {
-        console.error("Failed to load Oswald:", err);
-      });
+    // Load fonts
+    await Promise.all([
+      document.fonts.load(`900 57px "Noto Sans"`),
+      document.fonts.load('900 57px "Oswald", sans-serif'),
+    ]).catch((err) => console.error("Failed to load fonts:", err));
 
     // Generate preview only when required fields are filled
     if (
@@ -316,33 +122,22 @@ export const DINLabelGenerator = component$(() => {
       return;
     }
 
-    let topLabelText: string;
-    if (selectedType.value === "Screw" && length.value !== "") {
-      if (selectedSystem.value === "Metric") {
-        topLabelText = `${threadSize.value} × ${length.value}`;
-      } else {
-        topLabelText = `${threadSize.value} × ${length.value}″`;
-      }
-    } else {
-      topLabelText = threadSize.value || "Default top text";
-    }
+    const { topText, bottomText } = getLabelTexts(
+      selectedType.value,
+      selectedSystem.value,
+      threadSize.value,
+      length.value,
+      hardwareStandard.value,
+      notes.value,
+      showStandardName.value,
+    );
 
-    let bottomLabelText: string;
-    if (hardwareStandard.value !== "") {
-      if (notes.value !== "") {
-        bottomLabelText = hardwareStandard.value + ` ${notes.value}`;
-      } else {
-        bottomLabelText = hardwareStandard.value;
-      }
-    } else {
-      bottomLabelText = "Default bottom text";
-    }
-
-    const previewUrl = await drawLabel(
+    const previewUrl = drawLabel(
       standardImage.value,
-      topLabelText,
-      bottomLabelText,
+      topText,
+      bottomText,
       labelWidth.value,
+      showImage.value,
     );
     if (previewUrl) {
       labelPreviewUrl.value = previewUrl;
@@ -352,34 +147,23 @@ export const DINLabelGenerator = component$(() => {
     }
   });
 
+  // Generate label and initiate download
   const generateLabel = $(async () => {
-    let topLabelText: string;
-    if (selectedType.value === "Screw" && length.value !== "") {
-      if (selectedSystem.value === "Metric") {
-        topLabelText = `${threadSize.value} × ${length.value}`;
-      } else {
-        topLabelText = `${threadSize.value} × ${length.value}″`;
-      }
-    } else {
-      topLabelText = threadSize.value || "Default top text";
-    }
-
-    let bottomLabelText: string;
-    if (hardwareStandard.value !== "") {
-      if (notes.value !== "") {
-        bottomLabelText = hardwareStandard.value + ` ${notes.value}`;
-      } else {
-        bottomLabelText = hardwareStandard.value;
-      }
-    } else {
-      bottomLabelText = "Default bottom text";
-    }
-
-    const dataUrl = await drawLabel(
+    const { topText, bottomText } = getLabelTexts(
+      selectedType.value,
+      selectedSystem.value,
+      threadSize.value,
+      length.value,
+      hardwareStandard.value,
+      notes.value,
+      showStandardName.value,
+    );
+    const dataUrl = drawLabel(
       standardImage.value,
-      topLabelText,
-      bottomLabelText,
+      topText,
+      bottomText,
       labelWidth.value,
+      showImage.value,
     );
     if (!dataUrl) {
       console.error("Label generation failed: No valid label drawn.");
@@ -392,6 +176,7 @@ export const DINLabelGenerator = component$(() => {
     link.click();
   });
 
+  // Simple validation
   const isFormValid = () => {
     const requiredFields = {
       threadSize: threadSize.value !== "",
@@ -401,263 +186,438 @@ export const DINLabelGenerator = component$(() => {
     return Object.values(requiredFields).every(Boolean);
   };
 
+  // Helper for mm -> px
   const labelWidthPx = mmToPx(labelWidth.value);
 
+  // Function for range/number input clamping
+  const handleWidthChange = $((value: string | number) => {
+    let newValue = typeof value === "string" ? parseInt(value) : value;
+    if (isNaN(newValue)) newValue = 55;
+    if (newValue < 40) newValue = 40;
+    if (newValue > 100) newValue = 100;
+    labelWidth.value = newValue;
+  });
+
   return (
-    <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
-      <div class="space-y-6">
-        {/* Hardware Type (no header) */}
-        <div>
-          <div class="grid grid-cols-3 gap-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
-            {["Screw", "Nut", "Washer"].map((type) => (
-              <button
-                key={type}
-                onClick$={() => {
-                  if (selectedType.value !== type) {
-                    console.log("Selected hardware type:", type);
-                    selectedType.value = type;
-                    // Reset form on type change
-                    threadSize.value = "";
-                    hardwareStandard.value = "";
-                    length.value = "";
-                    notes.value = "";
-                    labelPreviewUrl.value = "";
-                  }
-                }}
-                class={{
-                  "py-3 px-4 text-center transition-colors font-medium": true,
-                  "bg-[#2D3748] text-white": selectedType.value === type,
-                  "bg-white text-gray-700 hover:bg-gray-50":
-                    selectedType.value !== type,
+    <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4">
+      <div class="max-w-5xl mx-auto">
+        {/* Header with title and subtitle */}
+        <div class="text-center mb-6">
+          <h1 class="text-3xl md:text-4xl font-bold text-gray-900">
+            Gridfinity Label Generator
+          </h1>
+          <p class="text-lg md:text-xl text-gray-600 mt-2">
+            Beautifully Simple Labels for Your Gridfinity System
+          </p>
+        </div>
+
+        {/* Main Container */}
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+            {/* Left side (form section) */}
+            <div class="p-4 md:p-8 space-y-6 md:col-span-2">
+              {/* Hardware Type & Measurement System */}
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {/* Hardware Type */}
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-0.5 bg-gray-50 p-0.5 rounded-lg">
+                  {["Screw", "Nut", "Washer"].map((type) => (
+                    <button
+                      key={type}
+                      onClick$={() => {
+                        if (selectedType.value !== type) {
+                          console.log("Selected hardware type:", type);
+                          selectedType.value = type;
+                          // Reset form on type change
+                          threadSize.value = "";
+                          hardwareStandard.value = "";
+                          length.value = "";
+                          notes.value = "";
+                          labelPreviewUrl.value = "";
+                        }
+                      }}
+                      class={{
+                        "h-[60px] px-3 rounded text-base font-medium transition-all":
+                          true,
+                        "bg-blue-600 text-white shadow-sm":
+                          selectedType.value === type,
+                        "bg-transparent text-gray-700 hover:bg-gray-100":
+                          selectedType.value !== type,
+                      }}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Measurement System */}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-0.5 bg-gray-50 p-0.5 rounded-lg">
+                  {["Metric", "Imperial"].map((system) => (
+                    <button
+                      key={system}
+                      onClick$={() => {
+                        if (selectedSystem.value !== system) {
+                          console.log("Selected measurement system:", system);
+                          selectedSystem.value = system;
+                          // Reset form on system change
+                          threadSize.value = "";
+                          hardwareStandard.value = "";
+                          length.value = "";
+                          notes.value = "";
+                          labelPreviewUrl.value = "";
+                        }
+                      }}
+                      class={{
+                        "h-[60px] px-3 rounded text-base font-medium transition-all":
+                          true,
+                        "bg-blue-100 text-blue-700 border border-blue-600":
+                          selectedSystem.value === system,
+                        "bg-transparent text-gray-700 hover:bg-gray-100":
+                          selectedSystem.value !== system,
+                      }}
+                    >
+                      {system}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Thread Size & Length (or Notes if not Screw) */}
+              <div class="grid grid-cols-2 gap-6">
+                {/* Thread Size */}
+                <select
+                  required
+                  class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={threadSize.value}
+                  onChange$={(e) => {
+                    const value = (e.target as HTMLSelectElement).value;
+                    console.log("Selected thread size:", value);
+                    threadSize.value = value;
+                  }}
+                >
+                  <option value="">Thread size...</option>
+                  {(selectedSystem.value === "Metric"
+                    ? metricThreadSizes
+                    : imperialThreadSizes
+                  ).map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
+
+                {/* If 'Screw', show Length input; otherwise show a Notes input */}
+                {selectedType.value === "Screw" ? (
+                  <input
+                    type="text"
+                    required
+                    placeholder={
+                      selectedSystem.value === "Metric"
+                        ? "Length (e.g., 10)"
+                        : "Length (e.g., 3/8″)"
+                    }
+                    class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={length.value}
+                    onInput$={(e) => {
+                      const val = (e.target as HTMLInputElement).value;
+                      console.log("Entered length:", val);
+                      length.value = val;
+                    }}
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    placeholder="Optional notes"
+                    class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={notes.value}
+                    onInput$={(e) => {
+                      const val = (e.target as HTMLInputElement).value;
+                      console.log("Entered notes:", val);
+                      notes.value = val;
+                    }}
+                  />
+                )}
+              </div>
+
+              {/* Hardware Standard */}
+              <select
+                required
+                class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={hardwareStandard.value}
+                onChange$={(e) => {
+                  const val = (e.target as HTMLSelectElement).value;
+                  console.log("Selected hardware standard:", val);
+                  hardwareStandard.value = val;
                 }}
               >
-                {type}
-              </button>
-            ))}
-          </div>
-        </div>
+                <option value="">Hardware standard...</option>
+                {dinStandards[
+                  selectedType.value.toLowerCase() as keyof typeof dinStandards
+                ].map((standard: DINStandard) => (
+                  <option key={standard.value} value={standard.value}>
+                    {standard.text}
+                  </option>
+                ))}
+              </select>
 
-        {/* Measurement System (no header) */}
-        <div>
-          <div class="grid grid-cols-2 gap-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
-            {[
-              { value: "Metric", label: "Metric" },
-              { value: "Imperial", label: "Imperial" },
-            ].map((system) => (
-              <button
-                key={system.value}
-                onClick$={() => {
-                  console.log("Selected measurement system:", system.value);
-                  if (selectedSystem.value !== system.value) {
-                    selectedSystem.value = system.value;
-                    // Reset form only on system change
-                    threadSize.value = "";
-                    hardwareStandard.value = "";
-                    length.value = "";
-                    notes.value = "";
-                    labelPreviewUrl.value = "";
-                  }
-                }}
-                class={{
-                  "py-3 px-4 text-center transition-colors font-medium": true,
-                  "bg-[#94A3B8] text-white":
-                    selectedSystem.value === system.value,
-                  "bg-white text-gray-700 hover:bg-gray-50":
-                    selectedSystem.value !== system.value,
-                }}
-              >
-                {system.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Thread Size */}
-        <div>
-          <select
-            required
-            class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-            value={threadSize.value}
-            onChange$={(e) => {
-              console.log(
-                "Selected thread size:",
-                (e.target as HTMLSelectElement).value,
-              );
-              threadSize.value = (e.target as HTMLSelectElement).value;
-            }}
-          >
-            <option value="">Thread size...</option>
-            {(selectedSystem.value === "Metric"
-              ? metricThreadSizes
-              : imperialThreadSizes
-            ).map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Length (for screws) */}
-        {selectedType.value === "Screw" && (
-          <div>
-            <input
-              type="text"
-              required
-              placeholder={
-                selectedSystem.value === "Metric"
-                  ? "Length (e.g., 10)"
-                  : "Length (e.g., 3/8″)"
-              }
-              class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              value={length.value}
-              onInput$={(e) => {
-                console.log(
-                  "Entered length:",
-                  (e.target as HTMLInputElement).value,
-                );
-                length.value = (e.target as HTMLInputElement).value;
-              }}
-            />
-          </div>
-        )}
-
-        {/* Hardware Standard */}
-        <div>
-          <select
-            required
-            class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-            value={hardwareStandard.value}
-            onChange$={(e) => {
-              console.log(
-                "Selected hardware standard:",
-                (e.target as HTMLSelectElement).value,
-              );
-              hardwareStandard.value = (e.target as HTMLSelectElement).value;
-            }}
-          >
-            <option value="">Hardware standard...</option>
-            {dinStandards[
-              selectedType.value.toLowerCase() as keyof typeof dinStandards
-            ].map((standard: DINStandard) => (
-              <option key={standard.value} value={standard.value}>
-                {standard.text}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Additional Notes */}
-        <div>
-          <input
-            type="text"
-            placeholder="Additional notes (optional)"
-            class="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-            value={notes.value}
-            onInput$={(e) => {
-              console.log(
-                "Entered additional notes:",
-                (e.target as HTMLInputElement).value,
-              );
-              notes.value = (e.target as HTMLInputElement).value;
-            }}
-          />
-        </div>
-
-        {/* Label Width */}
-        <div>
-          <div class="flex justify-between items-center mb-1">
-            <div class="text-sm text-gray-600">Label width</div>
-            <div class="flex items-center gap-2">
-              <input
-                type="number"
-                min="40"
-                max="100"
-                class="w-20 p-2 bg-white border border-gray-200 rounded text-right text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                value={labelWidth.value}
-                onInput$={(e) => {
-                  let newValue =
-                    parseInt((e.target as HTMLInputElement).value) || 0;
-                  if (newValue < 40) newValue = 40;
-                  if (newValue > 100) newValue = 100;
-                  console.log("Set label width (number):", newValue);
-                  labelWidth.value = newValue;
-                }}
-              />
-              <span class="text-sm text-gray-600">mm</span>
-            </div>
-          </div>
-          <input
-            type="range"
-            min="40"
-            max="100"
-            value={labelWidth.value}
-            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            onInput$={(e) => {
-              console.log(
-                "Set label width (range):",
-                (e.target as HTMLInputElement).value,
-              );
-              labelWidth.value = parseInt((e.target as HTMLInputElement).value);
-            }}
-          />
-          <div class="text-xs text-gray-500">
-            Label height is 10mm - perfect for 12mm tape labels
-          </div>
-        </div>
-
-        {/* Buttons */}
-        <div class="grid grid-cols-[1fr_217px] gap-4">
-          <button
-            class="w-full bg-[#2D3748] text-white p-3 rounded-lg hover:bg-[#1A202C] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-            onClick$={generateLabel}
-            disabled={isLoading.value || !isFormValid()}
-          >
-            Download Label
-          </button>
-          <a href="https://www.buymeacoffee.com/kamilpajak" target="_blank">
-            <img
-              src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
-              alt="Buy Me A Coffee"
-              width="217"
-              height="60"
-              style="height: 60px !important; width: 217px !important;"
-            />
-          </a>
-        </div>
-
-        {/* Preview Area */}
-        <div class="mt-8 p-8 bg-[#F8FAFC] rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[200px]">
-          {isLoading.value && <div class="text-gray-600">Loading image...</div>}
-          {!isLoading.value && labelPreviewUrl.value && (
-            <div class="inline-block">
-              <img
-                src={labelPreviewUrl.value}
-                alt="Label Preview"
-                width={labelWidthPx}
-                height={mmToPx(10)} // fixed height: 10mm
-                class="max-w-full"
-              />
-            </div>
-          )}
-          {!isLoading.value && !labelPreviewUrl.value && (
-            <div class="text-gray-500 flex items-center gap-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                class="h-5 w-5"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z"
+              {/* If 'Screw', show an additional notes field */}
+              {selectedType.value === "Screw" && (
+                <input
+                  type="text"
+                  placeholder="Optional notes"
+                  class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={notes.value}
+                  onInput$={(e) => {
+                    const val = (e.target as HTMLInputElement).value;
+                    console.log("Entered additional notes:", val);
+                    notes.value = val;
+                  }}
                 />
-                <path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z" />
-              </svg>
-              Fill the form above to generate a label preview
+              )}
+
+              {/* Preview + Download */}
+              <div class="space-y-4">
+                {/* Preview area */}
+                <div class="bg-white rounded-lg p-4">
+                  {isLoading.value && (
+                    <div class="flex flex-col items-center justify-center">
+                      <svg
+                        class="w-5 h-5 animate-spin"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <circle
+                          class="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          stroke-width="4"
+                        ></circle>
+                        <path
+                          class="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8H4z"
+                        ></path>
+                      </svg>
+                      <span class="mt-2 text-gray-600">Loading image...</span>
+                    </div>
+                  )}
+
+                  {!isLoading.value && labelPreviewUrl.value && (
+                    <div class="inline-block p-2 shadow-lg rounded">
+                      <img
+                        src={labelPreviewUrl.value}
+                        alt="Label Preview"
+                        width={labelWidthPx}
+                        height={mmToPx(10)}
+                        class="block"
+                      />
+                    </div>
+                  )}
+
+                  {!isLoading.value && !labelPreviewUrl.value && (
+                    <div class="flex flex-row items-center justify-center text-center text-gray-500 gap-3">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M6 6h.008v.008H6V6Z"
+                        />
+                      </svg>
+                      <span class="text-base">
+                        Fill the form to generate preview
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Download & BuyMeACoffee */}
+                <div class="flex flex-col md:flex-row gap-4">
+                  <button
+                    class="w-full flex items-center justify-center gap-3 h-[60px] rounded-lg text-base font-medium transition-all bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick$={generateLabel}
+                    disabled={isLoading.value || !isFormValid()}
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"
+                      />
+                    </svg>
+                    <span>Download</span>
+                  </button>
+                  <a
+                    href="https://www.buymeacoffee.com/kamilpajak"
+                    target="_blank"
+                    class="inline-block"
+                  >
+                    <img
+                      src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+                      alt="Buy Me A Coffee"
+                      width="217"
+                      height="60"
+                      class="w-auto max-w-[217px] mx-auto"
+                    />
+                  </a>
+                </div>
+              </div>
             </div>
-          )}
+            {/* End of left side */}
+
+            {/* Right side (settings panel) */}
+            <div class="bg-gray-50 p-4 md:p-8 space-y-6">
+              <div class="flex items-center gap-3 text-gray-700">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width={1.5}
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+                  />
+                </svg>
+                <h3 class="text-lg font-medium">Label Settings</h3>
+              </div>
+
+              <div class="space-y-4">
+                {/* Toggle for showing/hiding the standard name */}
+                <div class="flex items-center justify-between bg-white h-[60px] px-4 rounded-lg border border-gray-200">
+                  <div class="flex items-center gap-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width={1.5}
+                      stroke="currentColor"
+                      class="w-6 h-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5-3.9 19.5m-2.1-19.5-3.9 19.5"
+                      />
+                    </svg>
+                    <span class="text-base text-gray-700">Standard</span>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showStandardName.value}
+                      onChange$={(e) => {
+                        showStandardName.value = (
+                          e.target as HTMLInputElement
+                        ).checked;
+                        console.log(
+                          "Show standard name:",
+                          showStandardName.value,
+                        );
+                      }}
+                      class="sr-only peer"
+                    />
+                    <div class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                  </label>
+                </div>
+
+                {/* Toggle for showing/hiding the image */}
+                <div class="flex items-center justify-between bg-white h-[60px] px-4 rounded-lg border border-gray-200">
+                  <div class="flex items-center gap-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width={1.5}
+                      stroke="currentColor"
+                      class="w-6 h-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                      />
+                    </svg>
+                    <span class="text-base text-gray-700">Image</span>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showImage.value}
+                      onChange$={(e) => {
+                        showImage.value = (
+                          e.target as HTMLInputElement
+                        ).checked;
+                        console.log("Show image:", showImage.value);
+                      }}
+                      class="sr-only peer"
+                    />
+                    <div class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                  </label>
+                </div>
+
+                {/* Label width controls */}
+                <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+                  <div class="flex items-center justify-between">
+                    <span class="text-base text-gray-700">Width</span>
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min="40"
+                        max="100"
+                        class="w-20 h-[40px] px-2 bg-gray-50 border border-gray-200 rounded text-right text-base text-gray-700"
+                        value={labelWidth.value}
+                        onInput$={(e) => {
+                          handleWidthChange(
+                            (e.target as HTMLInputElement).value,
+                          );
+                        }}
+                      />
+                      <span class="text-sm text-gray-600">mm</span>
+                    </div>
+                  </div>
+                  <div class="space-y-2">
+                    <input
+                      type="range"
+                      min="40"
+                      max="100"
+                      value={labelWidth.value}
+                      onInput$={(e) => {
+                        handleWidthChange((e.target as HTMLInputElement).value);
+                      }}
+                      class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                    />
+                    <div class="flex justify-between text-xs text-gray-500">
+                      <span>40mm</span>
+                      <span>100mm</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* End of left side */}
+          </div>
         </div>
       </div>
     </div>

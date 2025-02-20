@@ -14,7 +14,7 @@ node_modules/
 dist/
 dist-ssr/
 build/
-server/  # if your SSR build is generated in this folder
+server/
 
 # Environment files (do not commit sensitive data)
 .env

@@ -15,6 +15,7 @@ dist/
 dist-ssr/
 build/
 server/
+/tmp/
 
 # Environment files (do not commit sensitive data)
 .env

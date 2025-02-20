@@ -1,16 +1,22 @@
-import { computeDynamicFontSize, mmToPx } from "../utils/measurements";
+import {computeDynamicFontSize, mmToPx} from "~/utils/measurements";
 
-async function ensureFontsLoaded() {
+/**
+ * Ensures that required fonts are loaded.
+ */
+async function ensureFontsLoaded(): Promise<void> {
   try {
     await Promise.all([
       document.fonts.load('900 16px "Noto Sans"'),
-      document.fonts.load('900 16px "Oswald"')
+      document.fonts.load('900 16px "Oswald"'),
     ]);
   } catch (error) {
     console.error("Failed to load fonts:", error);
   }
 }
 
+/**
+ * Returns label texts based on provided parameters.
+ */
 export function getLabelTexts(
   selectedType: string,
   selectedSystem: string,
@@ -18,66 +24,166 @@ export function getLabelTexts(
   length: string,
   hardwareStandard: string,
   notes: string,
-  showStandardName: boolean
+  showStandardName: boolean,
 ): { topText: string; bottomText: string } {
-  let topText: string;
+  let topText = "Default top text";
+  let bottomText: string;
+
+  // Decide topText based on selectedType and length
   if (selectedType === "Screw" && length) {
     topText =
       selectedSystem === "Metric"
         ? `${threadSize} × ${length}`
         : `${threadSize} × ${length}″`;
-  } else {
-    topText = threadSize || "Default top text";
+  } else if (threadSize) {
+    topText = threadSize;
   }
 
-  // If toggle is off, skip standard name.
-  let bottomText: string;
-  if (showStandardName) {
-    bottomText = hardwareStandard
-      ? notes
-        ? `${hardwareStandard} ${notes}`
-        : hardwareStandard
-      : "Default bottom text";
-  } else {
+  // Decide bottomText based on showStandardName flag and provided texts
+  if (!showStandardName) {
     bottomText = notes || "";
+  } else if (notes && hardwareStandard) {
+    bottomText = `${hardwareStandard} ${notes}`;
+  } else if (notes) {
+    bottomText = "Default bottom text";
+  } else {
+    bottomText = hardwareStandard || "Default bottom text";
   }
 
   return { topText, bottomText };
 }
 
+/**
+ * Loads an image from the given URL. If the image is an SVG and fails to load,
+ * attempts to load a JPG fallback.
+ */
+async function loadImage(url: string): Promise<HTMLImageElement | null> {
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+
+  try {
+    // Attempt to load the original image
+    await new Promise((resolve) => {
+      img.onload = resolve;
+      img.onerror = () => {
+        console.warn(`Failed to load image with original extension: ${url}`);
+        resolve(null);
+      };
+      img.src = url;
+    });
+
+    if (img.complete && img.naturalWidth > 0) {
+      return img;
+    }
+
+    // If the original was an SVG, try loading a JPG fallback
+    if (url.toLowerCase().endsWith(".svg")) {
+      const jpgUrl = url.replace(/\.svg$/i, ".jpg");
+      const jpgImg = new Image();
+      jpgImg.crossOrigin = "anonymous";
+
+      await new Promise((resolve) => {
+        jpgImg.onload = resolve;
+        jpgImg.onerror = () => {
+          console.error(`Failed to load both SVG and JPG: ${url}`);
+          resolve(null);
+        };
+        jpgImg.src = jpgUrl;
+      });
+
+      if (jpgImg.complete && jpgImg.naturalWidth > 0) {
+        return jpgImg;
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error loading image:", error);
+    return null;
+  }
+}
+
+/**
+ * Helper to measure text and scale it down if it exceeds the max width.
+ * Returns the final font size and measurement metrics.
+ */
+function measureAndScaleText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  desiredPxHeight: number,
+  fontFamily: string,
+  fontWeight: string,
+  maxWidth: number,
+) {
+  // Compute initial font size
+  let fontSize = computeDynamicFontSize(ctx, desiredPxHeight, text, fontFamily);
+  ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
+  let metrics = ctx.measureText(text);
+
+  // Scale down if text exceeds maxWidth
+  if (metrics.width > maxWidth) {
+    const scaleFactor = maxWidth / metrics.width;
+    fontSize *= scaleFactor;
+    ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
+    metrics = ctx.measureText(text);
+  }
+
+  return { fontSize, metrics };
+}
+
+/**
+ * Draws the image if available and required.
+ * Returns the total horizontal space occupied by the image plus gap.
+ */
+function drawImageIfNeeded(
+  ctx: CanvasRenderingContext2D,
+  image: HTMLImageElement | null,
+  labelWidthPx: number,
+  labelHeightPx: number,
+  gapPx: number,
+  showImage: boolean,
+): number {
+  if (!showImage || !image) return 0;
+
+  const aspectRatio = image.naturalWidth / image.naturalHeight;
+  let drawnImgWidth = Math.round(labelHeightPx * aspectRatio);
+  let drawnImgHeight = labelHeightPx;
+
+  // Adjust size if image width exceeds available space
+  if (drawnImgWidth > labelWidthPx - gapPx) {
+    drawnImgWidth = labelWidthPx - gapPx;
+    drawnImgHeight = Math.round(drawnImgWidth / aspectRatio);
+  }
+
+  // Center image vertically
+  const imgY = (labelHeightPx - drawnImgHeight) / 2;
+  ctx.drawImage(image, 0, imgY, drawnImgWidth, drawnImgHeight);
+
+  return drawnImgWidth + gapPx;
+}
+
+/**
+ * Generates a label image as a DataURL based on input parameters.
+ */
 export async function generateLabel(
   standardImgUrl: string,
   topText: string,
   bottomText: string,
   labelWidthMm: number,
-  showImage: boolean
+  showImage: boolean,
 ): Promise<string | null> {
-  // Ensure fonts are loaded before generating the label
+  // Ensure required fonts are loaded
   await ensureFontsLoaded();
 
-  // Load the image first
-  const standardImg = new Image();
-  standardImg.crossOrigin = "anonymous";
-  
-  try {
-    await new Promise((resolve, reject) => {
-      standardImg.onload = resolve;
-      standardImg.onerror = () => {
-        console.error("Failed to load image:", standardImgUrl);
-        resolve(null); // Resolve with null instead of rejecting to handle missing images gracefully
-      };
-      standardImg.src = standardImgUrl;
-    });
-  } catch (error) {
-    console.error("Failed to load DIN image:", error);
-    return null;
-  }
+  // Load the standard image
+  const standardImg = await loadImage(standardImgUrl);
 
-  // Label: fixed height 10mm, width = (labelWidthMm - 4mm margins)
+  // Calculate label dimensions (10mm height, width adjusted for 4mm margins)
   const labelHeightPx = mmToPx(10);
   const effectiveLabelWidthMm = labelWidthMm - 4;
   const labelWidthPx = mmToPx(effectiveLabelWidthMm);
 
+  // Create canvas for label generation
   const canvas = document.createElement("canvas");
   canvas.width = labelWidthPx;
   canvas.height = labelHeightPx;
@@ -93,108 +199,70 @@ export async function generateLabel(
 
   // Set gap between image and text (default 2mm)
   let gapPx = mmToPx(2);
-  const textPadding = 10; // additional padding for text measurement
-
-  // If image is disabled, set gap to 0
-  if (!showImage) {
+  if (!showImage || !standardImg) {
     gapPx = 0;
   }
 
-  // Set text mode: single line if bottom text is empty
-  const isSingleLine = bottomText.trim() === "";
-  // Each line has maximum height of 4mm
-  const desiredTextHeight = mmToPx(4);
-
-  // Calculate text sizes with given height
-  let topFontSize = computeDynamicFontSize(ctx, desiredTextHeight, topText, "Noto Sans");
-  ctx.font = `900 ${topFontSize}px "Noto Sans", serif`;
-  let topMetrics = ctx.measureText(topText);
-
-  let bottomMetrics;
-  let bottomFontSize = 0;
-  if (!isSingleLine) {
-    bottomFontSize = computeDynamicFontSize(ctx, desiredTextHeight, bottomText, "Oswald");
-    ctx.font = `900 ${bottomFontSize}px "Oswald", sans-serif`;
-    bottomMetrics = ctx.measureText(bottomText);
-  }
-
-  const measuredTextWidth = isSingleLine
-    ? topMetrics.width
-    : Math.max(topMetrics.width, bottomMetrics?.width || 0);
-  const textAreaWidthNeeded = measuredTextWidth + textPadding;
-
-  // Calculate available area for image
-  let availableForImage = showImage ? labelWidthPx - gapPx - textAreaWidthNeeded : 0;
-  if (availableForImage < 0) {
-    availableForImage = 0;
-    gapPx = 0;
-  }
-
-  // Calculate image size (if it should be drawn)
-  let drawnImgWidth = 0;
-  let drawnImgHeight = 0;
-  if (showImage && standardImg.complete && standardImg.naturalWidth > 0) {
-    const aspectRatio = standardImg.naturalWidth / standardImg.naturalHeight;
-    drawnImgHeight = labelHeightPx;
-    drawnImgWidth = Math.round(labelHeightPx * aspectRatio);
-    if (drawnImgWidth > availableForImage) {
-      drawnImgWidth = availableForImage;
-      drawnImgHeight = Math.round(availableForImage / aspectRatio);
-    }
-    // Draw image, vertically centered
-    const imgY = (labelHeightPx - drawnImgHeight) / 2;
-    ctx.drawImage(standardImg, 0, imgY, drawnImgWidth, drawnImgHeight);
-  }
-
-  // Text area starts after image (if image is displayed) or from left edge
-  const textAreaX = showImage ? drawnImgWidth + gapPx : 0;
+  // Draw image and calculate available text area
+  const textAreaX = drawImageIfNeeded(
+    ctx,
+    standardImg,
+    labelWidthPx,
+    labelHeightPx,
+    gapPx,
+    showImage,
+  );
   const textAreaWidth = labelWidthPx - textAreaX;
 
   ctx.fillStyle = "black";
   ctx.textBaseline = "alphabetic";
 
+  const desiredTextHeight = mmToPx(4);
+  const isSingleLine = bottomText.trim() === "";
+
   if (isSingleLine) {
-    // Single line mode: scale text to fit available space
-    if (topMetrics.width > textAreaWidth) {
-      const scaleFactor = textAreaWidth / topMetrics.width;
-      topFontSize *= scaleFactor;
-      ctx.font = `900 ${topFontSize}px "Noto Sans", serif`;
-      topMetrics = ctx.measureText(topText);
-    }
-    const topTextX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
-    // Center vertically the entire line (within label)
+    // Single-line text: measure, scale, and center the top text
+    const { metrics: topMetrics } = measureAndScaleText(
+      ctx,
+      topText,
+      desiredTextHeight,
+      "Noto Sans",
+      "900",
+      textAreaWidth,
+    );
+    const xPos = textAreaX + (textAreaWidth - topMetrics.width) / 2;
     const verticalOffset = (labelHeightPx - desiredTextHeight) / 2;
     const baseline = verticalOffset + topMetrics.actualBoundingBoxAscent;
-    ctx.fillText(topText, topTextX, baseline);
+    ctx.fillText(topText, xPos, baseline);
   } else {
-    // Two line mode
-    let topFontSizeLine = computeDynamicFontSize(ctx, desiredTextHeight, topText, "Noto Sans");
-    ctx.font = `900 ${topFontSizeLine}px "Noto Sans", serif`;
-    topMetrics = ctx.measureText(topText);
-    if (topMetrics.width > textAreaWidth) {
-      const scaleFactor = textAreaWidth / topMetrics.width;
-      topFontSizeLine *= scaleFactor;
-      ctx.font = `900 ${topFontSizeLine}px "Noto Sans", serif`;
-      topMetrics = ctx.measureText(topText);
-    }
-    const topTextX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
-    // Top line: set baseline so top edge touches top edge
-    const topBaseline = topMetrics.actualBoundingBoxAscent;
-    ctx.fillText(topText, topTextX, topBaseline);
+    // Two-line text: draw both top and bottom texts
 
-    let bottomFontSizeLine = computeDynamicFontSize(ctx, desiredTextHeight, bottomText, "Oswald");
-    ctx.font = `900 ${bottomFontSizeLine}px "Oswald", sans-serif`;
-    bottomMetrics = ctx.measureText(bottomText);
-    if (bottomMetrics.width > textAreaWidth) {
-      const scaleFactor = textAreaWidth / bottomMetrics.width;
-      bottomFontSizeLine *= scaleFactor;
-      ctx.font = `900 ${bottomFontSizeLine}px "Oswald", sans-serif`;
-      bottomMetrics = ctx.measureText(bottomText);
-    }
-    const bottomTextX = textAreaX + (textAreaWidth - bottomMetrics.width) / 2;
-    // Bottom line: set baseline so bottom edge touches bottom edge of label
-    const bottomBaseline = labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
-    ctx.fillText(bottomText, bottomTextX, bottomBaseline);
+    // Top line
+    const { metrics: topMetrics } = measureAndScaleText(
+      ctx,
+      topText,
+      desiredTextHeight,
+      "Noto Sans",
+      "900",
+      textAreaWidth,
+    );
+    const topX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
+    const topBaseline = topMetrics.actualBoundingBoxAscent;
+    ctx.fillText(topText, topX, topBaseline);
+
+    // Bottom line
+    const { metrics: bottomMetrics } = measureAndScaleText(
+      ctx,
+      bottomText,
+      desiredTextHeight,
+      "Oswald",
+      "900",
+      textAreaWidth,
+    );
+    const bottomX = textAreaX + (textAreaWidth - bottomMetrics.width) / 2;
+    const bottomBaseline =
+      labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
+    ctx.fillText(bottomText, bottomX, bottomBaseline);
   }
 
   return canvas.toDataURL("image/png");

@@ -5,8 +5,8 @@ export interface DINStandard {
 }
 
 export interface HardwareType {
-  type: 'Screw' | 'Nut' | 'Washer';
-  system: 'Metric' | 'Imperial';
+  type: "Screw" | "Nut" | "Washer";
+  system: "Metric" | "Imperial";
 }
 
 export interface LabelSettings {

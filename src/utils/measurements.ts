@@ -1,4 +1,4 @@
-export const mmToPx = (mm: number): number => mm * 3.779527559; // 96 DPI conversion
+export const mmToPx = (mm: number): number => mm * 14.173228346; // 360 DPI conversion
 
 export const validateWidth = (value: string | number): number => {
   let newValue = typeof value === "string" ? parseInt(value) : value;

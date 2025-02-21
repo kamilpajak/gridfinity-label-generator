@@ -246,9 +246,12 @@ export async function generateLabel(
     );
     ctx.font = `900 ${fontSize}px "Noto Sans", serif`;
     const textX = textAreaX + (textAreaWidth - metrics.width) / 2;
-    // For single-line, we center vertically using middle baseline.
-    ctx.textBaseline = "middle";
-    const textY = labelHeightPx / 2;
+    // Compute vertical center using "alphabetic" baseline.
+    const textY =
+      (labelHeightPx +
+        metrics.actualBoundingBoxAscent -
+        metrics.actualBoundingBoxDescent) /
+      2;
     ctx.fillText(topText, textX, textY);
     console.log(
       `Single-line text dimensions (mm): width=${(metrics.width / conversionFactor).toFixed(2)}`,

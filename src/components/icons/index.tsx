@@ -149,9 +149,11 @@ export const IdentifierIcon = component$(() => (
     stroke-linecap="round"
     stroke-linejoin="round"
   >
-    <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4" />
-    <path d="M17 8l-5-5-5 5" />
-    <path d="M12 3v12" />
+    <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
+    <path d="M8 8h2" />
+    <path d="M14 8h2" />
+    <path d="M8 12h8" />
+    <path d="M8 16h5" />
   </svg>
 ));
 

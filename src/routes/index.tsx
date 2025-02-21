@@ -17,6 +17,7 @@ import { validateWidth } from "~/utils/measurements";
 import { DownloadIcon } from "~/components/icons";
 
 export default component$(() => {
+  // State signals
   const selectedType = useSignal("Screw");
   const selectedSystem = useSignal("Metric");
   const threadSize = useSignal("");
@@ -28,7 +29,6 @@ export default component$(() => {
   const isStandardDropdownOpen = useSignal(false);
   const standardSearchQuery = useSignal("");
   const showComments = useSignal(false);
-  // const showSettings = useSignal(false);
 
   const settings = useStore<LabelSettings>({
     showStandardName: true,
@@ -36,25 +36,26 @@ export default component$(() => {
     labelWidth: 55,
   });
 
+  // Helper to reset input values when type or system changes.
+  const resetInputs = $(() => {
+    threadSize.value = "";
+    hardwareStandard.value = "";
+    length.value = "";
+    notes.value = "";
+    labelPreviewUrl.value = "";
+  });
+
   const handleTypeChange$ = $((type: string) => {
     if (selectedType.value !== type) {
       selectedType.value = type;
-      threadSize.value = "";
-      hardwareStandard.value = "";
-      length.value = "";
-      notes.value = "";
-      labelPreviewUrl.value = "";
+      resetInputs();
     }
   });
 
   const handleSystemChange$ = $((system: string) => {
     if (selectedSystem.value !== system) {
       selectedSystem.value = system;
-      threadSize.value = "";
-      hardwareStandard.value = "";
-      length.value = "";
-      notes.value = "";
-      labelPreviewUrl.value = "";
+      resetInputs();
     }
   });
 
@@ -117,21 +118,16 @@ export default component$(() => {
 
   const handleDownload$ = $(() => {
     if (!labelPreviewUrl.value) return;
-
-    // Create a temporary link element
     const link = document.createElement("a");
     link.href = labelPreviewUrl.value;
-
-    // Generate filename based on the hardware details
     const filename = `${selectedType.value.toLowerCase()}-${threadSize.value}${length.value ? `-${length.value}` : ""}.png`;
     link.download = filename;
-
-    // Trigger download
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   });
 
+  // Automatically generate preview when input signals change.
   useTask$(({ track }) => {
     track(() => settings.labelWidth);
     track(() => settings.showStandardName);
@@ -151,6 +147,103 @@ export default component$(() => {
     }
   });
 
+  // Render helper functions
+
+  const renderInputFields = () => (
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+      <ThreadSizeDropdown
+        selectedValue={threadSize.value}
+        options={
+          selectedSystem.value === "Metric"
+            ? metricThreadSizes
+            : imperialThreadSizes
+        }
+        onSelect$={(value: string) => (threadSize.value = value)}
+      />
+      {selectedType.value === "Screw" ? (
+        <input
+          type="text"
+          required
+          placeholder={
+            selectedSystem.value === "Metric"
+              ? "Length (e.g., 10)"
+              : "Length (e.g., 3/8″)"
+          }
+          class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          value={length.value}
+          onInput$={(e) =>
+            (length.value = (e.target as HTMLInputElement).value)
+          }
+        />
+      ) : (
+        <input
+          type="text"
+          placeholder="Optional notes"
+          class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          value={notes.value}
+          onInput$={(e) => (notes.value = (e.target as HTMLInputElement).value)}
+        />
+      )}
+    </div>
+  );
+
+  const renderStandardDropdown = () => (
+    <SearchableDropdown
+      isOpen={isStandardDropdownOpen.value}
+      onToggle$={() =>
+        (isStandardDropdownOpen.value = !isStandardDropdownOpen.value)
+      }
+      selectedValue={hardwareStandard.value}
+      searchQuery={standardSearchQuery.value}
+      onSearchChange$={(query: string) => (standardSearchQuery.value = query)}
+      options={
+        dinStandards[
+          selectedType.value.toLowerCase() as keyof typeof dinStandards
+        ]
+      }
+      onSelect$={(value: string) => {
+        hardwareStandard.value = value;
+        isStandardDropdownOpen.value = false;
+        standardSearchQuery.value = "";
+      }}
+    />
+  );
+
+  const renderDownloadSection = () => (
+    <div class="grid grid-cols-1 sm:grid-cols-[1fr,217px] gap-4">
+      <button
+        class={`w-full flex items-center justify-center gap-3 h-[60px] rounded-lg text-base font-medium transition-all ${
+          threadSize.value &&
+          hardwareStandard.value &&
+          (selectedType.value !== "Screw" || length.value)
+            ? "bg-blue-600 text-white hover:bg-blue-700"
+            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+        }`}
+        onClick$={handleDownload$}
+        disabled={
+          !threadSize.value ||
+          !hardwareStandard.value ||
+          (selectedType.value === "Screw" && !length.value)
+        }
+      >
+        <DownloadIcon />
+        <span>Download</span>
+      </button>
+      <a
+        href="https://www.buymeacoffee.com/kamilpajak"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden sm:inline-block"
+      >
+        <img
+          src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+          alt="Buy Me A Coffee"
+          style={{ height: "60px", width: "217px" }}
+        />
+      </a>
+    </div>
+  );
+
   return (
     <div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4">
       <div class="max-w-5xl mx-auto space-y-6">
@@ -166,67 +259,8 @@ export default component$(() => {
                 onSystemChange$={handleSystemChange$}
               />
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                <ThreadSizeDropdown
-                  selectedValue={threadSize.value}
-                  options={
-                    selectedSystem.value === "Metric"
-                      ? metricThreadSizes
-                      : imperialThreadSizes
-                  }
-                  onSelect$={(value: string) => (threadSize.value = value)}
-                />
-
-                {selectedType.value === "Screw" ? (
-                  <input
-                    type="text"
-                    required
-                    placeholder={
-                      selectedSystem.value === "Metric"
-                        ? "Length (e.g., 10)"
-                        : "Length (e.g., 3/8″)"
-                    }
-                    class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={length.value}
-                    onInput$={(e) =>
-                      (length.value = (e.target as HTMLInputElement).value)
-                    }
-                  />
-                ) : (
-                  <input
-                    type="text"
-                    placeholder="Optional notes"
-                    class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={notes.value}
-                    onInput$={(e) =>
-                      (notes.value = (e.target as HTMLInputElement).value)
-                    }
-                  />
-                )}
-              </div>
-
-              <SearchableDropdown
-                isOpen={isStandardDropdownOpen.value}
-                onToggle$={() =>
-                  (isStandardDropdownOpen.value = !isStandardDropdownOpen.value)
-                }
-                selectedValue={hardwareStandard.value}
-                searchQuery={standardSearchQuery.value}
-                onSearchChange$={(query: string) =>
-                  (standardSearchQuery.value = query)
-                }
-                options={
-                  dinStandards[
-                    selectedType.value.toLowerCase() as keyof typeof dinStandards
-                  ]
-                }
-                onSelect$={(value: string) => {
-                  hardwareStandard.value = value;
-                  isStandardDropdownOpen.value = false;
-                  standardSearchQuery.value = "";
-                }}
-              />
-
+              {renderInputFields()}
+              {renderStandardDropdown()}
               {selectedType.value === "Screw" && (
                 <input
                   type="text"
@@ -245,41 +279,7 @@ export default component$(() => {
                 labelWidth={settings.labelWidth}
               />
 
-              <div class="grid grid-cols-1 sm:grid-cols-[1fr,217px] gap-4">
-                <button
-                  class={`
-                    w-full flex items-center justify-center gap-3 h-[60px] rounded-lg text-base font-medium transition-all
-                    ${
-                      threadSize.value &&
-                      hardwareStandard.value &&
-                      (selectedType.value !== "Screw" || length.value)
-                        ? "bg-blue-600 text-white hover:bg-blue-700"
-                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    }
-                  `}
-                  onClick$={handleDownload$}
-                  disabled={
-                    !threadSize.value ||
-                    !hardwareStandard.value ||
-                    (selectedType.value === "Screw" && !length.value)
-                  }
-                >
-                  <DownloadIcon />
-                  <span>Download</span>
-                </button>
-                <a
-                  href="https://www.buymeacoffee.com/kamilpajak"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="hidden sm:inline-block"
-                >
-                  <img
-                    src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
-                    alt="Buy Me A Coffee"
-                    style={{ height: "60px", width: "217px" }}
-                  />
-                </a>
-              </div>
+              {renderDownloadSection()}
             </div>
 
             <div class="hidden lg:block">

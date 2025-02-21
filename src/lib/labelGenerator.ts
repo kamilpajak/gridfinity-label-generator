@@ -1,7 +1,7 @@
 import {computeDynamicFontSize, mmToPx} from "~/utils/measurements";
 
 /**
- * Ensures that required fonts are loaded.
+ * Loads required fonts before rendering.
  */
 async function ensureFontsLoaded(): Promise<void> {
   try {
@@ -15,7 +15,7 @@ async function ensureFontsLoaded(): Promise<void> {
 }
 
 /**
- * Returns label texts based on provided parameters.
+ * Returns label texts (top and bottom) based on the provided parameters.
  */
 export function getLabelTexts(
   selectedType: string,
@@ -26,35 +26,37 @@ export function getLabelTexts(
   notes: string,
   showStandardName: boolean,
 ): { topText: string; bottomText: string } {
-  let topText = "Default top text";
-  let bottomText: string;
-
-  // Decide topText based on selectedType and length
+  let topText: string;
   if (selectedType === "Screw" && length) {
-    topText =
-      selectedSystem === "Metric"
-        ? `${threadSize} × ${length}`
-        : `${threadSize} × ${length}″`;
-  } else if (threadSize) {
-    topText = threadSize;
+    if (selectedSystem === "Metric") {
+      topText = `${threadSize} × ${length}`;
+    } else {
+      topText = `${threadSize} × ${length}″`;
+    }
+  } else {
+    topText = threadSize || "Default top text";
   }
 
-  // Decide bottomText based on showStandardName flag and provided texts
-  if (!showStandardName) {
-    bottomText = notes || "";
-  } else if (notes && hardwareStandard) {
-    bottomText = `${hardwareStandard} ${notes}`;
-  } else if (notes) {
-    bottomText = "Default bottom text";
+  let bottomText: string;
+  if (showStandardName) {
+    if (hardwareStandard) {
+      if (notes) {
+        bottomText = `${hardwareStandard} ${notes}`;
+      } else {
+        bottomText = hardwareStandard;
+      }
+    } else {
+      bottomText = "Default bottom text";
+    }
   } else {
-    bottomText = hardwareStandard || "Default bottom text";
+    bottomText = notes || "";
   }
 
   return { topText, bottomText };
 }
 
 /**
- * Loads an image from the given URL. If the image is an SVG and fails to load,
+ * Loads an image from a given URL. If the original image fails and the URL ends with .svg,
  * attempts to load a JPG fallback.
  */
 async function loadImage(url: string): Promise<HTMLImageElement | null> {
@@ -62,12 +64,11 @@ async function loadImage(url: string): Promise<HTMLImageElement | null> {
   img.crossOrigin = "anonymous";
 
   try {
-    // Attempt to load the original image
-    await new Promise((resolve) => {
-      img.onload = resolve;
+    await new Promise<void>((resolve) => {
+      img.onload = () => resolve();
       img.onerror = () => {
         console.warn(`Failed to load image with original extension: ${url}`);
-        resolve(null);
+        resolve();
       };
       img.src = url;
     });
@@ -76,17 +77,16 @@ async function loadImage(url: string): Promise<HTMLImageElement | null> {
       return img;
     }
 
-    // If the original was an SVG, try loading a JPG fallback
     if (url.toLowerCase().endsWith(".svg")) {
       const jpgUrl = url.replace(/\.svg$/i, ".jpg");
       const jpgImg = new Image();
       jpgImg.crossOrigin = "anonymous";
 
-      await new Promise((resolve) => {
-        jpgImg.onload = resolve;
+      await new Promise<void>((resolve) => {
+        jpgImg.onload = () => resolve();
         jpgImg.onerror = () => {
           console.error(`Failed to load both SVG and JPG: ${url}`);
-          resolve(null);
+          resolve();
         };
         jpgImg.src = jpgUrl;
       });
@@ -95,7 +95,6 @@ async function loadImage(url: string): Promise<HTMLImageElement | null> {
         return jpgImg;
       }
     }
-
     return null;
   } catch (error) {
     console.error("Error loading image:", error);
@@ -104,8 +103,8 @@ async function loadImage(url: string): Promise<HTMLImageElement | null> {
 }
 
 /**
- * Helper to measure text and scale it down if it exceeds the max width.
- * Returns the final font size and measurement metrics.
+ * Measures text and scales it down if it exceeds maxWidth.
+ * Returns an object with the final font size and measurement metrics.
  */
 function measureAndScaleText(
   ctx: CanvasRenderingContext2D,
@@ -115,12 +114,10 @@ function measureAndScaleText(
   fontWeight: string,
   maxWidth: number,
 ) {
-  // Compute initial font size
   let fontSize = computeDynamicFontSize(ctx, desiredPxHeight, text, fontFamily);
   ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
   let metrics = ctx.measureText(text);
 
-  // Scale down if text exceeds maxWidth
   if (metrics.width > maxWidth) {
     const scaleFactor = maxWidth / metrics.width;
     fontSize *= scaleFactor;
@@ -132,8 +129,8 @@ function measureAndScaleText(
 }
 
 /**
- * Draws the image if available and required.
- * Returns the total horizontal space occupied by the image plus gap.
+ * Draws the image on the left side of the label while preserving its natural aspect ratio.
+ * Returns the total horizontal space occupied by the image plus a gap.
  */
 function drawImageIfNeeded(
   ctx: CanvasRenderingContext2D,
@@ -143,27 +140,28 @@ function drawImageIfNeeded(
   gapPx: number,
   showImage: boolean,
 ): number {
-  if (!showImage || !image) return 0;
-
-  const aspectRatio = image.naturalWidth / image.naturalHeight;
-  let drawnImgWidth = Math.round(labelHeightPx * aspectRatio);
-  let drawnImgHeight = labelHeightPx;
-
-  // Adjust size if image width exceeds available space
-  if (drawnImgWidth > labelWidthPx - gapPx) {
-    drawnImgWidth = labelWidthPx - gapPx;
-    drawnImgHeight = Math.round(drawnImgWidth / aspectRatio);
+  if (!showImage || !image) {
+    return 0;
   }
 
-  // Center image vertically
-  const imgY = (labelHeightPx - drawnImgHeight) / 2;
-  ctx.drawImage(image, 0, imgY, drawnImgWidth, drawnImgHeight);
+  // Draw the image using the full label height.
+  const imageHeightPx = labelHeightPx;
+  const aspectRatio = image.naturalWidth / image.naturalHeight;
+  const imageWidthPx = Math.round(imageHeightPx * aspectRatio);
 
-  return drawnImgWidth + gapPx;
+  // Draw the image at the left side, top-aligned.
+  ctx.drawImage(image, 0, 0, imageWidthPx, imageHeightPx);
+
+  return imageWidthPx + gapPx;
 }
 
 /**
- * Generates a label image as a DataURL based on input parameters.
+ * Generates a label image as a PNG DataURL.
+ * The image is drawn on the left at its natural aspect ratio,
+ * and the remaining space is allocated for text.
+ * In two-line mode, the top text is drawn so that its top edge touches the top of the label,
+ * and the bottom text is drawn so that its bottom edge touches the bottom of the label.
+ * Logs are added to output dimensions in millimeters.
  */
 export async function generateLabel(
   standardImgUrl: string,
@@ -172,18 +170,31 @@ export async function generateLabel(
   labelWidthMm: number,
   showImage: boolean,
 ): Promise<string | null> {
-  // Ensure required fonts are loaded
   await ensureFontsLoaded();
-
-  // Load the standard image
   const standardImg = await loadImage(standardImgUrl);
 
-  // Calculate label dimensions (10mm height, width adjusted for 4mm margins)
-  const labelHeightPx = mmToPx(10);
-  const effectiveLabelWidthMm = labelWidthMm - 4;
-  const labelWidthPx = mmToPx(effectiveLabelWidthMm);
+  // Fixed label height in mm
+  const labelHeightMm = 10;
+  console.log(`Label width (mm): ${labelWidthMm}`);
+  console.log(`Label height (mm): ${labelHeightMm}`);
 
-  // Create canvas for label generation
+  // Convert dimensions from mm to pixels
+  const labelWidthPx = mmToPx(labelWidthMm);
+  const labelHeightPx = mmToPx(labelHeightMm);
+  const conversionFactor = labelWidthPx / labelWidthMm;
+  console.log(`Conversion factor: ${conversionFactor.toFixed(2)} px/mm`);
+
+  // Baseline text height and gap in mm
+  const baselineTextHeight = 4;
+  const baselineGap = 2;
+  console.log(`Baseline text height (mm): ${baselineTextHeight}`);
+  console.log(`Baseline gap (mm): ${baselineGap}`);
+
+  // Compute gap in pixels (only if image is to be shown)
+  const gapPx = showImage && standardImg ? mmToPx(baselineGap) : 0;
+  console.log(`Computed gap (mm): ${(gapPx / conversionFactor).toFixed(2)}`);
+
+  // Create canvas and fill background with white
   const canvas = document.createElement("canvas");
   canvas.width = labelWidthPx;
   canvas.height = labelHeightPx;
@@ -192,19 +203,11 @@ export async function generateLabel(
     console.error("Could not get canvas context.");
     return null;
   }
-
-  // Fill background with white
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
 
-  // Set gap between image and text (default 2mm)
-  let gapPx = mmToPx(2);
-  if (!showImage || !standardImg) {
-    gapPx = 0;
-  }
-
-  // Draw image and calculate available text area
-  const textAreaX = drawImageIfNeeded(
+  // Draw image on the left and determine text area dimensions
+  const imageUsedWidth = drawImageIfNeeded(
     ctx,
     standardImg,
     labelWidthPx,
@@ -212,17 +215,28 @@ export async function generateLabel(
     gapPx,
     showImage,
   );
-  const textAreaWidth = labelWidthPx - textAreaX;
+  const imageUsedWidthMm = imageUsedWidth / conversionFactor;
+  console.log(`Image used width (mm): ${imageUsedWidthMm.toFixed(2)}`);
 
+  const textAreaX = imageUsedWidth;
+  const textAreaWidth = labelWidthPx - textAreaX;
+  console.log(
+    `Text area starts at (mm): ${(textAreaX / conversionFactor).toFixed(2)}`,
+  );
+  console.log(
+    `Text area width (mm): ${(textAreaWidth / conversionFactor).toFixed(2)}`,
+  );
+
+  // Set text color and baseline
   ctx.fillStyle = "black";
   ctx.textBaseline = "alphabetic";
 
-  const desiredTextHeight = mmToPx(4);
+  const desiredTextHeight = mmToPx(baselineTextHeight);
   const isSingleLine = bottomText.trim() === "";
 
   if (isSingleLine) {
-    // Single-line text: measure, scale, and center the top text
-    const { metrics: topMetrics } = measureAndScaleText(
+    // Single-line mode: center text vertically
+    const { fontSize, metrics } = measureAndScaleText(
       ctx,
       topText,
       desiredTextHeight,
@@ -230,15 +244,19 @@ export async function generateLabel(
       "900",
       textAreaWidth,
     );
-    const xPos = textAreaX + (textAreaWidth - topMetrics.width) / 2;
-    const verticalOffset = (labelHeightPx - desiredTextHeight) / 2;
-    const baseline = verticalOffset + topMetrics.actualBoundingBoxAscent;
-    ctx.fillText(topText, xPos, baseline);
+    ctx.font = `900 ${fontSize}px "Noto Sans", serif`;
+    const textX = textAreaX + (textAreaWidth - metrics.width) / 2;
+    // For single-line, we center vertically using middle baseline.
+    ctx.textBaseline = "middle";
+    const textY = labelHeightPx / 2;
+    ctx.fillText(topText, textX, textY);
+    console.log(
+      `Single-line text dimensions (mm): width=${(metrics.width / conversionFactor).toFixed(2)}`,
+    );
   } else {
-    // Two-line text: draw both top and bottom texts
-
-    // Top line
-    const { metrics: topMetrics } = measureAndScaleText(
+    // Two-line mode: align top text to top edge and bottom text to bottom edge.
+    // For top text: use "alphabetic" baseline and adjust Y so that actualBoundingBoxAscent equals 0.
+    const topResult = measureAndScaleText(
       ctx,
       topText,
       desiredTextHeight,
@@ -246,12 +264,18 @@ export async function generateLabel(
       "900",
       textAreaWidth,
     );
-    const topX = textAreaX + (textAreaWidth - topMetrics.width) / 2;
-    const topBaseline = topMetrics.actualBoundingBoxAscent;
-    ctx.fillText(topText, topX, topBaseline);
+    ctx.font = `900 ${topResult.fontSize}px "Noto Sans", serif`;
+    const topX = textAreaX + (textAreaWidth - topResult.metrics.width) / 2;
+    // Draw top text so that its top edge touches y = 0.
+    // Using "alphabetic" baseline, the top edge is at y = actualBoundingBoxAscent.
+    const topY = topResult.metrics.actualBoundingBoxAscent;
+    ctx.fillText(topText, topX, topY);
+    console.log(
+      `Top text dimensions (mm): width=${(topResult.metrics.width / conversionFactor).toFixed(2)}`,
+    );
 
-    // Bottom line
-    const { metrics: bottomMetrics } = measureAndScaleText(
+    // For bottom text: use "alphabetic" baseline and adjust Y so that bottom edge touches y = labelHeightPx.
+    const bottomResult = measureAndScaleText(
       ctx,
       bottomText,
       desiredTextHeight,
@@ -259,11 +283,23 @@ export async function generateLabel(
       "900",
       textAreaWidth,
     );
-    const bottomX = textAreaX + (textAreaWidth - bottomMetrics.width) / 2;
-    const bottomBaseline =
-      labelHeightPx - bottomMetrics.actualBoundingBoxDescent;
-    ctx.fillText(bottomText, bottomX, bottomBaseline);
+    ctx.font = `900 ${bottomResult.fontSize}px "Oswald", sans-serif`;
+    const bottomX =
+      textAreaX + (textAreaWidth - bottomResult.metrics.width) / 2;
+    // Bottom edge should touch the bottom, so we position at:
+    // y = labelHeightPx - actualBoundingBoxDescent
+    const bottomY =
+      labelHeightPx - bottomResult.metrics.actualBoundingBoxDescent;
+    ctx.fillText(bottomText, bottomX, bottomY);
+    console.log(
+      `Bottom text dimensions (mm): width=${(bottomResult.metrics.width / conversionFactor).toFixed(2)}`,
+    );
   }
+
+  // Log final exported PNG dimensions in mm.
+  console.log(
+    `Exported PNG dimensions (mm): width=${labelWidthMm.toFixed(2)}mm, height=${labelHeightMm.toFixed(2)}mm`,
+  );
 
   return canvas.toDataURL("image/png");
 }

@@ -12,7 +12,6 @@ import { SearchableDropdown } from "~/components/SearchableDropdown";
 import { ThreadSizeDropdown } from "~/components/ThreadSizeDropdown";
 import { LabelPreview } from "~/components/LabelPreview";
 import { SettingsPanel } from "~/components/SettingsPanel";
-import { RedditComments } from "~/components/RedditComments";
 import { validateWidth } from "~/utils/measurements";
 import { DownloadIcon } from "~/components/icons";
 
@@ -28,7 +27,6 @@ export default component$(() => {
   const labelPreviewUrl = useSignal("");
   const isStandardDropdownOpen = useSignal(false);
   const standardSearchQuery = useSignal("");
-  const showComments = useSignal(false);
 
   const settings = useStore<LabelSettings>({
     showStandardName: true,
@@ -193,6 +191,7 @@ export default component$(() => {
       onToggle$={() =>
         (isStandardDropdownOpen.value = !isStandardDropdownOpen.value)
       }
+      setIsOpen$={(open: boolean) => (isStandardDropdownOpen.value = open)}
       selectedValue={hardwareStandard.value}
       searchQuery={standardSearchQuery.value}
       onSearchChange$={(query: string) => (standardSearchQuery.value = query)}
@@ -299,11 +298,6 @@ export default component$(() => {
             />
           </div>
         </div>
-
-        <RedditComments
-          showComments={showComments.value}
-          onToggle$={() => (showComments.value = !showComments.value)}
-        />
       </div>
     </div>
   );

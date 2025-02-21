@@ -53,7 +53,7 @@ export const SearchableDropdown = component$<Props>(
 
     return (
       <div class="relative" ref={dropdownRef}>
-        {/* Button to toggle dropdown */}
+        {/* Button to toggle the dropdown */}
         <button
           type="button"
           class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-left text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent flex items-center justify-between"
@@ -63,7 +63,7 @@ export const SearchableDropdown = component$<Props>(
           <ChevronDownIcon />
         </button>
 
-        {/* Options list, visible only when dropdown is open */}
+        {/* Dropdown menu, visible only when dropdown is open */}
         {isOpen && (
           <div class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
             {/* Search input at the top */}

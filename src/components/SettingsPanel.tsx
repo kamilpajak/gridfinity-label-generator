@@ -1,6 +1,11 @@
 import type { PropFunction } from "@builder.io/qwik";
 import { $, component$ } from "@builder.io/qwik";
-import { IdentifierIcon, ImageIcon, SettingsIcon } from "./icons";
+import {
+  ChatBubbleIcon,
+  IdentifierIcon,
+  ImageIcon,
+  SettingsIcon,
+} from "./icons";
 import type { LabelSettings } from "~/types";
 import { validateWidth } from "~/utils/measurements";
 
@@ -99,6 +104,25 @@ export const SettingsPanel = component$<Props>(
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="pt-4 border-t border-gray-200">
+            <div class="flex items-center gap-3 text-gray-700 mb-4">
+              <ChatBubbleIcon />
+              <h3 class="text-lg font-medium">Community</h3>
+            </div>
+            <p class="text-base text-gray-600 mb-4">
+              Share your labels, suggest features, or report bugs on Reddit!
+            </p>
+            <a
+              href="https://www.reddit.com/r/gridfinity/comments/1ip9r98/i_created_a_web_app_for_generating_gridfinity/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex w-full items-center justify-center gap-2 h-[60px] px-6 bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 border border-blue-200 rounded-lg transition-colors text-base font-medium"
+            >
+              <ChatBubbleIcon />
+              <span>Join Discussion</span>
+            </a>
           </div>
         </div>
       </div>

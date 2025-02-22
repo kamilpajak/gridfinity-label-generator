@@ -1,24 +1,43 @@
 import { component$ } from "@builder.io/qwik";
-import {
-  QwikCityProvider,
-  RouterOutlet,
-  ServiceWorkerRegister,
-} from "@builder.io/qwik-city";
-import { RouterHead } from "./components/router-head/router-head";
-
-import "./global.css";
+import { QwikCityProvider, RouterOutlet } from "@builder.io/qwik-city";
+import "./index.css";
 
 export default component$(() => {
   return (
     <QwikCityProvider>
       <head>
-        <meta charset="utf-8" />
-        <link rel="manifest" href="/manifest.json" />
-        <RouterHead />
-        <ServiceWorkerRegister />
-        <title></title>
+        <meta charSet="utf-8" />
+        <title>Gridfinity Labels</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+
+        {/* Preconnect to Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+
+        {/* Preload font files */}
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;900&display=swap"
+          as="style"
+        />
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap"
+          as="style"
+        />
+
+        {/* Load fonts */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;900&family=Oswald:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body lang="en">
+      <body>
         <RouterOutlet />
       </body>
     </QwikCityProvider>

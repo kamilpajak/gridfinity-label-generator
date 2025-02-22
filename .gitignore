@@ -1,21 +1,5 @@
-# Build
-/dist
-/lib
-/lib-types
-/server
-
-# Development
-node_modules
-*.local
-
-# Cache
-.cache
-.mf
-.rollup.cache
-tsconfig.tsbuildinfo
-
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -23,19 +7,35 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Editor
-.vscode/*
-!.vscode/launch.json
-!.vscode/*.code-snippets
+# Dependency directories
+node_modules/
 
-.idea
+# Build outputs (adjust these folders if your build output differs)
+dist/
+dist-ssr/
+build/
+server/
+tmp/
+
+# Environment files (do not commit sensitive data)
+.env
+.env.local
+.env.*.local
+
+# System files
 .DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-# Yarn
-.yarn/*
-!.yarn/releases
+# Other local files (e.g., configuration for local tools)
+*.local
+.bolt

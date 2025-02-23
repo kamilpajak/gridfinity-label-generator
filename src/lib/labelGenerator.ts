@@ -130,6 +130,7 @@ function measureAndScaleText(
 
 /**
  * Draws the image on the left side of the label while preserving its natural aspect ratio.
+ * Limits the image width to a maximum of 40% of the label width.
  * Returns the total horizontal space occupied by the image plus a gap.
  */
 function drawImageIfNeeded(
@@ -144,15 +145,33 @@ function drawImageIfNeeded(
     return 0;
   }
 
-  // Draw the image using the full label height.
-  const imageHeightPx = labelHeightPx;
+  // Compute the natural aspect ratio of the image.
   const aspectRatio = image.naturalWidth / image.naturalHeight;
-  const imageWidthPx = Math.round(imageHeightPx * aspectRatio);
 
-  // Draw the image at the left side, top-aligned.
-  ctx.drawImage(image, 0, 0, imageWidthPx, imageHeightPx);
+  // Calculate image width if drawn with full label height.
+  const fullHeightWidth = Math.round(labelHeightPx * aspectRatio);
 
-  return imageWidthPx + gapPx;
+  // Maximum allowed image width: 40% of label width.
+  const maxAllowedWidth = Math.floor(labelWidthPx * 0.4);
+
+  let imageWidth: number, imageHeight: number;
+
+  if (fullHeightWidth > maxAllowedWidth) {
+    // Limit image width to the maximum allowed value.
+    imageWidth = maxAllowedWidth;
+    // Adjust height to maintain aspect ratio.
+    imageHeight = Math.round(imageWidth / aspectRatio);
+    // Optionally center the image vertically.
+    const offsetY = Math.round((labelHeightPx - imageHeight) / 2);
+    ctx.drawImage(image, 0, offsetY, imageWidth, imageHeight);
+  } else {
+    // Use full label height if the resulting width is within the limit.
+    imageWidth = fullHeightWidth;
+    imageHeight = labelHeightPx;
+    ctx.drawImage(image, 0, 0, imageWidth, imageHeight);
+  }
+
+  return imageWidth + gapPx;
 }
 
 /**

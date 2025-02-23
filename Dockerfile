@@ -2,14 +2,14 @@ ARG NODE_VERSION=18.18.2
 
 ################################################################################
 # Use node image as the base image for all stages.
-FROM node:${NODE_VERSION}-alpine as base
+FROM node:${NODE_VERSION}-alpine AS base
 
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
 
 ################################################################################
 # Create a stage for installing production dependencies.
-FROM base as deps
+FROM base AS deps
 
 # Install dependencies using npm ci.
 # Mount package.json and package-lock.json to leverage caching.
@@ -21,7 +21,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 
 ################################################################################
 # Create a stage for building the application.
-FROM deps as build
+FROM deps AS build
 
 # Copy the rest of the source files into the image.
 COPY . .
@@ -31,7 +31,7 @@ RUN npm run build
 
 ################################################################################
 # Create a new stage to run the application with minimal runtime dependencies.
-FROM base as final
+FROM base AS final
 
 # Set production environment variables.
 ENV NODE_ENV=production

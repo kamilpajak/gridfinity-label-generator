@@ -1,25 +1,23 @@
 import { component$ } from "@builder.io/qwik";
 import { QwikCityProvider, RouterOutlet } from "@builder.io/qwik-city";
+import { RouterHead } from "./components/router-head/router-head";
 import "./index.css";
 
 export default component$(() => {
   return (
     <QwikCityProvider>
       <head>
-        <meta charSet="utf-8" />
-        <title>Gridfinity Labels</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta charset="utf-8" />
+        {/* Dynamiczny <head> zarządzany przez RouterHead */}
+        <RouterHead />
 
-        {/* Preconnect to Google Fonts */}
+        {/* Statyczne ustawienia dotyczące fontów */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-
-        {/* Preload font files */}
         <link
           rel="preload"
           href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;900&display=swap"
@@ -30,8 +28,6 @@ export default component$(() => {
           href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap"
           as="style"
         />
-
-        {/* Load fonts */}
         <link
           href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;900&family=Oswald:wght@400;700&display=swap"
           rel="stylesheet"
@@ -39,6 +35,10 @@ export default component$(() => {
       </head>
       <body>
         <RouterOutlet />
+        <script
+          async
+          src="https://scripts.simpleanalyticscdn.com/latest.js"
+        ></script>
       </body>
     </QwikCityProvider>
   );

@@ -10,7 +10,9 @@ interface Props {
 // Helper: Renders the header with title and dimensions.
 const renderHeader = (labelWidth: number) => (
   <div class="flex items-center justify-between">
-    <h3 class="text-base font-medium text-gray-700">Label Preview</h3>
+    <h3 id="label-preview" class="text-base font-medium text-gray-700">
+      Label Preview
+    </h3>
     <span class="text-sm text-gray-500">{labelWidth}mm × 10mm</span>
   </div>
 );

@@ -26,7 +26,9 @@ export const SettingsPanel = component$<Props>(
         <div class="p-8 space-y-6">
           <div class="flex items-center gap-3 text-gray-700">
             <SettingsIcon />
-            <h3 class="text-lg font-medium">Label Settings</h3>
+            <h3 id="label-settings" class="text-lg font-medium">
+              Label Settings
+            </h3>
           </div>
 
           <div class="space-y-4">
@@ -109,7 +111,9 @@ export const SettingsPanel = component$<Props>(
           <div class="pt-4 border-t border-gray-200">
             <div class="flex items-center gap-3 text-gray-700 mb-4">
               <ChatBubbleIcon />
-              <h3 class="text-lg font-medium">Community</h3>
+              <h3 id="community" class="text-lg font-medium">
+                Community
+              </h3>
             </div>
             <p class="text-base text-gray-600 mb-4">
               Share your labels, suggest features, or report bugs on Reddit!

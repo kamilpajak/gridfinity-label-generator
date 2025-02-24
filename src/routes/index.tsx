@@ -232,7 +232,7 @@ export default component$(() => {
         href="https://www.buymeacoffee.com/kamilpajak"
         target="_blank"
         rel="noopener noreferrer"
-        class="hidden sm:inline-block"
+        class="block mx-auto sm:inline-block"
       >
         <img
           src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"

@@ -2,7 +2,7 @@ import { component$ } from "@builder.io/qwik";
 
 export const DownloadIcon = component$(() => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    xmlns="https://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -20,7 +20,7 @@ export const DownloadIcon = component$(() => (
 
 export const SettingsIcon = component$(() => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    xmlns="https://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -37,7 +37,7 @@ export const SettingsIcon = component$(() => (
 
 export const ChatBubbleIcon = component$(() => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    xmlns="https://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -53,7 +53,7 @@ export const ChatBubbleIcon = component$(() => (
 
 export const LoaderIcon = component$(() => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    xmlns="https://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -70,7 +70,7 @@ export const LoaderIcon = component$(() => (
 
 export const ImageIcon = component$(() => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    xmlns="https://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -88,7 +88,7 @@ export const ImageIcon = component$(() => (
 
 export const SearchIcon = component$(() => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    xmlns="https://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -105,7 +105,7 @@ export const SearchIcon = component$(() => (
 
 export const ChevronDownIcon = component$(() => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    xmlns="https://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -121,7 +121,7 @@ export const ChevronDownIcon = component$(() => (
 
 export const TypeIcon = component$(() => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    xmlns="https://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -139,7 +139,7 @@ export const TypeIcon = component$(() => (
 
 export const IdentifierIcon = component$(() => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    xmlns="https://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"
@@ -159,7 +159,7 @@ export const IdentifierIcon = component$(() => (
 
 export const LabelIcon = component$(() => (
   <svg
-    xmlns="http://www.w3.org/2000/svg"
+    xmlns="https://www.w3.org/2000/svg"
     width="24"
     height="24"
     viewBox="0 0 24 24"

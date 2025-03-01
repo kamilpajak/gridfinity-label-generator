@@ -13,6 +13,7 @@ import qwikCityPlan from "@qwik-city-plan";
 import {manifest} from "@qwik-client-manifest";
 import render from "./entry.ssr";
 import express from "express";
+import compression from "compression";
 import {fileURLToPath} from "node:url";
 import {join} from "node:path";
 
@@ -46,8 +47,39 @@ const { router, notFound } = createQwikCity({
 // https://expressjs.com/
 const app = express();
 
+// Middleware to redirect HTTP to HTTPS (only in production)
+app.use((req, res, next) => {
+  // Only redirect in production and when not already using HTTPS
+  // Skip redirect for localhost (development environment)
+  const host = req.headers.host || '';
+  const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
+  
+  if (process.env.NODE_ENV === 'production' && !isLocalhost && !req.secure && req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect(`https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
+
+// Middleware to add security headers
+app.use((req, res, next) => {
+  // Protection against XSS
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://scripts.simpleanalyticscdn.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'");
+  
+  // Protection against clickjacking
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  
+  // Protection against MIME type sniffing
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  
+  // Additional security headers
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  
+  next();
+});
+
 // Enable gzip compression
-// app.use(compression());
+app.use(compression());
 
 // Static asset handlers
 // https://expressjs.com/en/starter/static-files.html

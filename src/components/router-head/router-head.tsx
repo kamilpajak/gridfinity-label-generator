@@ -14,7 +14,7 @@ export const RouterHead = component$(() => {
       {/* Dynamiczny tytuł – domyślna wartość, jeśli nie nadpisana */}
       <title>
         {head.title ||
-          "Gridfinity Label Generator - Design Custom Storage Labels Online"}
+          "Gridfinity Label Generator - Print-Ready Storage Labels Online"}
       </title>
 
       {/* Kanoniczny link na podstawie bieżącego URL */}
@@ -26,6 +26,14 @@ export const RouterHead = component$(() => {
         name="description"
         content="Create custom Gridfinity labels for your storage system online. Free browser-based generator with text, icons, and printer support. No installation needed. Design labels now."
       />
+      <meta http-equiv="Content-Language" content="en" />
+      <html lang="en" />
+
+      {/* Open Graph meta tags */}
+      <meta property="og:title" content="Gridfinity Label Generator - Print-Ready Storage Labels Online" />
+      <meta property="og:description" content="Create custom Gridfinity labels for your storage system online. Free browser-based generator with text, icons, and printer support." />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={loc.url.href} />
 
       {/* Favicon – warto ustalić jednolitą ikonę */}
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

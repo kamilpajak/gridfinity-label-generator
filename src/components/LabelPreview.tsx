@@ -19,14 +19,20 @@ const renderHeader = (labelWidth: number) => (
 
 // Helper: Renders the label image responsively.
 // The container sets the width while the image uses width:100% and height:auto to preserve its proportions.
-const renderLabelImage = (labelUrl: string) => (
+const renderLabelImage = (labelUrl: string, labelWidth: number) => (
   <div class="relative w-full">
     <div class="relative">
       {/* Multi-layered shadow for depth */}
       <div class="absolute inset-0 bg-black/5 blur-lg transform translate-y-2"></div>
       <div class="absolute inset-0 bg-black/10 blur-md transform translate-y-1.5"></div>
       <div class="relative">
-        <img src={labelUrl} alt="Label Preview" class="block w-full h-auto" />
+        <img 
+          src={labelUrl} 
+          alt={`Generated label with dimensions ${labelWidth}mm × 10mm`} 
+          class="block w-full h-auto" 
+          width="300" 
+          height="60" 
+        />
       </div>
     </div>
   </div>
@@ -44,7 +50,7 @@ const renderFallback = () => (
 export const LabelPreview = component$<Props>(({ labelUrl, labelWidth }) => {
   // Render content based on current state.
   const renderContent = () => {
-    if (labelUrl) return renderLabelImage(labelUrl);
+    if (labelUrl) return renderLabelImage(labelUrl, labelWidth);
     return renderFallback();
   };
 

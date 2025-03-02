@@ -11,34 +11,42 @@ export const RouterHead = component$(() => {
 
   return (
     <>
-      {/* Dynamiczny tytuł – domyślna wartość, jeśli nie nadpisana */}
       <title>
         {head.title ||
           "Gridfinity Label Generator - Print-Ready Storage Labels Online"}
       </title>
-
-      {/* Kanoniczny link na podstawie bieżącego URL */}
       <link rel="canonical" href={loc.url.href} />
-
-      {/* Domyślne meta tagi */}
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta
         name="description"
         content="Create custom Gridfinity labels for your storage system online. Free browser-based generator with text, icons, and printer support. No installation needed. Design labels now."
       />
       <meta http-equiv="Content-Language" content="en" />
-      <html lang="en" />
-
-      {/* Open Graph meta tags */}
       <meta property="og:title" content="Gridfinity Label Generator - Print-Ready Storage Labels Online" />
       <meta property="og:description" content="Create custom Gridfinity labels for your storage system online. Free browser-based generator with text, icons, and printer support." />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={loc.url.href} />
-
-      {/* Favicon – warto ustalić jednolitą ikonę */}
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-      {/* Renderowanie dodatkowych meta tagów, linków, stylów i skryptów, jeśli zostały dodane dynamicznie */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossOrigin="anonymous"
+      />
+      <link
+        rel="preload"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;900&display=swap"
+        as="style"
+      />
+      <link
+        rel="preload"
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap"
+        as="style"
+      />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;900&family=Oswald:wght@400;700&display=swap"
+        rel="stylesheet"
+      />
       {head.meta.map((m) => (
         <meta key={m.key} {...m} />
       ))}

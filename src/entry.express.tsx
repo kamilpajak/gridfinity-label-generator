@@ -16,6 +16,9 @@ import express from "express";
 import compression from "compression";
 import {fileURLToPath} from "node:url";
 import {join} from "node:path";
+import {createServer as createHttpServer} from "node:http";
+import {createServer as createHttpsServer} from "node:https";
+import {readFileSync} from "node:fs";
 
 declare global {
   interface QwikCityPlatform extends PlatformNode {}
@@ -26,7 +29,25 @@ const distDir = join(fileURLToPath(import.meta.url), "..", "..", "dist");
 const buildDir = join(distDir, "build");
 
 // Allow for dynamic port
-const PORT = process.env.PORT ?? 3000;
+const HTTP_PORT = process.env.HTTP_PORT ?? 80;
+const HTTPS_PORT = process.env.HTTPS_PORT ?? 443;
+
+// SSL Configuration
+const useHttps = process.env.NODE_ENV === 'production';
+let httpsOptions = {};
+
+if (useHttps) {
+  try {
+    httpsOptions = {
+      key: readFileSync('/etc/ssl/gridfinitylabels.com/private.key'),
+      cert: readFileSync('/etc/ssl/gridfinitylabels.com/certificate.pem')
+    };
+    console.log('SSL certificates loaded successfully');
+  } catch (error) {
+    console.error('Cannot load SSL certificates:', error);
+    // Continue without HTTPS if certificates cannot be loaded
+  }
+}
 
 // Create the Qwik City Node middleware
 const { router, notFound } = createQwikCity({
@@ -47,14 +68,27 @@ const { router, notFound } = createQwikCity({
 // https://expressjs.com/
 const app = express();
 
-// Middleware to redirect HTTP to HTTPS (only in production)
+// Middleware to handle Cloudflare headers
 app.use((req, res, next) => {
-  // Only redirect in production and when not already using HTTPS
-  // Skip redirect for localhost (development environment)
+  // Check for Cloudflare headers
+  const cfVisitor = req.headers['cf-visitor'] ? JSON.parse(req.headers['cf-visitor'] as string) : {};
+  const isCloudflareHTTPS = cfVisitor.scheme === 'https';
+  const xForwardedProto = req.headers['x-forwarded-proto'];
+  
+  // Skip redirect for localhost or if already using HTTPS or if Cloudflare is handling HTTPS
   const host = req.headers.host || '';
   const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
   
-  if (process.env.NODE_ENV === 'production' && !isLocalhost && !req.secure && req.headers['x-forwarded-proto'] !== 'https') {
+  // Only redirect if:
+  // 1. In production
+  // 2. Not localhost
+  // 3. Not already secure
+  // 4. Not coming from Cloudflare HTTPS
+  if (process.env.NODE_ENV === 'production' && 
+      !isLocalhost && 
+      !req.secure && 
+      xForwardedProto !== 'https' && 
+      !isCloudflareHTTPS) {
     return res.redirect(`https://${req.headers.host}${req.url}`);
   }
   next();
@@ -92,8 +126,27 @@ app.use(router);
 // Use Qwik City's 404 handler
 app.use(notFound);
 
-// Start the express server
-app.listen(PORT, () => {
-  /* eslint-disable */
-  console.log(`Server started: http://localhost:${PORT}/`);
-});
+// Start the server(s)
+if (useHttps && Object.keys(httpsOptions).length > 0) {
+  // Create HTTPS server
+  const httpsServer = createHttpsServer(httpsOptions, app);
+  httpsServer.listen(HTTPS_PORT, () => {
+    console.log(`HTTPS Server started: https://localhost:${HTTPS_PORT}/`);
+  });
+  
+  // Create HTTP server that redirects to HTTPS
+  const httpServer = createHttpServer((req, res) => {
+    const host = req.headers.host || 'localhost';
+    res.writeHead(301, { Location: `https://${host}${req.url}` });
+    res.end();
+  });
+  
+  httpServer.listen(HTTP_PORT, () => {
+    console.log(`HTTP Server redirecting to HTTPS on port ${HTTP_PORT}`);
+  });
+} else {
+  // Fallback to HTTP only if HTTPS is not configured
+  app.listen(HTTP_PORT, () => {
+    console.log(`Server started: http://localhost:${HTTP_PORT}/`);
+  });
+}

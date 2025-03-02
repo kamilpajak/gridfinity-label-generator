@@ -35,6 +35,8 @@ FROM base AS final
 
 # Set production environment variables.
 ENV NODE_ENV=production
+ENV HTTP_PORT=80
+ENV HTTPS_PORT=443
 #ENV ORIGIN=localhost
 
 # Run the application as a non-root user.
@@ -49,8 +51,17 @@ COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/server ./server
 
-# Expose the port that the application listens on.
-EXPOSE 3000
+# Expose the ports that the application listens on.
+EXPOSE 80
+EXPOSE 443
+
+# Create directory for SSL certificates
+USER root
+RUN mkdir -p /etc/ssl/gridfinitylabels.com && \
+    chown -R node:node /etc/ssl/gridfinitylabels.com
+
+# Switch back to non-root user
+USER node
 
 # Start the application.
 CMD ["npm", "run", "serve"]

@@ -32,6 +32,8 @@ export default component$(() => {
     showStandardName: true,
     showImage: true,
     labelWidth: 55,
+    showQrCode: false,
+    qrCodeContent: "",
   });
 
   // Preload fonts as soon as the component is visible
@@ -82,6 +84,12 @@ export default component$(() => {
     if (newSettings.showImage !== undefined) {
       settings.showImage = newSettings.showImage;
     }
+    if (newSettings.showQrCode !== undefined) {
+      settings.showQrCode = newSettings.showQrCode;
+    }
+    if (newSettings.qrCodeContent !== undefined) {
+      settings.qrCodeContent = newSettings.qrCodeContent;
+    }
   });
 
   const generatePreview$ = $(async () => {
@@ -117,6 +125,8 @@ export default component$(() => {
         bottomText,
         settings.labelWidth,
         settings.showImage,
+        settings.showQrCode,
+        settings.qrCodeContent,
       );
 
       if (labelUrl) {
@@ -145,6 +155,8 @@ export default component$(() => {
     track(() => settings.labelWidth);
     track(() => settings.showStandardName);
     track(() => settings.showImage);
+    track(() => settings.showQrCode);
+    track(() => settings.qrCodeContent);
     track(() => threadSize.value);
     track(() => hardwareStandard.value);
     track(() => length.value);
@@ -294,12 +306,13 @@ export default component$(() => {
                 isLoading={isLoading.value}
                 labelUrl={labelPreviewUrl.value}
                 labelWidth={settings.labelWidth}
+                showQrCode={settings.showQrCode}
               />
 
               {renderDownloadSection()}
             </div>
 
-            <div class="hidden lg:block">
+            <div class="lg:block">
               <SettingsPanel
                 settings={settings}
                 onSettingsChange$={handleSettingsChange$}

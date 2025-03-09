@@ -1,13 +1,14 @@
 import type { PropFunction } from "@builder.io/qwik";
 import { $, component$ } from "@builder.io/qwik";
+import type { LabelSettings } from "~/types";
+import { validateWidth } from "~/utils/measurements";
 import {
   ChatBubbleIcon,
   IdentifierIcon,
   ImageIcon,
-  SettingsIcon,
+  QrCodeIcon,
+  SettingsIcon
 } from "./icons";
-import type { LabelSettings } from "~/types";
-import { validateWidth } from "~/utils/measurements";
 
 interface Props {
   settings: LabelSettings;
@@ -71,6 +72,43 @@ export const SettingsPanel = component$<Props>(
                 <div class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all" />
               </label>
             </div>
+
+            <div class="flex items-center justify-between bg-white h-[60px] px-4 rounded-lg border border-gray-200">
+              <div class="flex items-center gap-3">
+                <QrCodeIcon />
+                <span class="text-base text-gray-700">QR Code</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={settings.showQrCode}
+                  onChange$={(e) =>
+                    onSettingsChange$({
+                      showQrCode: (e.target as HTMLInputElement).checked,
+                    })
+                  }
+                  class="sr-only peer"
+                />
+                <div class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all" />
+              </label>
+            </div>
+
+            {settings.showQrCode && (
+              <div class="bg-white p-4 rounded-lg border border-gray-200">
+                <label class="block text-base text-gray-700 mb-2">QR Code Content</label>
+                <input
+                  type="text"
+                  class="w-full h-[40px] px-3 bg-gray-50 border border-gray-200 rounded text-base text-gray-700"
+                  value={settings.qrCodeContent}
+                  onInput$={(e) =>
+                    onSettingsChange$({
+                      qrCodeContent: (e.target as HTMLInputElement).value,
+                    })
+                  }
+                  placeholder="URL or text for QR code"
+                />
+              </div>
+            )}
 
             <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
               <div class="flex items-center justify-between">

@@ -199,8 +199,9 @@ function drawImageIfNeeded(
 
 /**
  * Generates a label image as a PNG DataURL.
- * The image is drawn on the left at its natural aspect ratio,
- * and the remaining space is allocated for text.
+ * The QR code has highest priority and is positioned on the right side of the label.
+ * The image is drawn on the left at its natural aspect ratio.
+ * The remaining space is allocated for text.
  * In two-line mode, the top text is drawn so that its top edge touches the top of the label,
  * and the bottom text is drawn so that its bottom edge touches the bottom of the label.
  * Logs are added to output dimensions in millimeters.
@@ -211,6 +212,8 @@ export async function generateLabel(
   bottomText: string,
   labelWidthMm: number,
   showImage: boolean,
+  showQrCode: boolean = false,
+  qrCodeContent: string = "",
 ): Promise<string | null> {
   await ensureFontsLoaded();
   const standardImg = await loadImage(standardImgUrl);
@@ -248,11 +251,64 @@ export async function generateLabel(
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
 
-  // Draw image on the left and determine text area dimensions
+  // QR code has highest priority - position it first if enabled
+  let qrCodeWidth = 0;
+  let qrCodeX = 0;
+  if (showQrCode && qrCodeContent) {
+    try {
+      // QR code size: 10mm x 10mm
+      const qrSizeMm = 10;
+      const qrSizePx = mmToPx(qrSizeMm);
+      qrCodeWidth = qrSizePx;
+      
+      // Position QR code on the right side of the printable area
+      qrCodeX = labelWidthPx - qrSizePx;
+      const qrY = (labelHeightPx - qrSizePx) / 2; // Centered vertically
+      
+      // Generate QR code using the qrcode library
+      const QRCode = await import('qrcode');
+      const qrDataUrl = await QRCode.default.toDataURL(qrCodeContent, {
+        errorCorrectionLevel: 'M',
+        margin: 0,
+        width: qrSizePx,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      });
+      
+      // Load the QR code as an image
+      const qrImg = new Image();
+      await new Promise<void>((resolve) => {
+        qrImg.onload = () => resolve();
+        qrImg.onerror = () => {
+          console.error("Failed to load QR code image");
+          resolve();
+        };
+        qrImg.src = qrDataUrl;
+      });
+      
+      // Draw the QR code on the label
+      if (qrImg.complete && qrImg.naturalWidth > 0) {
+        ctx.drawImage(qrImg, qrCodeX, qrY, qrSizePx, qrSizePx);
+      }
+      
+      console.log(`QR code positioned at x=${(qrCodeX / conversionFactor).toFixed(2)}mm, width=${qrSizeMm}mm`);
+    } catch (error) {
+      console.error("Error generating QR code:", error);
+    }
+  }
+
+  // Calculate available width for image and text (with 1mm gap between text and QR code)
+  const gapBetweenTextAndQrMm = qrCodeWidth > 0 ? 1 : 0; // 1mm gap if QR code is present
+  const gapBetweenTextAndQrPx = mmToPx(gapBetweenTextAndQrMm);
+  const availableWidthForImageAndText = qrCodeWidth > 0 ? qrCodeX - gapBetweenTextAndQrPx : labelWidthPx;
+  
+  // Draw image on the left if enabled
   const imageUsedWidth = drawImageIfNeeded(
     ctx,
     standardImg,
-    labelWidthPx,
+    availableWidthForImageAndText, // Only use width up to QR code
     labelHeightPx,
     gapPx,
     showImage,
@@ -260,8 +316,9 @@ export async function generateLabel(
   const imageUsedWidthMm = imageUsedWidth / conversionFactor;
   console.log(`Image used width (mm): ${imageUsedWidthMm.toFixed(2)}`);
 
+  // Calculate text area dimensions
   const textAreaX = imageUsedWidth;
-  const textAreaWidth = labelWidthPx - textAreaX;
+  const textAreaWidth = availableWidthForImageAndText - textAreaX;
   console.log(
     `Text area starts at (mm): ${(textAreaX / conversionFactor).toFixed(2)}`,
   );

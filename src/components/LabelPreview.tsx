@@ -5,6 +5,7 @@ interface Props {
   isLoading: boolean;
   labelUrl: string;
   labelWidth: number;
+  showQrCode?: boolean;
 }
 
 // Helper: Renders the header with title and dimensions.
@@ -39,7 +40,7 @@ const renderHeader = (labelWidth: number) => (
 
 // Helper: Renders the label image responsively.
 // The container sets the width while the image uses width:100% and height:auto to preserve its proportions.
-const renderLabelImage = (labelUrl: string, labelWidth: number) => {
+const renderLabelImage = (labelUrl: string, labelWidth: number, showQrCode: boolean = false) => {
   // Calculate margin percentages
   const topBottomMarginPercent = (1 / 12) * 100; // 1mm out of 12mm height = 8.33%
   const leftRightMarginPercent = (2 / labelWidth) * 100; // 2mm out of labelWidth
@@ -51,7 +52,7 @@ const renderLabelImage = (labelUrl: string, labelWidth: number) => {
       <div class="absolute inset-0 bg-black/10 blur-md transform translate-y-1.5"></div>
       
       {/* Full tape container with white background */}
-      <div class="relative bg-white border border-gray-200 rounded-sm overflow-hidden" 
+      <div class="relative bg-white border border-gray-200 rounded-sm overflow-hidden group" 
            style={{ aspectRatio: `${labelWidth} / 12` }}>
         
         {/* Printable area container */}
@@ -83,6 +84,8 @@ const renderLabelImage = (labelUrl: string, labelWidth: number) => {
           <div class="absolute left-[2%] top-1/2 -translate-y-1/2 -translate-x-1/2 text-[8px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">2mm</div>
           <div class="absolute right-[2%] top-1/2 -translate-y-1/2 translate-x-1/2 text-[8px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">2mm</div>
         </div>
+        
+        {/* QR code indicator removed as per user request */}
       </div>
     </div>
   );
@@ -97,10 +100,10 @@ const renderFallback = () => (
 );
 
 // Main component
-export const LabelPreview = component$<Props>(({ labelUrl, labelWidth }) => {
+export const LabelPreview = component$<Props>(({ labelUrl, labelWidth, showQrCode = false }) => {
   // Render content based on current state.
   const renderContent = () => {
-    if (labelUrl) return renderLabelImage(labelUrl, labelWidth);
+    if (labelUrl) return renderLabelImage(labelUrl, labelWidth, showQrCode);
     return renderFallback();
   };
 

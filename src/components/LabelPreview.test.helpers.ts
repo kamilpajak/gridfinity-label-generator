@@ -2,6 +2,63 @@
 // Instead of using JSX, we'll use simple functions that return objects with the expected values
 
 /**
+ * Helper function to check if QR code should be displayed
+ * @param showQrCode Boolean indicating if QR code should be shown
+ * @returns Object with QR code display information
+ */
+export function checkQrCodeDisplay(showQrCode: boolean) {
+  return {
+    isVisible: showQrCode,
+    position: 'right side of the label',
+    dimensions: '10mm × 10mm'
+  };
+}
+
+/**
+ * Helper function to check if label elements overlap
+ * @param labelWidth The width of the label in mm
+ * @param showImage Boolean indicating if image is shown
+ * @param showQrCode Boolean indicating if QR code is shown
+ * @returns Object with layout validation information
+ */
+export function validateLabelLayout(labelWidth: number, showImage: boolean, showQrCode: boolean) {
+  // QR code has highest priority - position it first if enabled
+  const qrCodeWidth = showQrCode ? 10 : 0; // QR code is 10mm wide
+  const qrCodeX = showQrCode ? labelWidth - qrCodeWidth : 0; // QR code at right edge
+  
+  // Calculate available width for image and text (with 1mm gap between text and QR code)
+  const gapBetweenTextAndQrMm = qrCodeWidth > 0 ? 1 : 0; // 1mm gap if QR code is present
+  const availableWidthForImageAndText = qrCodeWidth > 0 ? qrCodeX - gapBetweenTextAndQrMm : labelWidth;
+  
+  // Calculate image width if enabled
+  const imageWidth = showImage ? Math.min(availableWidthForImageAndText * 0.4, 10) : 0; // Image takes up to 40% of available width
+  const gap = 2; // Gap between elements in mm
+  
+  // Calculate text area position and width
+  const textX = showImage ? imageWidth + gap : 0;
+  const textWidth = availableWidthForImageAndText - textX;
+  
+  // Check if there's enough space for text (at least 10mm)
+  const hasEnoughTextSpace = textWidth >= 10;
+  
+  // Check if elements overlap
+  const elementsOverlap = textWidth < 0;
+  
+  return {
+    imageWidth,
+    qrCodeWidth,
+    textAreaWidth: textWidth,
+    hasEnoughTextSpace,
+    elementsOverlap,
+    layout: {
+      image: showImage ? { x: 0, width: imageWidth } : null,
+      text: { x: textX, width: textWidth },
+      qrCode: showQrCode ? { x: qrCodeX, width: qrCodeWidth } : null
+    }
+  };
+}
+
+/**
  * Helper function to calculate dimensions for a label
  * @param labelWidth The width of the label in mm
  * @returns An object with the calculated dimensions

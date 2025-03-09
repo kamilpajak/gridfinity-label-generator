@@ -41,7 +41,7 @@ const renderHeader = (labelWidth: number) => (
 // Helper: Renders the label image responsively.
 // The container sets the width while the image uses width:100% and height:auto to preserve its proportions.
 const renderLabelImage = (labelUrl: string, labelWidth: number, showQrCode: boolean = false) => {
-  // Calculate margin percentages
+  // Calculate margin percentages for the tape container
   const topBottomMarginPercent = (1 / 12) * 100; // 1mm out of 12mm height = 8.33%
   const leftRightMarginPercent = (2 / labelWidth) * 100; // 2mm out of labelWidth
   
@@ -55,7 +55,9 @@ const renderLabelImage = (labelUrl: string, labelWidth: number, showQrCode: bool
       <div class="relative bg-white border border-gray-200 rounded-sm overflow-hidden group" 
            style={{ aspectRatio: `${labelWidth} / 12` }}>
         
-        {/* Printable area container */}
+        {/* Tape margins indicators are below */}
+        
+        {/* Printable area container - matches the actual generated label dimensions */}
         <div class="absolute" 
              style={{ 
                top: `${topBottomMarginPercent}%`,
@@ -71,7 +73,8 @@ const renderLabelImage = (labelUrl: string, labelWidth: number, showQrCode: bool
             <img 
               src={labelUrl} 
               alt={`Generated label with dimensions ${labelWidth - 4}mm × 10mm`} 
-              class="max-w-full max-h-full object-contain" 
+              class="w-full h-full" 
+              style={{ objectFit: "fill" }}
             />
           </div>
         </div>

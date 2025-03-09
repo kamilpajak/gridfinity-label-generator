@@ -1,16 +1,39 @@
-import {computeDynamicFontSize, mmToPx} from "~/utils/measurements";
+import { computeDynamicFontSize, mmToPx } from "~/utils/measurements";
 
 /**
  * Loads required fonts before rendering.
+ * Includes verification and fallback mechanisms to prevent race conditions.
  */
 async function ensureFontsLoaded(): Promise<void> {
   try {
+    // Try to load fonts
     await Promise.all([
+      document.fonts.load('400 16px "Noto Sans"'),
       document.fonts.load('900 16px "Noto Sans"'),
-      document.fonts.load('900 16px "Oswald"'),
+      document.fonts.load('400 16px "Oswald"'),
+      document.fonts.load('700 16px "Oswald"'),
     ]);
+    
+    // Verify fonts are actually loaded and ready
+    if (!document.fonts.check('900 16px "Noto Sans"') || 
+        !document.fonts.check('700 16px "Oswald"')) {
+      console.warn("Fonts not fully loaded, waiting for fonts ready event");
+      await document.fonts.ready;
+      
+      // Double-check after fonts.ready
+      if (!document.fonts.check('900 16px "Noto Sans"') || 
+          !document.fonts.check('700 16px "Oswald"')) {
+        console.warn("Fonts still not available after fonts.ready, using fallbacks");
+      }
+    }
   } catch (error) {
     console.error("Failed to load fonts:", error);
+    // Wait for fonts ready as fallback
+    try {
+      await document.fonts.ready;
+    } catch (readyError) {
+      console.error("Failed to wait for fonts.ready:", readyError);
+    }
   }
 }
 
@@ -302,10 +325,10 @@ export async function generateLabel(
       bottomText,
       desiredTextHeight,
       "Oswald",
-      "900",
+      "700",
       textAreaWidth,
     );
-    ctx.font = `900 ${bottomResult.fontSize}px "Oswald", sans-serif`;
+    ctx.font = `700 ${bottomResult.fontSize}px "Oswald", sans-serif`;
     const bottomX =
       textAreaX + (textAreaWidth - bottomResult.metrics.width) / 2;
     // Bottom edge should touch the bottom, so we position at:

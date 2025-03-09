@@ -1,19 +1,19 @@
-import { $, component$, useSignal, useStore, useTask$ } from "@builder.io/qwik";
-import type { LabelSettings } from "~/types";
+import { $, component$, useSignal, useStore, useTask$, useVisibleTask$ } from "@builder.io/qwik";
+import { HardwareTypeSelector } from "~/components/HardwareTypeSelector";
+import { Header } from "~/components/Header";
+import { DownloadIcon } from "~/components/icons";
+import { LabelPreview } from "~/components/LabelPreview";
+import { SearchableDropdown } from "~/components/SearchableDropdown";
+import { SettingsPanel } from "~/components/SettingsPanel";
+import { ThreadSizeDropdown } from "~/components/ThreadSizeDropdown";
 import {
   dinStandards,
   imperialThreadSizes,
   metricThreadSizes,
 } from "~/constants/hardware";
 import { generateLabel, getLabelTexts } from "~/lib/labelGenerator";
-import { Header } from "~/components/Header";
-import { HardwareTypeSelector } from "~/components/HardwareTypeSelector";
-import { SearchableDropdown } from "~/components/SearchableDropdown";
-import { ThreadSizeDropdown } from "~/components/ThreadSizeDropdown";
-import { LabelPreview } from "~/components/LabelPreview";
-import { SettingsPanel } from "~/components/SettingsPanel";
+import type { LabelSettings } from "~/types";
 import { validateWidth } from "~/utils/measurements";
-import { DownloadIcon } from "~/components/icons";
 
 export default component$(() => {
   // State signals
@@ -33,6 +33,21 @@ export default component$(() => {
     showImage: true,
     labelWidth: 55,
   });
+
+  // Preload fonts as soon as the component is visible
+  useVisibleTask$(async () => {
+    try {
+      await Promise.all([
+        document.fonts.load('400 16px "Noto Sans"'),
+        document.fonts.load('900 16px "Noto Sans"'),
+        document.fonts.load('400 16px "Oswald"'),
+        document.fonts.load('700 16px "Oswald"'),
+      ]);
+      console.log("Fonts preloaded successfully");
+    } catch (error) {
+      console.error("Failed to preload fonts:", error);
+    }
+  }, { strategy: 'document-ready' });
 
   // Helper to reset input values when type or system changes.
   const resetInputs = $(() => {

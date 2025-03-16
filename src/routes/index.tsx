@@ -4,12 +4,17 @@ import { Header } from "~/components/Header";
 import { DownloadIcon } from "~/components/icons";
 import { LabelPreview } from "~/components/LabelPreview";
 import { SearchableDropdown } from "~/components/SearchableDropdown";
+import { ScrewSubtypeSelector } from "~/components/ScrewSubtypeSelector";
 import { SettingsPanel } from "~/components/SettingsPanel";
 import { ThreadSizeDropdown } from "~/components/ThreadSizeDropdown";
 import {
   dinStandards,
+  getScrewStandardsBySubtype,
   imperialThreadSizes,
   metricThreadSizes,
+  screwImperialSizes,
+  screwMetricSizes,
+  type ScrewSubtype,
 } from "~/constants/hardware";
 import { generateLabel, getLabelTexts } from "~/lib/labelGenerator";
 import type { LabelSettings } from "~/types";
@@ -18,6 +23,7 @@ import { validateWidth } from "~/utils/measurements";
 export default component$(() => {
   // State signals
   const selectedType = useSignal("Screw");
+  const selectedScrewSubtype = useSignal<ScrewSubtype>("Bolt");
   const selectedSystem = useSignal("Metric");
   const threadSize = useSignal("");
   const hardwareStandard = useSignal("");
@@ -32,7 +38,7 @@ export default component$(() => {
     showStandardName: true,
     showImage: true,
     labelWidth: 55,
-    showQrCode: false,
+    showQrCode: true,
     qrCodeContent: "",
   });
 
@@ -63,7 +69,19 @@ export default component$(() => {
   const handleTypeChange$ = $((type: string) => {
     if (selectedType.value !== type) {
       selectedType.value = type;
+      if (type === "Screw") {
+        selectedScrewSubtype.value = "Bolt";
+      }
       resetInputs();
+    }
+  });
+
+  const handleScrewSubtypeChange$ = $((subtype: string) => {
+    if (selectedScrewSubtype.value !== subtype) {
+      selectedScrewSubtype.value = subtype as ScrewSubtype;
+      threadSize.value = "";
+      hardwareStandard.value = "";
+      labelPreviewUrl.value = "";
     }
   });
 
@@ -101,9 +119,16 @@ export default component$(() => {
       return;
     }
 
-    const standard = dinStandards[
-      selectedType.value.toLowerCase() as keyof typeof dinStandards
-    ].find((s) => s.value === hardwareStandard.value);
+    let standard;
+    if (selectedType.value === "Screw") {
+      standard = getScrewStandardsBySubtype(selectedScrewSubtype.value).find(
+        (s) => s.value === hardwareStandard.value
+      );
+    } else {
+      standard = dinStandards[
+        selectedType.value.toLowerCase() as keyof typeof dinStandards
+      ].find((s) => s.value === hardwareStandard.value);
+    }
 
     if (!standard) return;
 
@@ -117,6 +142,7 @@ export default component$(() => {
         hardwareStandard.value,
         notes.value,
         settings.showStandardName,
+        selectedScrewSubtype.value,
       );
 
       const labelUrl = await generateLabel(
@@ -143,7 +169,11 @@ export default component$(() => {
     if (!labelPreviewUrl.value) return;
     const link = document.createElement("a");
     link.href = labelPreviewUrl.value;
-    const filename = `${selectedType.value.toLowerCase()}-${threadSize.value}${length.value ? `-${length.value}` : ""}.png`;
+    const filename = `${selectedType.value.toLowerCase()}-${
+      selectedType.value === "Screw" 
+        ? selectedScrewSubtype.value.toLowerCase() + "-" 
+        : ""
+    }${threadSize.value}${length.value ? `-${length.value}` : ""}.png`;
     link.download = filename;
     document.body.appendChild(link);
     link.click();
@@ -174,43 +204,63 @@ export default component$(() => {
 
   // Render helper functions
 
+  const getThreadSizeOptions = () => {
+    if (selectedType.value === "Screw" && selectedScrewSubtype.value === "Screw") {
+      return selectedSystem.value === "Metric"
+        ? screwMetricSizes
+        : screwImperialSizes;
+    } else {
+      return selectedSystem.value === "Metric"
+        ? metricThreadSizes
+        : imperialThreadSizes;
+    }
+  };
+
   const renderInputFields = () => (
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-      <ThreadSizeDropdown
-        selectedValue={threadSize.value}
-        options={
-          selectedSystem.value === "Metric"
-            ? metricThreadSizes
-            : imperialThreadSizes
-        }
-        onSelect$={(value: string) => (threadSize.value = value)}
+    <div class="space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+        <ThreadSizeDropdown
+          selectedValue={threadSize.value}
+          options={getThreadSizeOptions()}
+          onSelect$={(value: string) => (threadSize.value = value)}
+        />
+        {selectedType.value === "Screw" && (
+          <input
+            type="text"
+            required
+            placeholder={
+              selectedSystem.value === "Metric"
+                ? "Length (e.g., 10)"
+                : "Length (e.g., 3/8″)"
+            }
+            class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            value={length.value}
+            onInput$={(e) =>
+              (length.value = (e.target as HTMLInputElement).value)
+            }
+          />
+        )}
+      </div>
+      
+      <input
+        type="text"
+        placeholder="Optional notes"
+        class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        value={notes.value}
+        onInput$={(e) => (notes.value = (e.target as HTMLInputElement).value)}
       />
-      {selectedType.value === "Screw" ? (
-        <input
-          type="text"
-          required
-          placeholder={
-            selectedSystem.value === "Metric"
-              ? "Length (e.g., 10)"
-              : "Length (e.g., 3/8″)"
-          }
-          class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          value={length.value}
-          onInput$={(e) =>
-            (length.value = (e.target as HTMLInputElement).value)
-          }
-        />
-      ) : (
-        <input
-          type="text"
-          placeholder="Optional notes"
-          class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          value={notes.value}
-          onInput$={(e) => (notes.value = (e.target as HTMLInputElement).value)}
-        />
-      )}
     </div>
   );
+
+  const getFilteredStandards = () => {
+    if (selectedType.value === "Screw") {
+      return getScrewStandardsBySubtype(selectedScrewSubtype.value);
+    } else {
+      return dinStandards[
+        selectedType.value.toLowerCase() as keyof typeof dinStandards
+      ];
+    }
+  };
 
   const renderStandardDropdown = () => (
     <SearchableDropdown
@@ -222,11 +272,7 @@ export default component$(() => {
       selectedValue={hardwareStandard.value}
       searchQuery={standardSearchQuery.value}
       onSearchChange$={(query: string) => (standardSearchQuery.value = query)}
-      options={
-        dinStandards[
-          selectedType.value.toLowerCase() as keyof typeof dinStandards
-        ]
-      }
+      options={getFilteredStandards()}
       onSelect$={(value: string) => {
         hardwareStandard.value = value;
         isStandardDropdownOpen.value = false;
@@ -288,19 +334,15 @@ export default component$(() => {
                 onSystemChange$={handleSystemChange$}
               />
 
-              {renderInputFields()}
-              {renderStandardDropdown()}
               {selectedType.value === "Screw" && (
-                <input
-                  type="text"
-                  placeholder="Optional notes"
-                  class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={notes.value}
-                  onInput$={(e) =>
-                    (notes.value = (e.target as HTMLInputElement).value)
-                  }
+                <ScrewSubtypeSelector
+                  selectedSubtype={selectedScrewSubtype.value}
+                  onSubtypeChange$={handleScrewSubtypeChange$}
                 />
               )}
+
+              {renderInputFields()}
+              {renderStandardDropdown()}
 
               <LabelPreview
                 isLoading={isLoading.value}

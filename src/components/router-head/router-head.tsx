@@ -71,6 +71,11 @@ export const RouterHead = component$(() => {
             : { dangerouslySetInnerHTML: s.script })}
         />
       ))}
+      <script 
+        type="text/javascript" 
+        src="https://platform-api.sharethis.com/js/sharethis.js#property=67d6a61cbc169300120859df&product=inline-share-buttons&source=platform" 
+        async={true}
+      ></script>
     </>
   );
 });

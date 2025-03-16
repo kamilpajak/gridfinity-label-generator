@@ -3,7 +3,7 @@ export const mmToPx = (mm: number): number => mm * 14.173228346; // 360 DPI conv
 export const validateWidth = (value: string | number): number => {
   let newValue = typeof value === "string" ? parseInt(value) : value;
   if (isNaN(newValue)) newValue = 55;
-  if (newValue < 40) newValue = 40;
+  if (newValue < 37) newValue = 37;
   if (newValue > 100) newValue = 100;
   return newValue;
 };

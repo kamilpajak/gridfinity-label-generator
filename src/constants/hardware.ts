@@ -1,3 +1,12 @@
+// Screw subtypes
+export type ScrewSubtype = "Bolt" | "Screw";
+
+export const screwSubtypes = [
+  { value: "Bolt", text: "Bolt" },
+  { value: "Screw", text: "Screw" },
+];
+
+// Bolt thread sizes
 export const metricThreadSizes = [
   "M1.4",
   "M1.6",
@@ -24,6 +33,29 @@ export const imperialThreadSizes = [
   "3/8″",
   "1/2″",
   "5/8″",
+];
+
+// Screw sizes
+export const screwMetricSizes = [
+  "3mm",
+  "3.5mm",
+  "4mm",
+  "4.5mm",
+  "5mm",
+  "6mm",
+  "8mm",
+  "10mm",
+];
+
+export const screwImperialSizes = [
+  "#4",
+  "#6",
+  "#8",
+  "#10",
+  "#12",
+  "#14",
+  "1/4″",
+  "5/16″",
 ];
 
 type StandardType = "DIN" | "ISO";
@@ -274,6 +306,36 @@ const standards = {
     createStandard("DIN", "988", "Shim Ring", "washers"),
   ],
 } as const;
+
+// Helper function to identify screws (vs bolts)
+const isScrew = (standard: Standard): boolean => {
+  return (
+    standard.description.toLowerCase().includes("wood screw") ||
+    standard.number === "571" // Coach Screw (Wood Screw)
+  );
+};
+
+// Get standards filtered by screw subtype
+export const getScrewStandardsBySubtype = (subtype: ScrewSubtype) => {
+  if (subtype === "Screw") {
+    return standards.screw
+      .filter(isScrew)
+      .map((std) => ({
+        value: getStandardValue(std),
+        text: getStandardText(std),
+        image: getStandardImage(std),
+      }));
+  } else {
+    // Bolt
+    return standards.screw
+      .filter((std) => !isScrew(std))
+      .map((std) => ({
+        value: getStandardValue(std),
+        text: getStandardText(std),
+        image: getStandardImage(std),
+      }));
+  }
+};
 
 export const dinStandards = {
   screw: standards.screw.map((std) => ({

@@ -1,0 +1,129 @@
+# Gridfinity Label Generator - Project Intelligence
+
+## Critical Implementation Paths
+
+1. **Label Generation Flow**
+   - User selects hardware specifications → State updates → Reactive task triggers → Label generation function called → Canvas rendering → Data URL generated → Preview updated
+   - Any changes to this flow must maintain the reactive update pattern
+
+2. **Priority-Based Layout System**
+   - QR code (highest priority) → Image → Text
+   - This priority order must be maintained in any layout modifications
+   - Element positioning is calculated based on available space after higher-priority elements
+
+3. **Font Loading System**
+   - Fonts must be preloaded before rendering
+   - Multiple fallback mechanisms must be maintained
+   - Font verification is critical before rendering
+
+## User Preferences
+
+1. **Code Organization**
+   - Prefer Qwik City components and patterns
+   - Avoid React patterns and terminology
+   - Maintain clear separation between UI components and core functionality
+
+2. **Naming Conventions**
+   - Component files: PascalCase.tsx
+   - Utility files: camelCase.ts
+   - Handler functions: camelCase$ (with $ suffix for Qwik optimization)
+   - Constants: UPPER_SNAKE_CASE or camelCase depending on scope
+
+3. **Documentation Style**
+   - Focus on the priority-based layout system in technical documentation
+   - Emphasize the physical dimensions and scaling aspects
+   - Document the relationship between mm and pixels
+
+## Project-Specific Patterns
+
+1. **State Management**
+   - Simple values: useSignal()
+   - Complex objects: useStore()
+   - Derived values: useTask$()
+   - Avoid unnecessary state, derive values when possible
+
+2. **Component Structure**
+   - Keep components focused on a single responsibility
+   - Extract reusable logic to separate components
+   - Use render helper functions for complex UI sections
+
+3. **Event Handling**
+   - Use $ suffix for event handlers (Qwik optimization)
+   - Pass handlers down to child components as props
+   - Keep handlers close to the state they modify
+
+4. **Label Generation**
+   - Canvas-based rendering for precise control
+   - Text measurement before rendering to ensure proper scaling
+   - Element positioning based on priority system
+   - Conversion between physical dimensions (mm) and pixels
+
+## Known Challenges
+
+1. **Font Rendering**
+   - Font loading can be unreliable across browsers
+   - Multiple fallback mechanisms are necessary
+   - Font verification before rendering is critical
+
+2. **Image Loading**
+   - SVG is preferred but JPG fallback is necessary
+   - Image aspect ratio must be preserved
+   - Maximum width constraint (40% of available space) must be maintained
+
+3. **Text Scaling**
+   - Text must be measured before rendering
+   - Dynamic font size calculation based on available space
+   - Different scaling for single-line vs. two-line mode
+
+4. **Physical Dimensions**
+   - Conversion between mm and pixels must be accurate
+   - Fixed height (10mm) with variable width
+   - All measurements must maintain proper physical proportions
+
+## Evolution of Project Decisions
+
+1. **QR Code Integration**
+   - Initially not part of the design
+   - Added as highest priority element
+   - Fixed size (10mm x 10mm) and position (right side)
+   - Other elements must adapt to remaining space
+
+2. **Label Width**
+   - Initially fixed at 55mm
+   - Changed to user-configurable
+   - Minimum and maximum constraints added
+   - All internal measurements scale proportionally
+
+3. **Font Selection**
+   - Noto Sans chosen for primary specifications (top text)
+   - Oswald chosen for standard information (bottom text)
+   - Weights selected for optimal readability (900 for Noto Sans, 700 for Oswald)
+
+4. **Image System**
+   - Initially SVG only
+   - Added JPG fallback for better compatibility
+   - Added aspect ratio preservation
+   - Added maximum width constraint (40% of available space)
+
+## Tool Usage Patterns
+
+1. **Development Workflow**
+   - `npm run dev` for local development
+   - `npm run build` followed by `npm run serve` for production preview
+   - `npm test` for running tests
+
+2. **Code Quality Tools**
+   - ESLint for static code analysis
+   - Prettier for code formatting
+   - Vitest for testing
+
+3. **Browser Testing**
+   - Test in Chrome, Firefox, and Safari
+   - Verify font loading in each browser
+   - Check label dimensions and scaling
+   - Validate QR code readability
+
+4. **Performance Monitoring**
+   - Monitor label generation time
+   - Check font loading performance
+   - Verify responsive behavior on different devices

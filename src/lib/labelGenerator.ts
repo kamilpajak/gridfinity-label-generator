@@ -48,13 +48,27 @@ export function getLabelTexts(
   hardwareStandard: string,
   notes: string,
   showStandardName: boolean,
+  selectedScrewSubtype?: string,
 ): { topText: string; bottomText: string } {
   let topText: string;
-  if (selectedType === "Screw" && length) {
-    if (selectedSystem === "Metric") {
-      topText = `${threadSize} × ${length}`;
+  if (selectedType === "Screw") {
+    let displayThreadSize = threadSize;
+    
+    // Remove "mm" from thread size for metric screws on the label
+    if (selectedSystem === "Metric" && threadSize.endsWith("mm")) {
+      displayThreadSize = threadSize.replace("mm", "");
+    }
+    
+    if (length) {
+      // Both Bolt and Screw show thread size and length
+      if (selectedSystem === "Metric") {
+        topText = `${displayThreadSize} × ${length}`;
+      } else {
+        topText = `${displayThreadSize} × ${length}″`;
+      }
     } else {
-      topText = `${threadSize} × ${length}″`;
+      // Fallback if no length is provided
+      topText = displayThreadSize || "Default top text";
     }
   } else {
     topText = threadSize || "Default top text";

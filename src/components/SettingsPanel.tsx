@@ -116,7 +116,7 @@ export const SettingsPanel = component$<Props>(
                 <div class="flex items-center gap-2">
                   <input
                     type="number"
-                    min="40"
+                    min="37"
                     max="100"
                     class="w-20 h-[40px] px-2 bg-gray-50 border border-gray-200 rounded text-right text-base text-gray-700"
                     value={settings.labelWidth}
@@ -130,7 +130,7 @@ export const SettingsPanel = component$<Props>(
               <div class="space-y-2">
                 <input
                   type="range"
-                  min="40"
+                  min="37"
                   max="100"
                   value={settings.labelWidth}
                   onInput$={(e) =>
@@ -139,7 +139,7 @@ export const SettingsPanel = component$<Props>(
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                 />
                 <div class="flex justify-between text-xs text-gray-500">
-                  <span>40mm</span>
+                  <span>37mm</span>
                   <span>100mm</span>
                 </div>
               </div>
@@ -147,24 +147,7 @@ export const SettingsPanel = component$<Props>(
           </div>
 
           <div class="pt-4 border-t border-gray-200">
-            <div class="flex items-center gap-3 text-gray-700 mb-4">
-              <ChatBubbleIcon />
-              <h3 id="community" class="text-lg font-medium">
-                Community
-              </h3>
-            </div>
-            <p class="text-base text-gray-600 mb-4">
-              Share your labels, suggest features, or report bugs on Reddit!
-            </p>
-            <a
-              href="https://www.reddit.com/r/gridfinity/comments/1ip9r98/i_created_a_web_app_for_generating_gridfinity/"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex w-full items-center justify-center gap-2 h-[60px] px-6 bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 border border-blue-200 rounded-lg transition-colors text-base font-medium"
-            >
-              <ChatBubbleIcon />
-              <span>Join Discussion</span>
-            </a>
+            <div class="sharethis-inline-share-buttons"></div>
           </div>
         </div>
       </div>

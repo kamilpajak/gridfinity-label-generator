@@ -22,7 +22,11 @@ const renderHeader = (labelWidth: number) => (
         <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block w-64 p-3 bg-white rounded-lg shadow-lg text-sm text-gray-700 z-10">
           <div class="relative">
             <div class="absolute -bottom-2 left-2 w-4 h-4 bg-white transform rotate-45"></div>
-            <p>The selected width (e.g., 55mm) is the tape size. The printable area is 4mm narrower (2mm margin on each side) and 2mm shorter (1mm margin on top and bottom).</p>
+            <p>
+              The selected width (e.g., 55mm) is the tape size. The printable
+              area is 4mm narrower (2mm margin on each side) and 2mm shorter
+              (1mm margin on top and bottom).
+            </p>
           </div>
         </div>
       </div>
@@ -40,54 +44,65 @@ const renderHeader = (labelWidth: number) => (
 
 // Helper: Renders the label image responsively.
 // The container sets the width while the image uses width:100% and height:auto to preserve its proportions.
-const renderLabelImage = (labelUrl: string, labelWidth: number, showQrCode: boolean = false) => {
+const renderLabelImage = (labelUrl: string, labelWidth: number) => {
   // Calculate margin percentages for the tape container
   const topBottomMarginPercent = (1 / 12) * 100; // 1mm out of 12mm height = 8.33%
   const leftRightMarginPercent = (2 / labelWidth) * 100; // 2mm out of labelWidth
-  
+
   return (
     <div class="relative w-full">
       {/* Multi-layered shadow for depth */}
       <div class="absolute inset-0 bg-black/5 blur-lg transform translate-y-2"></div>
       <div class="absolute inset-0 bg-black/10 blur-md transform translate-y-1.5"></div>
-      
+
       {/* Full tape container with white background */}
-      <div class="relative bg-white border border-gray-200 rounded-sm overflow-hidden group" 
-           style={{ aspectRatio: `${labelWidth} / 12` }}>
-        
+      <div
+        class="relative bg-white border border-gray-200 rounded-sm overflow-hidden group"
+        style={{ aspectRatio: `${labelWidth} / 12` }}
+      >
         {/* Tape margins indicators are below */}
-        
+
         {/* Printable area container - matches the actual generated label dimensions */}
-        <div class="absolute" 
-             style={{ 
-               top: `${topBottomMarginPercent}%`,
-               bottom: `${topBottomMarginPercent}%`,
-               left: `${leftRightMarginPercent}%`,
-               right: `${leftRightMarginPercent}%`,
-             }}>
+        <div
+          class="absolute"
+          style={{
+            top: `${topBottomMarginPercent}%`,
+            bottom: `${topBottomMarginPercent}%`,
+            left: `${leftRightMarginPercent}%`,
+            right: `${leftRightMarginPercent}%`,
+          }}
+        >
           {/* Printable area border - very subtle */}
           <div class="absolute inset-0 border border-gray-300/20 pointer-events-none"></div>
-          
+
           {/* Label image - positioned precisely within printable area */}
           <div class="w-full h-full flex items-center justify-center">
-            <img 
-              src={labelUrl} 
-              alt={`Generated label with dimensions ${labelWidth - 4}mm × 10mm`} 
-              class="w-full h-full" 
+            <img
+              src={labelUrl}
+              alt={`Generated label with dimensions ${labelWidth - 4}mm × 10mm`}
+              class="w-full h-full"
               style={{ objectFit: "fill" }}
             />
           </div>
         </div>
-        
+
         {/* Margin indicators - very subtle */}
         <div class="absolute inset-0 pointer-events-none">
           {/* Margin labels - only visible on hover */}
-          <div class="absolute top-[4%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[8px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">1mm</div>
-          <div class="absolute bottom-[4%] left-1/2 -translate-x-1/2 translate-y-1/2 text-[8px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">1mm</div>
-          <div class="absolute left-[2%] top-1/2 -translate-y-1/2 -translate-x-1/2 text-[8px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">2mm</div>
-          <div class="absolute right-[2%] top-1/2 -translate-y-1/2 translate-x-1/2 text-[8px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">2mm</div>
+          <div class="absolute top-[4%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-[8px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            1mm
+          </div>
+          <div class="absolute bottom-[4%] left-1/2 -translate-x-1/2 translate-y-1/2 text-[8px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            1mm
+          </div>
+          <div class="absolute left-[2%] top-1/2 -translate-y-1/2 -translate-x-1/2 text-[8px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            2mm
+          </div>
+          <div class="absolute right-[2%] top-1/2 -translate-y-1/2 translate-x-1/2 text-[8px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+            2mm
+          </div>
         </div>
-        
+
         {/* QR code indicator removed as per user request */}
       </div>
     </div>
@@ -103,10 +118,10 @@ const renderFallback = () => (
 );
 
 // Main component
-export const LabelPreview = component$<Props>(({ labelUrl, labelWidth, showQrCode = false }) => {
+export const LabelPreview = component$<Props>(({ labelUrl, labelWidth }) => {
   // Render content based on current state.
   const renderContent = () => {
-    if (labelUrl) return renderLabelImage(labelUrl, labelWidth, showQrCode);
+    if (labelUrl) return renderLabelImage(labelUrl, labelWidth);
     return renderFallback();
   };
 

@@ -2,13 +2,7 @@ import type { PropFunction } from "@builder.io/qwik";
 import { $, component$ } from "@builder.io/qwik";
 import type { LabelSettings } from "~/types";
 import { validateWidth } from "~/utils/measurements";
-import {
-  ChatBubbleIcon,
-  IdentifierIcon,
-  ImageIcon,
-  QrCodeIcon,
-  SettingsIcon
-} from "./icons";
+import { IdentifierIcon, ImageIcon, QrCodeIcon, SettingsIcon } from "./icons";
 
 interface Props {
   settings: LabelSettings;
@@ -95,7 +89,9 @@ export const SettingsPanel = component$<Props>(
 
             {settings.showQrCode && (
               <div class="bg-white p-4 rounded-lg border border-gray-200">
-                <label class="block text-base text-gray-700 mb-2">QR Code Content</label>
+                <label class="block text-base text-gray-700 mb-2">
+                  QR Code Content
+                </label>
                 <input
                   type="text"
                   class="w-full h-[40px] px-3 bg-gray-50 border border-gray-200 rounded text-base text-gray-700"

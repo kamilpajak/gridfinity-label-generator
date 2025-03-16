@@ -354,7 +354,7 @@ export default component$(() => {
               {renderDownloadSection()}
             </div>
 
-            <div class="lg:block">
+            <div class="hidden lg:block">
               <SettingsPanel
                 settings={settings}
                 onSettingsChange$={handleSettingsChange$}

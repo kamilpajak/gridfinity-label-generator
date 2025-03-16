@@ -1,5 +1,5 @@
 import type { PropFunction } from "@builder.io/qwik";
-import { $, component$, useVisibleTask$ } from "@builder.io/qwik";
+import { $, component$ } from "@builder.io/qwik";
 import type { LabelSettings } from "~/types";
 import { validateWidth } from "~/utils/measurements";
 import { IdentifierIcon, ImageIcon, QrCodeIcon, SettingsIcon } from "./icons";
@@ -14,26 +14,6 @@ export const SettingsPanel = component$<Props>(
     const handleWidthChange$ = $((value: string | number) => {
       const validatedWidth = validateWidth(value);
       onSettingsChange$({ labelWidth: validatedWidth });
-    });
-
-    // Initialize ShareThis buttons when component becomes visible
-    useVisibleTask$(() => {
-      // Check if ShareThis is already loaded
-      if (typeof window !== 'undefined' && (window as any).SHARETHIS) {
-        // If ShareThis is already loaded, reinitialize the buttons
-        (window as any).SHARETHIS.initialize();
-      } else {
-        // If ShareThis is not loaded yet, wait for it to load and then initialize
-        const checkShareThisInterval = setInterval(() => {
-          if (typeof window !== 'undefined' && (window as any).SHARETHIS) {
-            (window as any).SHARETHIS.initialize();
-            clearInterval(checkShareThisInterval);
-          }
-        }, 500);
-
-        // Clear interval after 10 seconds to prevent infinite checking
-        setTimeout(() => clearInterval(checkShareThisInterval), 10000);
-      }
     });
 
     return (

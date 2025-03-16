@@ -97,7 +97,7 @@ app.use((req, res, next) => {
 // Middleware to add security headers
 app.use((req, res, next) => {
   // Protection against XSS
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://scripts.simpleanalyticscdn.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.buymeacoffee.com; connect-src 'self'");
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://scripts.simpleanalyticscdn.com https://*.sharethis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.buymeacoffee.com https://*.sharethis.com https://*.simpleanalyticscdn.com; connect-src 'self' https://*.sharethis.com");
   
   // Protection against clickjacking
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');

@@ -42,18 +42,22 @@ export default component$(() => {
     qrCodeContent: "",
   });
 
-  // Preload fonts as soon as the component is visible
+  // Preload local fonts as soon as the component is visible
   useVisibleTask$(async () => {
     try {
+      // Force browser to load the fonts defined in our CSS
+      // We're using the same font file for both weights, but still need to load both weights
       await Promise.all([
-        document.fonts.load('400 16px "Noto Sans"'),
-        document.fonts.load('900 16px "Noto Sans"'),
-        document.fonts.load('400 16px "Oswald"'),
-        document.fonts.load('700 16px "Oswald"'),
+        document.fonts.load('400 24px "Noto Sans"'),
+        document.fonts.load('900 24px "Noto Sans"'),
+        document.fonts.load('400 24px "Oswald"'),
+        document.fonts.load('700 24px "Oswald"'),
       ]);
-      console.log("Fonts preloaded successfully");
+      console.log("Local fonts preloaded successfully");
     } catch (error) {
-      console.error("Failed to preload fonts:", error);
+      console.error("Failed to preload local fonts:", error);
+      // Fonts will still be loaded by the browser through the CSS
+      // This preloading is just to ensure they're available before rendering
     }
   }, { strategy: 'document-ready' });
 

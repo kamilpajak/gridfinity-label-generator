@@ -27,26 +27,8 @@ export const RouterHead = component$(() => {
       <meta property="og:type" content="website" />
       <meta property="og:url" content={loc.url.href} />
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossOrigin="anonymous"
-      />
-      <link
-        rel="preload"
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;900&display=swap"
-        as="style"
-      />
-      <link
-        rel="preload"
-        href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap"
-        as="style"
-      />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;900&family=Oswald:wght@400;700&display=swap"
-        rel="stylesheet"
-      />
+      {/* Use local fonts instead of Google Fonts */}
+      <link rel="stylesheet" href="/fonts/fonts.css" />
       {head.meta.map((m) => (
         <meta key={m.key} {...m} />
       ))}

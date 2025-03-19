@@ -1,8 +1,9 @@
 import type { PropFunction } from "@builder.io/qwik";
-import { $, component$ } from "@builder.io/qwik";
+import { $, component$, useSignal, useTask$ } from "@builder.io/qwik";
 import type { LabelSettings } from "~/types";
 import { validateWidth } from "~/utils/measurements";
-import { IdentifierIcon, ImageIcon, QrCodeIcon, SettingsIcon } from "./icons";
+import { shouldShortenUrl, shortenUrl } from "~/utils/urlShortener";
+import { IdentifierIcon, ImageIcon, InfoIcon, QrCodeIcon, SettingsIcon } from "./icons";
 
 interface Props {
   settings: LabelSettings;
@@ -14,6 +15,26 @@ export const SettingsPanel = component$<Props>(
     const handleWidthChange$ = $((value: string | number) => {
       const validatedWidth = validateWidth(value);
       onSettingsChange$({ labelWidth: validatedWidth });
+    });
+    
+    // Signal to store the shortened URL preview
+    const shortenedUrlPreview = useSignal<string>("");
+    
+    // Update the shortened URL preview when QR code content changes
+    useTask$(async ({ track }) => {
+      const qrContent = track(() => settings.qrCodeContent);
+      
+      if (shouldShortenUrl(qrContent)) {
+        try {
+          const shortened = await shortenUrl(qrContent);
+          shortenedUrlPreview.value = shortened;
+        } catch (error) {
+          console.error("Failed to get shortened URL preview:", error);
+          shortenedUrlPreview.value = "";
+        }
+      } else {
+        shortenedUrlPreview.value = "";
+      }
     });
 
     return (
@@ -89,9 +110,26 @@ export const SettingsPanel = component$<Props>(
 
             {settings.showQrCode && (
               <div class="bg-white p-4 rounded-lg border border-gray-200">
-                <label class="block text-base text-gray-700 mb-2">
-                  QR Code Content
-                </label>
+                <div class="flex items-center gap-2 mb-2">
+                  <label class="block text-base text-gray-700">
+                    QR Code Content
+                  </label>
+                  {/* Info icon with tooltip for URL shortening */}
+                  <div class="relative group">
+                    <span class="cursor-help text-gray-400 hover:text-gray-600">
+                      <InfoIcon />
+                    </span>
+                    <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block w-64 p-3 bg-white rounded-lg shadow-lg text-sm text-gray-700 z-10">
+                      <div class="relative">
+                        <div class="absolute -bottom-2 left-2 w-4 h-4 bg-white transform rotate-45"></div>
+                        <p>
+                          Long URLs will be automatically shortened for better QR code readability.
+                          This makes the QR code simpler and easier to scan on small labels.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <input
                   type="text"
                   class="w-full h-[40px] px-3 bg-gray-50 border border-gray-200 rounded text-base text-gray-700"
@@ -103,6 +141,15 @@ export const SettingsPanel = component$<Props>(
                   }
                   placeholder="URL or text for QR code"
                 />
+                {/* Show URL preview only if URL will be shortened */}
+                {shortenedUrlPreview.value && shouldShortenUrl(settings.qrCodeContent) && (
+                  <div class="mt-2 p-2 bg-gray-50 border border-gray-200 rounded text-xs">
+                    <div class="font-medium text-gray-700">Original:</div>
+                    <div class="text-gray-600 truncate">{settings.qrCodeContent}</div>
+                    <div class="font-medium text-gray-700 mt-1">Shortened:</div>
+                    <div class="text-blue-600">{shortenedUrlPreview.value}</div>
+                  </div>
+                )}
               </div>
             )}
 

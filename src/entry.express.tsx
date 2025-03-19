@@ -33,18 +33,18 @@ const HTTP_PORT = process.env.HTTP_PORT ?? 80;
 const HTTPS_PORT = process.env.HTTPS_PORT ?? 443;
 
 // SSL Configuration
-const useHttps = process.env.NODE_ENV === 'production';
+const useHttps = process.env.NODE_ENV === "production";
 let httpsOptions = {};
 
 if (useHttps) {
   try {
     httpsOptions = {
-      key: readFileSync('/etc/ssl/gridfinitylabels.com/private.key'),
-      cert: readFileSync('/etc/ssl/gridfinitylabels.com/certificate.pem')
+      key: readFileSync("/etc/ssl/gridfinitylabels.com/private.key"),
+      cert: readFileSync("/etc/ssl/gridfinitylabels.com/certificate.pem"),
     };
-    console.log('SSL certificates loaded successfully');
+    console.log("SSL certificates loaded successfully");
   } catch (error) {
-    console.error('Cannot load SSL certificates:', error);
+    console.error("Cannot load SSL certificates:", error);
     // Continue without HTTPS if certificates cannot be loaded
   }
 }
@@ -71,24 +71,28 @@ const app = express();
 // Middleware to handle Cloudflare headers
 app.use((req, res, next) => {
   // Check for Cloudflare headers
-  const cfVisitor = req.headers['cf-visitor'] ? JSON.parse(req.headers['cf-visitor'] as string) : {};
-  const isCloudflareHTTPS = cfVisitor.scheme === 'https';
-  const xForwardedProto = req.headers['x-forwarded-proto'];
-  
+  const cfVisitor = req.headers["cf-visitor"]
+    ? JSON.parse(req.headers["cf-visitor"] as string)
+    : {};
+  const isCloudflareHTTPS = cfVisitor.scheme === "https";
+  const xForwardedProto = req.headers["x-forwarded-proto"];
+
   // Skip redirect for localhost or if already using HTTPS or if Cloudflare is handling HTTPS
-  const host = req.headers.host || '';
-  const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1');
-  
+  const host = req.headers.host || "";
+  const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
+
   // Only redirect if:
   // 1. In production
   // 2. Not localhost
   // 3. Not already secure
   // 4. Not coming from Cloudflare HTTPS
-  if (process.env.NODE_ENV === 'production' && 
-      !isLocalhost && 
-      !req.secure && 
-      xForwardedProto !== 'https' && 
-      !isCloudflareHTTPS) {
+  if (
+    process.env.NODE_ENV === "production" &&
+    !isLocalhost &&
+    !req.secure &&
+    xForwardedProto !== "https" &&
+    !isCloudflareHTTPS
+  ) {
     return res.redirect(`https://${req.headers.host}${req.url}`);
   }
   next();
@@ -97,18 +101,24 @@ app.use((req, res, next) => {
 // Middleware to add security headers
 app.use((req, res, next) => {
   // Protection against XSS
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://scripts.simpleanalyticscdn.com https://*.sharethis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.buymeacoffee.com https://*.sharethis.com https://*.simpleanalyticscdn.com; connect-src 'self' https://*.sharethis.com");
-  
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' https://scripts.simpleanalyticscdn.com https://*.sharethis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.buymeacoffee.com https://*.sharethis.com https://*.simpleanalyticscdn.com; connect-src 'self' https://*.sharethis.com",
+  );
+
   // Protection against clickjacking
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+
   // Protection against MIME type sniffing
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  
+  res.setHeader("X-Content-Type-Options", "nosniff");
+
   // Additional security headers
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()",
+  );
+
   next();
 });
 
@@ -133,14 +143,14 @@ if (useHttps && Object.keys(httpsOptions).length > 0) {
   httpsServer.listen(HTTPS_PORT, () => {
     console.log(`HTTPS Server started: https://localhost:${HTTPS_PORT}/`);
   });
-  
+
   // Create HTTP server that redirects to HTTPS
   const httpServer = createHttpServer((req, res) => {
-    const host = req.headers.host || 'localhost';
+    const host = req.headers.host || "localhost";
     res.writeHead(301, { Location: `https://${host}${req.url}` });
     res.end();
   });
-  
+
   httpServer.listen(HTTP_PORT, () => {
     console.log(`HTTP Server redirecting to HTTPS on port ${HTTP_PORT}`);
   });

@@ -1,4 +1,5 @@
 import { computeDynamicFontSize, mmToPx } from "~/utils/measurements";
+import { shortenUrl, shouldShortenUrl } from "~/utils/urlShortener";
 
 /**
  * Loads required fonts before rendering.
@@ -186,20 +187,20 @@ function drawImageIfNeeded(
   const aspectRatio = image.naturalWidth / image.naturalHeight;
 
   // Calculate image width if drawn with full label height.
-  const fullHeightWidth = Math.round(labelHeightPx * aspectRatio);
+  const fullHeightWidth = labelHeightPx * aspectRatio;
 
   // Maximum allowed image width: 40% of label width.
-  const maxAllowedWidth = Math.floor(labelWidthPx * 0.4);
+  const maxAllowedWidth = labelWidthPx * 0.4;
 
   let imageWidth: number, imageHeight: number;
 
   if (fullHeightWidth > maxAllowedWidth) {
     // Limit image width to the maximum allowed value.
     imageWidth = maxAllowedWidth;
-    // Adjust height to maintain aspect ratio.
-    imageHeight = Math.round(imageWidth / aspectRatio);
-    // Optionally center the image vertically.
-    const offsetY = Math.round((labelHeightPx - imageHeight) / 2);
+    // Adjust height to maintain exact aspect ratio.
+    imageHeight = imageWidth / aspectRatio;
+    // Center the image vertically.
+    const offsetY = (labelHeightPx - imageHeight) / 2;
     ctx.drawImage(image, 0, offsetY, imageWidth, imageHeight);
   } else {
     // Use full label height if the resulting width is within the limit.
@@ -244,7 +245,7 @@ export async function generateLabel(
   console.log(`Conversion factor: ${conversionFactor.toFixed(2)} px/mm`);
 
   // Baseline text height and gap in mm
-  const baselineTextHeight = 4;
+  const baselineTextHeight = 4.5;
   const baselineGap = 2;
   console.log(`Baseline text height (mm): ${baselineTextHeight}`);
   console.log(`Baseline gap (mm): ${baselineGap}`);
@@ -279,9 +280,20 @@ export async function generateLabel(
       qrCodeX = labelWidthPx - qrSizePx;
       const qrY = (labelHeightPx - qrSizePx) / 2; // Centered vertically
       
+      // Shorten URL if necessary for better QR code readability
+      let finalQrContent = qrCodeContent;
+      if (shouldShortenUrl(qrCodeContent)) {
+        try {
+          finalQrContent = await shortenUrl(qrCodeContent);
+          console.log(`URL shortened: ${qrCodeContent} → ${finalQrContent}`);
+        } catch (error) {
+          console.error("Error shortening URL:", error);
+        }
+      }
+      
       // Generate QR code using the qrcode library
       const QRCode = await import('qrcode');
-      const qrDataUrl = await QRCode.default.toDataURL(qrCodeContent, {
+      const qrDataUrl = await QRCode.default.toDataURL(finalQrContent, {
         errorCorrectionLevel: 'M',
         margin: 0,
         width: qrSizePx,

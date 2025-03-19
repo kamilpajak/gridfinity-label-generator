@@ -1,5 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { InfoIcon, LabelIcon } from "./icons";
+import { calculateExpectedPrintedWidth } from "~/utils/printCalibration";
 
 interface Props {
   isLoading: boolean;
@@ -9,38 +10,56 @@ interface Props {
 }
 
 // Helper: Renders the header with title and dimensions.
-const renderHeader = (labelWidth: number) => (
-  <div class="flex items-center justify-between">
-    <div class="flex items-center gap-2">
-      <h3 id="label-preview" class="text-base font-medium text-gray-700">
-        Label Preview
-      </h3>
-      <div class="relative group">
-        <span class="cursor-help text-gray-400 hover:text-gray-600">
-          <InfoIcon />
-        </span>
-        <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block w-64 p-3 bg-white rounded-lg shadow-lg text-sm text-gray-700 z-10">
-          <div class="relative">
-            <div class="absolute -bottom-2 left-2 w-4 h-4 bg-white transform rotate-45"></div>
-            <p>
-              The selected width (e.g., 55mm) is the tape size. The printable
-              area is 4mm narrower (2mm margin on each side) and 2mm shorter
-              (1mm margin on top and bottom).
-            </p>
+const renderHeader = (labelWidth: number) => {
+  // Calculate expected printed dimensions
+  const expectedPrintedWidth = calculateExpectedPrintedWidth(labelWidth);
+  const expectedPrintableWidth = expectedPrintedWidth - 4; // 2mm margin on each side
+  
+  return (
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <h3 id="label-preview" class="text-base font-medium text-gray-700">
+          Label Preview
+        </h3>
+        <div class="relative group">
+          <span class="cursor-help text-gray-400 hover:text-gray-600">
+            <InfoIcon />
+          </span>
+          <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block w-72 p-3 bg-white rounded-lg shadow-lg text-sm text-gray-700 z-10">
+            <div class="relative">
+              <div class="absolute -bottom-2 left-2 w-4 h-4 bg-white transform rotate-45"></div>
+              <p>
+                The selected width (e.g., 55mm) is the tape size. The printable
+                area is 4mm narrower (2mm margin on each side) and 2mm shorter
+                (1mm margin on top and bottom).
+              </p>
+              <p class="mt-2">
+                <strong>Note:</strong> Due to printer scaling, the actual printed size
+                may be larger than specified. For a {labelWidth}mm label, the printed
+                size will be approximately {expectedPrintedWidth.toFixed(1)}mm.
+              </p>
+              <p class="mt-1 text-xs text-blue-600">
+                To get a specific printed size, use a smaller setting. For example,
+                to get a 54mm printed label, set the width to 50.3mm.
+              </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="text-right">
-      <div class="text-sm text-gray-500">
-        {labelWidth}mm × 12mm <span class="text-gray-400">(tape size)</span>
+      <div class="text-right">
+        <div class="text-sm text-gray-500">
+          {labelWidth}mm × 12mm <span class="text-gray-400">(tape size)</span>
+        </div>
+        <div class="text-xs text-gray-400">
+          {labelWidth - 4}mm × 10mm (printable area)
+        </div>
+        <div class="text-xs text-blue-600">
+          ~{expectedPrintedWidth.toFixed(1)}mm printed width
+        </div>
       </div>
-      <div class="text-xs text-gray-400">
-        {labelWidth - 4}mm × 10mm (printable area)
-      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Helper: Renders the label image responsively.
 // The container sets the width while the image uses width:100% and height:auto to preserve its proportions.
@@ -81,7 +100,7 @@ const renderLabelImage = (labelUrl: string, labelWidth: number) => {
               src={labelUrl}
               alt={`Generated label with dimensions ${labelWidth - 4}mm × 10mm`}
               class="w-full h-full"
-              style={{ objectFit: "fill" }}
+              style={{ objectFit: "contain" }}
             />
           </div>
         </div>

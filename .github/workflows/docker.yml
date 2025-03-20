@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*'
 
+# Add permissions to the GITHUB_TOKEN
+permissions:
+  contents: read
+  packages: write  # Needed for pushing to GitHub Container Registry
+
 jobs:
   docker:
     runs-on: ubuntu-latest

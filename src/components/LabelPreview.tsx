@@ -25,10 +25,13 @@ const renderHeader = (labelWidth: number) => {
           <span class="cursor-help text-gray-400 hover:text-gray-600">
             <InfoIcon />
           </span>
-          <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block w-72 p-3 bg-white rounded-lg shadow-lg text-sm text-gray-700 z-10">
-            <div class="relative">
-              <div class="absolute -bottom-2 left-2 w-4 h-4 bg-white transform rotate-45"></div>
-              <p>
+          <div class="absolute transform -translate-x-1/4 sm:translate-x-0 sm:left-0 md:-translate-x-1/4 md:left-1/4 bottom-full mb-3 hidden group-hover:block min-w-[250px] max-w-[90vw] sm:max-w-xs bg-white rounded-lg shadow-lg text-sm text-gray-700 z-20">
+            {/* Triangle pointer */}
+            <div class="absolute -bottom-2 left-[10%] sm:left-4 w-4 h-4 bg-white transform rotate-45 z-10"></div>
+            
+            {/* Content container with higher z-index to appear above the triangle */}
+            <div class="relative p-4 rounded-lg bg-white z-20">
+              <p class="mb-2">
                 The selected width (e.g., 55mm) is the tape size. The printable
                 area is 4mm narrower (2mm margin on each side) and 2mm shorter
                 (1mm margin on top and bottom).
@@ -47,9 +50,6 @@ const renderHeader = (labelWidth: number) => {
         </div>
         <div class="text-xs text-gray-400">
           {labelWidth - 4}mm × 10mm (printable area)
-        </div>
-        <div class="text-xs text-blue-600">
-          {labelWidth}mm printed width
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 {
-  "name": "gridfinity-labels",
-  "description": "Label generator for Gridfinity storage system",
+  "name": "storage-label-maker",
+  "description": "Label generator for storage systems",
+  "version": "0.1.1",
   "engines": {
     "node": "^18.17.0 || ^20.3.0 || >=21.0.0"
   },
@@ -23,7 +24,11 @@
     "qwik": "qwik",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:patch": "standard-version --release-as patch"
   },
   "devDependencies": {
     "@builder.io/qwik": "^1.12.0",
@@ -51,7 +56,8 @@
     "typescript": "5.4.5",
     "vite": "5.3.5",
     "vite-tsconfig-paths": "^4.2.1",
-    "vitest": "^3.0.8"
+    "vitest": "^3.0.8",
+    "standard-version": "^9.5.0"
   },
   "dependencies": {
     "express": "4.20.0",

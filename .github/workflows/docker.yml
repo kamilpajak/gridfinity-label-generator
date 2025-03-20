@@ -4,6 +4,13 @@ on:
   push:
     tags:
       - 'v*'
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build (e.g., v0.1.3)'
+        required: true
+        default: 'latest'
 
 # Add permissions to the GITHUB_TOKEN
 permissions:
@@ -14,12 +21,29 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Debug - Triggered by tag
+        run: |
+          echo "Workflow triggered by tag: ${GITHUB_REF#refs/tags/}"
+          echo "Full ref: $GITHUB_REF"
+      
       - uses: actions/checkout@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Extract version from tag
         id: tag
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            # Triggered by tag push
+            echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+          else
+            # Triggered manually
+            echo "VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
+            # Remove 'v' prefix if present
+            if [[ "${{ github.event.inputs.tag }}" == v* ]]; then
+              echo "VERSION=${VERSION#v}" >> $GITHUB_ENV
+            fi
+          fi
+          echo "Using version: $VERSION"
       - name: Get current date
         id: date
         run: echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV

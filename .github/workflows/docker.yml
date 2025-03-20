@@ -11,6 +11,13 @@ on:
         description: 'Tag to build (e.g., v0.1.3)'
         required: true
         default: 'latest'
+  # Run after Release workflow completes
+  workflow_run:
+    workflows: ["Release"]
+    types:
+      - completed
+    branches:
+      - master
 
 # Add permissions to the GITHUB_TOKEN
 permissions:
@@ -20,13 +27,25 @@ permissions:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    # Only run if triggered by workflow_run and the workflow was successful
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - name: Debug - Triggered by tag
+      - name: Debug - Trigger information
         run: |
-          echo "Workflow triggered by tag: ${GITHUB_REF#refs/tags/}"
+          echo "Event name: ${{ github.event_name }}"
           echo "Full ref: $GITHUB_REF"
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            echo "Triggered by tag: ${GITHUB_REF#refs/tags/}"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "Triggered manually with tag: ${{ github.event.inputs.tag }}"
+          elif [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            echo "Triggered by workflow_run after Release workflow"
+          fi
       
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history and tags
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: Extract version from tag
@@ -35,13 +54,22 @@ jobs:
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
             # Triggered by tag push
             echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-          else
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             # Triggered manually
             echo "VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
             # Remove 'v' prefix if present
             if [[ "${{ github.event.inputs.tag }}" == v* ]]; then
               echo "VERSION=${VERSION#v}" >> $GITHUB_ENV
             fi
+          elif [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            # Triggered by workflow_run
+            # Get the latest tag
+            git fetch --tags
+            LATEST_TAG=$(git describe --tags --abbrev=0)
+            echo "VERSION=${LATEST_TAG#v}" >> $GITHUB_ENV
+          else
+            # Fallback
+            echo "VERSION=latest" >> $GITHUB_ENV
           fi
           echo "Using version: $VERSION"
       - name: Get current date

@@ -13,7 +13,6 @@ interface Props {
 const renderHeader = (labelWidth: number) => {
   // Calculate expected printed dimensions
   const expectedPrintedWidth = calculateExpectedPrintedWidth(labelWidth);
-  const expectedPrintableWidth = expectedPrintedWidth - 4; // 2mm margin on each side
   
   return (
     <div class="flex items-center justify-between">

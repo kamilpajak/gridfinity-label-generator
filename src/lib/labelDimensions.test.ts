@@ -14,28 +14,44 @@ vi.mock('~/lib/labelGenerator', () => {
       showQrCode: boolean = false,
       qrCodeContent: string = "",
     ) => {
+      // Calculate printable area dimensions
+      const printableWidthMm = labelWidthMm - 4;
+      const labelHeightMm = 10;
+      
+      // Calculate exact aspect ratio
+      const exactAspectRatio = printableWidthMm / labelHeightMm;
+      
+      // Convert height to pixels
+      const labelHeightPx = Math.round(mmToPx(labelHeightMm));
+      
+      // Calculate width based on exact aspect ratio
+      const labelWidthPx = Math.round(labelHeightPx * exactAspectRatio);
+      
       // Set canvas dimensions
-      mockCanvas.width = mmToPx(labelWidthMm);
-      mockCanvas.height = mmToPx(10); // Fixed height 10mm
+      mockCanvas.width = labelWidthPx;
+      mockCanvas.height = labelHeightPx;
       
       // Log dimensions like the real function does
-      console.log(`Label width (mm): ${labelWidthMm}`);
-      console.log(`Label height (mm): 10`);
+      console.log(`Tape size (mm): ${labelWidthMm} × 12`);
+      console.log(`Printable area (mm): ${printableWidthMm} × ${labelHeightMm}`);
+      console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`);
       
-      const conversionFactor = mmToPx(1);
-      console.log(`Conversion factor: ${conversionFactor.toFixed(2)} px/mm`);
+      const conversionFactor = labelWidthPx / printableWidthMm;
+      console.log(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`);
+      console.log(`Canvas dimensions (px): ${labelWidthPx} × ${labelHeightPx}`);
+      console.log(`Canvas aspect ratio: ${(labelWidthPx / labelHeightPx).toFixed(6)}`);
       
       // Log QR code position if enabled
       if (showQrCode && qrCodeContent) {
         const qrSizeMm = 10;
         const qrSizePx = mmToPx(qrSizeMm);
-        const qrX = mmToPx(labelWidthMm) - qrSizePx;
+        const qrX = labelWidthPx - qrSizePx;
         const qrXMm = qrX / conversionFactor;
         console.log(`QR code positioned at x=${qrXMm.toFixed(2)}mm, width=${qrSizeMm}mm`);
       }
       
       // Log exported dimensions
-      console.log(`Exported PNG dimensions (mm): width=${labelWidthMm.toFixed(2)}mm, height=10.00mm`);
+      console.log(`Exported PNG dimensions (mm): width=${labelWidthMm.toFixed(2)}mm, height=${labelHeightMm.toFixed(2)}mm`);
       
       return 'mock-data-url';
     })
@@ -130,17 +146,19 @@ describe('Label Dimensions', () => {
     vi.clearAllMocks();
   });
   
-  it('should calculate correct canvas dimensions based on label width', async () => {
+  it('should calculate correct canvas dimensions based on printable area', async () => {
     // Import the mocked module
     const { generateLabel } = await import('./labelGenerator');
     
     // Test parameters
     const labelWidthMm = 54;
+    const printableWidthMm = labelWidthMm - 4; // 50mm (2mm margin on each side)
     const labelHeightMm = 10;
     
-    // Expected pixel dimensions
-    const expectedWidthPx = mmToPx(labelWidthMm);
-    const expectedHeightPx = mmToPx(labelHeightMm);
+    // Calculate expected dimensions using the same logic as the real function
+    const exactAspectRatio = printableWidthMm / labelHeightMm;
+    const expectedHeightPx = Math.round(mmToPx(labelHeightMm));
+    const expectedWidthPx = Math.round(expectedHeightPx * exactAspectRatio);
     
     // Call generateLabel with minimal parameters
     // Note: This won't actually render anything due to our mocks
@@ -157,6 +175,10 @@ describe('Label Dimensions', () => {
     // Verify canvas dimensions were set correctly
     expect(mockCanvas.width).toBe(expectedWidthPx);
     expect(mockCanvas.height).toBe(expectedHeightPx);
+    
+    // Verify aspect ratio is correct
+    const actualAspectRatio = mockCanvas.width / mockCanvas.height;
+    expect(actualAspectRatio).toBeCloseTo(exactAspectRatio, 6);
   });
   
   it('should calculate correct printable area dimensions', async () => {
@@ -169,6 +191,7 @@ describe('Label Dimensions', () => {
     // Test parameters
     const labelWidthMm = 54;
     const printableWidthMm = labelWidthMm - 4; // 50mm (2mm margin on each side)
+    const labelHeightMm = 10;
     
     // Call generateLabel
     await generateLabel(
@@ -182,16 +205,21 @@ describe('Label Dimensions', () => {
     );
     
     // Verify that the correct dimensions were logged
-    expect(consoleLogSpy).toHaveBeenCalledWith(`Label width (mm): ${labelWidthMm}`);
-    expect(consoleLogSpy).toHaveBeenCalledWith(`Label height (mm): 10`);
+    expect(consoleLogSpy).toHaveBeenCalledWith(`Tape size (mm): ${labelWidthMm} × 12`);
+    expect(consoleLogSpy).toHaveBeenCalledWith(`Printable area (mm): ${printableWidthMm} × ${labelHeightMm}`);
     
-    // Verify conversion factor was logged
-    const conversionFactor = mmToPx(1);
-    expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining(`Conversion factor: ${conversionFactor.toFixed(2)}`));
+    // Verify exact aspect ratio was logged
+    const exactAspectRatio = printableWidthMm / labelHeightMm;
+    expect(consoleLogSpy).toHaveBeenCalledWith(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`);
+    
+    // Verify canvas dimensions were logged
+    const labelHeightPx = Math.round(mmToPx(labelHeightMm));
+    const labelWidthPx = Math.round(labelHeightPx * exactAspectRatio);
+    expect(consoleLogSpy).toHaveBeenCalledWith(`Canvas dimensions (px): ${labelWidthPx} × ${labelHeightPx}`);
     
     // Verify exported dimensions were logged
     expect(consoleLogSpy).toHaveBeenCalledWith(
-      `Exported PNG dimensions (mm): width=${labelWidthMm.toFixed(2)}mm, height=10.00mm`
+      `Exported PNG dimensions (mm): width=${labelWidthMm.toFixed(2)}mm, height=${labelHeightMm.toFixed(2)}mm`
     );
   });
   
@@ -204,7 +232,15 @@ describe('Label Dimensions', () => {
     
     // Test parameters
     const labelWidthMm = 54;
+    const printableWidthMm = labelWidthMm - 4;
+    const labelHeightMm = 10;
     const qrSizeMm = 10; // QR code is 10mm x 10mm
+    
+    // Calculate expected dimensions
+    const exactAspectRatio = printableWidthMm / labelHeightMm;
+    const labelHeightPx = Math.round(mmToPx(labelHeightMm));
+    const labelWidthPx = Math.round(labelHeightPx * exactAspectRatio);
+    const conversionFactor = labelWidthPx / printableWidthMm;
     
     // Call generateLabel with QR code enabled
     await generateLabel(
@@ -226,8 +262,7 @@ describe('Label Dimensions', () => {
     );
     
     // The QR code should be positioned at labelWidthPx - qrSizePx
-    const expectedQrX = mmToPx(labelWidthMm) - qrSizePx;
-    const conversionFactor = mmToPx(1); // px per mm
+    const expectedQrX = labelWidthPx - qrSizePx;
     const expectedQrXMm = expectedQrX / conversionFactor;
     
     // Verify QR code position was logged with correct values

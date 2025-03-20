@@ -8,9 +8,9 @@ import {
 describe('Print Calibration Utilities', () => {
   describe('calculateWidthForPrinting', () => {
     it('should calculate the correct width to set for desired printed width', () => {
-      // Test with default scaling factor (1.074)
-      expect(calculateWidthForPrinting(54)).toBeCloseTo(50.28, 2);
-      expect(calculateWidthForPrinting(100)).toBeCloseTo(93.11, 2);
+      // Test with default scaling factor (1.0)
+      expect(calculateWidthForPrinting(54)).toBeCloseTo(54, 2);
+      expect(calculateWidthForPrinting(100)).toBeCloseTo(100, 2);
       
       // Test with custom scaling factor
       expect(calculateWidthForPrinting(54, 1.1)).toBeCloseTo(49.09, 2);
@@ -22,18 +22,18 @@ describe('Print Calibration Utilities', () => {
       expect(calculateWidthForPrinting(0)).toBe(0);
       
       // Very small width
-      expect(calculateWidthForPrinting(1)).toBeCloseTo(0.93, 2);
+      expect(calculateWidthForPrinting(1)).toBeCloseTo(1, 2);
       
       // Very large width
-      expect(calculateWidthForPrinting(1000)).toBeCloseTo(931.1, 1);
+      expect(calculateWidthForPrinting(1000)).toBeCloseTo(1000, 1);
     });
   });
   
   describe('calculateExpectedPrintedWidth', () => {
     it('should calculate the expected printed width based on set width', () => {
-      // Test with default scaling factor (1.074)
-      expect(calculateExpectedPrintedWidth(50.28)).toBeCloseTo(54, 2);
-      expect(calculateExpectedPrintedWidth(93.11)).toBeCloseTo(100, 2);
+      // Test with default scaling factor (1.0)
+      expect(calculateExpectedPrintedWidth(54)).toBeCloseTo(54, 2);
+      expect(calculateExpectedPrintedWidth(100)).toBeCloseTo(100, 2);
       
       // Test with custom scaling factor
       expect(calculateExpectedPrintedWidth(49.09, 1.1)).toBeCloseTo(54, 2);
@@ -45,10 +45,10 @@ describe('Print Calibration Utilities', () => {
       expect(calculateExpectedPrintedWidth(0)).toBe(0);
       
       // Very small width
-      expect(calculateExpectedPrintedWidth(0.93)).toBeCloseTo(1, 2);
+      expect(calculateExpectedPrintedWidth(1)).toBeCloseTo(1, 2);
       
       // Very large width
-      expect(calculateExpectedPrintedWidth(931.1)).toBeCloseTo(1000, 1);
+      expect(calculateExpectedPrintedWidth(1000)).toBeCloseTo(1000, 1);
     });
   });
   

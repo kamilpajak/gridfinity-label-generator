@@ -29,12 +29,15 @@ The Gridfinity Label Generator is currently in a functional state with all core 
    - Improved image loading with SVG to JPG fallback
    - Refined text positioning for better readability
    - Added detailed logging for debugging label dimensions
+   - Fixed image proportions to exactly match printable area dimensions
+   - Implemented precise aspect ratio preservation for generated labels
 
 2. **QR Code Integration**
    - Added QR code generation functionality
    - Implemented priority-based positioning system
    - Added user controls for enabling/disabling QR codes
    - Added input field for custom QR code content
+   - Implemented automatic URL shortening for better QR code readability
 
 3. **UI Enhancements**
    - Improved mobile responsiveness
@@ -95,13 +98,13 @@ The Gridfinity Label Generator is currently in a functional state with all core 
    - Balancing image quality with performance
    - Ensuring hardware images are recognizable at small sizes
 
-3. **Physical Accuracy**
-   - Maintaining accurate physical dimensions for printing
-   - Accounting for different device pixel densities
-
-4. **Performance Optimization**
+3. **Performance Optimization**
    - Optimizing canvas rendering for smooth user experience
    - Balancing feature richness with application performance
+
+4. **QR Code Readability**
+   - Ensuring QR codes remain scannable at small physical sizes
+   - Balancing QR code size with available label space
 
 ## Active Considerations
 

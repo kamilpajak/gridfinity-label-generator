@@ -34,13 +34,8 @@ const renderHeader = (labelWidth: number) => {
                 (1mm margin on top and bottom).
               </p>
               <p class="mt-2">
-                <strong>Note:</strong> Due to printer scaling, the actual printed size
-                may be larger than specified. For a {labelWidth}mm label, the printed
-                size will be approximately {expectedPrintedWidth.toFixed(1)}mm.
-              </p>
-              <p class="mt-1 text-xs text-blue-600">
-                To get a specific printed size, use a smaller setting. For example,
-                to get a 54mm printed label, set the width to 50.3mm.
+                <strong>Note:</strong> The printed width will match the tape size width
+                of {labelWidth}mm.
               </p>
             </div>
           </div>
@@ -54,7 +49,7 @@ const renderHeader = (labelWidth: number) => {
           {labelWidth - 4}mm × 10mm (printable area)
         </div>
         <div class="text-xs text-blue-600">
-          ~{expectedPrintedWidth.toFixed(1)}mm printed width
+          {labelWidth}mm printed width
         </div>
       </div>
     </div>

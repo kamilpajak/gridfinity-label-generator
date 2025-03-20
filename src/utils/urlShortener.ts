@@ -74,7 +74,7 @@ export function shouldShortenUrl(url: string): boolean {
   const urlWithoutProtocol = url.replace(/^https?:\/\//, '');
   const effectiveLength = urlWithoutProtocol.length;
   
-  const shouldShorten = isValidUrl(url) && effectiveLength > 30;
+  const shouldShorten = isValidUrl(url) && effectiveLength > 28;
   if (isValidUrl(url)) {
     console.log(`URL length check: ${effectiveLength} characters (without protocol), ${shouldShorten ? 'should be shortened' : 'no need to shorten'}`);
   }

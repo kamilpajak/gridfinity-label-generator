@@ -233,16 +233,30 @@ export async function generateLabel(
   await ensureFontsLoaded();
   const standardImg = await loadImage(standardImgUrl);
 
-  // Fixed label height in mm
+  // Fixed label height in mm (printable area)
   const labelHeightMm = 10;
-  console.log(`Label width (mm): ${labelWidthMm}`);
-  console.log(`Label height (mm): ${labelHeightMm}`);
+  // Calculate printable area width (tape width - 4mm margins)
+  const printableWidthMm = labelWidthMm - 4;
+  
+  // Calculate the exact aspect ratio of the printable area
+  const exactAspectRatio = printableWidthMm / labelHeightMm;
+  
+  console.log(`Tape size (mm): ${labelWidthMm} × 12`);
+  console.log(`Printable area (mm): ${printableWidthMm} × ${labelHeightMm}`);
+  console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`);
 
-  // Convert dimensions from mm to pixels
-  const labelWidthPx = mmToPx(labelWidthMm);
-  const labelHeightPx = mmToPx(labelHeightMm);
-  const conversionFactor = labelWidthPx / labelWidthMm;
-  console.log(`Conversion factor: ${conversionFactor.toFixed(2)} px/mm`);
+  // Convert height from mm to pixels
+  const labelHeightPx = Math.round(mmToPx(labelHeightMm));
+  
+  // Calculate width in pixels based on the exact aspect ratio
+  const labelWidthPx = Math.round(labelHeightPx * exactAspectRatio);
+  
+  // Calculate the actual conversion factor used
+  const conversionFactor = labelWidthPx / printableWidthMm;
+  
+  console.log(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`);
+  console.log(`Canvas dimensions (px): ${labelWidthPx} × ${labelHeightPx}`);
+  console.log(`Canvas aspect ratio: ${(labelWidthPx / labelHeightPx).toFixed(6)}`);
 
   // Baseline text height and gap in mm
   const baselineTextHeight = 4.5;

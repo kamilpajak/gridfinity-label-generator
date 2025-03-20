@@ -1,5 +1,10 @@
 ARG NODE_VERSION=18.18.2
 
+# Build arguments for versioning
+ARG VERSION=dev
+ARG BUILD_DATE=unknown
+ARG COMMIT_SHA=unknown
+
 ################################################################################
 # Use node image as the base image for all stages.
 FROM node:${NODE_VERSION}-alpine AS base
@@ -32,6 +37,14 @@ RUN npm run build
 ################################################################################
 # Create a new stage to run the application with minimal runtime dependencies.
 FROM base AS final
+
+# Add OCI-compliant labels
+LABEL org.opencontainers.image.title="Storage Label Maker"
+LABEL org.opencontainers.image.description="Label generator for storage systems"
+LABEL org.opencontainers.image.version=${VERSION}
+LABEL org.opencontainers.image.created=${BUILD_DATE}
+LABEL org.opencontainers.image.revision=${COMMIT_SHA}
+LABEL org.opencontainers.image.licenses="MIT"
 
 # Set production environment variables.
 ENV NODE_ENV=production

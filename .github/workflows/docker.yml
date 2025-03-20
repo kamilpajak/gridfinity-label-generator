@@ -42,7 +42,7 @@ jobs:
             BUILD_DATE=${{ env.BUILD_DATE }}
             COMMIT_SHA=${{ env.COMMIT_SHA }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/storage-label-maker:latest
-            ghcr.io/${{ github.repository_owner }}/storage-label-maker:${{ env.VERSION }}
+            ghcr.io/${{ github.repository_owner }}/gridfinity-label-generator:latest
+            ghcr.io/${{ github.repository_owner }}/gridfinity-label-generator:${{ env.VERSION }}
             kamilpajak/storage-label-maker:latest
             kamilpajak/storage-label-maker:${{ env.VERSION }}

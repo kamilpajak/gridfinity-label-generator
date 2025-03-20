@@ -9,6 +9,6 @@
     {"type": "perf", "section": "Performance Improvements"},
     {"type": "test", "hidden": true}
   ],
-  "commitUrlFormat": "https://github.com/kamilpajak/storage-label-maker/commit/{{hash}}",
-  "compareUrlFormat": "https://github.com/kamilpajak/storage-label-maker/compare/{{previousTag}}...{{currentTag}}"
+  "commitUrlFormat": "https://github.com/kamilpajak/gridfinity-label-generator/commit/{{hash}}",
+  "compareUrlFormat": "https://github.com/kamilpajak/gridfinity-label-generator/compare/{{previousTag}}...{{currentTag}}"
 }

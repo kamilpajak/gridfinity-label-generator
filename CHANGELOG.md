@@ -60,7 +60,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* Initial release of Storage Label Maker
+* Initial release of Gridfinity Label Generator
 * Label generation for hardware components
 * QR code integration with automatic URL shortening
 * Responsive design for various screen sizes

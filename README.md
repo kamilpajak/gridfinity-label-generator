@@ -1,6 +1,6 @@
-# Storage Label Maker
+# Gridfinity Label Generator
 
-A web application for generating labels for storage systems.
+A web application for generating labels for storage systems, with a focus on the Gridfinity system.
 
 ## Development
 
@@ -81,4 +81,16 @@ docker build -t storage-label-maker .
 
 # Run the container
 docker run -p 80:80 storage-label-maker
+```
+
+### GitHub Container Registry
+
+The image is also available from GitHub Container Registry:
+
+```bash
+# Pull from GitHub Container Registry
+docker pull ghcr.io/kamilpajak/gridfinity-label-generator:latest
+
+# Run the container
+docker run -p 80:80 ghcr.io/kamilpajak/gridfinity-label-generator:latest
 ```

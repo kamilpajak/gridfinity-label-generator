@@ -1,6 +1,5 @@
 import { component$ } from "@builder.io/qwik";
 import { InfoIcon, LabelIcon } from "./icons";
-import { calculateExpectedPrintedWidth } from "~/utils/printCalibration";
 
 interface Props {
   isLoading: boolean;
@@ -11,9 +10,6 @@ interface Props {
 
 // Helper: Renders the header with title and dimensions.
 const renderHeader = (labelWidth: number) => {
-  // Calculate expected printed dimensions
-  const expectedPrintedWidth = calculateExpectedPrintedWidth(labelWidth);
-  
   return (
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
@@ -27,7 +23,7 @@ const renderHeader = (labelWidth: number) => {
           <div class="absolute transform -translate-x-1/4 sm:translate-x-0 sm:left-0 md:-translate-x-1/4 md:left-1/4 bottom-full mb-3 hidden group-hover:block min-w-[250px] max-w-[90vw] sm:max-w-xs bg-white rounded-lg shadow-lg text-sm text-gray-700 z-20">
             {/* Triangle pointer */}
             <div class="absolute -bottom-2 left-[10%] sm:left-4 w-4 h-4 bg-white transform rotate-45 z-10"></div>
-            
+
             {/* Content container with higher z-index to appear above the triangle */}
             <div class="relative p-4 rounded-lg bg-white z-20">
               <p class="mb-2">
@@ -36,8 +32,8 @@ const renderHeader = (labelWidth: number) => {
                 (1mm margin on top and bottom).
               </p>
               <p class="mt-2">
-                <strong>Note:</strong> The printed width will match the tape size width
-                of {labelWidth}mm.
+                <strong>Note:</strong> The printed width will match the tape
+                size width of {labelWidth}mm.
               </p>
             </div>
           </div>

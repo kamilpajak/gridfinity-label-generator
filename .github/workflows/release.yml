@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ master ]
 
 # Add permissions to the GITHUB_TOKEN
 permissions:
@@ -48,7 +48,7 @@ jobs:
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
-      
+
       - name: Debug - Check tag
         run: |
           echo "Created and pushed tag: ${{ steps.version.outputs.tag }}"

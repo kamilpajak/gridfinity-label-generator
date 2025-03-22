@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.9](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.8...v0.1.9) (2025-03-22)
+
+
+### Documentation
+
+* update memory-bank with CSP and URL shortening information ([840582f](https://github.com/kamilpajak/gridfinity-label-generator/commit/840582f345487ac5acb6a7a855ee939a06a61657))
+
 ### [0.1.8](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.7...v0.1.8) (2025-03-21)
 
 

@@ -91,6 +91,11 @@ gridfinity-label-generator/
 - Mobile-first approach with responsive breakpoints
 - Layout adjusts for smaller screens (stacked vs. side-by-side)
 
+### Security Configuration
+- Content Security Policy (CSP) skonfigurowana do zezwalania na połączenia z niezbędnymi zewnętrznymi serwisami
+- Dozwolone domeny w CSP obejmują m.in. tinyurl.com dla funkcjonalności skracania URL-i
+- Zbalansowane podejście między bezpieczeństwem a funkcjonalnością
+
 ## Dependencies
 
 ### Production Dependencies

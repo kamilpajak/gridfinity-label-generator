@@ -107,6 +107,11 @@ The Gridfinity Label Generator is in a **functional production state** with all 
    - Enhanced searchable dropdown for hardware standards
    - Implemented real-time label preview updates
 
+4. **Security Configuration Improvements**
+   - Rozwiązano problem z Content Security Policy blokującym żądania do TinyURL
+   - Zapewniono poprawne działanie automatycznego skracania URL-i
+   - Zwiększono czytelność QR kodów na małych etykietach
+
 ## Next Development Priorities
 
 1. **Short-term (Next 2-4 Weeks)**

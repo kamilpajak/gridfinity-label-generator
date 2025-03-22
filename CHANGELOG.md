@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.8](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.7...v0.1.8) (2025-03-21)
+
+
+### Bug Fixes
+
+* add tinyurl.com to CSP connect-src directive to allow URL shortening ([1edccc4](https://github.com/kamilpajak/gridfinity-label-generator/commit/1edccc4af44f49410e9beabbfb39f06ae87351f4))
+
 ### [0.1.7](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.6...v0.1.7) (2025-03-21)
 
 ### [0.1.6](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.5...v0.1.6) (2025-03-21)

@@ -1,5 +1,14 @@
 import {useDocumentHead, useLocation} from "@builder.io/qwik-city";
-import {component$} from "@builder.io/qwik";
+import {component$, useVisibleTask$} from "@builder.io/qwik";
+
+/**
+ * The global window._paq array for Matomo
+ */
+declare global {
+  interface Window {
+    _paq: any[];
+  }
+}
 
 /**
  * RouterHead component renders dynamic meta tags, title, links, etc.
@@ -8,6 +17,47 @@ import {component$} from "@builder.io/qwik";
 export const RouterHead = component$(() => {
   const head = useDocumentHead();
   const loc = useLocation();
+
+  // Initialize Matomo with SPA tracking
+  useVisibleTask$(() => {
+    // Initialize Matomo
+    const _paq = window._paq = window._paq || [];
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    
+    const u = "//statistics.gridfinitylabels.com/";
+    _paq.push(['setTrackerUrl', u + 'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    
+    // Add the tracking script
+    const d = document;
+    const g = d.createElement('script');
+    const s = d.getElementsByTagName('script')[0];
+    g.async = true;
+    g.src = u + 'matomo.js';
+    if (s && s.parentNode) {
+      s.parentNode.insertBefore(g, s);
+    } else {
+      d.head.appendChild(g);
+    }
+    
+    // Track SPA navigation - override history.pushState
+    const originalPushState = history.pushState;
+    // @ts-ignore - Ignore type mismatch for history.pushState override
+    history.pushState = function(...args) {
+      originalPushState.apply(this, args);
+      _paq.push(['setCustomUrl', window.location.pathname]);
+      _paq.push(['setDocumentTitle', document.title]);
+      _paq.push(['trackPageView']);
+    };
+    
+    // Handle popstate event (back/forward buttons)
+    window.addEventListener('popstate', function() {
+      _paq.push(['setCustomUrl', window.location.pathname]);
+      _paq.push(['setDocumentTitle', document.title]);
+      _paq.push(['trackPageView']);
+    });
+  });
 
   return (
     <>

@@ -9,9 +9,6 @@ export default component$(() => {
       <head>
         <meta charset="utf-8" />
         <RouterHead />
-      </head>
-      <body>
-        <RouterOutlet />
         {/* Matomo */}
         <script>
           {`
@@ -29,6 +26,9 @@ export default component$(() => {
           `}
         </script>
         {/* End Matomo Code */}
+      </head>
+      <body>
+        <RouterOutlet />
       </body>
     </QwikCityProvider>
   );

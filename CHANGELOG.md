@@ -2,7 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.1.12](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.11...v0.1.12) (2025-04-01)
+### [0.1.12](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.11...v0.1.12) (2025-04-29)
+
+
+### Features
+
+* add survey button with icon and 2mm screw size ([08dbe52](https://github.com/kamilpajak/gridfinity-label-generator/commit/08dbe52a3005dc0a1fbbc8199697084c06272200))
 
 ### [0.1.11](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.10...v0.1.11) (2025-04-01)
 

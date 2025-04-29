@@ -3,7 +3,7 @@ import { $, component$, useSignal, useTask$ } from "@builder.io/qwik";
 import type { LabelSettings } from "~/types";
 import { validateWidth } from "~/utils/measurements";
 import { shouldShortenUrl, shortenUrl } from "~/utils/urlShortener";
-import { IdentifierIcon, ImageIcon, InfoIcon, QrCodeIcon, SettingsIcon } from "./icons";
+import { ChatBubbleIcon, IdentifierIcon, ImageIcon, InfoIcon, QrCodeIcon, SettingsIcon } from "./icons";
 
 interface Props {
   settings: LabelSettings;
@@ -194,6 +194,18 @@ export const SettingsPanel = component$<Props>(
 
           <div class="pt-4 border-t border-gray-200">
             <div class="sharethis-inline-share-buttons"></div>
+            
+            <div class="mt-4">
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSegG3P2FED1dOJ1P5Pjv68R4bAq1IFFoc-2U-5_Gt-7IoSDvQ/viewform?usp=dialog"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center gap-2 px-6 py-3 w-full bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg font-medium transition-all"
+              >
+                <ChatBubbleIcon />
+                <span>Take our feedback survey</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

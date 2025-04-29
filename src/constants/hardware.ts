@@ -37,6 +37,7 @@ export const imperialThreadSizes = [
 
 // Screw sizes
 export const screwMetricSizes = [
+  "2mm",
   "3mm",
   "3.5mm",
   "4mm",

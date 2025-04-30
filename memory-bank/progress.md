@@ -16,6 +16,12 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 - ✅ Label preview with real-time updates
 - ✅ Label download as PNG
 
+### Deployment & Distribution
+- ✅ Docker image with proper metadata and labels
+- ✅ Automated Docker builds via GitHub Actions
+- ✅ Convenience scripts for local Docker operations
+- ✅ Multi-registry publishing (DockerHub and GitHub Container Registry)
+
 ### Label Generation
 - ✅ Canvas-based label rendering
 - ✅ Priority-based element positioning
@@ -33,6 +39,7 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 - ✅ Intuitive component organization
 - ✅ Appropriate validation and user feedback
 - ✅ Download button with dynamic filename
+- ✅ Feedback mechanism with appropriate wording
 
 ### Settings & Customization
 - ✅ Adjustable label width
@@ -89,25 +96,43 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 
 ## Recent Accomplishments
 
-1. **QR Code Integration**
+1. **Release Workflow Improvements**
+   - Split release workflow into separate version bump and GitHub release workflows
+   - Fixed issue with GitHub Releases not being created for release commits
+   - Added validation and verification steps to ensure successful releases
+   - Enhanced documentation of the release process in CONTRIBUTING.md
+   - Improved error handling and debugging in GitHub Actions workflows
+
+2. **UI Text Improvements**
+   - Changed feedback button text from "Take our feedback survey" to "Provide feedback"
+   - Updated text to better reflect individual project ownership rather than team effort
+
+3. **Docker Deployment Improvements**
+   - Created Docker build and publish convenience scripts
+   - Fixed Docker image metadata with proper OCI-compliant labels
+   - Enhanced GitHub Actions workflow for Docker builds
+   - Added debugging steps to Docker workflow for better troubleshooting
+   - Implemented dual registry publishing strategy (DockerHub and GHCR)
+
+4. **QR Code Integration**
    - Successfully implemented QR code generation
    - Added priority-based positioning system
    - Integrated user controls for QR code settings
    - Implemented automatic URL shortening for better readability
 
-2. **Label Rendering Improvements**
+5. **Label Rendering Improvements**
    - Enhanced font loading reliability
    - Improved image loading with fallback mechanisms
    - Refined text positioning for better readability
    - Fixed image proportions to exactly match printable area dimensions
    - Implemented precise aspect ratio preservation for generated labels
 
-3. **UI Enhancements**
+6. **UI Enhancements**
    - Improved mobile responsiveness
    - Enhanced searchable dropdown for hardware standards
    - Implemented real-time label preview updates
 
-4. **Security Configuration Improvements**
+7. **Security Configuration Improvements**
    - Rozwiązano problem z Content Security Policy blokującym żądania do TinyURL
    - Zapewniono poprawne działanie automatycznego skracania URL-i
    - Zwiększono czytelność QR kodów na małych etykietach
@@ -147,6 +172,16 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 ## Deployment Status
 
 - **Production Environment**: Live and functional
-- **Deployment Method**: Static hosting with Express server
-- **CI/CD**: Manual deployment process
+- **Deployment Methods**:
+  - Static hosting with Express server
+  - Docker container deployment
+- **CI/CD**:
+  - Two-step release workflow:
+    - Version Bump workflow: Updates version numbers and creates git tags
+    - GitHub Release workflow: Creates GitHub Releases from tags
+  - Automated Docker builds triggered by version tags
+  - Pre-release validation and post-release verification
+- **Container Registries**:
+  - DockerHub: kamilpajak/storage-label-maker
+  - GitHub Container Registry: ghcr.io/kamilpajak/gridfinity-label-generator
 - **Monitoring**: Basic error logging

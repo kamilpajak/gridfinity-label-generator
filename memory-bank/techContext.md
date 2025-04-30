@@ -20,6 +20,21 @@
 ### Deployment
 - **Express**: Minimal server implementation for production deployment
 - **Node.js**: JavaScript runtime for server-side execution
+- **Docker**: Containerization for consistent deployment across environments
+
+### CI/CD Workflow
+- **GitHub Actions**: Automated workflows for releases and Docker builds
+- **Two-step Release Process**: Separate workflows for version bumping and GitHub Release creation
+- **Validation Steps**: Pre-release testing and verification
+- **Conventional Commits**: Automated versioning based on commit messages
+- **Release Documentation**: Comprehensive CONTRIBUTING.md with release procedures
+
+### Docker Configuration
+- **Multi-stage Build**: Optimized Dockerfile with separate stages for dependencies, build, and runtime
+- **OCI Labels**: Compliant metadata including version, build date, and commit SHA
+- **GitHub Actions**: Automated builds triggered by version tags
+- **DockerHub & GHCR**: Images published to both registries automatically
+- **Build Scripts**: Convenience scripts for local Docker operations
 
 ## Development Setup
 

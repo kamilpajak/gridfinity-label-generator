@@ -3,6 +3,19 @@ name: Release
 on:
   push:
     branches: [ master ]
+  # Add manual trigger option
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version type (patch, minor, major, or auto)'
+        required: true
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
 
 # Add permissions to the GITHUB_TOKEN
 permissions:
@@ -10,34 +23,75 @@ permissions:
   packages: read   # Optional: if you need to access GitHub packages
 
 jobs:
-  release:
+  validate:
     runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.head_commit.message, 'chore(release)') }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
+      
       - name: Install dependencies
         run: npm ci
+      
+      - name: Run linting
+        run: npm run lint
+      
+      - name: Build project
+        run: npm run build
+      
+      - name: Run tests
+        run: npm test
+
+  release:
+    needs: validate
+    runs-on: ubuntu-latest
+    # Modify condition to allow workflow_dispatch even for release commits
+    if: ${{ (github.event_name == 'workflow_dispatch') || (!contains(github.event.head_commit.message, 'chore(release)')) }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
       - name: Git config
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+      
       - name: Bump version
         id: version
         run: |
-          npm run release
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            if [[ "${{ github.event.inputs.version_type }}" == "auto" ]]; then
+              npm run release
+            else
+              npm run release:${{ github.event.inputs.version_type }}
+            fi
+          else
+            npm run release
+          fi
           echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+      
       - name: Push changes
         run: |
           git push origin HEAD:${{ github.ref }}
           git push origin --tags
+      
       - name: Create GitHub Release
         uses: actions/create-release@v1
         env:
@@ -48,8 +102,34 @@ jobs:
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
-
+      
       - name: Debug - Check tag
         run: |
           echo "Created and pushed tag: ${{ steps.version.outputs.tag }}"
           echo "This should trigger the Docker workflow automatically"
+
+  verify:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify GitHub Release
+        run: |
+          TAG="${{ needs.release.outputs.tag || 'latest' }}"
+          echo "Verifying release: $TAG"
+          # Wait for GitHub API to register the release
+          sleep 30
+          RELEASE_URL="https://api.github.com/repos/${{ github.repository }}/releases/tags/$TAG"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" $RELEASE_URL)
+          if [[ $HTTP_STATUS == "200" ]]; then
+            echo "✅ GitHub Release verified successfully!"
+          else
+            echo "❌ GitHub Release verification failed with status: $HTTP_STATUS"
+            exit 1
+          fi
+      
+      - name: Notify about successful release
+        run: |
+          echo "🎉 Release process completed successfully!"
+          echo "Version: ${{ needs.release.outputs.tag || 'latest' }}"
+          echo "Release URL: https://github.com/${{ github.repository }}/releases/latest"
+          # Add notification logic here (e.g., Slack, email, etc.)

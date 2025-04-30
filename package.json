@@ -28,7 +28,12 @@
     "release": "standard-version",
     "release:minor": "standard-version --release-as minor",
     "release:major": "standard-version --release-as major",
-    "release:patch": "standard-version --release-as patch"
+    "release:patch": "standard-version --release-as patch",
+    "release:auto": "./scripts/release.sh",
+    "release:branch": "./scripts/release.sh --branch",
+    "release:branch:patch": "./scripts/release.sh --branch --patch",
+    "release:branch:minor": "./scripts/release.sh --branch --minor",
+    "release:branch:major": "./scripts/release.sh --branch --major"
   },
   "devDependencies": {
     "@builder.io/qwik": "^1.12.0",

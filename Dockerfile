@@ -39,11 +39,12 @@ RUN npm run build
 FROM base AS final
 
 # Add OCI-compliant labels
+# Ensure build arguments are properly passed and used
 LABEL org.opencontainers.image.title="Gridfinity Label Generator"
 LABEL org.opencontainers.image.description="Label generator for storage systems, with a focus on the Gridfinity system"
-LABEL org.opencontainers.image.version=${VERSION}
-LABEL org.opencontainers.image.created=${BUILD_DATE}
-LABEL org.opencontainers.image.revision=${COMMIT_SHA}
+LABEL org.opencontainers.image.version="${VERSION}"
+LABEL org.opencontainers.image.created="${BUILD_DATE}"
+LABEL org.opencontainers.image.revision="${COMMIT_SHA}"
 LABEL org.opencontainers.image.licenses="MIT"
 
 # Set production environment variables.

@@ -203,7 +203,7 @@ export const SettingsPanel = component$<Props>(
                 class="flex items-center justify-center gap-2 px-6 py-3 w-full bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg font-medium transition-all"
               >
                 <ChatBubbleIcon />
-                <span>Take our feedback survey</span>
+                <span>Provide feedback</span>
               </a>
             </div>
           </div>

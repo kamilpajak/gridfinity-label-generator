@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.15](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.14...v0.1.15) (2025-04-30)
+
+
+### Features
+
+* split release workflow into version bump and github release ([f23e9bb](https://github.com/kamilpajak/gridfinity-label-generator/commit/f23e9bb4485c3ec6c6334b1f629cb54093a69a8e))
+
 ### [0.1.14](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.13...v0.1.14) (2025-04-30)
 
 

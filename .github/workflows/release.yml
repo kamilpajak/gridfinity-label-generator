@@ -1,4 +1,4 @@
-name: Release
+name: Version Bump
 
 on:
   push:
@@ -19,7 +19,7 @@ on:
 
 # Add permissions to the GITHUB_TOKEN
 permissions:
-  contents: write  # Gives permission to push commits and create releases
+  contents: write  # Gives permission to push commits and create tags
   packages: read   # Optional: if you need to access GitHub packages
 
 jobs:
@@ -48,10 +48,10 @@ jobs:
       - name: Run tests
         run: npm test
 
-  release:
+  bump_version:
     needs: validate
     runs-on: ubuntu-latest
-    # Modify condition to allow workflow_dispatch even for release commits
+    # Skip this job if the commit message contains "chore(release)" to prevent infinite loops
     if: ${{ (github.event_name == 'workflow_dispatch') || (!contains(github.event.head_commit.message, 'chore(release)')) }}
     steps:
       - uses: actions/checkout@v3
@@ -92,44 +92,7 @@ jobs:
           git push origin HEAD:${{ github.ref }}
           git push origin --tags
       
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          release_name: Release ${{ steps.version.outputs.tag }}
-          body_path: CHANGELOG.md
-          draft: false
-          prerelease: false
-      
       - name: Debug - Check tag
         run: |
           echo "Created and pushed tag: ${{ steps.version.outputs.tag }}"
-          echo "This should trigger the Docker workflow automatically"
-
-  verify:
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Verify GitHub Release
-        run: |
-          TAG="${{ needs.release.outputs.tag || 'latest' }}"
-          echo "Verifying release: $TAG"
-          # Wait for GitHub API to register the release
-          sleep 30
-          RELEASE_URL="https://api.github.com/repos/${{ github.repository }}/releases/tags/$TAG"
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" $RELEASE_URL)
-          if [[ $HTTP_STATUS == "200" ]]; then
-            echo "✅ GitHub Release verified successfully!"
-          else
-            echo "❌ GitHub Release verification failed with status: $HTTP_STATUS"
-            exit 1
-          fi
-      
-      - name: Notify about successful release
-        run: |
-          echo "🎉 Release process completed successfully!"
-          echo "Version: ${{ needs.release.outputs.tag || 'latest' }}"
-          echo "Release URL: https://github.com/${{ github.repository }}/releases/latest"
-          # Add notification logic here (e.g., Slack, email, etc.)
+          echo "This will trigger the GitHub Release workflow automatically"

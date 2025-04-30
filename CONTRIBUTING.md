@@ -60,7 +60,10 @@ Examples:
 
 ## Release Process
 
-The project has a robust release process that can be used in different scenarios.
+The project has a robust release process that uses a two-step workflow:
+
+1. **Version Bump Workflow**: Updates version numbers and creates git tags
+2. **GitHub Release Workflow**: Creates GitHub Releases from tags and triggers Docker builds
 
 ### Standard Release (from master)
 
@@ -81,7 +84,8 @@ This will:
 2. Update CHANGELOG.md
 3. Create a git tag
 4. Push changes and tag to GitHub
-5. Trigger GitHub Actions to create a GitHub Release and build Docker images
+5. Automatically trigger the GitHub Release workflow
+6. Build and push Docker images
 
 ### Release Branch Workflow (for major changes)
 
@@ -108,20 +112,23 @@ For significant releases that require testing:
 
 4. Create a pull request from the release branch to master
 
-5. After merging, GitHub Actions will automatically:
-   - Create the GitHub Release
-   - Build and push Docker images
-   - Update documentation
+5. After merging, the following will happen automatically:
+   - The Version Bump workflow will be skipped (to prevent loops)
+   - The GitHub Release workflow will be triggered by the tag
+   - A GitHub Release will be created with release notes
+   - Docker images will be built and pushed
 
 ### Manual Release Workflow
 
-You can also trigger a release manually through the GitHub Actions UI:
+You can also trigger a version bump manually through the GitHub Actions UI:
 
 1. Go to the "Actions" tab in the GitHub repository
-2. Select the "Release" workflow
+2. Select the "Version Bump" workflow
 3. Click "Run workflow"
 4. Select the version type (patch, minor, major, or auto)
 5. Click "Run workflow"
+
+This will trigger the same process as the standard release.
 
 ## Docker Images
 

@@ -132,6 +132,8 @@
    - `npm run dev` for local development
    - `npm run build` followed by `npm run serve` for production preview
    - `npm test` for running tests
+   - `npm run fmt` for formatting TypeScript and Qwik files
+   - `npm run fmt.check` for verifying formatting without making changes
 
 2. **Release Workflow**
    - `npm run release:patch` for patch version bump (0.1.17 → 0.1.18)

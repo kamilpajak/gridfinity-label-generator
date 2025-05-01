@@ -7,12 +7,14 @@ The Gridfinity Label Generator is currently in a functional state with all core 
 ### Primary Focus Areas
 
 1. **Label Generation System**
+
    - The priority-based layout system is fully implemented
    - QR code positioning (highest priority) is working correctly
    - Image and text scaling are functioning as designed
    - Label preview and download functionality are operational
 
 2. **User Interface**
+
    - All core UI components are implemented and functional
    - Responsive design for various screen sizes is in place
    - Real-time preview updates as user makes selections
@@ -24,37 +26,51 @@ The Gridfinity Label Generator is currently in a functional state with all core 
 
 ## Recent Changes
 
-1. **GitHub Release Workflow Challenges**
+1. **Modern Formatting Configuration**
+
+   - Added a dedicated `.prettierrc.json` file with TypeScript-optimized settings
+   - Updated formatting scripts to specifically target TypeScript and Qwik files
+   - Configured VSCode settings for consistent formatting experience
+   - Implemented pre-commit hooks with Husky and pretty-quick
+   - Updated documentation to reflect new formatting practices
+
+2. **GitHub Release Workflow Challenges**
+
    - Identified and documented verification timing issue in GitHub Release workflow
    - Created version 0.1.18 with successful version bump but failed GitHub Release verification
    - Discovered 404 error during release verification due to API timing constraints
    - Planned improvements to increase wait time before verification checks
 
-2. **Branch Protection Implementation**
+3. **Branch Protection Implementation**
+
    - Upgraded to GitHub Pro to enable branch protection for private repositories
    - Configured branch protection rules for master branch
    - Set up role-based bypass permissions for Repository admin, Maintain, and Write roles
    - Implemented required pull requests and status checks for code quality
 
-3. **Release Workflow Improvements**
+4. **Release Workflow Improvements**
+
    - Split release workflow into separate version bump and GitHub release workflows
    - Fixed issue with GitHub Releases not being created for release commits
    - Added validation and verification steps to ensure successful releases
    - Enhanced documentation of the release process in CONTRIBUTING.md
    - Improved error handling and debugging in GitHub Actions workflows
 
-4. **UI Text Improvements**
+5. **UI Text Improvements**
+
    - Changed feedback button text from "Take our feedback survey" to "Provide feedback"
    - Updated text to better reflect individual project ownership rather than team effort
 
-5. **Docker Deployment Improvements**
+6. **Docker Deployment Improvements**
+
    - Created Docker build and publish convenience scripts
    - Fixed Docker image metadata with proper OCI-compliant labels
    - Enhanced GitHub Actions workflow for Docker builds
    - Added debugging steps to Docker workflow for better troubleshooting
    - Ensured proper version, build date, and commit SHA in image metadata
 
-6. **Label Rendering Improvements**
+7. **Label Rendering Improvements**
+
    - Enhanced font loading with multiple fallback mechanisms
    - Improved image loading with SVG to JPG fallback
    - Refined text positioning for better readability
@@ -62,43 +78,49 @@ The Gridfinity Label Generator is currently in a functional state with all core 
    - Fixed image proportions to exactly match printable area dimensions
    - Implemented precise aspect ratio preservation for generated labels
 
-7. **QR Code Integration**
+8. **QR Code Integration**
+
    - Added QR code generation functionality
    - Implemented priority-based positioning system
    - Added user controls for enabling/disabling QR codes
    - Added input field for custom QR code content
    - Implemented automatic URL shortening for better QR code readability
 
-8. **UI Enhancements**
+9. **UI Enhancements**
+
    - Improved mobile responsiveness
    - Added settings panel for label customization
    - Enhanced searchable dropdown for hardware standards
    - Implemented real-time label preview updates
 
-9. **Security and Integration Improvements**
-   - Rozwiązano problem z Content Security Policy blokującym żądania do TinyURL
-   - Zapewniono poprawne działanie automatycznego skracania URL-i dla QR kodów
-   - Zoptymalizowano czytelność QR kodów na małych etykietach
+10. **Security and Integration Improvements**
+    - Rozwiązano problem z Content Security Policy blokującym żądania do TinyURL
+    - Zapewniono poprawne działanie automatycznego skracania URL-i dla QR kodów
+    - Zoptymalizowano czytelność QR kodów na małych etykietach
 
 ## Active Decisions
 
 1. **Label Dimensions**
+
    - Fixed height (10mm) with adjustable width
    - Default width of 55mm with user customization
    - All measurements maintain proper physical proportions
 
 2. **Element Prioritization**
+
    - QR code has highest priority and fixed position
    - Image is scaled to preserve aspect ratio with maximum width limit
    - Text is dynamically scaled to fit available space
    - Two-line mode positions text at top and bottom edges
 
 3. **Font Selection**
+
    - Noto Sans (900 weight) for primary specifications
    - Oswald (700 weight) for standard information
    - Font sizes dynamically calculated based on available space
 
 4. **Error Handling**
+
    - Multiple fallback mechanisms for font loading
    - Image format fallbacks (SVG → JPG)
    - Appropriate error logging and graceful degradation
@@ -113,12 +135,14 @@ The Gridfinity Label Generator is currently in a functional state with all core 
 ## Next Steps
 
 1. **Short-term Improvements**
+
    - Add support for additional hardware types
    - Enhance mobile user experience
    - Improve error handling for edge cases
    - Add more comprehensive testing
 
 2. **Medium-term Enhancements**
+
    - Support for custom hardware images
    - Batch label generation
    - Label template saving and loading
@@ -133,14 +157,17 @@ The Gridfinity Label Generator is currently in a functional state with all core 
 ## Current Challenges
 
 1. **Font Rendering Consistency**
+
    - Ensuring fonts load properly across different browsers
    - Maintaining consistent text appearance regardless of device
 
 2. **Image Quality**
+
    - Balancing image quality with performance
    - Ensuring hardware images are recognizable at small sizes
 
 3. **Performance Optimization**
+
    - Optimizing canvas rendering for smooth user experience
    - Balancing feature richness with application performance
 
@@ -151,15 +178,18 @@ The Gridfinity Label Generator is currently in a functional state with all core 
 ## Active Considerations
 
 1. **Accessibility**
+
    - Improving keyboard navigation
    - Enhancing screen reader compatibility
    - Ensuring sufficient color contrast
 
 2. **Internationalization**
+
    - Preparing for potential multi-language support
    - Ensuring text scaling works with different languages
 
 3. **Print Quality**
+
    - Ensuring labels print at correct physical dimensions
    - Optimizing image quality for printing
 

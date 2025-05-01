@@ -7,6 +7,7 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 ## What Works
 
 ### Core Functionality
+
 - ✅ Hardware type selection (Screw, Nut, Washer)
 - ✅ Measurement system selection (Metric, Imperial)
 - ✅ Thread size selection with appropriate options per system
@@ -17,12 +18,14 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 - ✅ Label download as PNG
 
 ### Deployment & Distribution
+
 - ✅ Docker image with proper metadata and labels
 - ✅ Automated Docker builds via GitHub Actions
 - ✅ Convenience scripts for local Docker operations
 - ✅ Multi-registry publishing (DockerHub and GitHub Container Registry)
 
 ### Label Generation
+
 - ✅ Canvas-based label rendering
 - ✅ Priority-based element positioning
 - ✅ Dynamic text scaling based on available space
@@ -33,6 +36,7 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 - ✅ Exact aspect ratio preservation for generated labels
 
 ### User Interface
+
 - ✅ Responsive design for desktop and mobile
 - ✅ Settings panel for label customization
 - ✅ Real-time preview updates
@@ -42,6 +46,7 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 - ✅ Feedback mechanism with appropriate wording
 
 ### Settings & Customization
+
 - ✅ Adjustable label width
 - ✅ Toggle for showing/hiding hardware images
 - ✅ Toggle for showing/hiding standard names
@@ -49,6 +54,7 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 - ✅ Input field for custom QR code content
 
 ### Hardware Database
+
 - ✅ Comprehensive list of DIN/ISO standards
 - ✅ Images for all hardware types and standards
 - ✅ Proper categorization by hardware type
@@ -57,6 +63,7 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 ## What's Left to Build
 
 ### Additional Features
+
 - ⬜ Support for additional hardware types beyond screws, nuts, and washers
 - ⬜ Batch label generation for multiple items
 - ⬜ Label template saving and loading
@@ -64,6 +71,7 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 - ⬜ Print layout optimization for multiple labels
 
 ### Enhancements
+
 - ⬜ Enhanced mobile user experience
 - ⬜ Keyboard navigation improvements
 - ⬜ Screen reader compatibility
@@ -71,6 +79,7 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 - ⬜ Additional language support
 
 ### Technical Improvements
+
 - ⬜ More comprehensive test coverage
 - ⬜ Performance optimization for large numbers of labels
 - ⬜ Service worker for offline functionality
@@ -80,90 +89,112 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 ## Known Issues
 
 ### CI/CD and Deployment
+
 - ⚠️ GitHub Release verification fails with 404 error due to timing constraints
 - ⚠️ Version 0.1.18 has a successful version bump but failed GitHub Release creation
 - ⚠️ GitHub Release workflow needs increased wait time before verification checks
 
 ### User Interface
+
 - ⚠️ Mobile layout could be further optimized for very small screens
 - ⚠️ Some dropdown menus may be difficult to use on touch devices
 - ⚠️ Limited keyboard navigation support
 
 ### Label Generation
+
 - ⚠️ Font loading may occasionally fail on some browsers
 - ⚠️ Text scaling algorithm may produce suboptimal results for very long text
 - ⚠️ QR code readability depends on the physical size of printed label
 
 ### Browser Compatibility
+
 - ⚠️ Limited testing on older browsers
 - ⚠️ Canvas rendering may vary slightly between browsers
 - ⚠️ Font rendering inconsistencies across different operating systems
 
 ## Recent Accomplishments
 
-1. **Branch Protection Implementation**
+1. **Modern Formatting Configuration**
+
+   - Added a dedicated `.prettierrc.json` file with TypeScript-optimized settings
+   - Updated formatting scripts to specifically target TypeScript and Qwik files
+   - Configured VSCode settings for consistent formatting experience
+   - Implemented pre-commit hooks with Husky and pretty-quick
+   - Updated documentation to reflect new formatting practices
+
+2. **Branch Protection Implementation**
+
    - Upgraded to GitHub Pro to enable branch protection for private repositories
    - Configured branch protection rules for master branch
    - Set up role-based bypass permissions for Repository admin, Maintain, and Write roles
    - Implemented required pull requests and status checks for code quality
    - Enhanced repository security while maintaining solo developer flexibility
 
-2. **GitHub Release Process Improvements**
+3. **GitHub Release Process Improvements**
+
    - Created version 0.1.18 with successful version bump
    - Identified verification timing issue in GitHub Release workflow
    - Documented 404 error during release verification due to API timing constraints
    - Planned improvements to increase wait time before verification checks
 
-3. **Release Workflow Improvements**
+4. **Release Workflow Improvements**
+
    - Split release workflow into separate version bump and GitHub release workflows
    - Fixed issue with GitHub Releases not being created for release commits
    - Added validation and verification steps to ensure successful releases
    - Enhanced documentation of the release process in CONTRIBUTING.md
    - Improved error handling and debugging in GitHub Actions workflows
 
-4. **UI Text Improvements**
+5. **UI Text Improvements**
+
    - Changed feedback button text from "Take our feedback survey" to "Provide feedback"
    - Updated text to better reflect individual project ownership rather than team effort
 
-5. **Docker Deployment Improvements**
+6. **Docker Deployment Improvements**
+
    - Created Docker build and publish convenience scripts
    - Fixed Docker image metadata with proper OCI-compliant labels
    - Enhanced GitHub Actions workflow for Docker builds
    - Added debugging steps to Docker workflow for better troubleshooting
    - Implemented dual registry publishing strategy (DockerHub and GHCR)
 
-6. **QR Code Integration**
+7. **QR Code Integration**
+
    - Successfully implemented QR code generation
    - Added priority-based positioning system
    - Integrated user controls for QR code settings
    - Implemented automatic URL shortening for better readability
 
-7. **Label Rendering Improvements**
+8. **Label Rendering Improvements**
+
    - Enhanced font loading reliability
    - Improved image loading with fallback mechanisms
    - Refined text positioning for better readability
    - Fixed image proportions to exactly match printable area dimensions
    - Implemented precise aspect ratio preservation for generated labels
 
-8. **UI Enhancements**
+9. **UI Enhancements**
+
    - Improved mobile responsiveness
    - Enhanced searchable dropdown for hardware standards
    - Implemented real-time label preview updates
 
-9. **Security Configuration Improvements**
-   - Rozwiązano problem z Content Security Policy blokującym żądania do TinyURL
-   - Zapewniono poprawne działanie automatycznego skracania URL-i
-   - Zwiększono czytelność QR kodów na małych etykietach
+10. **Security Configuration Improvements**
+    - Rozwiązano problem z Content Security Policy blokującym żądania do TinyURL
+    - Zapewniono poprawne działanie automatycznego skracania URL-i
+    - Zwiększono czytelność QR kodów na małych etykietach
 
 ## Next Development Priorities
 
 1. **Short-term (Next 2-4 Weeks)**
+
    - Improve mobile user experience
    - Enhance error handling for edge cases
    - Add more comprehensive testing
    - Fix known issues with font loading
 
 2. **Medium-term (Next 2-3 Months)**
+
    - Implement batch label generation
    - Add label template saving/loading
    - Improve accessibility features
@@ -181,7 +212,7 @@ The Gridfinity Label Generator is in a **functional production state** with all 
 - **Time to Interactive**: ~2s on average connection
 - **Label Generation Time**: <500ms for standard labels
 - **Bundle Size**: ~150KB gzipped
-- **Lighthouse Score**: 
+- **Lighthouse Score**:
   - Performance: 90+
   - Accessibility: 85+
   - Best Practices: 95+

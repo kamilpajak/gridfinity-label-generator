@@ -1,5 +1,5 @@
-import { computeDynamicFontSize, mmToPx } from "~/utils/measurements";
-import { shortenUrl, shouldShortenUrl } from "~/utils/urlShortener";
+import { computeDynamicFontSize, mmToPx } from '~/utils/measurements'
+import { shortenUrl, shouldShortenUrl } from '~/utils/urlShortener'
 
 /**
  * Loads required fonts before rendering.
@@ -13,27 +13,31 @@ async function ensureFontsLoaded(): Promise<void> {
       document.fonts.load('900 16px "Noto Sans"'),
       document.fonts.load('400 16px "Oswald"'),
       document.fonts.load('700 16px "Oswald"'),
-    ]);
-    
+    ])
+
     // Verify fonts are actually loaded and ready
-    if (!document.fonts.check('900 16px "Noto Sans"') || 
-        !document.fonts.check('700 16px "Oswald"')) {
-      console.warn("Fonts not fully loaded, waiting for fonts ready event");
-      await document.fonts.ready;
-      
+    if (
+      !document.fonts.check('900 16px "Noto Sans"') ||
+      !document.fonts.check('700 16px "Oswald"')
+    ) {
+      console.warn('Fonts not fully loaded, waiting for fonts ready event')
+      await document.fonts.ready
+
       // Double-check after fonts.ready
-      if (!document.fonts.check('900 16px "Noto Sans"') || 
-          !document.fonts.check('700 16px "Oswald"')) {
-        console.warn("Fonts still not available after fonts.ready, using fallbacks");
+      if (
+        !document.fonts.check('900 16px "Noto Sans"') ||
+        !document.fonts.check('700 16px "Oswald"')
+      ) {
+        console.warn('Fonts still not available after fonts.ready, using fallbacks')
       }
     }
   } catch (error) {
-    console.error("Failed to load fonts:", error);
+    console.error('Failed to load fonts:', error)
     // Wait for fonts ready as fallback
     try {
-      await document.fonts.ready;
+      await document.fonts.ready
     } catch (readyError) {
-      console.error("Failed to wait for fonts.ready:", readyError);
+      console.error('Failed to wait for fonts.ready:', readyError)
     }
   }
 }
@@ -49,48 +53,48 @@ export function getLabelTexts(
   hardwareStandard: string,
   notes: string,
   showStandardName: boolean,
-  selectedScrewSubtype?: string,
+  selectedScrewSubtype?: string
 ): { topText: string; bottomText: string } {
-  let topText: string;
-  if (selectedType === "Screw") {
-    let displayThreadSize = threadSize;
-    
+  let topText: string
+  if (selectedType === 'Screw') {
+    let displayThreadSize = threadSize
+
     // Remove "mm" from thread size for metric screws on the label
-    if (selectedSystem === "Metric" && threadSize.endsWith("mm")) {
-      displayThreadSize = threadSize.replace("mm", "");
+    if (selectedSystem === 'Metric' && threadSize.endsWith('mm')) {
+      displayThreadSize = threadSize.replace('mm', '')
     }
-    
+
     if (length) {
       // Both Bolt and Screw show thread size and length
-      if (selectedSystem === "Metric") {
-        topText = `${displayThreadSize} × ${length}`;
+      if (selectedSystem === 'Metric') {
+        topText = `${displayThreadSize} × ${length}`
       } else {
-        topText = `${displayThreadSize} × ${length}″`;
+        topText = `${displayThreadSize} × ${length}″`
       }
     } else {
       // Fallback if no length is provided
-      topText = displayThreadSize || "Default top text";
+      topText = displayThreadSize || 'Default top text'
     }
   } else {
-    topText = threadSize || "Default top text";
+    topText = threadSize || 'Default top text'
   }
 
-  let bottomText: string;
+  let bottomText: string
   if (showStandardName) {
     if (hardwareStandard) {
       if (notes) {
-        bottomText = `${hardwareStandard} ${notes}`;
+        bottomText = `${hardwareStandard} ${notes}`
       } else {
-        bottomText = hardwareStandard;
+        bottomText = hardwareStandard
       }
     } else {
-      bottomText = "Default bottom text";
+      bottomText = 'Default bottom text'
     }
   } else {
-    bottomText = notes || "";
+    bottomText = notes || ''
   }
 
-  return { topText, bottomText };
+  return { topText, bottomText }
 }
 
 /**
@@ -98,45 +102,45 @@ export function getLabelTexts(
  * attempts to load a JPG fallback.
  */
 async function loadImage(url: string): Promise<HTMLImageElement | null> {
-  const img = new Image();
-  img.crossOrigin = "anonymous";
+  const img = new Image()
+  img.crossOrigin = 'anonymous'
 
   try {
-    await new Promise<void>((resolve) => {
-      img.onload = () => resolve();
+    await new Promise<void>(resolve => {
+      img.onload = () => resolve()
       img.onerror = () => {
-        console.warn(`Failed to load image with original extension: ${url}`);
-        resolve();
-      };
-      img.src = url;
-    });
+        console.warn(`Failed to load image with original extension: ${url}`)
+        resolve()
+      }
+      img.src = url
+    })
 
     if (img.complete && img.naturalWidth > 0) {
-      return img;
+      return img
     }
 
-    if (url.toLowerCase().endsWith(".svg")) {
-      const jpgUrl = url.replace(/\.svg$/i, ".jpg");
-      const jpgImg = new Image();
-      jpgImg.crossOrigin = "anonymous";
+    if (url.toLowerCase().endsWith('.svg')) {
+      const jpgUrl = url.replace(/\.svg$/i, '.jpg')
+      const jpgImg = new Image()
+      jpgImg.crossOrigin = 'anonymous'
 
-      await new Promise<void>((resolve) => {
-        jpgImg.onload = () => resolve();
+      await new Promise<void>(resolve => {
+        jpgImg.onload = () => resolve()
         jpgImg.onerror = () => {
-          console.error(`Failed to load both SVG and JPG: ${url}`);
-          resolve();
-        };
-        jpgImg.src = jpgUrl;
-      });
+          console.error(`Failed to load both SVG and JPG: ${url}`)
+          resolve()
+        }
+        jpgImg.src = jpgUrl
+      })
 
       if (jpgImg.complete && jpgImg.naturalWidth > 0) {
-        return jpgImg;
+        return jpgImg
       }
     }
-    return null;
+    return null
   } catch (error) {
-    console.error("Error loading image:", error);
-    return null;
+    console.error('Error loading image:', error)
+    return null
   }
 }
 
@@ -150,20 +154,20 @@ function measureAndScaleText(
   desiredPxHeight: number,
   fontFamily: string,
   fontWeight: string,
-  maxWidth: number,
+  maxWidth: number
 ) {
-  let fontSize = computeDynamicFontSize(ctx, desiredPxHeight, text, fontFamily);
-  ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
-  let metrics = ctx.measureText(text);
+  let fontSize = computeDynamicFontSize(ctx, desiredPxHeight, text, fontFamily)
+  ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`
+  let metrics = ctx.measureText(text)
 
   if (metrics.width > maxWidth) {
-    const scaleFactor = maxWidth / metrics.width;
-    fontSize *= scaleFactor;
-    ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
-    metrics = ctx.measureText(text);
+    const scaleFactor = maxWidth / metrics.width
+    fontSize *= scaleFactor
+    ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`
+    metrics = ctx.measureText(text)
   }
 
-  return { fontSize, metrics };
+  return { fontSize, metrics }
 }
 
 /**
@@ -177,39 +181,39 @@ function drawImageIfNeeded(
   labelWidthPx: number,
   labelHeightPx: number,
   gapPx: number,
-  showImage: boolean,
+  showImage: boolean
 ): number {
   if (!showImage || !image) {
-    return 0;
+    return 0
   }
 
   // Compute the natural aspect ratio of the image.
-  const aspectRatio = image.naturalWidth / image.naturalHeight;
+  const aspectRatio = image.naturalWidth / image.naturalHeight
 
   // Calculate image width if drawn with full label height.
-  const fullHeightWidth = labelHeightPx * aspectRatio;
+  const fullHeightWidth = labelHeightPx * aspectRatio
 
   // Maximum allowed image width: 40% of label width.
-  const maxAllowedWidth = labelWidthPx * 0.4;
+  const maxAllowedWidth = labelWidthPx * 0.4
 
-  let imageWidth: number, imageHeight: number;
+  let imageWidth: number, imageHeight: number
 
   if (fullHeightWidth > maxAllowedWidth) {
     // Limit image width to the maximum allowed value.
-    imageWidth = maxAllowedWidth;
+    imageWidth = maxAllowedWidth
     // Adjust height to maintain exact aspect ratio.
-    imageHeight = imageWidth / aspectRatio;
+    imageHeight = imageWidth / aspectRatio
     // Center the image vertically.
-    const offsetY = (labelHeightPx - imageHeight) / 2;
-    ctx.drawImage(image, 0, offsetY, imageWidth, imageHeight);
+    const offsetY = (labelHeightPx - imageHeight) / 2
+    ctx.drawImage(image, 0, offsetY, imageWidth, imageHeight)
   } else {
     // Use full label height if the resulting width is within the limit.
-    imageWidth = fullHeightWidth;
-    imageHeight = labelHeightPx;
-    ctx.drawImage(image, 0, 0, imageWidth, imageHeight);
+    imageWidth = fullHeightWidth
+    imageHeight = labelHeightPx
+    ctx.drawImage(image, 0, 0, imageWidth, imageHeight)
   }
 
-  return imageWidth + gapPx;
+  return imageWidth + gapPx
 }
 
 /**
@@ -228,122 +232,125 @@ export async function generateLabel(
   labelWidthMm: number,
   showImage: boolean,
   showQrCode: boolean = false,
-  qrCodeContent: string = "",
+  qrCodeContent: string = ''
 ): Promise<string | null> {
-  await ensureFontsLoaded();
-  const standardImg = await loadImage(standardImgUrl);
+  await ensureFontsLoaded()
+  const standardImg = await loadImage(standardImgUrl)
 
   // Fixed label height in mm (printable area)
-  const labelHeightMm = 10;
+  const labelHeightMm = 10
   // Calculate printable area width (tape width - 4mm margins)
-  const printableWidthMm = labelWidthMm - 4;
-  
+  const printableWidthMm = labelWidthMm - 4
+
   // Calculate the exact aspect ratio of the printable area
-  const exactAspectRatio = printableWidthMm / labelHeightMm;
-  
-  console.log(`Tape size (mm): ${labelWidthMm} × 12`);
-  console.log(`Printable area (mm): ${printableWidthMm} × ${labelHeightMm}`);
-  console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`);
+  const exactAspectRatio = printableWidthMm / labelHeightMm
+
+  console.log(`Tape size (mm): ${labelWidthMm} × 12`)
+  console.log(`Printable area (mm): ${printableWidthMm} × ${labelHeightMm}`)
+  console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`)
 
   // Convert height from mm to pixels
-  const labelHeightPx = Math.round(mmToPx(labelHeightMm));
-  
+  const labelHeightPx = Math.round(mmToPx(labelHeightMm))
+
   // Calculate width in pixels based on the exact aspect ratio
-  const labelWidthPx = Math.round(labelHeightPx * exactAspectRatio);
-  
+  const labelWidthPx = Math.round(labelHeightPx * exactAspectRatio)
+
   // Calculate the actual conversion factor used
-  const conversionFactor = labelWidthPx / printableWidthMm;
-  
-  console.log(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`);
-  console.log(`Canvas dimensions (px): ${labelWidthPx} × ${labelHeightPx}`);
-  console.log(`Canvas aspect ratio: ${(labelWidthPx / labelHeightPx).toFixed(6)}`);
+  const conversionFactor = labelWidthPx / printableWidthMm
+
+  console.log(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`)
+  console.log(`Canvas dimensions (px): ${labelWidthPx} × ${labelHeightPx}`)
+  console.log(`Canvas aspect ratio: ${(labelWidthPx / labelHeightPx).toFixed(6)}`)
 
   // Baseline text height and gap in mm
-  const baselineTextHeight = 4.5;
-  const baselineGap = 2;
-  console.log(`Baseline text height (mm): ${baselineTextHeight}`);
-  console.log(`Baseline gap (mm): ${baselineGap}`);
+  const baselineTextHeight = 4.5
+  const baselineGap = 2
+  console.log(`Baseline text height (mm): ${baselineTextHeight}`)
+  console.log(`Baseline gap (mm): ${baselineGap}`)
 
   // Compute gap in pixels (only if image is to be shown)
-  const gapPx = showImage && standardImg ? mmToPx(baselineGap) : 0;
-  console.log(`Computed gap (mm): ${(gapPx / conversionFactor).toFixed(2)}`);
+  const gapPx = showImage && standardImg ? mmToPx(baselineGap) : 0
+  console.log(`Computed gap (mm): ${(gapPx / conversionFactor).toFixed(2)}`)
 
   // Create canvas and fill background with white
-  const canvas = document.createElement("canvas");
-  canvas.width = labelWidthPx;
-  canvas.height = labelHeightPx;
-  const ctx = canvas.getContext("2d");
+  const canvas = document.createElement('canvas')
+  canvas.width = labelWidthPx
+  canvas.height = labelHeightPx
+  const ctx = canvas.getContext('2d')
   if (!ctx) {
-    console.error("Could not get canvas context.");
-    return null;
+    console.error('Could not get canvas context.')
+    return null
   }
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, labelWidthPx, labelHeightPx);
+  ctx.fillStyle = 'white'
+  ctx.fillRect(0, 0, labelWidthPx, labelHeightPx)
 
   // QR code has highest priority - position it first if enabled
-  let qrCodeWidth = 0;
-  let qrCodeX = 0;
+  let qrCodeWidth = 0
+  let qrCodeX = 0
   if (showQrCode && qrCodeContent) {
     try {
       // QR code size: 10mm x 10mm
-      const qrSizeMm = 10;
-      const qrSizePx = mmToPx(qrSizeMm);
-      qrCodeWidth = qrSizePx;
-      
+      const qrSizeMm = 10
+      const qrSizePx = mmToPx(qrSizeMm)
+      qrCodeWidth = qrSizePx
+
       // Position QR code on the right side of the printable area
-      qrCodeX = labelWidthPx - qrSizePx;
-      const qrY = (labelHeightPx - qrSizePx) / 2; // Centered vertically
-      
+      qrCodeX = labelWidthPx - qrSizePx
+      const qrY = (labelHeightPx - qrSizePx) / 2 // Centered vertically
+
       // Shorten URL if necessary for better QR code readability
-      let finalQrContent = qrCodeContent;
+      let finalQrContent = qrCodeContent
       if (shouldShortenUrl(qrCodeContent)) {
         try {
-          finalQrContent = await shortenUrl(qrCodeContent);
-          console.log(`URL shortened: ${qrCodeContent} → ${finalQrContent}`);
+          finalQrContent = await shortenUrl(qrCodeContent)
+          console.log(`URL shortened: ${qrCodeContent} → ${finalQrContent}`)
         } catch (error) {
-          console.error("Error shortening URL:", error);
+          console.error('Error shortening URL:', error)
         }
       }
-      
+
       // Generate QR code using the qrcode library
-      const QRCode = await import('qrcode');
+      const QRCode = await import('qrcode')
       const qrDataUrl = await QRCode.default.toDataURL(finalQrContent, {
         errorCorrectionLevel: 'M',
         margin: 0,
         width: qrSizePx,
         color: {
           dark: '#000000',
-          light: '#FFFFFF'
-        }
-      });
-      
+          light: '#FFFFFF',
+        },
+      })
+
       // Load the QR code as an image
-      const qrImg = new Image();
-      await new Promise<void>((resolve) => {
-        qrImg.onload = () => resolve();
+      const qrImg = new Image()
+      await new Promise<void>(resolve => {
+        qrImg.onload = () => resolve()
         qrImg.onerror = () => {
-          console.error("Failed to load QR code image");
-          resolve();
-        };
-        qrImg.src = qrDataUrl;
-      });
-      
+          console.error('Failed to load QR code image')
+          resolve()
+        }
+        qrImg.src = qrDataUrl
+      })
+
       // Draw the QR code on the label
       if (qrImg.complete && qrImg.naturalWidth > 0) {
-        ctx.drawImage(qrImg, qrCodeX, qrY, qrSizePx, qrSizePx);
+        ctx.drawImage(qrImg, qrCodeX, qrY, qrSizePx, qrSizePx)
       }
-      
-      console.log(`QR code positioned at x=${(qrCodeX / conversionFactor).toFixed(2)}mm, width=${qrSizeMm}mm`);
+
+      console.log(
+        `QR code positioned at x=${(qrCodeX / conversionFactor).toFixed(2)}mm, width=${qrSizeMm}mm`
+      )
     } catch (error) {
-      console.error("Error generating QR code:", error);
+      console.error('Error generating QR code:', error)
     }
   }
 
   // Calculate available width for image and text (with 1mm gap between text and QR code)
-  const gapBetweenTextAndQrMm = qrCodeWidth > 0 ? 1 : 0; // 1mm gap if QR code is present
-  const gapBetweenTextAndQrPx = mmToPx(gapBetweenTextAndQrMm);
-  const availableWidthForImageAndText = qrCodeWidth > 0 ? qrCodeX - gapBetweenTextAndQrPx : labelWidthPx;
-  
+  const gapBetweenTextAndQrMm = qrCodeWidth > 0 ? 1 : 0 // 1mm gap if QR code is present
+  const gapBetweenTextAndQrPx = mmToPx(gapBetweenTextAndQrMm)
+  const availableWidthForImageAndText =
+    qrCodeWidth > 0 ? qrCodeX - gapBetweenTextAndQrPx : labelWidthPx
+
   // Draw image on the left if enabled
   const imageUsedWidth = drawImageIfNeeded(
     ctx,
@@ -351,27 +358,23 @@ export async function generateLabel(
     availableWidthForImageAndText, // Only use width up to QR code
     labelHeightPx,
     gapPx,
-    showImage,
-  );
-  const imageUsedWidthMm = imageUsedWidth / conversionFactor;
-  console.log(`Image used width (mm): ${imageUsedWidthMm.toFixed(2)}`);
+    showImage
+  )
+  const imageUsedWidthMm = imageUsedWidth / conversionFactor
+  console.log(`Image used width (mm): ${imageUsedWidthMm.toFixed(2)}`)
 
   // Calculate text area dimensions
-  const textAreaX = imageUsedWidth;
-  const textAreaWidth = availableWidthForImageAndText - textAreaX;
-  console.log(
-    `Text area starts at (mm): ${(textAreaX / conversionFactor).toFixed(2)}`,
-  );
-  console.log(
-    `Text area width (mm): ${(textAreaWidth / conversionFactor).toFixed(2)}`,
-  );
+  const textAreaX = imageUsedWidth
+  const textAreaWidth = availableWidthForImageAndText - textAreaX
+  console.log(`Text area starts at (mm): ${(textAreaX / conversionFactor).toFixed(2)}`)
+  console.log(`Text area width (mm): ${(textAreaWidth / conversionFactor).toFixed(2)}`)
 
   // Set text color and baseline
-  ctx.fillStyle = "black";
-  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = 'black'
+  ctx.textBaseline = 'alphabetic'
 
-  const desiredTextHeight = mmToPx(baselineTextHeight);
-  const isSingleLine = bottomText.trim() === "";
+  const desiredTextHeight = mmToPx(baselineTextHeight)
+  const isSingleLine = bottomText.trim() === ''
 
   if (isSingleLine) {
     // Single-line mode: center text vertically
@@ -379,22 +382,19 @@ export async function generateLabel(
       ctx,
       topText,
       desiredTextHeight,
-      "Noto Sans",
-      "900",
-      textAreaWidth,
-    );
-    ctx.font = `900 ${fontSize}px "Noto Sans", serif`;
-    const textX = textAreaX + (textAreaWidth - metrics.width) / 2;
+      'Noto Sans',
+      '900',
+      textAreaWidth
+    )
+    ctx.font = `900 ${fontSize}px "Noto Sans", serif`
+    const textX = textAreaX + (textAreaWidth - metrics.width) / 2
     // Compute vertical center using "alphabetic" baseline.
     const textY =
-      (labelHeightPx +
-        metrics.actualBoundingBoxAscent -
-        metrics.actualBoundingBoxDescent) /
-      2;
-    ctx.fillText(topText, textX, textY);
+      (labelHeightPx + metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2
+    ctx.fillText(topText, textX, textY)
     console.log(
-      `Single-line text dimensions (mm): width=${(metrics.width / conversionFactor).toFixed(2)}`,
-    );
+      `Single-line text dimensions (mm): width=${(metrics.width / conversionFactor).toFixed(2)}`
+    )
   } else {
     // Two-line mode: align top text to top edge and bottom text to bottom edge.
     // For top text: use "alphabetic" baseline and adjust Y so that actualBoundingBoxAscent equals 0.
@@ -402,46 +402,44 @@ export async function generateLabel(
       ctx,
       topText,
       desiredTextHeight,
-      "Noto Sans",
-      "900",
-      textAreaWidth,
-    );
-    ctx.font = `900 ${topResult.fontSize}px "Noto Sans", serif`;
-    const topX = textAreaX + (textAreaWidth - topResult.metrics.width) / 2;
+      'Noto Sans',
+      '900',
+      textAreaWidth
+    )
+    ctx.font = `900 ${topResult.fontSize}px "Noto Sans", serif`
+    const topX = textAreaX + (textAreaWidth - topResult.metrics.width) / 2
     // Draw top text so that its top edge touches y = 0.
     // Using "alphabetic" baseline, the top edge is at y = actualBoundingBoxAscent.
-    const topY = topResult.metrics.actualBoundingBoxAscent;
-    ctx.fillText(topText, topX, topY);
+    const topY = topResult.metrics.actualBoundingBoxAscent
+    ctx.fillText(topText, topX, topY)
     console.log(
-      `Top text dimensions (mm): width=${(topResult.metrics.width / conversionFactor).toFixed(2)}`,
-    );
+      `Top text dimensions (mm): width=${(topResult.metrics.width / conversionFactor).toFixed(2)}`
+    )
 
     // For bottom text: use "alphabetic" baseline and adjust Y so that bottom edge touches y = labelHeightPx.
     const bottomResult = measureAndScaleText(
       ctx,
       bottomText,
       desiredTextHeight,
-      "Oswald",
-      "700",
-      textAreaWidth,
-    );
-    ctx.font = `700 ${bottomResult.fontSize}px "Oswald", sans-serif`;
-    const bottomX =
-      textAreaX + (textAreaWidth - bottomResult.metrics.width) / 2;
+      'Oswald',
+      '700',
+      textAreaWidth
+    )
+    ctx.font = `700 ${bottomResult.fontSize}px "Oswald", sans-serif`
+    const bottomX = textAreaX + (textAreaWidth - bottomResult.metrics.width) / 2
     // Bottom edge should touch the bottom, so we position at:
     // y = labelHeightPx - actualBoundingBoxDescent
-    const bottomY =
-      labelHeightPx - bottomResult.metrics.actualBoundingBoxDescent;
-    ctx.fillText(bottomText, bottomX, bottomY);
+    const bottomY = labelHeightPx - bottomResult.metrics.actualBoundingBoxDescent
+    ctx.fillText(bottomText, bottomX, bottomY)
     console.log(
-      `Bottom text dimensions (mm): width=${(bottomResult.metrics.width / conversionFactor).toFixed(2)}`,
-    );
+      `Bottom text dimensions (mm): width=${(bottomResult.metrics.width / conversionFactor).toFixed(2)}`
+    )
   }
 
   // Log final exported PNG dimensions in mm.
   console.log(
-    `Exported PNG dimensions (mm): width=${labelWidthMm.toFixed(2)}mm, height=${labelHeightMm.toFixed(2)}mm`,
-  );
+    `Exported PNG dimensions (mm): width=${labelWidthMm.toFixed(2)}mm, height=${labelHeightMm.toFixed(2)}mm`
+  )
 
-  return canvas.toDataURL("image/png");
+  return canvas.toDataURL('image/png')
 }

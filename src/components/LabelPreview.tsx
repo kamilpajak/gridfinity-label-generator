@@ -1,11 +1,11 @@
-import { component$ } from "@builder.io/qwik";
-import { InfoIcon, LabelIcon } from "./icons";
+import { component$ } from '@builder.io/qwik'
+import { InfoIcon, LabelIcon } from './icons'
 
 interface Props {
-  isLoading: boolean;
-  labelUrl: string;
-  labelWidth: number;
-  showQrCode?: boolean;
+  isLoading: boolean
+  labelUrl: string
+  labelWidth: number
+  showQrCode?: boolean
 }
 
 // Helper: Renders the header with title and dimensions.
@@ -27,13 +27,12 @@ const renderHeader = (labelWidth: number) => {
             {/* Content container with higher z-index to appear above the triangle */}
             <div class="relative p-4 rounded-lg bg-white z-20">
               <p class="mb-2">
-                The selected width (e.g., 55mm) is the tape size. The printable
-                area is 4mm narrower (2mm margin on each side) and 2mm shorter
-                (1mm margin on top and bottom).
+                The selected width (e.g., 55mm) is the tape size. The printable area is 4mm narrower
+                (2mm margin on each side) and 2mm shorter (1mm margin on top and bottom).
               </p>
               <p class="mt-2">
-                <strong>Note:</strong> The printed width will match the tape
-                size width of {labelWidth}mm.
+                <strong>Note:</strong> The printed width will match the tape size width of{' '}
+                {labelWidth}mm.
               </p>
             </div>
           </div>
@@ -43,20 +42,18 @@ const renderHeader = (labelWidth: number) => {
         <div class="text-sm text-gray-500">
           {labelWidth}mm × 12mm <span class="text-gray-400">(tape size)</span>
         </div>
-        <div class="text-xs text-gray-400">
-          {labelWidth - 4}mm × 10mm (printable area)
-        </div>
+        <div class="text-xs text-gray-400">{labelWidth - 4}mm × 10mm (printable area)</div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Helper: Renders the label image responsively.
 // The container sets the width while the image uses width:100% and height:auto to preserve its proportions.
 const renderLabelImage = (labelUrl: string, labelWidth: number) => {
   // Calculate margin percentages for the tape container
-  const topBottomMarginPercent = (1 / 12) * 100; // 1mm out of 12mm height = 8.33%
-  const leftRightMarginPercent = (2 / labelWidth) * 100; // 2mm out of labelWidth
+  const topBottomMarginPercent = (1 / 12) * 100 // 1mm out of 12mm height = 8.33%
+  const leftRightMarginPercent = (2 / labelWidth) * 100 // 2mm out of labelWidth
 
   return (
     <div class="relative w-full">
@@ -90,7 +87,7 @@ const renderLabelImage = (labelUrl: string, labelWidth: number) => {
               src={labelUrl}
               alt={`Generated label with dimensions ${labelWidth - 4}mm × 10mm`}
               class="w-full h-full"
-              style={{ objectFit: "contain" }}
+              style={{ objectFit: 'contain' }}
             />
           </div>
         </div>
@@ -115,8 +112,8 @@ const renderLabelImage = (labelUrl: string, labelWidth: number) => {
         {/* QR code indicator removed as per user request */}
       </div>
     </div>
-  );
-};
+  )
+}
 
 // Helper: Renders fallback content when no label image is available.
 const renderFallback = () => (
@@ -124,15 +121,15 @@ const renderFallback = () => (
     <LabelIcon />
     <span class="text-sm">Fill out the form to generate a label</span>
   </div>
-);
+)
 
 // Main component
 export const LabelPreview = component$<Props>(({ labelUrl, labelWidth }) => {
   // Render content based on current state.
   const renderContent = () => {
-    if (labelUrl) return renderLabelImage(labelUrl, labelWidth);
-    return renderFallback();
-  };
+    if (labelUrl) return renderLabelImage(labelUrl, labelWidth)
+    return renderFallback()
+  }
 
   return (
     <div class="space-y-2">
@@ -151,5 +148,5 @@ export const LabelPreview = component$<Props>(({ labelUrl, labelWidth }) => {
         </div>
       </div>
     </div>
-  );
-});
+  )
+})

@@ -105,6 +105,27 @@
    - Added aspect ratio preservation
    - Added maximum width constraint (40% of available space)
 
+## Repository Management Patterns
+
+1. **Branch Protection Strategy**
+   - GitHub Pro subscription enables branch protection for private repositories
+   - Master branch is protected with required pull requests and status checks
+   - Role-based bypass permissions for Repository admin, Maintain, and Write roles
+   - Branch protection ensures code quality while maintaining solo developer flexibility
+
+2. **Release Process**
+   - Two-step workflow: Version Bump → GitHub Release
+   - Version Bump uses standard-version for conventional commits
+   - GitHub Release creates releases from tags and triggers Docker builds
+   - Known issue: GitHub Release verification can fail with 404 error due to timing constraints
+   - Workaround: Increase wait time before verification or create releases manually
+
+3. **Pull Request Workflow**
+   - Create feature branches for significant changes
+   - Use pull requests to merge changes to master
+   - Required status checks ensure code quality
+   - Self-review is sufficient for solo development
+
 ## Tool Usage Patterns
 
 1. **Development Workflow**
@@ -112,18 +133,26 @@
    - `npm run build` followed by `npm run serve` for production preview
    - `npm test` for running tests
 
-2. **Code Quality Tools**
+2. **Release Workflow**
+   - `npm run release:patch` for patch version bump (0.1.17 → 0.1.18)
+   - `npm run release:minor` for minor version bump (0.1.17 → 0.2.0)
+   - `npm run release:major` for major version bump (0.1.17 → 1.0.0)
+   - `npm run release:auto` for automatic version bump based on conventional commits
+   - `git push --follow-tags origin master` to trigger GitHub Release workflow
+
+3. **Code Quality Tools**
    - ESLint for static code analysis
    - Prettier for code formatting
    - Vitest for testing
+   - GitHub Actions for CI/CD
 
-3. **Browser Testing**
+4. **Browser Testing**
    - Test in Chrome, Firefox, and Safari
    - Verify font loading in each browser
    - Check label dimensions and scaling
    - Validate QR code readability
 
-4. **Performance Monitoring**
+5. **Performance Monitoring**
    - Monitor label generation time
    - Check font loading performance
    - Verify responsive behavior on different devices

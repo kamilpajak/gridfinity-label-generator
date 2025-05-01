@@ -22,10 +22,18 @@
 - **Node.js**: JavaScript runtime for server-side execution
 - **Docker**: Containerization for consistent deployment across environments
 
+### Repository Management
+- **GitHub Pro**: Subscription for enhanced repository features
+- **Branch Protection**: Rules to enforce code quality and prevent accidental changes
+- **Role-based Permissions**: Bypass settings for Repository admin, Maintain, and Write roles
+- **Required Pull Requests**: Enforced code review process with status checks
+- **Status Checks**: Automated validation of code changes before merging
+
 ### CI/CD Workflow
 - **GitHub Actions**: Automated workflows for releases and Docker builds
 - **Two-step Release Process**: Separate workflows for version bumping and GitHub Release creation
 - **Validation Steps**: Pre-release testing and verification
+- **Verification Challenges**: Timing issues with GitHub Release API (404 errors)
 - **Conventional Commits**: Automated versioning based on commit messages
 - **Release Documentation**: Comprehensive CONTRIBUTING.md with release procedures
 

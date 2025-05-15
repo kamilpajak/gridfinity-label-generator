@@ -1,10 +1,5 @@
 ARG NODE_VERSION=18.18.2
 
-# Build arguments for versioning
-ARG VERSION=dev
-ARG BUILD_DATE=unknown
-ARG COMMIT_SHA=unknown
-
 ################################################################################
 # Use node image as the base image for all stages.
 FROM node:${NODE_VERSION}-alpine AS base
@@ -37,6 +32,11 @@ RUN npm run build
 ################################################################################
 # Create a new stage to run the application with minimal runtime dependencies.
 FROM base AS final
+
+# Build arguments for versioning
+ARG VERSION=dev
+ARG BUILD_DATE=unknown
+ARG COMMIT_SHA=unknown
 
 # Add OCI-compliant labels
 # Ensure build arguments are properly passed and used

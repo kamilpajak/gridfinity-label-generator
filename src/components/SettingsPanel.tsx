@@ -193,50 +193,30 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <div class="flex">
-                  <button
-                    onClick$={() => handleWidthChange$(Math.max(settings.labelWidth - 1, 37))}
-                    class="h-[40px] w-[40px] flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-l-lg text-gray-700 border border-gray-200"
-                    aria-label="Decrease width"
-                  >
-                    <span class="text-xl">−</span>
-                  </button>
-                  <input
-                    type="number"
-                    min="37"
-                    max="100"
-                    class="w-20 h-[40px] px-2 bg-gray-50 border-y border-gray-200 text-center text-base text-gray-700"
-                    value={settings.labelWidth}
-                    onInput$={e => handleWidthChange$((e.target as HTMLInputElement).value)}
-                  />
-                  <button
-                    onClick$={() => handleWidthChange$(Math.min(settings.labelWidth + 1, 100))}
-                    class="h-[40px] w-[40px] flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-r-lg text-gray-700 border border-gray-200"
-                    aria-label="Increase width"
-                  >
-                    <span class="text-xl">+</span>
-                  </button>
-                </div>
+                <input
+                  type="number"
+                  min="37"
+                  max="100"
+                  class="w-16 h-[40px] px-2 bg-gray-50 border border-gray-200 rounded text-right text-base text-gray-700"
+                  value={settings.labelWidth}
+                  onInput$={e => handleWidthChange$((e.target as HTMLInputElement).value)}
+                />
                 <span class="text-sm text-gray-600">mm</span>
               </div>
             </div>
-            <div class="flex justify-between mt-2">
-              <div class="flex gap-1">
-                {[37, 55, 75, 100].map(preset => (
-                  <button
-                    key={preset}
-                    onClick$={() => handleWidthChange$(preset)}
-                    class={`px-2 py-1 text-xs rounded border ${
-                      settings.labelWidth === preset
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border-gray-200'
-                    }`}
-                  >
-                    {preset}
-                  </button>
-                ))}
+            <div class="space-y-2">
+              <input
+                type="range"
+                min="37"
+                max="100"
+                value={settings.labelWidth}
+                onInput$={e => handleWidthChange$((e.target as HTMLInputElement).value)}
+                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              />
+              <div class="flex justify-between text-xs text-gray-500">
+                <span>37mm</span>
+                <span>100mm</span>
               </div>
-              <div class="text-xs text-gray-500">37 - 100mm</div>
             </div>
           </div>
 
@@ -260,51 +240,32 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <div class="flex">
-                  <button
-                    onClick$={() => handleHeightChange$(Math.max(settings.labelHeight - 0.5, 7))}
-                    class="h-[40px] w-[40px] flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-l-lg text-gray-700 border border-gray-200"
-                    aria-label="Decrease height"
-                  >
-                    <span class="text-xl">−</span>
-                  </button>
-                  <input
-                    type="number"
-                    min="7"
-                    max="32"
-                    step="0.5"
-                    class="w-20 h-[40px] px-2 bg-gray-50 border-y border-gray-200 text-center text-base text-gray-700"
-                    value={settings.labelHeight}
-                    onInput$={e => handleHeightChange$((e.target as HTMLInputElement).value)}
-                  />
-                  <button
-                    onClick$={() => handleHeightChange$(Math.min(settings.labelHeight + 0.5, 32))}
-                    class="h-[40px] w-[40px] flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-r-lg text-gray-700 border border-gray-200"
-                    aria-label="Increase height"
-                  >
-                    <span class="text-xl">+</span>
-                  </button>
-                </div>
+                <input
+                  type="number"
+                  min="7"
+                  max="32"
+                  step="0.5"
+                  class="w-16 h-[40px] px-2 bg-gray-50 border border-gray-200 rounded text-right text-base text-gray-700"
+                  value={settings.labelHeight}
+                  onInput$={e => handleHeightChange$((e.target as HTMLInputElement).value)}
+                />
                 <span class="text-sm text-gray-600">mm</span>
               </div>
             </div>
-            <div class="flex justify-between mt-2">
-              <div class="flex gap-1">
-                {[7, 12, 16, 24].map(preset => (
-                  <button
-                    key={preset}
-                    onClick$={() => handleHeightChange$(preset)}
-                    class={`px-2 py-1 text-xs rounded border ${
-                      settings.labelHeight === preset
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border-gray-200'
-                    }`}
-                  >
-                    {preset}
-                  </button>
-                ))}
+            <div class="space-y-2">
+              <input
+                type="range"
+                min="7"
+                max="32"
+                step="0.5"
+                value={settings.labelHeight}
+                onInput$={e => handleHeightChange$((e.target as HTMLInputElement).value)}
+                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              />
+              <div class="flex justify-between text-xs text-gray-500">
+                <span>7mm</span>
+                <span>32mm</span>
               </div>
-              <div class="text-xs text-gray-500">7 - 32mm</div>
             </div>
           </div>
 
@@ -328,51 +289,32 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <div class="flex">
-                  <button
-                    onClick$={() => handleTextSizeChange$(Math.max(settings.textSize - 5, 50))}
-                    class="h-[40px] w-[40px] flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-l-lg text-gray-700 border border-gray-200"
-                    aria-label="Decrease text size"
-                  >
-                    <span class="text-xl">−</span>
-                  </button>
-                  <input
-                    type="number"
-                    min="50"
-                    max="150"
-                    step="5"
-                    class="w-20 h-[40px] px-2 bg-gray-50 border-y border-gray-200 text-center text-base text-gray-700"
-                    value={settings.textSize}
-                    onInput$={e => handleTextSizeChange$((e.target as HTMLInputElement).value)}
-                  />
-                  <button
-                    onClick$={() => handleTextSizeChange$(Math.min(settings.textSize + 5, 150))}
-                    class="h-[40px] w-[40px] flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-r-lg text-gray-700 border border-gray-200"
-                    aria-label="Increase text size"
-                  >
-                    <span class="text-xl">+</span>
-                  </button>
-                </div>
+                <input
+                  type="number"
+                  min="50"
+                  max="150"
+                  step="5"
+                  class="w-16 h-[40px] px-2 bg-gray-50 border border-gray-200 rounded text-right text-base text-gray-700"
+                  value={settings.textSize}
+                  onInput$={e => handleTextSizeChange$((e.target as HTMLInputElement).value)}
+                />
                 <span class="text-sm text-gray-600">%</span>
               </div>
             </div>
-            <div class="flex justify-between mt-2">
-              <div class="flex gap-1">
-                {[50, 75, 100, 125, 150].map(preset => (
-                  <button
-                    key={preset}
-                    onClick$={() => handleTextSizeChange$(preset)}
-                    class={`px-2 py-1 text-xs rounded border ${
-                      settings.textSize === preset
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border-gray-200'
-                    }`}
-                  >
-                    {preset}%
-                  </button>
-                ))}
+            <div class="space-y-2">
+              <input
+                type="range"
+                min="50"
+                max="150"
+                step="5"
+                value={settings.textSize}
+                onInput$={e => handleTextSizeChange$((e.target as HTMLInputElement).value)}
+                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              />
+              <div class="flex justify-between text-xs text-gray-500">
+                <span>50%</span>
+                <span>150%</span>
               </div>
-              <div class="text-xs text-gray-500">50% - 150%</div>
             </div>
           </div>
         </div>

@@ -102,12 +102,21 @@ export function getLabelTexts(
  * attempts to load a JPG fallback.
  */
 async function loadImage(url: string): Promise<HTMLImageElement | null> {
+  // If no URL is provided, return null immediately
+  if (!url || url.trim() === '') {
+    console.warn('No image URL provided')
+    return null
+  }
+
   const img = new Image()
   img.crossOrigin = 'anonymous'
 
   try {
     await new Promise<void>(resolve => {
-      img.onload = () => resolve()
+      img.onload = () => {
+        console.log('Image loaded successfully:', url)
+        resolve()
+      }
       img.onerror = () => {
         console.warn(`Failed to load image with original extension: ${url}`)
         resolve()
@@ -119,13 +128,18 @@ async function loadImage(url: string): Promise<HTMLImageElement | null> {
       return img
     }
 
+    // Try with .jpg extension if it's an SVG
     if (url.toLowerCase().endsWith('.svg')) {
       const jpgUrl = url.replace(/\.svg$/i, '.jpg')
+      console.log('Trying JPG fallback:', jpgUrl)
       const jpgImg = new Image()
       jpgImg.crossOrigin = 'anonymous'
 
       await new Promise<void>(resolve => {
-        jpgImg.onload = () => resolve()
+        jpgImg.onload = () => {
+          console.log('JPG fallback loaded successfully')
+          resolve()
+        }
         jpgImg.onerror = () => {
           console.error(`Failed to load both SVG and JPG: ${url}`)
           resolve()
@@ -137,6 +151,9 @@ async function loadImage(url: string): Promise<HTMLImageElement | null> {
         return jpgImg
       }
     }
+
+    // If we couldn't load the image, log an error
+    console.error('Failed to load image:', url)
     return null
   } catch (error) {
     console.error('Error loading image:', error)
@@ -237,7 +254,9 @@ export async function generateLabel(
   textSizePercent: number = 100
 ): Promise<string | null> {
   await ensureFontsLoaded()
+  console.log('Loading image from:', standardImgUrl)
   const standardImg = await loadImage(standardImgUrl)
+  console.log('Image loaded:', standardImg ? 'success' : 'failed')
   // Calculate printable area width (tape width - 4mm margins)
   const printableWidthMm = labelWidthMm - 4
 
@@ -256,6 +275,16 @@ export async function generateLabel(
 
   // Calculate width in pixels based on the exact aspect ratio
   const printableWidthPx = Math.round(printableHeightPx * exactAspectRatio)
+
+  console.log('Canvas dimensions calculation:', {
+    labelWidthMm,
+    labelHeightMm,
+    printableWidthMm,
+    printableHeightMm,
+    exactAspectRatio,
+    printableHeightPx,
+    printableWidthPx,
+  })
 
   // Calculate the actual conversion factor used
   const conversionFactor = printableWidthPx / printableWidthMm
@@ -396,7 +425,7 @@ export async function generateLabel(
     const textX = textAreaX + (textAreaWidth - metrics.width) / 2
     // Compute vertical center using "alphabetic" baseline.
     const textY =
-      (labelHeightPx + metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2
+      (printableHeightPx + metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2
     ctx.fillText(topText, textX, textY)
     console.log(
       `Single-line text dimensions (mm): width=${(metrics.width / conversionFactor).toFixed(2)}`
@@ -435,7 +464,7 @@ export async function generateLabel(
     const bottomX = textAreaX + (textAreaWidth - bottomResult.metrics.width) / 2
     // Bottom edge should touch the bottom, so we position at:
     // y = labelHeightPx - actualBoundingBoxDescent
-    const bottomY = labelHeightPx - bottomResult.metrics.actualBoundingBoxDescent
+    const bottomY = printableHeightPx - bottomResult.metrics.actualBoundingBoxDescent
     ctx.fillText(bottomText, bottomX, bottomY)
     console.log(
       `Bottom text dimensions (mm): width=${(bottomResult.metrics.width / conversionFactor).toFixed(2)}`
@@ -444,8 +473,16 @@ export async function generateLabel(
 
   // Log final exported PNG dimensions in mm.
   console.log(
-    `Exported PNG dimensions (mm): width=${labelWidthMm.toFixed(2)}mm, height=${labelHeightMm.toFixed(2)}mm`
+    `Exported PNG dimensions (mm): width=${printableWidthMm.toFixed(2)}mm, height=${printableHeightMm.toFixed(2)}mm`
   )
 
-  return canvas.toDataURL('image/png')
+  // Return the PNG data URL
+  try {
+    const dataUrl = canvas.toDataURL('image/png')
+    console.log('Successfully generated data URL')
+    return dataUrl
+  } catch (error) {
+    console.error('Error generating data URL:', error)
+    return null
+  }
 }

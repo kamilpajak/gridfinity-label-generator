@@ -126,11 +126,22 @@ export default component$(() => {
   })
 
   const generatePreview$ = $(async () => {
-    if (
-      !threadSize.value ||
-      !hardwareStandard.value ||
-      (selectedType.value === 'Screw' && !length.value)
-    ) {
+    console.log('Generate preview called with:', {
+      threadSize: threadSize.value,
+      hardwareStandard: hardwareStandard.value,
+      length: length.value,
+      type: selectedType.value,
+    })
+
+    // Check if we have the required fields
+    if (!threadSize.value || !hardwareStandard.value) {
+      console.log('Missing thread size or hardware standard')
+      return
+    }
+
+    // For screws, we need a length
+    if (selectedType.value === 'Screw' && !length.value) {
+      console.log('Missing length for screw')
       return
     }
 
@@ -145,7 +156,13 @@ export default component$(() => {
       )
     }
 
-    if (!standard) return
+    if (!standard) {
+      console.error('Standard not found:', hardwareStandard.value, 'for type:', selectedType.value)
+      return
+    }
+
+    // Make sure the image URL is valid
+    console.log('Using standard:', standard.value, 'with image:', standard.image)
 
     isLoading.value = true
     try {
@@ -172,8 +189,11 @@ export default component$(() => {
         settings.textSize
       )
 
+      console.log('Label URL generated:', labelUrl)
       if (labelUrl) {
         labelPreviewUrl.value = labelUrl
+      } else {
+        console.error('Failed to generate label URL')
       }
     } catch (error) {
       console.error('Error generating label:', error)
@@ -195,8 +215,25 @@ export default component$(() => {
     document.body.removeChild(link)
   })
 
-  // Automatically generate preview when input signals change.
+  // First time component loads - try to generate preview
   useTask$(({ track }) => {
+    const type = track(() => selectedType.value)
+    const subtype = track(() => selectedScrewSubtype.value)
+    const system = track(() => selectedSystem.value)
+    const thread = track(() => threadSize.value)
+    const standard = track(() => hardwareStandard.value)
+    const len = track(() => length.value)
+
+    // Only basic tracking for initial render
+    if (thread && standard && (type !== 'Screw' || len)) {
+      console.log('Initial preview generation')
+      generatePreview$()
+    }
+  })
+
+  // Track settings changes
+  useTask$(({ track }) => {
+    // Track settings changes only
     track(() => settings.labelWidth)
     track(() => settings.labelHeight)
     track(() => settings.textSize)
@@ -204,13 +241,15 @@ export default component$(() => {
     track(() => settings.showImage)
     track(() => settings.showQrCode)
     track(() => settings.qrCodeContent)
-    track(() => threadSize.value)
-    track(() => hardwareStandard.value)
-    track(() => length.value)
-    track(() => notes.value)
 
-    if (threadSize.value || hardwareStandard.value || length.value || notes.value) {
-      generatePreview$()
+    // If we have valid form input, regenerate
+    if (
+      threadSize.value &&
+      hardwareStandard.value &&
+      (selectedType.value !== 'Screw' || length.value)
+    ) {
+      console.log('Settings changed, regenerating preview')
+      setTimeout(() => generatePreview$(), 100) // Small delay to ensure UI is updated
     }
   })
 
@@ -344,13 +383,26 @@ export default component$(() => {
               {renderInputFields()}
               {renderStandardDropdown()}
 
-              <LabelPreview
-                isLoading={isLoading.value}
-                labelUrl={labelPreviewUrl.value}
-                labelWidth={settings.labelWidth}
-                labelHeight={settings.labelHeight}
-                showQrCode={settings.showQrCode}
-              />
+              <div>
+                <LabelPreview
+                  isLoading={isLoading.value}
+                  labelUrl={labelPreviewUrl.value}
+                  labelWidth={settings.labelWidth}
+                  labelHeight={settings.labelHeight}
+                  showQrCode={settings.showQrCode}
+                />
+                {/* Button to manually regenerate if needed */}
+                {threadSize.value &&
+                  hardwareStandard.value &&
+                  (selectedType.value !== 'Screw' || length.value) && (
+                    <button
+                      onClick$={generatePreview$}
+                      class="mt-2 p-2 w-full text-center bg-blue-50 text-blue-600 rounded hover:bg-blue-100 text-sm"
+                    >
+                      Refresh Preview
+                    </button>
+                  )}
+              </div>
 
               {renderDownloadSection()}
             </div>

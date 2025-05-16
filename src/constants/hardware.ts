@@ -68,7 +68,7 @@ const getStandardText = (standard: Standard) =>
 const getStandardValue = (standard: Standard) => `${standard.type} ${standard.number}`
 
 const getStandardImage = (standard: Standard) =>
-  `/${standard.folder}/${standard.type.toLowerCase()}_${standard.number}.svg`
+  `/${standard.folder}/${standard.type.toLowerCase()}_${standard.number}.jpg`
 
 const standards = {
   screw: [

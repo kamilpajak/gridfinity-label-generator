@@ -39,7 +39,7 @@ export default component$(() => {
     showImage: true,
     labelWidth: 55,
     labelHeight: 12,
-    showQrCode: true,
+    showQrCode: false,
     qrCodeContent: '',
   })
 

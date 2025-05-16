@@ -18,7 +18,7 @@ import {
 } from '~/constants/hardware'
 import { generateLabel, getLabelTexts } from '~/lib/labelGenerator'
 import type { LabelSettings } from '~/types'
-import { validateWidth, validateHeight, validateTextSize } from '~/utils/measurements'
+import { validateWidth, validateHeight } from '~/utils/measurements'
 
 export default component$(() => {
   // State signals
@@ -39,7 +39,6 @@ export default component$(() => {
     showImage: true,
     labelWidth: 55,
     labelHeight: 12,
-    textSize: 100,
     showQrCode: true,
     qrCodeContent: '',
   })
@@ -107,9 +106,6 @@ export default component$(() => {
     }
     if (newSettings.labelHeight !== undefined) {
       settings.labelHeight = validateHeight(newSettings.labelHeight)
-    }
-    if (newSettings.textSize !== undefined) {
-      settings.textSize = validateTextSize(newSettings.textSize)
     }
     if (newSettings.showStandardName !== undefined) {
       settings.showStandardName = newSettings.showStandardName
@@ -185,8 +181,7 @@ export default component$(() => {
         settings.labelHeight,
         settings.showImage,
         settings.showQrCode,
-        settings.qrCodeContent,
-        settings.textSize
+        settings.qrCodeContent
       )
 
       console.log('Label URL generated:', labelUrl)
@@ -236,7 +231,6 @@ export default component$(() => {
     // Track settings changes only
     track(() => settings.labelWidth)
     track(() => settings.labelHeight)
-    track(() => settings.textSize)
     track(() => settings.showStandardName)
     track(() => settings.showImage)
     track(() => settings.showQrCode)

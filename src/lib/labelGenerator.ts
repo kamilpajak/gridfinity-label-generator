@@ -250,8 +250,7 @@ export async function generateLabel(
   labelHeightMm: number,
   showImage: boolean,
   showQrCode: boolean = false,
-  qrCodeContent: string = '',
-  textSizePercent: number = 100
+  qrCodeContent: string = ''
 ): Promise<string | null> {
   await ensureFontsLoaded()
   console.log('Loading image from:', standardImgUrl)
@@ -295,12 +294,10 @@ export async function generateLabel(
 
   // Baseline text height and gap in mm
   const baseTextHeightMm = 4.5
-  // Apply the text size percentage
-  const adjustedTextHeightMm = baseTextHeightMm * (textSizePercent / 100)
+  const adjustedTextHeightMm = baseTextHeightMm // Always use 100% (default)
   const baselineGap = 2
-  console.log(`Base text height (mm): ${baseTextHeightMm}`)
-  console.log(`Adjusted text height (mm): ${adjustedTextHeightMm.toFixed(2)}`)
-  console.log(`Text size percentage: ${textSizePercent}%`)
+  console.log(`Text height (mm): ${adjustedTextHeightMm.toFixed(2)}`)
+  console.log(`Text size: 100% (default)`)
   console.log(`Baseline gap (mm): ${baselineGap}`)
 
   // Compute gap in pixels (only if image is to be shown)
@@ -324,14 +321,14 @@ export async function generateLabel(
   let qrCodeX = 0
   if (showQrCode && qrCodeContent) {
     try {
-      // QR code size: 10mm x 10mm
-      const qrSizeMm = 10
-      const qrSizePx = mmToPx(qrSizeMm)
+      // QR code size: square of printable area height
+      const qrSizePx = printableHeightPx
+      const qrSizeMm = qrSizePx / conversionFactor
       qrCodeWidth = qrSizePx
 
       // Position QR code on the right side of the printable area
       qrCodeX = printableWidthPx - qrSizePx
-      const qrY = (printableHeightPx - qrSizePx) / 2 // Centered vertically
+      const qrY = 0 // Top aligned with printable area
 
       // Shorten URL if necessary for better QR code readability
       let finalQrContent = qrCodeContent

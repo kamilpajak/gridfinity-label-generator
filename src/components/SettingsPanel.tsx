@@ -1,7 +1,7 @@
 import type { PropFunction } from '@builder.io/qwik'
 import { $, component$, useSignal, useTask$ } from '@builder.io/qwik'
 import type { LabelSettings } from '~/types'
-import { validateWidth, validateHeight, validateTextSize } from '~/utils/measurements'
+import { validateWidth, validateHeight } from '~/utils/measurements'
 import { shouldShortenUrl, shortenUrl } from '~/utils/urlShortener'
 import {
   ChatBubbleIcon,
@@ -28,12 +28,6 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
   const handleHeightChange$ = $((value: string | number) => {
     const validatedHeight = validateHeight(value)
     onSettingsChange$({ labelHeight: validatedHeight })
-  })
-
-  // Validates and updates the text size percentage
-  const handleTextSizeChange$ = $((value: string | number) => {
-    const validatedTextSize = validateTextSize(value)
-    onSettingsChange$({ textSize: validatedTextSize })
   })
 
   // Signal to store the shortened URL preview
@@ -220,8 +214,8 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
             </div>
           </div>
 
-          <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
-            <div class="flex items-center justify-between">
+          <div class="bg-white p-4 rounded-lg border border-gray-200">
+            <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
                 <span class="text-base text-gray-700">Label Height</span>
                 <div class="relative group">
@@ -239,82 +233,21 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
                   </div>
                 </div>
               </div>
-              <div class="flex items-center gap-2">
-                <input
-                  type="number"
-                  min="7"
-                  max="32"
-                  step="0.5"
-                  class="w-16 h-[40px] px-2 bg-gray-50 border border-gray-200 rounded text-right text-base text-gray-700"
-                  value={settings.labelHeight}
-                  onInput$={e => handleHeightChange$((e.target as HTMLInputElement).value)}
-                />
-                <span class="text-sm text-gray-600">mm</span>
-              </div>
             </div>
-            <div class="space-y-2">
-              <input
-                type="range"
-                min="7"
-                max="32"
-                step="0.5"
-                value={settings.labelHeight}
-                onInput$={e => handleHeightChange$((e.target as HTMLInputElement).value)}
-                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-              />
-              <div class="flex justify-between text-xs text-gray-500">
-                <span>7mm</span>
-                <span>32mm</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <span class="text-base text-gray-700">Text Size</span>
-                <div class="relative group">
-                  <span class="cursor-help text-gray-400 hover:text-gray-600">
-                    <InfoIcon />
-                  </span>
-                  <div class="absolute transform -translate-x-1/4 sm:translate-x-0 sm:left-0 md:-translate-x-1/4 md:left-1/4 bottom-full mb-3 hidden group-hover:block min-w-[250px] max-w-[90vw] sm:max-w-xs bg-white rounded-lg shadow-lg text-sm text-gray-700 z-20">
-                    <div class="absolute -bottom-2 left-[10%] sm:left-4 w-4 h-4 bg-white transform rotate-45 z-10"></div>
-                    <div class="relative p-4 rounded-lg bg-white z-20">
-                      <p>
-                        This controls the size of text on the label. 100% is the default size, and
-                        you can adjust it between 50% and 150%.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <input
-                  type="number"
-                  min="50"
-                  max="150"
-                  step="5"
-                  class="w-16 h-[40px] px-2 bg-gray-50 border border-gray-200 rounded text-right text-base text-gray-700"
-                  value={settings.textSize}
-                  onInput$={e => handleTextSizeChange$((e.target as HTMLInputElement).value)}
-                />
-                <span class="text-sm text-gray-600">%</span>
-              </div>
-            </div>
-            <div class="space-y-2">
-              <input
-                type="range"
-                min="50"
-                max="150"
-                step="5"
-                value={settings.textSize}
-                onInput$={e => handleTextSizeChange$((e.target as HTMLInputElement).value)}
-                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-              />
-              <div class="flex justify-between text-xs text-gray-500">
-                <span>50%</span>
-                <span>150%</span>
-              </div>
+            <div class="grid grid-cols-3 gap-2">
+              {[6, 9, 12, 18, 24, 36].map(height => (
+                <button
+                  key={height}
+                  onClick$={() => handleHeightChange$(height)}
+                  class={`px-3 py-2 text-sm rounded-md transition-all ${
+                    settings.labelHeight === height
+                      ? 'bg-blue-500 text-white font-medium'
+                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {height} mm
+                </button>
+              ))}
             </div>
           </div>
         </div>

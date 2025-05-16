@@ -9,11 +9,24 @@ export const validateWidth = (value: string | number): number => {
 }
 
 export const validateHeight = (value: string | number): number => {
+  const allowedHeights = [6, 9, 12, 18, 24, 36]
+
+  if (value === null || value === undefined) {
+    return 12 // Default value
+  }
+
   let newValue = typeof value === 'string' ? parseFloat(value) : value
-  if (isNaN(newValue)) newValue = 12
-  if (newValue < 7) newValue = 7
-  if (newValue > 32) newValue = 32
-  return Math.round(newValue * 10) / 10 // Round to 1 decimal place
+
+  if (isNaN(newValue)) {
+    return 12 // Default value
+  }
+
+  // Find the closest allowed height
+  const closest = allowedHeights.reduce((prev, curr) =>
+    Math.abs(curr - newValue) < Math.abs(prev - newValue) ? curr : prev
+  )
+
+  return closest
 }
 
 export const validateTextSize = (value: string | number): number => {

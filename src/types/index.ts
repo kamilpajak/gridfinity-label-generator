@@ -14,7 +14,6 @@ export interface LabelSettings {
   showImage: boolean
   labelWidth: number
   labelHeight: number
-  textSize: number
   showQrCode: boolean
   qrCodeContent: string
 }

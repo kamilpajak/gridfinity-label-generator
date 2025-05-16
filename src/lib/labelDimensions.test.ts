@@ -177,8 +177,7 @@ describe('Label Dimensions', () => {
       labelHeightMm,
       false, // showImage
       false, // showQrCode
-      '', // qrCodeContent
-      100 // textSizePercent
+      '' // qrCodeContent
     )
 
     // Verify canvas dimensions were set correctly
@@ -211,8 +210,7 @@ describe('Label Dimensions', () => {
       labelHeightMm,
       false, // showImage
       false, // showQrCode
-      '', // qrCodeContent
-      100 // textSizePercent
+      '' // qrCodeContent
     )
 
     // Verify that the correct dimensions were logged
@@ -268,8 +266,7 @@ describe('Label Dimensions', () => {
       labelHeightMm,
       false, // showImage
       true, // showQrCode
-      'https://example.com', // qrCodeContent
-      100 // textSizePercent
+      'https://example.com' // qrCodeContent
     )
 
     // Verify QR code dimensions were calculated correctly

@@ -7,16 +7,7 @@ vi.mock('~/lib/labelGenerator', () => {
     getLabelTexts: vi.fn(),
     GenerateLabelOptions: vi.fn(),
     generateLabel: vi.fn().mockImplementation(async (options: any) => {
-      const {
-        standardImgUrl,
-        topText,
-        bottomText,
-        labelWidthMm,
-        labelHeightMm,
-        showImage,
-        showQrCode = false,
-        qrCodeContent = '',
-      } = options
+      const { labelWidthMm, labelHeightMm, showQrCode = false, qrCodeContent = '' } = options
       // Calculate printable area dimensions
       const printableWidthMm = labelWidthMm - 4
 

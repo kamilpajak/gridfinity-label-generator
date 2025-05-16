@@ -28,6 +28,36 @@ declare global {
 const distDir = join(fileURLToPath(import.meta.url), '..', '..', 'dist')
 const buildDir = join(distDir, 'build')
 
+// Helper function to sanitize and validate host header
+function getSafeHost(reqHost: string | undefined, defaultHost: string = 'localhost'): string {
+  if (!reqHost) return defaultHost
+
+  // Remove any path components if present
+  const hostOnly = reqHost.split('/')[0]
+
+  // Basic validation: allow alphanumeric, dots, colons (for port), and hyphens
+  const validHostPattern = /^[a-zA-Z0-9.-]+(?::\d+)?$/
+
+  if (validHostPattern.test(hostOnly)) {
+    return hostOnly
+  }
+
+  return defaultHost
+}
+
+// Helper function to sanitize URL path
+function getSafePath(url: string | undefined): string {
+  if (!url) return '/'
+
+  // Ensure the URL starts with a forward slash
+  const path = url.startsWith('/') ? url : `/${url}`
+
+  // Remove any potential protocol or host components
+  const pathOnly = path.split('//').pop()?.split('/').slice(1).join('/') || ''
+
+  return `/${pathOnly}`
+}
+
 // Allow for dynamic port
 const HTTP_PORT = process.env.HTTP_PORT ?? 80
 const HTTPS_PORT = process.env.HTTPS_PORT ?? 443
@@ -91,7 +121,9 @@ app.use((req, res, next) => {
     xForwardedProto !== 'https' &&
     !isCloudflareHTTPS
   ) {
-    return res.redirect(`https://${req.headers.host}${req.url}`)
+    const safeHost = getSafeHost(req.headers.host as string)
+    const safePath = getSafePath(req.url)
+    return res.redirect(`https://${safeHost}${safePath}`)
   }
   next()
 })
@@ -141,8 +173,9 @@ if (useHttps && Object.keys(httpsOptions).length > 0) {
 
   // Create HTTP server that redirects to HTTPS
   const httpServer = createHttpServer((req, res) => {
-    const host = req.headers.host || 'localhost'
-    res.writeHead(301, { Location: `https://${host}${req.url}` })
+    const safeHost = getSafeHost(req.headers.host as string)
+    const safePath = getSafePath(req.url)
+    res.writeHead(301, { Location: `https://${safeHost}${safePath}` })
     res.end()
   })
 

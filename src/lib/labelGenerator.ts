@@ -234,6 +234,20 @@ function drawImageIfNeeded(
 }
 
 /**
+ * Options for generating a label
+ */
+export interface GenerateLabelOptions {
+  standardImgUrl: string
+  topText: string
+  bottomText: string
+  labelWidthMm: number
+  labelHeightMm: number
+  showImage: boolean
+  showQrCode?: boolean
+  qrCodeContent?: string
+}
+
+/**
  * Generates a label image as a PNG DataURL.
  * The QR code has highest priority and is positioned on the right side of the label.
  * The image is drawn on the left at its natural aspect ratio.
@@ -242,16 +256,17 @@ function drawImageIfNeeded(
  * and the bottom text is drawn so that its bottom edge touches the bottom of the label.
  * Logs are added to output dimensions in millimeters.
  */
-export async function generateLabel(
-  standardImgUrl: string,
-  topText: string,
-  bottomText: string,
-  labelWidthMm: number,
-  labelHeightMm: number,
-  showImage: boolean,
-  showQrCode: boolean = false,
-  qrCodeContent: string = ''
-): Promise<string | null> {
+export async function generateLabel(options: GenerateLabelOptions): Promise<string | null> {
+  const {
+    standardImgUrl,
+    topText,
+    bottomText,
+    labelWidthMm,
+    labelHeightMm,
+    showImage,
+    showQrCode = false,
+    qrCodeContent = '',
+  } = options
   await ensureFontsLoaded()
   console.log('Loading image from:', standardImgUrl)
   const standardImg = await loadImage(standardImgUrl)

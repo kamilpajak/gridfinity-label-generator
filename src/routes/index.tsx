@@ -173,16 +173,16 @@ export default component$(() => {
         selectedScrewSubtype.value
       )
 
-      const labelUrl = await generateLabel(
-        standard.image,
+      const labelUrl = await generateLabel({
+        standardImgUrl: standard.image,
         topText,
         bottomText,
-        settings.labelWidth,
-        settings.labelHeight,
-        settings.showImage,
-        settings.showQrCode,
-        settings.qrCodeContent
-      )
+        labelWidthMm: settings.labelWidth,
+        labelHeightMm: settings.labelHeight,
+        showImage: settings.showImage,
+        showQrCode: settings.showQrCode,
+        qrCodeContent: settings.qrCodeContent,
+      })
 
       console.log('Label URL generated:', labelUrl)
       if (labelUrl) {

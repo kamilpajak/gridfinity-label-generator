@@ -5,63 +5,60 @@ import { mmToPx } from '~/utils/measurements'
 vi.mock('~/lib/labelGenerator', () => {
   return {
     getLabelTexts: vi.fn(),
-    generateLabel: vi
-      .fn()
-      .mockImplementation(
-        async (
-          standardImgUrl: string,
-          topText: string,
-          bottomText: string,
-          labelWidthMm: number,
-          labelHeightMm: number,
-          showImage: boolean,
-          showQrCode: boolean = false,
-          qrCodeContent: string = '',
-          textSizePercent: number = 100
-        ) => {
-          // Calculate printable area dimensions
-          const printableWidthMm = labelWidthMm - 4
+    GenerateLabelOptions: vi.fn(),
+    generateLabel: vi.fn().mockImplementation(async (options: any) => {
+      const {
+        standardImgUrl,
+        topText,
+        bottomText,
+        labelWidthMm,
+        labelHeightMm,
+        showImage,
+        showQrCode = false,
+        qrCodeContent = '',
+      } = options
+      // Calculate printable area dimensions
+      const printableWidthMm = labelWidthMm - 4
 
-          // Calculate exact aspect ratio
-          const exactAspectRatio = printableWidthMm / labelHeightMm
+      // Calculate exact aspect ratio
+      const exactAspectRatio = printableWidthMm / labelHeightMm
 
-          // Convert height to pixels
-          const labelHeightPx = Math.round(mmToPx(labelHeightMm))
+      // Convert height to pixels
+      const labelHeightPx = Math.round(mmToPx(labelHeightMm))
 
-          // Calculate width based on exact aspect ratio
-          const labelWidthPx = Math.round(labelHeightPx * exactAspectRatio)
+      // Calculate width based on exact aspect ratio
+      const labelWidthPx = Math.round(labelHeightPx * exactAspectRatio)
 
-          // Set canvas dimensions
-          mockCanvas.width = labelWidthPx
-          mockCanvas.height = labelHeightPx
+      // Set canvas dimensions
+      mockCanvas.width = labelWidthPx
+      mockCanvas.height = labelHeightPx
 
-          // Log dimensions like the real function does
-          console.log(`Tape size (mm): ${labelWidthMm} × ${labelHeightMm + 2}`)
-          console.log(`Printable area (mm): ${printableWidthMm} × ${labelHeightMm}`)
-          console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`)
+      // Log dimensions like the real function does
+      console.log(`Tape size (mm): ${labelWidthMm} × ${labelHeightMm + 2}`)
+      console.log(`Printable area (mm): ${printableWidthMm} × ${labelHeightMm}`)
+      console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`)
 
-          const conversionFactor = labelWidthPx / printableWidthMm
-          console.log(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`)
-          console.log(`Canvas dimensions (px): ${labelWidthPx} × ${labelHeightPx}`)
-          console.log(`Canvas aspect ratio: ${(labelWidthPx / labelHeightPx).toFixed(6)}`)
+      const conversionFactor = labelWidthPx / printableWidthMm
+      console.log(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`)
+      console.log(`Canvas dimensions (px): ${labelWidthPx} × ${labelHeightPx}`)
+      console.log(`Canvas aspect ratio: ${(labelWidthPx / labelHeightPx).toFixed(6)}`)
 
-          // Log QR code position if enabled
-          if (showQrCode && qrCodeContent) {
-            const qrSizeMm = Math.min(labelHeightMm, 10) // QR code height is equal to the label height, but max 10mm
-            const qrSizePx = mmToPx(qrSizeMm)
-            const qrX = labelWidthPx - qrSizePx
-            const qrXMm = qrX / conversionFactor
-            console.log(`QR code positioned at x=${qrXMm.toFixed(2)}mm, width=${qrSizeMm}mm`)
-          }
+      // Log QR code position if enabled
+      if (showQrCode && qrCodeContent) {
+        const qrSizeMm = Math.min(labelHeightMm, 10) // QR code height is equal to the label height, but max 10mm
+        const qrSizePx = mmToPx(qrSizeMm)
+        const qrX = labelWidthPx - qrSizePx
+        const qrXMm = qrX / conversionFactor
+        console.log(`QR code positioned at x=${qrXMm.toFixed(2)}mm, width=${qrSizeMm}mm`)
+      }
 
-          // Log exported dimensions
-          console.log(
-            `Exported PNG dimensions (mm): width=${labelWidthMm.toFixed(2)}mm, height=${labelHeightMm.toFixed(2)}mm`
-          )
+      // Log exported dimensions
+      console.log(
+        `Exported PNG dimensions (mm): width=${labelWidthMm.toFixed(2)}mm, height=${labelHeightMm.toFixed(2)}mm`
+      )
 
-          return 'mock-data-url'
-        }
-      ),
+      return 'mock-data-url'
+    }),
   }
 })
 
@@ -169,16 +166,16 @@ describe('Label Dimensions', () => {
 
     // Call generateLabel with minimal parameters
     // Note: This won't actually render anything due to our mocks
-    await generateLabel(
-      'test-image.jpg',
-      'Test Label',
-      '',
+    await generateLabel({
+      standardImgUrl: 'test-image.jpg',
+      topText: 'Test Label',
+      bottomText: '',
       labelWidthMm,
       labelHeightMm,
-      false, // showImage
-      false, // showQrCode
-      '' // qrCodeContent
-    )
+      showImage: false,
+      showQrCode: false,
+      qrCodeContent: '',
+    })
 
     // Verify canvas dimensions were set correctly
     expect(mockCanvas.width).toBe(expectedWidthPx)
@@ -202,16 +199,16 @@ describe('Label Dimensions', () => {
     const labelHeightMm = 10
 
     // Call generateLabel
-    await generateLabel(
-      'test-image.jpg',
-      'Test Label',
-      '',
+    await generateLabel({
+      standardImgUrl: 'test-image.jpg',
+      topText: 'Test Label',
+      bottomText: '',
       labelWidthMm,
       labelHeightMm,
-      false, // showImage
-      false, // showQrCode
-      '' // qrCodeContent
-    )
+      showImage: false,
+      showQrCode: false,
+      qrCodeContent: '',
+    })
 
     // Verify that the correct dimensions were logged
     expect(consoleLogSpy).toHaveBeenCalledWith(
@@ -258,16 +255,16 @@ describe('Label Dimensions', () => {
     const conversionFactor = labelWidthPx / printableWidthMm
 
     // Call generateLabel with QR code enabled
-    await generateLabel(
-      'test-image.jpg',
-      'Test Label',
-      '',
+    await generateLabel({
+      standardImgUrl: 'test-image.jpg',
+      topText: 'Test Label',
+      bottomText: '',
       labelWidthMm,
       labelHeightMm,
-      false, // showImage
-      true, // showQrCode
-      'https://example.com' // qrCodeContent
-    )
+      showImage: false,
+      showQrCode: true,
+      qrCodeContent: 'https://example.com',
+    })
 
     // Verify QR code dimensions were calculated correctly
     const qrSizePx = mmToPx(qrSizeMm)

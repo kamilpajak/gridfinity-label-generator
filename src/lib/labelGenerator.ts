@@ -247,6 +247,292 @@ export interface GenerateLabelOptions {
   qrCodeContent?: string
 }
 
+// Helper types and interfaces for refactoring
+interface LabelDimensions {
+  printableWidthMm: number
+  printableHeightMm: number
+  printableWidthPx: number
+  printableHeightPx: number
+  conversionFactor: number
+}
+
+interface TextDimensions {
+  adjustedTextHeightMm: number
+  desiredTextHeight: number
+  gapPx: number
+}
+
+interface QrCodeDimensions {
+  qrCodeWidth: number
+  qrCodeX: number
+}
+
+/**
+ * Calculates canvas dimensions based on label dimensions
+ */
+function calculateCanvasDimensions(labelWidthMm: number, labelHeightMm: number): LabelDimensions {
+  const printableWidthMm = labelWidthMm - 4
+  const printableHeightMm = labelHeightMm - 2
+  const exactAspectRatio = printableWidthMm / printableHeightMm
+
+  console.log(`Label size (mm): ${labelWidthMm} × ${labelHeightMm}`)
+  console.log(`Printable area (mm): ${printableWidthMm} × ${printableHeightMm}`)
+  console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`)
+
+  const printableHeightPx = Math.round(mmToPx(printableHeightMm))
+  const printableWidthPx = Math.round(printableHeightPx * exactAspectRatio)
+  const conversionFactor = printableWidthPx / printableWidthMm
+
+  console.log(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`)
+  console.log(`Canvas dimensions (px): ${printableWidthPx} × ${printableHeightPx}`)
+  console.log(`Canvas aspect ratio: ${(printableWidthPx / printableHeightPx).toFixed(6)}`)
+
+  return {
+    printableWidthMm,
+    printableHeightMm,
+    printableWidthPx,
+    printableHeightPx,
+    conversionFactor,
+  }
+}
+
+/**
+ * Calculates text dimensions based on label height
+ */
+function calculateTextDimensions(
+  labelHeightMm: number,
+  showImage: boolean,
+  standardImg: HTMLImageElement | null,
+  conversionFactor: number
+): TextDimensions {
+  const textHeightPercentage = 0.375
+  const adjustedTextHeightMm = labelHeightMm * textHeightPercentage
+  const gapPercentage = 0.167
+  const baselineGap = labelHeightMm * gapPercentage
+
+  console.log(
+    `Text height (mm): ${adjustedTextHeightMm.toFixed(2)} (${(textHeightPercentage * 100).toFixed(1)}% of label height)`
+  )
+  console.log(
+    `Baseline gap (mm): ${baselineGap.toFixed(2)} (${(gapPercentage * 100).toFixed(1)}% of label height)`
+  )
+
+  const gapPx = showImage && standardImg ? mmToPx(baselineGap) : 0
+  console.log(`Computed gap (mm): ${(gapPx / conversionFactor).toFixed(2)}`)
+
+  return {
+    adjustedTextHeightMm,
+    desiredTextHeight: mmToPx(adjustedTextHeightMm),
+    gapPx,
+  }
+}
+
+/**
+ * Creates and initializes canvas
+ */
+function createCanvas(dimensions: LabelDimensions): CanvasRenderingContext2D | null {
+  const canvas = document.createElement('canvas')
+  canvas.width = dimensions.printableWidthPx
+  canvas.height = dimensions.printableHeightPx
+  const ctx = canvas.getContext('2d')
+
+  if (!ctx) {
+    console.error('Could not get canvas context.')
+    return null
+  }
+
+  ctx.fillStyle = 'white'
+  ctx.fillRect(0, 0, dimensions.printableWidthPx, dimensions.printableHeightPx)
+  return ctx
+}
+
+/**
+ * Draws QR code on the label
+ */
+async function drawQrCode(
+  ctx: CanvasRenderingContext2D,
+  showQrCode: boolean,
+  qrCodeContent: string,
+  labelHeightMm: number,
+  dimensions: LabelDimensions
+): Promise<QrCodeDimensions> {
+  const result: QrCodeDimensions = { qrCodeWidth: 0, qrCodeX: 0 }
+
+  const minHeightForQRMm = 12
+  const qrCodeAllowed = labelHeightMm >= minHeightForQRMm
+
+  if (!qrCodeAllowed && showQrCode) {
+    console.log(
+      `QR code disabled for ${labelHeightMm}mm label (minimum ${minHeightForQRMm}mm required for readability)`
+    )
+    return result
+  }
+
+  if (!showQrCode || !qrCodeContent || !qrCodeAllowed) {
+    return result
+  }
+
+  try {
+    const maxQrSizeMm = 15
+    const maxQrSizePx = mmToPx(maxQrSizeMm)
+    const qrSizePx = Math.min(dimensions.printableHeightPx, maxQrSizePx)
+    const qrSizeMm = qrSizePx / dimensions.conversionFactor
+
+    result.qrCodeWidth = qrSizePx
+    result.qrCodeX = dimensions.printableWidthPx - qrSizePx
+    const qrY = (dimensions.printableHeightPx - qrSizePx) / 2
+
+    let finalQrContent = qrCodeContent
+    if (shouldShortenUrl(qrCodeContent)) {
+      try {
+        finalQrContent = await shortenUrl(qrCodeContent)
+        console.log(`URL shortened: ${qrCodeContent} → ${finalQrContent}`)
+      } catch (error) {
+        console.error('Error shortening URL:', error)
+      }
+    }
+
+    const QRCode = await import('qrcode')
+    const qrDataUrl = await QRCode.default.toDataURL(finalQrContent, {
+      errorCorrectionLevel: 'M',
+      margin: 0,
+      width: qrSizePx,
+      color: { dark: '#000000', light: '#FFFFFF' },
+    })
+
+    const qrImg = new Image()
+    await new Promise<void>(resolve => {
+      qrImg.onload = () => resolve()
+      qrImg.onerror = () => {
+        console.error('Failed to load QR code image')
+        resolve()
+      }
+      qrImg.src = qrDataUrl
+    })
+
+    if (qrImg.complete && qrImg.naturalWidth > 0) {
+      ctx.drawImage(qrImg, result.qrCodeX, qrY, qrSizePx, qrSizePx)
+    }
+
+    console.log(
+      `QR code positioned at x=${(result.qrCodeX / dimensions.conversionFactor).toFixed(2)}mm, y=${(qrY / dimensions.conversionFactor).toFixed(2)}mm, size=${qrSizeMm.toFixed(2)}mm (max ${maxQrSizeMm}mm)`
+    )
+  } catch (error) {
+    console.error('Error generating QR code:', error)
+  }
+
+  return result
+}
+
+/**
+ * Draws text on the label (single line mode)
+ */
+function drawSingleLineText(
+  ctx: CanvasRenderingContext2D,
+  topText: string,
+  bottomText: string,
+  textAreaX: number,
+  textAreaWidth: number,
+  desiredTextHeight: number,
+  printableHeightPx: number,
+  conversionFactor: number
+): void {
+  const combinedText =
+    bottomText.trim() && bottomText !== topText ? `${topText} ${bottomText}` : topText
+
+  const { fontSize, metrics } = measureAndScaleText(
+    ctx,
+    combinedText,
+    desiredTextHeight,
+    'Noto Sans',
+    '900',
+    textAreaWidth
+  )
+
+  ctx.font = `900 ${fontSize}px "Noto Sans", serif`
+  const textX = textAreaX + (textAreaWidth - metrics.width) / 2
+  const textY =
+    (printableHeightPx + metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2
+  ctx.fillText(combinedText, textX, textY)
+
+  console.log(
+    `Single-line text dimensions (mm): width=${(metrics.width / conversionFactor).toFixed(2)}`
+  )
+  if (bottomText.trim() && bottomText !== topText) {
+    console.log(`Combined text due to height constraint: "${combinedText}"`)
+  }
+}
+
+/**
+ * Draws text on the label (two line mode)
+ */
+function drawTwoLineText(
+  ctx: CanvasRenderingContext2D,
+  topText: string,
+  bottomText: string,
+  textAreaX: number,
+  textAreaWidth: number,
+  desiredTextHeight: number,
+  printableHeightPx: number,
+  conversionFactor: number
+): void {
+  const topResult = measureAndScaleText(
+    ctx,
+    topText,
+    desiredTextHeight,
+    'Noto Sans',
+    '900',
+    textAreaWidth
+  )
+
+  const bottomResult = measureAndScaleText(
+    ctx,
+    bottomText,
+    desiredTextHeight,
+    'Oswald',
+    '700',
+    textAreaWidth
+  )
+
+  let textGapMm = 2.5
+  let textGapPx = mmToPx(textGapMm)
+
+  const topTextHeight =
+    topResult.metrics.actualBoundingBoxAscent + topResult.metrics.actualBoundingBoxDescent
+  const bottomTextHeight =
+    bottomResult.metrics.actualBoundingBoxAscent + bottomResult.metrics.actualBoundingBoxDescent
+  let totalTextHeight = topTextHeight + textGapPx + bottomTextHeight
+
+  if (totalTextHeight > printableHeightPx) {
+    const minGapMm = 0.5
+    const minGapPx = mmToPx(minGapMm)
+    textGapPx = Math.max(minGapPx, printableHeightPx - topTextHeight - bottomTextHeight)
+    textGapMm = textGapPx / conversionFactor
+    totalTextHeight = topTextHeight + textGapPx + bottomTextHeight
+  }
+
+  let groupY = (printableHeightPx - totalTextHeight) / 2
+  groupY = Math.max(0, Math.min(groupY, printableHeightPx - totalTextHeight))
+
+  ctx.font = `900 ${topResult.fontSize}px "Noto Sans", serif`
+  const topX = textAreaX + (textAreaWidth - topResult.metrics.width) / 2
+  const topY = groupY + topResult.metrics.actualBoundingBoxAscent
+  ctx.fillText(topText, topX, topY)
+
+  ctx.font = `700 ${bottomResult.fontSize}px "Oswald", sans-serif`
+  const bottomX = textAreaX + (textAreaWidth - bottomResult.metrics.width) / 2
+  const bottomY = groupY + topTextHeight + textGapPx + bottomResult.metrics.actualBoundingBoxAscent
+  ctx.fillText(bottomText, bottomX, bottomY)
+
+  console.log(`Two-line text with ${textGapMm}mm gap, centered vertically`)
+  console.log(
+    `Top text dimensions (mm): width=${(topResult.metrics.width / conversionFactor).toFixed(2)}`
+  )
+  console.log(
+    `Bottom text dimensions (mm): width=${(bottomResult.metrics.width / conversionFactor).toFixed(2)}`
+  )
+}
+
 /**
  * Generates a label image as a PNG DataURL.
  * The QR code has highest priority and is positioned on the right side of the label.
@@ -267,312 +553,100 @@ export async function generateLabel(options: GenerateLabelOptions): Promise<stri
     showQrCode = false,
     qrCodeContent = '',
   } = options
+
   await ensureFontsLoaded()
   console.log('Loading image from:', standardImgUrl)
   const standardImg = await loadImage(standardImgUrl)
   console.log('Image loaded:', standardImg ? 'success' : 'failed')
-  // Calculate printable area width (tape width - 4mm margins)
-  const printableWidthMm = labelWidthMm - 4
 
-  // Calculate printable height (total height - 2mm margins)
-  const printableHeightMm = labelHeightMm - 2
-
-  // Calculate the exact aspect ratio of the printable area
-  const exactAspectRatio = printableWidthMm / printableHeightMm
-
-  console.log(`Label size (mm): ${labelWidthMm} × ${labelHeightMm}`)
-  console.log(`Printable area (mm): ${printableWidthMm} × ${printableHeightMm}`)
-  console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`)
-
-  // Convert printable height from mm to pixels
-  const printableHeightPx = Math.round(mmToPx(printableHeightMm))
-
-  // Calculate width in pixels based on the exact aspect ratio
-  const printableWidthPx = Math.round(printableHeightPx * exactAspectRatio)
-
-  console.log('Canvas dimensions calculation:', {
-    labelWidthMm,
+  const dimensions = calculateCanvasDimensions(labelWidthMm, labelHeightMm)
+  const textDimensions = calculateTextDimensions(
     labelHeightMm,
-    printableWidthMm,
-    printableHeightMm,
-    exactAspectRatio,
-    printableHeightPx,
-    printableWidthPx,
-  })
-
-  // Calculate the actual conversion factor used
-  const conversionFactor = printableWidthPx / printableWidthMm
-
-  console.log(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`)
-  console.log(`Canvas dimensions (px): ${printableWidthPx} × ${printableHeightPx}`)
-  console.log(`Canvas aspect ratio: ${(printableWidthPx / printableHeightPx).toFixed(6)}`)
-
-  // Text height scales proportionally with label height
-  // Using 37.5% of label height (based on 4.5mm text for 12mm label)
-  const textHeightPercentage = 0.375
-  const adjustedTextHeightMm = labelHeightMm * textHeightPercentage
-
-  // Gap also scales with label height (16.7% based on 2mm gap for 12mm label)
-  const gapPercentage = 0.167
-  const baselineGap = labelHeightMm * gapPercentage
-
-  console.log(
-    `Text height (mm): ${adjustedTextHeightMm.toFixed(2)} (${(textHeightPercentage * 100).toFixed(1)}% of label height)`
+    showImage,
+    standardImg,
+    dimensions.conversionFactor
   )
-  console.log(
-    `Baseline gap (mm): ${baselineGap.toFixed(2)} (${(gapPercentage * 100).toFixed(1)}% of label height)`
-  )
-  console.log(`Label height (mm): ${labelHeightMm}`)
 
-  // Compute gap in pixels (only if image is to be shown)
-  const gapPx = showImage && standardImg ? mmToPx(baselineGap) : 0
-  console.log(`Computed gap (mm): ${(gapPx / conversionFactor).toFixed(2)}`)
+  const ctx = createCanvas(dimensions)
+  if (!ctx) return null
 
-  // Create canvas and fill background with white
-  const canvas = document.createElement('canvas')
-  canvas.width = printableWidthPx
-  canvas.height = printableHeightPx
-  const ctx = canvas.getContext('2d')
-  if (!ctx) {
-    console.error('Could not get canvas context.')
-    return null
-  }
-  ctx.fillStyle = 'white'
-  ctx.fillRect(0, 0, printableWidthPx, printableHeightPx)
+  const qrDimensions = await drawQrCode(ctx, showQrCode, qrCodeContent, labelHeightMm, dimensions)
 
-  // QR code has highest priority - position it first if enabled
-  let qrCodeWidth = 0
-  let qrCodeX = 0
-
-  // Disable QR codes for labels smaller than 12mm for readability
-  const minHeightForQRMm = 12
-  const qrCodeAllowed = labelHeightMm >= minHeightForQRMm
-
-  if (!qrCodeAllowed && showQrCode) {
-    console.log(
-      `QR code disabled for ${labelHeightMm}mm label (minimum ${minHeightForQRMm}mm required for readability)`
-    )
-  }
-
-  if (showQrCode && qrCodeContent && qrCodeAllowed) {
-    try {
-      // QR code size: square of printable area height, but max 15x15mm
-      const maxQrSizeMm = 15
-      const maxQrSizePx = mmToPx(maxQrSizeMm)
-      const qrSizePx = Math.min(printableHeightPx, maxQrSizePx)
-      const qrSizeMm = qrSizePx / conversionFactor
-      qrCodeWidth = qrSizePx
-
-      // Position QR code on the right side, centered vertically
-      qrCodeX = printableWidthPx - qrSizePx
-      const qrY = (printableHeightPx - qrSizePx) / 2 // Centered vertically
-
-      // Shorten URL if necessary for better QR code readability
-      let finalQrContent = qrCodeContent
-      if (shouldShortenUrl(qrCodeContent)) {
-        try {
-          finalQrContent = await shortenUrl(qrCodeContent)
-          console.log(`URL shortened: ${qrCodeContent} → ${finalQrContent}`)
-        } catch (error) {
-          console.error('Error shortening URL:', error)
-        }
-      }
-
-      // Generate QR code using the qrcode library
-      const QRCode = await import('qrcode')
-      const qrDataUrl = await QRCode.default.toDataURL(finalQrContent, {
-        errorCorrectionLevel: 'M',
-        margin: 0,
-        width: qrSizePx,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF',
-        },
-      })
-
-      // Load the QR code as an image
-      const qrImg = new Image()
-      await new Promise<void>(resolve => {
-        qrImg.onload = () => resolve()
-        qrImg.onerror = () => {
-          console.error('Failed to load QR code image')
-          resolve()
-        }
-        qrImg.src = qrDataUrl
-      })
-
-      // Draw the QR code on the label
-      if (qrImg.complete && qrImg.naturalWidth > 0) {
-        ctx.drawImage(qrImg, qrCodeX, qrY, qrSizePx, qrSizePx)
-      }
-
-      console.log(
-        `QR code positioned at x=${(qrCodeX / conversionFactor).toFixed(2)}mm, y=${(qrY / conversionFactor).toFixed(2)}mm, size=${qrSizeMm.toFixed(2)}mm (max ${maxQrSizeMm}mm)`
-      )
-    } catch (error) {
-      console.error('Error generating QR code:', error)
-    }
-  }
-
-  // Calculate available width for image and text (with 1mm gap between text and QR code)
-  const gapBetweenTextAndQrMm = qrCodeWidth > 0 ? 1 : 0 // 1mm gap if QR code is present
+  // Calculate available width for image and text
+  const gapBetweenTextAndQrMm = qrDimensions.qrCodeWidth > 0 ? 1 : 0
   const gapBetweenTextAndQrPx = mmToPx(gapBetweenTextAndQrMm)
   const availableWidthForImageAndText =
-    qrCodeWidth > 0 ? qrCodeX - gapBetweenTextAndQrPx : printableWidthPx
+    qrDimensions.qrCodeWidth > 0
+      ? qrDimensions.qrCodeX - gapBetweenTextAndQrPx
+      : dimensions.printableWidthPx
 
   // Draw image on the left if enabled
   const imageUsedWidth = drawImageIfNeeded(
     ctx,
     standardImg,
-    availableWidthForImageAndText, // Only use width up to QR code
-    printableHeightPx,
-    gapPx,
+    availableWidthForImageAndText,
+    dimensions.printableHeightPx,
+    textDimensions.gapPx,
     showImage
   )
-  const imageUsedWidthMm = imageUsedWidth / conversionFactor
+  const imageUsedWidthMm = imageUsedWidth / dimensions.conversionFactor
   console.log(`Image used width (mm): ${imageUsedWidthMm.toFixed(2)}`)
 
   // Calculate text area dimensions
   const textAreaX = imageUsedWidth
   const textAreaWidth = availableWidthForImageAndText - textAreaX
-  console.log(`Text area starts at (mm): ${(textAreaX / conversionFactor).toFixed(2)}`)
-  console.log(`Text area width (mm): ${(textAreaWidth / conversionFactor).toFixed(2)}`)
+  console.log(`Text area starts at (mm): ${(textAreaX / dimensions.conversionFactor).toFixed(2)}`)
+  console.log(`Text area width (mm): ${(textAreaWidth / dimensions.conversionFactor).toFixed(2)}`)
 
   // Set text color and baseline
   ctx.fillStyle = 'black'
   ctx.textBaseline = 'alphabetic'
 
-  const desiredTextHeight = mmToPx(adjustedTextHeightMm)
+  // Determine if single-line mode should be used
   let forceSingleLine = bottomText.trim() === ''
-
-  // Check if two-line mode would cause overlap on small labels
   if (!forceSingleLine) {
-    // Calculate space needed for two lines of text with minimal gap
-    const minGapBetweenTextsMm = 1 // Minimum 1mm gap between texts
-    const minSpaceNeeded = adjustedTextHeightMm * 2 + minGapBetweenTextsMm
-
-    if (minSpaceNeeded > printableHeightMm) {
+    const minGapBetweenTextsMm = 1
+    const minSpaceNeeded = textDimensions.adjustedTextHeightMm * 2 + minGapBetweenTextsMm
+    if (minSpaceNeeded > dimensions.printableHeightMm) {
       console.log(
-        `Two-line text would overlap (needs ${minSpaceNeeded.toFixed(2)}mm, have ${printableHeightMm.toFixed(2)}mm). Switching to single-line mode.`
+        `Two-line text would overlap (needs ${minSpaceNeeded.toFixed(2)}mm, have ${dimensions.printableHeightMm.toFixed(2)}mm). Switching to single-line mode.`
       )
       forceSingleLine = true
     }
   }
 
+  // Draw text
   if (forceSingleLine) {
-    // Single-line mode: combine texts if both exist, otherwise show just top text
-    const combinedText =
-      bottomText.trim() && bottomText !== topText ? `${topText} ${bottomText}` : topText
-
-    const { fontSize, metrics } = measureAndScaleText(
-      ctx,
-      combinedText,
-      desiredTextHeight,
-      'Noto Sans',
-      '900',
-      textAreaWidth
-    )
-    ctx.font = `900 ${fontSize}px "Noto Sans", serif`
-    const textX = textAreaX + (textAreaWidth - metrics.width) / 2
-    // Center text vertically
-    const textY =
-      (printableHeightPx + metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2
-    ctx.fillText(combinedText, textX, textY)
-    console.log(
-      `Single-line text dimensions (mm): width=${(metrics.width / conversionFactor).toFixed(2)}`
-    )
-    if (bottomText.trim() && bottomText !== topText) {
-      console.log(`Combined text due to height constraint: "${combinedText}"`)
-    }
-  } else {
-    // Two-line mode: position texts closer together with fixed gap
-
-    // First, measure both texts
-    const topResult = measureAndScaleText(
+    drawSingleLineText(
       ctx,
       topText,
-      desiredTextHeight,
-      'Noto Sans',
-      '900',
-      textAreaWidth
-    )
-
-    const bottomResult = measureAndScaleText(
-      ctx,
       bottomText,
-      desiredTextHeight,
-      'Oswald',
-      '700',
-      textAreaWidth
+      textAreaX,
+      textAreaWidth,
+      textDimensions.desiredTextHeight,
+      dimensions.printableHeightPx,
+      dimensions.conversionFactor
     )
-
-    // Start with desired gap between texts (2.5mm)
-    let textGapMm = 2.5
-    let textGapPx = mmToPx(textGapMm)
-
-    // Calculate total height needed for both texts and gap
-    const topTextHeight =
-      topResult.metrics.actualBoundingBoxAscent + topResult.metrics.actualBoundingBoxDescent
-    const bottomTextHeight =
-      bottomResult.metrics.actualBoundingBoxAscent + bottomResult.metrics.actualBoundingBoxDescent
-    let totalTextHeight = topTextHeight + textGapPx + bottomTextHeight
-
-    // If texts don't fit with desired gap, reduce the gap
-    if (totalTextHeight > printableHeightPx) {
-      // Calculate minimum gap (0.5mm)
-      const minGapMm = 0.5
-      const minGapPx = mmToPx(minGapMm)
-
-      // Use the maximum gap that fits, but not less than minimum
-      textGapPx = Math.max(minGapPx, printableHeightPx - topTextHeight - bottomTextHeight)
-      textGapMm = textGapPx / conversionFactor
-      totalTextHeight = topTextHeight + textGapPx + bottomTextHeight
-    }
-
-    // Start with centered position
-    let groupY = (printableHeightPx - totalTextHeight) / 2
-
-    // Ensure top text doesn't get cropped at the top
-    const minGroupY = 0
-    if (groupY < minGroupY) {
-      groupY = minGroupY
-    }
-
-    // Ensure bottom text doesn't get cropped at the bottom
-    const maxGroupY = printableHeightPx - totalTextHeight
-    if (groupY > maxGroupY) {
-      groupY = maxGroupY
-    }
-
-    // Position top text
-    ctx.font = `900 ${topResult.fontSize}px "Noto Sans", serif`
-    const topX = textAreaX + (textAreaWidth - topResult.metrics.width) / 2
-    const topY = groupY + topResult.metrics.actualBoundingBoxAscent
-    ctx.fillText(topText, topX, topY)
-
-    // Position bottom text
-    ctx.font = `700 ${bottomResult.fontSize}px "Oswald", sans-serif`
-    const bottomX = textAreaX + (textAreaWidth - bottomResult.metrics.width) / 2
-    const bottomY =
-      groupY + topTextHeight + textGapPx + bottomResult.metrics.actualBoundingBoxAscent
-    ctx.fillText(bottomText, bottomX, bottomY)
-
-    console.log(`Two-line text with ${textGapMm}mm gap, centered vertically`)
-    console.log(
-      `Top text dimensions (mm): width=${(topResult.metrics.width / conversionFactor).toFixed(2)}`
-    )
-    console.log(
-      `Bottom text dimensions (mm): width=${(bottomResult.metrics.width / conversionFactor).toFixed(2)}`
+  } else {
+    drawTwoLineText(
+      ctx,
+      topText,
+      bottomText,
+      textAreaX,
+      textAreaWidth,
+      textDimensions.desiredTextHeight,
+      dimensions.printableHeightPx,
+      dimensions.conversionFactor
     )
   }
 
-  // Log final exported PNG dimensions in mm.
   console.log(
-    `Exported PNG dimensions (mm): width=${printableWidthMm.toFixed(2)}mm, height=${printableHeightMm.toFixed(2)}mm`
+    `Exported PNG dimensions (mm): width=${dimensions.printableWidthMm.toFixed(2)}mm, height=${dimensions.printableHeightMm.toFixed(2)}mm`
   )
 
   // Return the PNG data URL
   try {
+    const canvas = ctx.canvas as HTMLCanvasElement
     const dataUrl = canvas.toDataURL('image/png')
     console.log('Successfully generated data URL')
     return dataUrl

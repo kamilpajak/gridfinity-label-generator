@@ -61,7 +61,7 @@ function getSafePath(url: string | undefined): string {
   // Parse URL to extract only the pathname and query
   try {
     // Create a URL object with a dummy base to extract the path
-    const parsedUrl = new URL(url, 'http://dummy.com')
+    const parsedUrl = new URL(url, 'https://dummy.com')
     // Return only pathname and search (query string)
     return parsedUrl.pathname + parsedUrl.search
   } catch {

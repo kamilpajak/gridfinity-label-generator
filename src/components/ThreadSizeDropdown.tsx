@@ -18,7 +18,8 @@ export const ThreadSizeDropdown = component$<Props>(({ selectedValue, options, o
   useVisibleTask$(({ track }) => {
     track(() => isOpen.value)
     if (isOpen.value && firstOptionRef.value) {
-      ;(firstOptionRef.value as HTMLElement).focus()
+      const firstOption = firstOptionRef.value as HTMLElement
+      firstOption.focus()
     }
   })
 

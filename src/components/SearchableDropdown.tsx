@@ -71,7 +71,8 @@ export const SearchableDropdown = component$<Props>(
             // Focus first option if available
             const options = dropdownRef.value?.querySelectorAll('button[data-option]')
             if (options && options.length > 0) {
-              ;(options[0] as HTMLElement).focus()
+              const firstOption = options[0] as HTMLElement
+              firstOption.focus()
             }
           }
         } else if (type === 'option' && typeof index === 'number') {
@@ -93,7 +94,8 @@ export const SearchableDropdown = component$<Props>(
               // Focus previous option
               const options = dropdownRef.value?.querySelectorAll('button[data-option]')
               if (options && index > 0) {
-                ;(options[index - 1] as HTMLElement).focus()
+                const prevOption = options[index - 1] as HTMLElement
+                prevOption.focus()
               }
             }
           } else if (event.key === 'ArrowDown') {
@@ -101,7 +103,8 @@ export const SearchableDropdown = component$<Props>(
             // Focus next option if available
             const options = dropdownRef.value?.querySelectorAll('button[data-option]')
             if (options && index < options.length - 1) {
-              ;(options[index + 1] as HTMLElement).focus()
+              const nextOption = options[index + 1] as HTMLElement
+              nextOption.focus()
             }
           }
         }

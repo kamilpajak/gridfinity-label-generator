@@ -424,19 +424,39 @@ async function drawQrCode(
   return result
 }
 
+interface DrawTextParams {
+  ctx: CanvasRenderingContext2D
+  textAreaX: number
+  textAreaWidth: number
+  desiredTextHeight: number
+  printableHeightPx: number
+  conversionFactor: number
+}
+
+interface DrawSingleLineTextParams extends DrawTextParams {
+  topText: string
+  bottomText: string
+}
+
+interface DrawTwoLineTextParams extends DrawTextParams {
+  topText: string
+  bottomText: string
+}
+
 /**
  * Draws text on the label (single line mode)
  */
-function drawSingleLineText(
-  ctx: CanvasRenderingContext2D,
-  topText: string,
-  bottomText: string,
-  textAreaX: number,
-  textAreaWidth: number,
-  desiredTextHeight: number,
-  printableHeightPx: number,
-  conversionFactor: number
-): void {
+function drawSingleLineText(params: DrawSingleLineTextParams): void {
+  const {
+    ctx,
+    topText,
+    bottomText,
+    textAreaX,
+    textAreaWidth,
+    desiredTextHeight,
+    printableHeightPx,
+    conversionFactor,
+  } = params
   const combinedText =
     bottomText.trim() && bottomText !== topText ? `${topText} ${bottomText}` : topText
 
@@ -466,16 +486,17 @@ function drawSingleLineText(
 /**
  * Draws text on the label (two line mode)
  */
-function drawTwoLineText(
-  ctx: CanvasRenderingContext2D,
-  topText: string,
-  bottomText: string,
-  textAreaX: number,
-  textAreaWidth: number,
-  desiredTextHeight: number,
-  printableHeightPx: number,
-  conversionFactor: number
-): void {
+function drawTwoLineText(params: DrawTwoLineTextParams): void {
+  const {
+    ctx,
+    topText,
+    bottomText,
+    textAreaX,
+    textAreaWidth,
+    desiredTextHeight,
+    printableHeightPx,
+    conversionFactor,
+  } = params
   const topResult = measureAndScaleText(
     ctx,
     topText,
@@ -617,27 +638,27 @@ export async function generateLabel(options: GenerateLabelOptions): Promise<stri
 
   // Draw text
   if (forceSingleLine) {
-    drawSingleLineText(
+    drawSingleLineText({
       ctx,
       topText,
       bottomText,
       textAreaX,
       textAreaWidth,
-      textDimensions.desiredTextHeight,
-      dimensions.printableHeightPx,
-      dimensions.conversionFactor
-    )
+      desiredTextHeight: textDimensions.desiredTextHeight,
+      printableHeightPx: dimensions.printableHeightPx,
+      conversionFactor: dimensions.conversionFactor,
+    })
   } else {
-    drawTwoLineText(
+    drawTwoLineText({
       ctx,
       topText,
       bottomText,
       textAreaX,
       textAreaWidth,
-      textDimensions.desiredTextHeight,
-      dimensions.printableHeightPx,
-      dimensions.conversionFactor
-    )
+      desiredTextHeight: textDimensions.desiredTextHeight,
+      printableHeightPx: dimensions.printableHeightPx,
+      conversionFactor: dimensions.conversionFactor,
+    })
   }
 
   console.log(
@@ -646,8 +667,7 @@ export async function generateLabel(options: GenerateLabelOptions): Promise<stri
 
   // Return the PNG data URL
   try {
-    const canvas = ctx.canvas as HTMLCanvasElement
-    const dataUrl = canvas.toDataURL('image/png')
+    const dataUrl = ctx.canvas.toDataURL('image/png')
     console.log('Successfully generated data URL')
     return dataUrl
   } catch (error) {

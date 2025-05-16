@@ -265,7 +265,7 @@ export default component$(() => {
           options={getThreadSizeOptions()}
           onSelect$={(value: string) => (threadSize.value = value)}
         />
-        {selectedType.value === 'Screw' && (
+        {selectedType.value === 'Screw' ? (
           <input
             type="text"
             required
@@ -276,16 +276,26 @@ export default component$(() => {
             value={length.value}
             onInput$={e => (length.value = (e.target as HTMLInputElement).value)}
           />
+        ) : (
+          <input
+            type="text"
+            placeholder="Optional notes"
+            class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            value={notes.value}
+            onInput$={e => (notes.value = (e.target as HTMLInputElement).value)}
+          />
         )}
       </div>
 
-      <input
-        type="text"
-        placeholder="Optional notes"
-        class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        value={notes.value}
-        onInput$={e => (notes.value = (e.target as HTMLInputElement).value)}
-      />
+      {selectedType.value === 'Screw' && (
+        <input
+          type="text"
+          placeholder="Optional notes"
+          class="w-full h-[60px] px-4 bg-white border border-gray-300 rounded-lg text-base text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          value={notes.value}
+          onInput$={e => (notes.value = (e.target as HTMLInputElement).value)}
+        />
+      )}
     </div>
   )
 

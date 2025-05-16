@@ -28,39 +28,55 @@ declare global {
 const distDir = join(fileURLToPath(import.meta.url), '..', '..', 'dist')
 const buildDir = join(distDir, 'build')
 
-// Helper function to sanitize and validate host header
-function getSafeHost(reqHost: string | undefined, defaultHost: string = 'localhost'): string {
-  if (!reqHost) return defaultHost
+/**
+ * Security: Validate host against allowlist to prevent open redirect vulnerabilities
+ * Only allows redirection to explicitly allowed hosts defined in environment
+ * @param reqHost - The host header from the request
+ * @returns A validated host from the allowlist
+ */
+function getSafeHost(reqHost: string | undefined): string {
+  if (!reqHost) return ALLOWED_HOST
 
-  // Remove any path components if present
-  const hostOnly = reqHost.split('/')[0]
+  // Remove port if present for comparison
+  const hostWithoutPort = reqHost.split(':')[0].toLowerCase()
 
-  // Basic validation: allow alphanumeric, dots, colons (for port), and hyphens
-  const validHostPattern = /^[a-zA-Z0-9.-]+(?::\d+)?$/
-
-  if (validHostPattern.test(hostOnly)) {
-    return hostOnly
+  // Check if host is in the allowed list
+  if (ALLOWED_HOSTS.has(hostWithoutPort)) {
+    return reqHost // Return with original port if present
   }
 
-  return defaultHost
+  // Default to the primary allowed host - no user input is used
+  return ALLOWED_HOST
 }
 
-// Helper function to sanitize URL path
+/**
+ * Security: Sanitize URL path to prevent injection attacks
+ * Extracts only the pathname and query string, removing any host/protocol
+ * @param url - The URL to sanitize
+ * @returns A safe path string
+ */
 function getSafePath(url: string | undefined): string {
   if (!url) return '/'
 
-  // Ensure the URL starts with a forward slash
-  const path = url.startsWith('/') ? url : `/${url}`
-
-  // Remove any potential protocol or host components
-  const pathOnly = path.split('//').pop()?.split('/').slice(1).join('/') || ''
-
-  return `/${pathOnly}`
+  // Parse URL to extract only the pathname and query
+  try {
+    // Create a URL object with a dummy base to extract the path
+    const parsedUrl = new URL(url, 'http://dummy.com')
+    // Return only pathname and search (query string)
+    return parsedUrl.pathname + parsedUrl.search
+  } catch {
+    // If URL parsing fails, return safe default path
+    return '/'
+  }
 }
 
 // Allow for dynamic port
 const HTTP_PORT = process.env.HTTP_PORT ?? 80
 const HTTPS_PORT = process.env.HTTPS_PORT ?? 443
+
+// Allowed host for redirects (set via environment variable)
+const ALLOWED_HOST = process.env.ALLOWED_HOST ?? 'gridfinitylabels.com'
+const ALLOWED_HOSTS = new Set(['localhost', '127.0.0.1', ALLOWED_HOST, `www.${ALLOWED_HOST}`])
 
 // SSL Configuration
 const useHttps = process.env.NODE_ENV === 'production'
@@ -106,7 +122,7 @@ app.use((req, res, next) => {
   const xForwardedProto = req.headers['x-forwarded-proto']
 
   // Skip redirect for localhost or if already using HTTPS or if Cloudflare is handling HTTPS
-  const host = req.headers.host || ''
+  const host = req.headers.host ?? ''
   const isLocalhost = host.includes('localhost') || host.includes('127.0.0.1')
 
   // Only redirect if:

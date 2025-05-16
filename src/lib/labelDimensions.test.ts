@@ -13,13 +13,14 @@ vi.mock('~/lib/labelGenerator', () => {
           topText: string,
           bottomText: string,
           labelWidthMm: number,
+          labelHeightMm: number,
           showImage: boolean,
           showQrCode: boolean = false,
-          qrCodeContent: string = ''
+          qrCodeContent: string = '',
+          textSizePercent: number = 100
         ) => {
           // Calculate printable area dimensions
           const printableWidthMm = labelWidthMm - 4
-          const labelHeightMm = 10
 
           // Calculate exact aspect ratio
           const exactAspectRatio = printableWidthMm / labelHeightMm
@@ -35,7 +36,7 @@ vi.mock('~/lib/labelGenerator', () => {
           mockCanvas.height = labelHeightPx
 
           // Log dimensions like the real function does
-          console.log(`Tape size (mm): ${labelWidthMm} × 12`)
+          console.log(`Tape size (mm): ${labelWidthMm} × ${labelHeightMm + 2}`)
           console.log(`Printable area (mm): ${printableWidthMm} × ${labelHeightMm}`)
           console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`)
 
@@ -46,7 +47,7 @@ vi.mock('~/lib/labelGenerator', () => {
 
           // Log QR code position if enabled
           if (showQrCode && qrCodeContent) {
-            const qrSizeMm = 10
+            const qrSizeMm = Math.min(labelHeightMm, 10) // QR code height is equal to the label height, but max 10mm
             const qrSizePx = mmToPx(qrSizeMm)
             const qrX = labelWidthPx - qrSizePx
             const qrXMm = qrX / conversionFactor
@@ -173,9 +174,11 @@ describe('Label Dimensions', () => {
       'Test Label',
       '',
       labelWidthMm,
+      labelHeightMm,
       false, // showImage
       false, // showQrCode
-      '' // qrCodeContent
+      '', // qrCodeContent
+      100 // textSizePercent
     )
 
     // Verify canvas dimensions were set correctly
@@ -205,13 +208,17 @@ describe('Label Dimensions', () => {
       'Test Label',
       '',
       labelWidthMm,
+      labelHeightMm,
       false, // showImage
       false, // showQrCode
-      '' // qrCodeContent
+      '', // qrCodeContent
+      100 // textSizePercent
     )
 
     // Verify that the correct dimensions were logged
-    expect(consoleLogSpy).toHaveBeenCalledWith(`Tape size (mm): ${labelWidthMm} × 12`)
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      `Tape size (mm): ${labelWidthMm} × ${labelHeightMm + 2}`
+    )
     expect(consoleLogSpy).toHaveBeenCalledWith(
       `Printable area (mm): ${printableWidthMm} × ${labelHeightMm}`
     )
@@ -258,9 +265,11 @@ describe('Label Dimensions', () => {
       'Test Label',
       '',
       labelWidthMm,
+      labelHeightMm,
       false, // showImage
       true, // showQrCode
-      'https://example.com' // qrCodeContent
+      'https://example.com', // qrCodeContent
+      100 // textSizePercent
     )
 
     // Verify QR code dimensions were calculated correctly

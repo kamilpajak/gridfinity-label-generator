@@ -16,6 +16,14 @@ export const validateHeight = (value: string | number): number => {
   return Math.round(newValue * 10) / 10 // Round to 1 decimal place
 }
 
+export const validateTextSize = (value: string | number): number => {
+  let newValue = typeof value === 'string' ? parseFloat(value) : value
+  if (isNaN(newValue)) newValue = 100
+  if (newValue < 50) newValue = 50
+  if (newValue > 150) newValue = 150
+  return Math.round(newValue) // Round to nearest integer percent
+}
+
 export function computeDynamicFontSize(
   ctx: CanvasRenderingContext2D,
   desiredHeight: number,

@@ -233,7 +233,8 @@ export async function generateLabel(
   labelHeightMm: number,
   showImage: boolean,
   showQrCode: boolean = false,
-  qrCodeContent: string = ''
+  qrCodeContent: string = '',
+  textSizePercent: number = 100
 ): Promise<string | null> {
   await ensureFontsLoaded()
   const standardImg = await loadImage(standardImgUrl)
@@ -261,9 +262,13 @@ export async function generateLabel(
   console.log(`Canvas aspect ratio: ${(labelWidthPx / labelHeightPx).toFixed(6)}`)
 
   // Baseline text height and gap in mm
-  const baselineTextHeight = 4.5
+  const baseTextHeightMm = 4.5
+  // Apply the text size percentage
+  const adjustedTextHeightMm = baseTextHeightMm * (textSizePercent / 100)
   const baselineGap = 2
-  console.log(`Baseline text height (mm): ${baselineTextHeight}`)
+  console.log(`Base text height (mm): ${baseTextHeightMm}`)
+  console.log(`Adjusted text height (mm): ${adjustedTextHeightMm.toFixed(2)}`)
+  console.log(`Text size percentage: ${textSizePercent}%`)
   console.log(`Baseline gap (mm): ${baselineGap}`)
 
   // Compute gap in pixels (only if image is to be shown)
@@ -371,7 +376,7 @@ export async function generateLabel(
   ctx.fillStyle = 'black'
   ctx.textBaseline = 'alphabetic'
 
-  const desiredTextHeight = mmToPx(baselineTextHeight)
+  const desiredTextHeight = mmToPx(adjustedTextHeightMm)
   const isSingleLine = bottomText.trim() === ''
 
   if (isSingleLine) {

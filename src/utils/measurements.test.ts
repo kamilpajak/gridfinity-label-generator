@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { mmToPx, validateWidth, validateHeight } from './measurements'
+import { mmToPx, validateWidth, validateHeight, validateTextSize } from './measurements'
 
 describe('Measurements utilities', () => {
   describe('mmToPx', () => {
@@ -124,6 +124,39 @@ describe('Measurements utilities', () => {
     it('should default to 10mm for invalid inputs', () => {
       expect(validateHeight(NaN)).toBe(10)
       expect(validateHeight('abc')).toBe(10)
+    })
+  })
+
+  describe('validateTextSize', () => {
+    it('should return the input value if it is within valid range', () => {
+      expect(validateTextSize(50)).toBe(50)
+      expect(validateTextSize(100)).toBe(100)
+      expect(validateTextSize(150)).toBe(150)
+    })
+
+    it('should convert string values to numbers', () => {
+      expect(validateTextSize('75')).toBe(75)
+      expect(validateTextSize('125')).toBe(125)
+    })
+
+    it('should round values to nearest integer', () => {
+      expect(validateTextSize(75.4)).toBe(75)
+      expect(validateTextSize(75.5)).toBe(76)
+    })
+
+    it('should enforce minimum text size of 50%', () => {
+      expect(validateTextSize(25)).toBe(50)
+      expect(validateTextSize('30')).toBe(50)
+    })
+
+    it('should enforce maximum text size of 150%', () => {
+      expect(validateTextSize(175)).toBe(150)
+      expect(validateTextSize('200')).toBe(150)
+    })
+
+    it('should default to 100% for invalid inputs', () => {
+      expect(validateTextSize(NaN)).toBe(100)
+      expect(validateTextSize('abc')).toBe(100)
     })
   })
 })

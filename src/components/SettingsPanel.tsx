@@ -254,8 +254,8 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
                 </div>
               </div>
             </div>
-            <div class="grid grid-cols-3 gap-2">
-              {[6, 9, 12, 18, 24, 36].map(height => (
+            <div class="grid grid-cols-2 gap-2">
+              {[9, 12, 18, 24].map(height => (
                 <button
                   key={height}
                   onClick$={() => handleHeightChange$(height)}

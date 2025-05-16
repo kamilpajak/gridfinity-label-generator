@@ -9,7 +9,7 @@ export const validateWidth = (value: string | number): number => {
 }
 
 export const validateHeight = (value: string | number): number => {
-  const allowedHeights = [6, 9, 12, 18, 24, 36]
+  const allowedHeights = [9, 12, 18, 24]
 
   if (value === null || value === undefined) {
     return 12 // Default value

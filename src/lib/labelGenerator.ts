@@ -470,8 +470,9 @@ export async function generateLabel(
       console.log(`Combined text due to height constraint: "${combinedText}"`)
     }
   } else {
-    // Two-line mode: align top text to top edge and bottom text to bottom edge.
-    // For top text: use "alphabetic" baseline and adjust Y so that actualBoundingBoxAscent equals 0.
+    // Two-line mode: position texts closer together with fixed gap
+
+    // First, measure both texts
     const topResult = measureAndScaleText(
       ctx,
       topText,
@@ -480,17 +481,7 @@ export async function generateLabel(
       '900',
       textAreaWidth
     )
-    ctx.font = `900 ${topResult.fontSize}px "Noto Sans", serif`
-    const topX = textAreaX + (textAreaWidth - topResult.metrics.width) / 2
-    // Draw top text so that its top edge touches y = 0.
-    // Using "alphabetic" baseline, the top edge is at y = actualBoundingBoxAscent.
-    const topY = topResult.metrics.actualBoundingBoxAscent
-    ctx.fillText(topText, topX, topY)
-    console.log(
-      `Top text dimensions (mm): width=${(topResult.metrics.width / conversionFactor).toFixed(2)}`
-    )
 
-    // For bottom text: use "alphabetic" baseline and adjust Y so that bottom edge touches y = labelHeightPx.
     const bottomResult = measureAndScaleText(
       ctx,
       bottomText,
@@ -499,12 +490,62 @@ export async function generateLabel(
       '700',
       textAreaWidth
     )
+
+    // Start with desired gap between texts (2.5mm)
+    let textGapMm = 2.5
+    let textGapPx = mmToPx(textGapMm)
+
+    // Calculate total height needed for both texts and gap
+    const topTextHeight =
+      topResult.metrics.actualBoundingBoxAscent + topResult.metrics.actualBoundingBoxDescent
+    const bottomTextHeight =
+      bottomResult.metrics.actualBoundingBoxAscent + bottomResult.metrics.actualBoundingBoxDescent
+    let totalTextHeight = topTextHeight + textGapPx + bottomTextHeight
+
+    // If texts don't fit with desired gap, reduce the gap
+    if (totalTextHeight > printableHeightPx) {
+      // Calculate minimum gap (0.5mm)
+      const minGapMm = 0.5
+      const minGapPx = mmToPx(minGapMm)
+
+      // Use the maximum gap that fits, but not less than minimum
+      textGapPx = Math.max(minGapPx, printableHeightPx - topTextHeight - bottomTextHeight)
+      textGapMm = textGapPx / conversionFactor
+      totalTextHeight = topTextHeight + textGapPx + bottomTextHeight
+    }
+
+    // Start with centered position
+    let groupY = (printableHeightPx - totalTextHeight) / 2
+
+    // Ensure top text doesn't get cropped at the top
+    const minGroupY = 0
+    if (groupY < minGroupY) {
+      groupY = minGroupY
+    }
+
+    // Ensure bottom text doesn't get cropped at the bottom
+    const maxGroupY = printableHeightPx - totalTextHeight
+    if (groupY > maxGroupY) {
+      groupY = maxGroupY
+    }
+
+    // Position top text
+    ctx.font = `900 ${topResult.fontSize}px "Noto Sans", serif`
+    const topX = textAreaX + (textAreaWidth - topResult.metrics.width) / 2
+    const topY = groupY + topResult.metrics.actualBoundingBoxAscent
+    ctx.fillText(topText, topX, topY)
+
+    // Position bottom text
     ctx.font = `700 ${bottomResult.fontSize}px "Oswald", sans-serif`
     const bottomX = textAreaX + (textAreaWidth - bottomResult.metrics.width) / 2
-    // Bottom edge should touch the bottom, so we position at:
-    // y = labelHeightPx - actualBoundingBoxDescent
-    const bottomY = printableHeightPx - bottomResult.metrics.actualBoundingBoxDescent
+    const bottomY =
+      groupY + topTextHeight + textGapPx + bottomResult.metrics.actualBoundingBoxAscent
     ctx.fillText(bottomText, bottomX, bottomY)
+
+    console.log(`Two-line text with ${textGapMm}mm gap, centered vertically`)
+    console.log(
+      `Top text dimensions (mm): width=${(topResult.metrics.width / conversionFactor).toFixed(2)}`
+    )
     console.log(
       `Bottom text dimensions (mm): width=${(bottomResult.metrics.width / conversionFactor).toFixed(2)}`
     )

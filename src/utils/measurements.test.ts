@@ -95,18 +95,16 @@ describe('Measurements utilities', () => {
   })
 
   describe('validateHeight', () => {
-    it('should return exact values for allowed heights (6, 9, 12, 18, 24, 36)', () => {
-      expect(validateHeight(6)).toBe(6)
+    it('should return exact values for allowed heights (9, 12, 18, 24)', () => {
       expect(validateHeight(9)).toBe(9)
       expect(validateHeight(12)).toBe(12)
       expect(validateHeight(18)).toBe(18)
       expect(validateHeight(24)).toBe(24)
-      expect(validateHeight(36)).toBe(36)
     })
 
     it('should snap to nearest allowed height for in-between values', () => {
       // Values closer to lower option
-      expect(validateHeight(7)).toBe(6)
+      expect(validateHeight(8)).toBe(9)
       expect(validateHeight(10)).toBe(9)
       expect(validateHeight(13)).toBe(12)
       expect(validateHeight(19)).toBe(18)
@@ -117,35 +115,33 @@ describe('Measurements utilities', () => {
       expect(validateHeight(11)).toBe(12)
       expect(validateHeight(17)).toBe(18)
       expect(validateHeight(23)).toBe(24)
-      expect(validateHeight(35)).toBe(36)
+      expect(validateHeight(30)).toBe(24)
     })
 
     it('should handle equidistant values by choosing the first (lower) option', () => {
-      expect(validateHeight(7.5)).toBe(6) // Equidistant from 6 and 9
       expect(validateHeight(10.5)).toBe(9) // Equidistant from 9 and 12
       expect(validateHeight(15)).toBe(12) // Equidistant from 12 and 18
       expect(validateHeight(21)).toBe(18) // Equidistant from 18 and 24
-      expect(validateHeight(30)).toBe(24) // Equidistant from 24 and 36
     })
 
     it('should handle string inputs correctly', () => {
-      expect(validateHeight('6')).toBe(6)
+      expect(validateHeight('9')).toBe(9)
       expect(validateHeight('12')).toBe(12)
       expect(validateHeight('15.5')).toBe(18)
-      expect(validateHeight('7.2')).toBe(6)
+      expect(validateHeight('10')).toBe(9)
       expect(validateHeight('28')).toBe(24)
     })
 
     it('should handle extreme values', () => {
-      // Very small values snap to minimum (6)
-      expect(validateHeight(0)).toBe(6)
-      expect(validateHeight(-5)).toBe(6)
-      expect(validateHeight(0.1)).toBe(6)
+      // Very small values snap to minimum (9)
+      expect(validateHeight(0)).toBe(9)
+      expect(validateHeight(-5)).toBe(9)
+      expect(validateHeight(5)).toBe(9)
 
-      // Very large values snap to maximum (36)
-      expect(validateHeight(50)).toBe(36)
-      expect(validateHeight(100)).toBe(36)
-      expect(validateHeight(1000)).toBe(36)
+      // Very large values snap to maximum (24)
+      expect(validateHeight(50)).toBe(24)
+      expect(validateHeight(100)).toBe(24)
+      expect(validateHeight(1000)).toBe(24)
     })
 
     it('should default to 12mm for invalid inputs', () => {

@@ -292,13 +292,22 @@ export async function generateLabel(
   console.log(`Canvas dimensions (px): ${printableWidthPx} × ${printableHeightPx}`)
   console.log(`Canvas aspect ratio: ${(printableWidthPx / printableHeightPx).toFixed(6)}`)
 
-  // Baseline text height and gap in mm
-  const baseTextHeightMm = 4.5
-  const adjustedTextHeightMm = baseTextHeightMm // Always use 100% (default)
-  const baselineGap = 2
-  console.log(`Text height (mm): ${adjustedTextHeightMm.toFixed(2)}`)
-  console.log(`Text size: 100% (default)`)
-  console.log(`Baseline gap (mm): ${baselineGap}`)
+  // Text height scales proportionally with label height
+  // Using 37.5% of label height (based on 4.5mm text for 12mm label)
+  const textHeightPercentage = 0.375
+  const adjustedTextHeightMm = labelHeightMm * textHeightPercentage
+
+  // Gap also scales with label height (16.7% based on 2mm gap for 12mm label)
+  const gapPercentage = 0.167
+  const baselineGap = labelHeightMm * gapPercentage
+
+  console.log(
+    `Text height (mm): ${adjustedTextHeightMm.toFixed(2)} (${(textHeightPercentage * 100).toFixed(1)}% of label height)`
+  )
+  console.log(
+    `Baseline gap (mm): ${baselineGap.toFixed(2)} (${(gapPercentage * 100).toFixed(1)}% of label height)`
+  )
+  console.log(`Label height (mm): ${labelHeightMm}`)
 
   // Compute gap in pixels (only if image is to be shown)
   const gapPx = showImage && standardImg ? mmToPx(baselineGap) : 0
@@ -319,16 +328,29 @@ export async function generateLabel(
   // QR code has highest priority - position it first if enabled
   let qrCodeWidth = 0
   let qrCodeX = 0
-  if (showQrCode && qrCodeContent) {
+
+  // Disable QR codes for labels smaller than 12mm for readability
+  const minHeightForQRMm = 12
+  const qrCodeAllowed = labelHeightMm >= minHeightForQRMm
+
+  if (!qrCodeAllowed && showQrCode) {
+    console.log(
+      `QR code disabled for ${labelHeightMm}mm label (minimum ${minHeightForQRMm}mm required for readability)`
+    )
+  }
+
+  if (showQrCode && qrCodeContent && qrCodeAllowed) {
     try {
-      // QR code size: square of printable area height
-      const qrSizePx = printableHeightPx
+      // QR code size: square of printable area height, but max 15x15mm
+      const maxQrSizeMm = 15
+      const maxQrSizePx = mmToPx(maxQrSizeMm)
+      const qrSizePx = Math.min(printableHeightPx, maxQrSizePx)
       const qrSizeMm = qrSizePx / conversionFactor
       qrCodeWidth = qrSizePx
 
-      // Position QR code on the right side of the printable area
+      // Position QR code on the right side, centered vertically
       qrCodeX = printableWidthPx - qrSizePx
-      const qrY = 0 // Top aligned with printable area
+      const qrY = (printableHeightPx - qrSizePx) / 2 // Centered vertically
 
       // Shorten URL if necessary for better QR code readability
       let finalQrContent = qrCodeContent
@@ -370,7 +392,7 @@ export async function generateLabel(
       }
 
       console.log(
-        `QR code positioned at x=${(qrCodeX / conversionFactor).toFixed(2)}mm, width=${qrSizeMm}mm`
+        `QR code positioned at x=${(qrCodeX / conversionFactor).toFixed(2)}mm, y=${(qrY / conversionFactor).toFixed(2)}mm, size=${qrSizeMm.toFixed(2)}mm (max ${maxQrSizeMm}mm)`
       )
     } catch (error) {
       console.error('Error generating QR code:', error)
@@ -406,13 +428,30 @@ export async function generateLabel(
   ctx.textBaseline = 'alphabetic'
 
   const desiredTextHeight = mmToPx(adjustedTextHeightMm)
-  const isSingleLine = bottomText.trim() === ''
+  let forceSingleLine = bottomText.trim() === ''
 
-  if (isSingleLine) {
-    // Single-line mode: center text vertically
+  // Check if two-line mode would cause overlap on small labels
+  if (!forceSingleLine) {
+    // Calculate space needed for two lines of text with minimal gap
+    const minGapBetweenTextsMm = 1 // Minimum 1mm gap between texts
+    const minSpaceNeeded = adjustedTextHeightMm * 2 + minGapBetweenTextsMm
+
+    if (minSpaceNeeded > printableHeightMm) {
+      console.log(
+        `Two-line text would overlap (needs ${minSpaceNeeded.toFixed(2)}mm, have ${printableHeightMm.toFixed(2)}mm). Switching to single-line mode.`
+      )
+      forceSingleLine = true
+    }
+  }
+
+  if (forceSingleLine) {
+    // Single-line mode: combine texts if both exist, otherwise show just top text
+    const combinedText =
+      bottomText.trim() && bottomText !== topText ? `${topText} ${bottomText}` : topText
+
     const { fontSize, metrics } = measureAndScaleText(
       ctx,
-      topText,
+      combinedText,
       desiredTextHeight,
       'Noto Sans',
       '900',
@@ -420,13 +459,16 @@ export async function generateLabel(
     )
     ctx.font = `900 ${fontSize}px "Noto Sans", serif`
     const textX = textAreaX + (textAreaWidth - metrics.width) / 2
-    // Compute vertical center using "alphabetic" baseline.
+    // Center text vertically
     const textY =
       (printableHeightPx + metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2
-    ctx.fillText(topText, textX, textY)
+    ctx.fillText(combinedText, textX, textY)
     console.log(
       `Single-line text dimensions (mm): width=${(metrics.width / conversionFactor).toFixed(2)}`
     )
+    if (bottomText.trim() && bottomText !== topText) {
+      console.log(`Combined text due to height constraint: "${combinedText}"`)
+    }
   } else {
     // Two-line mode: align top text to top edge and bottom text to bottom edge.
     // For top text: use "alphabetic" baseline and adjust Y so that actualBoundingBoxAscent equals 0.

@@ -105,11 +105,25 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
             <div class="flex items-center gap-3">
               <QrCodeIcon />
               <span class="text-base text-gray-700">QR Code</span>
+              {settings.labelHeight < 12 && (
+                <div class="relative group">
+                  <span class="text-gray-400 hover:text-gray-600 cursor-help">
+                    <InfoIcon />
+                  </span>
+                  <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block z-10">
+                    <div class="bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+                      Minimum 12mm height required
+                    </div>
+                    <div class="absolute left-2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+                  </div>
+                </div>
+              )}
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={settings.showQrCode}
+                disabled={settings.labelHeight < 12}
                 onChange$={e =>
                   onSettingsChange$({
                     showQrCode: (e.target as HTMLInputElement).checked,
@@ -117,11 +131,17 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
                 }
                 class="sr-only peer"
               />
-              <div class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all" />
+              <div
+                class={`w-12 h-6 rounded-full peer after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${
+                  settings.labelHeight < 12
+                    ? 'bg-gray-100 cursor-not-allowed'
+                    : 'bg-gray-200 peer-checked:after:translate-x-full peer-checked:bg-blue-600'
+                }`}
+              />
             </label>
           </div>
 
-          {settings.showQrCode && (
+          {settings.showQrCode && settings.labelHeight >= 12 && (
             <div class="bg-white p-4 rounded-lg border border-gray-200">
               <div class="flex items-center gap-2 mb-2">
                 <label class="block text-base text-gray-700">QR Code Content</label>

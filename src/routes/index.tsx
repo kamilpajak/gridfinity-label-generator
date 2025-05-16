@@ -385,17 +385,6 @@ export default component$(() => {
                   labelHeight={settings.labelHeight}
                   showQrCode={settings.showQrCode}
                 />
-                {/* Button to manually regenerate if needed */}
-                {threadSize.value &&
-                  hardwareStandard.value &&
-                  (selectedType.value !== 'Screw' || length.value) && (
-                    <button
-                      onClick$={generatePreview$}
-                      class="mt-2 p-2 w-full text-center bg-blue-50 text-blue-600 rounded hover:bg-blue-100 text-sm"
-                    >
-                      Refresh Preview
-                    </button>
-                  )}
               </div>
 
               {renderDownloadSection()}

@@ -22,8 +22,9 @@ export const validateHeight = (value: string | number): number => {
   }
 
   // Find the closest allowed height
-  const closest = allowedHeights.reduce((prev, curr) =>
-    Math.abs(curr - newValue) < Math.abs(prev - newValue) ? curr : prev
+  const closest = allowedHeights.reduce(
+    (prev, curr) => (Math.abs(curr - newValue) < Math.abs(prev - newValue) ? curr : prev),
+    allowedHeights[0]
   )
 
   return closest

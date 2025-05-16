@@ -213,11 +213,12 @@ export default component$(() => {
   // First time component loads - try to generate preview
   useTask$(({ track }) => {
     const type = track(() => selectedType.value)
-    const subtype = track(() => selectedScrewSubtype.value)
-    const system = track(() => selectedSystem.value)
     const thread = track(() => threadSize.value)
     const standard = track(() => hardwareStandard.value)
     const len = track(() => length.value)
+    // Also track changes to trigger preview regeneration
+    track(() => selectedScrewSubtype.value)
+    track(() => selectedSystem.value)
 
     // Only basic tracking for initial render
     if (thread && standard && (type !== 'Screw' || len)) {

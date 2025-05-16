@@ -41,10 +41,10 @@ const renderHeader = (labelWidth: number, labelHeight: number) => {
       </div>
       <div class="text-right">
         <div class="text-sm text-gray-500">
-          {labelWidth}mm × {labelHeight + 2}mm <span class="text-gray-400">(label size)</span>
+          {labelWidth}mm × {labelHeight}mm <span class="text-gray-400">(label size)</span>
         </div>
         <div class="text-xs text-gray-400">
-          {labelWidth - 4}mm × {labelHeight}mm (printable area)
+          {labelWidth - 4}mm × {labelHeight - 2}mm (printable area)
         </div>
       </div>
     </div>

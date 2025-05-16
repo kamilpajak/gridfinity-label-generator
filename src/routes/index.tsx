@@ -38,7 +38,7 @@ export default component$(() => {
     showStandardName: true,
     showImage: true,
     labelWidth: 55,
-    labelHeight: 10,
+    labelHeight: 12,
     textSize: 100,
     showQrCode: true,
     qrCodeContent: '',

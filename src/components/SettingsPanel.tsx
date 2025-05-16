@@ -223,7 +223,7 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
           <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
-                <span class="text-base text-gray-700">Printable Height</span>
+                <span class="text-base text-gray-700">Label Height</span>
                 <div class="relative group">
                   <span class="cursor-help text-gray-400 hover:text-gray-600">
                     <InfoIcon />
@@ -232,8 +232,8 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
                     <div class="absolute -bottom-2 left-[10%] sm:left-4 w-4 h-4 bg-white transform rotate-45 z-10"></div>
                     <div class="relative p-4 rounded-lg bg-white z-20">
                       <p>
-                        This controls the printable height (where content appears). The full label
-                        height will be 2mm taller (1mm margin on top and bottom).
+                        This controls the total physical height of the label. The printable area is
+                        2mm shorter (1mm margin on top and bottom).
                       </p>
                     </div>
                   </div>
@@ -242,8 +242,8 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
               <div class="flex items-center gap-2">
                 <input
                   type="number"
-                  min="5"
-                  max="30"
+                  min="7"
+                  max="32"
                   step="0.5"
                   class="w-20 h-[40px] px-2 bg-gray-50 border border-gray-200 rounded text-right text-base text-gray-700"
                   value={settings.labelHeight}
@@ -255,16 +255,16 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
             <div class="space-y-2">
               <input
                 type="range"
-                min="5"
-                max="30"
+                min="7"
+                max="32"
                 step="0.5"
                 value={settings.labelHeight}
                 onInput$={e => handleHeightChange$((e.target as HTMLInputElement).value)}
                 class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
               />
               <div class="flex justify-between text-xs text-gray-500">
-                <span>5mm</span>
-                <span>30mm</span>
+                <span>7mm</span>
+                <span>32mm</span>
               </div>
             </div>
           </div>

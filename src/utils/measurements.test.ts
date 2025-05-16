@@ -96,13 +96,13 @@ describe('Measurements utilities', () => {
 
   describe('validateHeight', () => {
     it('should return the input value if it is within valid range', () => {
-      expect(validateHeight(5)).toBe(5)
-      expect(validateHeight(10)).toBe(10)
-      expect(validateHeight(30)).toBe(30)
+      expect(validateHeight(7)).toBe(7)
+      expect(validateHeight(12)).toBe(12)
+      expect(validateHeight(32)).toBe(32)
     })
 
     it('should convert string values to numbers', () => {
-      expect(validateHeight('10')).toBe(10)
+      expect(validateHeight('12')).toBe(12)
       expect(validateHeight('15.5')).toBe(15.5)
     })
 
@@ -111,19 +111,19 @@ describe('Measurements utilities', () => {
       expect(validateHeight(12.987)).toBe(13)
     })
 
-    it('should enforce minimum height of 5mm', () => {
-      expect(validateHeight(3)).toBe(5)
-      expect(validateHeight('2.5')).toBe(5)
+    it('should enforce minimum height of 7mm', () => {
+      expect(validateHeight(5)).toBe(7)
+      expect(validateHeight('3')).toBe(7)
     })
 
-    it('should enforce maximum height of 30mm', () => {
-      expect(validateHeight(35)).toBe(30)
-      expect(validateHeight('40')).toBe(30)
+    it('should enforce maximum height of 32mm', () => {
+      expect(validateHeight(35)).toBe(32)
+      expect(validateHeight('40')).toBe(32)
     })
 
-    it('should default to 10mm for invalid inputs', () => {
-      expect(validateHeight(NaN)).toBe(10)
-      expect(validateHeight('abc')).toBe(10)
+    it('should default to 12mm for invalid inputs', () => {
+      expect(validateHeight(NaN)).toBe(12)
+      expect(validateHeight('abc')).toBe(12)
     })
   })
 

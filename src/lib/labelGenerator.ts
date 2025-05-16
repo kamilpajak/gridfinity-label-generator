@@ -241,25 +241,28 @@ export async function generateLabel(
   // Calculate printable area width (tape width - 4mm margins)
   const printableWidthMm = labelWidthMm - 4
 
-  // Calculate the exact aspect ratio of the printable area
-  const exactAspectRatio = printableWidthMm / labelHeightMm
+  // Calculate printable height (total height - 2mm margins)
+  const printableHeightMm = labelHeightMm - 2
 
-  console.log(`Tape size (mm): ${labelWidthMm} × 12`)
-  console.log(`Printable area (mm): ${printableWidthMm} × ${labelHeightMm}`)
+  // Calculate the exact aspect ratio of the printable area
+  const exactAspectRatio = printableWidthMm / printableHeightMm
+
+  console.log(`Label size (mm): ${labelWidthMm} × ${labelHeightMm}`)
+  console.log(`Printable area (mm): ${printableWidthMm} × ${printableHeightMm}`)
   console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`)
 
-  // Convert height from mm to pixels
-  const labelHeightPx = Math.round(mmToPx(labelHeightMm))
+  // Convert printable height from mm to pixels
+  const printableHeightPx = Math.round(mmToPx(printableHeightMm))
 
   // Calculate width in pixels based on the exact aspect ratio
-  const labelWidthPx = Math.round(labelHeightPx * exactAspectRatio)
+  const printableWidthPx = Math.round(printableHeightPx * exactAspectRatio)
 
   // Calculate the actual conversion factor used
-  const conversionFactor = labelWidthPx / printableWidthMm
+  const conversionFactor = printableWidthPx / printableWidthMm
 
   console.log(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`)
-  console.log(`Canvas dimensions (px): ${labelWidthPx} × ${labelHeightPx}`)
-  console.log(`Canvas aspect ratio: ${(labelWidthPx / labelHeightPx).toFixed(6)}`)
+  console.log(`Canvas dimensions (px): ${printableWidthPx} × ${printableHeightPx}`)
+  console.log(`Canvas aspect ratio: ${(printableWidthPx / printableHeightPx).toFixed(6)}`)
 
   // Baseline text height and gap in mm
   const baseTextHeightMm = 4.5
@@ -277,15 +280,15 @@ export async function generateLabel(
 
   // Create canvas and fill background with white
   const canvas = document.createElement('canvas')
-  canvas.width = labelWidthPx
-  canvas.height = labelHeightPx
+  canvas.width = printableWidthPx
+  canvas.height = printableHeightPx
   const ctx = canvas.getContext('2d')
   if (!ctx) {
     console.error('Could not get canvas context.')
     return null
   }
   ctx.fillStyle = 'white'
-  ctx.fillRect(0, 0, labelWidthPx, labelHeightPx)
+  ctx.fillRect(0, 0, printableWidthPx, printableHeightPx)
 
   // QR code has highest priority - position it first if enabled
   let qrCodeWidth = 0
@@ -298,8 +301,8 @@ export async function generateLabel(
       qrCodeWidth = qrSizePx
 
       // Position QR code on the right side of the printable area
-      qrCodeX = labelWidthPx - qrSizePx
-      const qrY = (labelHeightPx - qrSizePx) / 2 // Centered vertically
+      qrCodeX = printableWidthPx - qrSizePx
+      const qrY = (printableHeightPx - qrSizePx) / 2 // Centered vertically
 
       // Shorten URL if necessary for better QR code readability
       let finalQrContent = qrCodeContent
@@ -352,14 +355,14 @@ export async function generateLabel(
   const gapBetweenTextAndQrMm = qrCodeWidth > 0 ? 1 : 0 // 1mm gap if QR code is present
   const gapBetweenTextAndQrPx = mmToPx(gapBetweenTextAndQrMm)
   const availableWidthForImageAndText =
-    qrCodeWidth > 0 ? qrCodeX - gapBetweenTextAndQrPx : labelWidthPx
+    qrCodeWidth > 0 ? qrCodeX - gapBetweenTextAndQrPx : printableWidthPx
 
   // Draw image on the left if enabled
   const imageUsedWidth = drawImageIfNeeded(
     ctx,
     standardImg,
     availableWidthForImageAndText, // Only use width up to QR code
-    labelHeightPx,
+    printableHeightPx,
     gapPx,
     showImage
   )

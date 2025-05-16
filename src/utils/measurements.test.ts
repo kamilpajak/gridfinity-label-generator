@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { mmToPx, validateWidth } from './measurements'
+import { mmToPx, validateWidth, validateHeight } from './measurements'
 
 describe('Measurements utilities', () => {
   describe('mmToPx', () => {
@@ -91,6 +91,39 @@ describe('Measurements utilities', () => {
     it('should default to 55mm for invalid inputs', () => {
       expect(validateWidth(NaN)).toBe(55)
       expect(validateWidth('abc')).toBe(55)
+    })
+  })
+
+  describe('validateHeight', () => {
+    it('should return the input value if it is within valid range', () => {
+      expect(validateHeight(5)).toBe(5)
+      expect(validateHeight(10)).toBe(10)
+      expect(validateHeight(30)).toBe(30)
+    })
+
+    it('should convert string values to numbers', () => {
+      expect(validateHeight('10')).toBe(10)
+      expect(validateHeight('15.5')).toBe(15.5)
+    })
+
+    it('should round values to one decimal place', () => {
+      expect(validateHeight(7.123)).toBe(7.1)
+      expect(validateHeight(12.987)).toBe(13)
+    })
+
+    it('should enforce minimum height of 5mm', () => {
+      expect(validateHeight(3)).toBe(5)
+      expect(validateHeight('2.5')).toBe(5)
+    })
+
+    it('should enforce maximum height of 30mm', () => {
+      expect(validateHeight(35)).toBe(30)
+      expect(validateHeight('40')).toBe(30)
+    })
+
+    it('should default to 10mm for invalid inputs', () => {
+      expect(validateHeight(NaN)).toBe(10)
+      expect(validateHeight('abc')).toBe(10)
     })
   })
 })

@@ -230,15 +230,13 @@ export async function generateLabel(
   topText: string,
   bottomText: string,
   labelWidthMm: number,
+  labelHeightMm: number,
   showImage: boolean,
   showQrCode: boolean = false,
   qrCodeContent: string = ''
 ): Promise<string | null> {
   await ensureFontsLoaded()
   const standardImg = await loadImage(standardImgUrl)
-
-  // Fixed label height in mm (printable area)
-  const labelHeightMm = 10
   // Calculate printable area width (tape width - 4mm margins)
   const printableWidthMm = labelWidthMm - 4
 

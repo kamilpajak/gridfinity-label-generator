@@ -19,20 +19,29 @@ export function checkQrCodeDisplay(showQrCode: boolean) {
  * @param labelWidth The width of the label in mm
  * @param showImage Boolean indicating if image is shown
  * @param showQrCode Boolean indicating if QR code is shown
+ * @param labelHeight The height of the label in mm (defaults to 10)
  * @returns Object with layout validation information
  */
-export function validateLabelLayout(labelWidth: number, showImage: boolean, showQrCode: boolean) {
+export function validateLabelLayout(
+  labelWidth: number,
+  showImage: boolean,
+  showQrCode: boolean,
+  labelHeight: number = 10
+) {
   // QR code has highest priority - position it first if enabled
-  const qrCodeWidth = showQrCode ? 10 : 0 // QR code is 10mm wide
-  const qrCodeX = showQrCode ? labelWidth - qrCodeWidth : 0 // QR code at right edge
+  // QR code height is equal to the label height, but max 10mm
+  const qrCodeSize = showQrCode ? Math.min(labelHeight, 10) : 0
+  const qrCodeX = showQrCode ? labelWidth - qrCodeSize : 0 // QR code at right edge
 
   // Calculate available width for image and text (with 1mm gap between text and QR code)
-  const gapBetweenTextAndQrMm = qrCodeWidth > 0 ? 1 : 0 // 1mm gap if QR code is present
+  const gapBetweenTextAndQrMm = qrCodeSize > 0 ? 1 : 0 // 1mm gap if QR code is present
   const availableWidthForImageAndText =
-    qrCodeWidth > 0 ? qrCodeX - gapBetweenTextAndQrMm : labelWidth
+    qrCodeSize > 0 ? qrCodeX - gapBetweenTextAndQrMm : labelWidth
 
   // Calculate image width if enabled
-  const imageWidth = showImage ? Math.min(availableWidthForImageAndText * 0.4, 10) : 0 // Image takes up to 40% of available width
+  // Image width is proportional to label height, but capped at 40% of available width
+  const maxImageWidth = Math.min(availableWidthForImageAndText * 0.4, labelHeight)
+  const imageWidth = showImage ? maxImageWidth : 0
   const gap = 2 // Gap between elements in mm
 
   // Calculate text area position and width
@@ -47,14 +56,15 @@ export function validateLabelLayout(labelWidth: number, showImage: boolean, show
 
   return {
     imageWidth,
-    qrCodeWidth,
+    qrCodeWidth: qrCodeSize,
+    labelHeight,
     textAreaWidth: textWidth,
     hasEnoughTextSpace,
     elementsOverlap,
     layout: {
       image: showImage ? { x: 0, width: imageWidth } : null,
       text: { x: textX, width: textWidth },
-      qrCode: showQrCode ? { x: qrCodeX, width: qrCodeWidth } : null,
+      qrCode: showQrCode ? { x: qrCodeX, width: qrCodeSize } : null,
     },
   }
 }
@@ -62,19 +72,20 @@ export function validateLabelLayout(labelWidth: number, showImage: boolean, show
 /**
  * Helper function to calculate dimensions for a label
  * @param labelWidth The width of the label in mm
+ * @param labelHeight The height of the label in mm (defaults to 10)
  * @returns An object with the calculated dimensions
  */
-export function calculateDimensions(labelWidth: number) {
+export function calculateDimensions(labelWidth: number, labelHeight: number = 10) {
   return {
     tapeSize: {
       width: labelWidth,
-      height: 12,
-      text: `${labelWidth}mm × 12mm (tape size)`,
+      height: labelHeight + 2, // Tape is 2mm taller than printable area
+      text: `${labelWidth}mm × ${labelHeight + 2}mm (tape size)`,
     },
     printableArea: {
       width: labelWidth - 4,
-      height: 10,
-      text: `${labelWidth - 4}mm × 10mm (printable area)`,
+      height: labelHeight,
+      text: `${labelWidth - 4}mm × ${labelHeight}mm (printable area)`,
     },
   }
 }
@@ -82,10 +93,11 @@ export function calculateDimensions(labelWidth: number) {
 /**
  * Helper function to calculate margin percentages
  * @param labelWidth The width of the label in mm
+ * @param labelHeight The height of the label in mm (defaults to 10)
  * @returns An object with the calculated margin percentages
  */
-export function calculateMargins(labelWidth: number) {
-  const topBottomMarginPercent = (1 / 12) * 100 // 1mm out of 12mm height = 8.33%
+export function calculateMargins(labelWidth: number, labelHeight: number = 10) {
+  const topBottomMarginPercent = (1 / (labelHeight + 2)) * 100 // 1mm out of labelHeight+2
   const leftRightMarginPercent = (2 / labelWidth) * 100 // 2mm out of labelWidth
 
   return {
@@ -99,19 +111,21 @@ export function calculateMargins(labelWidth: number) {
 /**
  * Helper function to generate the alt text for the label image
  * @param labelWidth The width of the label in mm
+ * @param labelHeight The height of the label in mm (defaults to 10)
  * @returns The alt text for the label image
  */
-export function generateAltText(labelWidth: number) {
-  return `Generated label with dimensions ${labelWidth - 4}mm × 10mm`
+export function generateAltText(labelWidth: number, labelHeight: number = 10) {
+  return `Generated label with dimensions ${labelWidth - 4}mm × ${labelHeight}mm`
 }
 
 /**
  * Helper function to get the aspect ratio for the tape container
  * @param labelWidth The width of the label in mm
+ * @param labelHeight The height of the label in mm (defaults to 10)
  * @returns The aspect ratio string
  */
-export function getAspectRatio(labelWidth: number) {
-  return `${labelWidth} / 12`
+export function getAspectRatio(labelWidth: number, labelHeight: number = 10) {
+  return `${labelWidth} / ${labelHeight + 2}`
 }
 
 /**

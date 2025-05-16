@@ -5,11 +5,12 @@ interface Props {
   isLoading: boolean
   labelUrl: string
   labelWidth: number
+  labelHeight: number
   showQrCode?: boolean
 }
 
 // Helper: Renders the header with title and dimensions.
-const renderHeader = (labelWidth: number) => {
+const renderHeader = (labelWidth: number, labelHeight: number) => {
   return (
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
@@ -27,8 +28,8 @@ const renderHeader = (labelWidth: number) => {
             {/* Content container with higher z-index to appear above the triangle */}
             <div class="relative p-4 rounded-lg bg-white z-20">
               <p class="mb-2">
-                The selected width (e.g., 55mm) is the tape size. The printable area is 4mm narrower
-                (2mm margin on each side) and 2mm shorter (1mm margin on top and bottom).
+                The selected width and height determine the label dimensions. The printable area is
+                4mm narrower (2mm margin on each side) than the total width.
               </p>
               <p class="mt-2">
                 <strong>Note:</strong> The printed width will match the tape size width of{' '}
@@ -40,9 +41,11 @@ const renderHeader = (labelWidth: number) => {
       </div>
       <div class="text-right">
         <div class="text-sm text-gray-500">
-          {labelWidth}mm × 12mm <span class="text-gray-400">(tape size)</span>
+          {labelWidth}mm × {labelHeight + 2}mm <span class="text-gray-400">(label size)</span>
         </div>
-        <div class="text-xs text-gray-400">{labelWidth - 4}mm × 10mm (printable area)</div>
+        <div class="text-xs text-gray-400">
+          {labelWidth - 4}mm × {labelHeight}mm (printable area)
+        </div>
       </div>
     </div>
   )
@@ -50,9 +53,9 @@ const renderHeader = (labelWidth: number) => {
 
 // Helper: Renders the label image responsively.
 // The container sets the width while the image uses width:100% and height:auto to preserve its proportions.
-const renderLabelImage = (labelUrl: string, labelWidth: number) => {
+const renderLabelImage = (labelUrl: string, labelWidth: number, labelHeight: number) => {
   // Calculate margin percentages for the tape container
-  const topBottomMarginPercent = (1 / 12) * 100 // 1mm out of 12mm height = 8.33%
+  const topBottomMarginPercent = (1 / (labelHeight + 2)) * 100 // 1mm margin on each side
   const leftRightMarginPercent = (2 / labelWidth) * 100 // 2mm out of labelWidth
 
   return (
@@ -64,7 +67,7 @@ const renderLabelImage = (labelUrl: string, labelWidth: number) => {
       {/* Full tape container with white background */}
       <div
         class="relative bg-white border border-gray-200 rounded-sm overflow-hidden group"
-        style={{ aspectRatio: `${labelWidth} / 12` }}
+        style={{ aspectRatio: `${labelWidth} / ${labelHeight + 2}` }}
       >
         {/* Tape margins indicators are below */}
 
@@ -85,7 +88,7 @@ const renderLabelImage = (labelUrl: string, labelWidth: number) => {
           <div class="w-full h-full flex items-center justify-center">
             <img
               src={labelUrl}
-              alt={`Generated label with dimensions ${labelWidth - 4}mm × 10mm`}
+              alt={`Generated label with dimensions ${labelWidth - 4}mm × ${labelHeight}mm`}
               class="w-full h-full"
               style={{ objectFit: 'contain' }}
             />
@@ -124,16 +127,16 @@ const renderFallback = () => (
 )
 
 // Main component
-export const LabelPreview = component$<Props>(({ labelUrl, labelWidth }) => {
+export const LabelPreview = component$<Props>(({ labelUrl, labelWidth, labelHeight }) => {
   // Render content based on current state.
   const renderContent = () => {
-    if (labelUrl) return renderLabelImage(labelUrl, labelWidth)
+    if (labelUrl) return renderLabelImage(labelUrl, labelWidth, labelHeight)
     return renderFallback()
   }
 
   return (
     <div class="space-y-2">
-      {renderHeader(labelWidth)}
+      {renderHeader(labelWidth, labelHeight)}
       {/*
         The container below takes the full available width.
         It scales responsively, and the generated PNG image (inside renderLabelImage)

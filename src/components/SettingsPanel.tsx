@@ -1,7 +1,7 @@
 import type { PropFunction } from '@builder.io/qwik'
 import { $, component$, useSignal, useTask$ } from '@builder.io/qwik'
 import type { LabelSettings } from '~/types'
-import { validateWidth } from '~/utils/measurements'
+import { validateWidth, validateHeight } from '~/utils/measurements'
 import { shouldShortenUrl, shortenUrl } from '~/utils/urlShortener'
 import {
   ChatBubbleIcon,
@@ -18,9 +18,16 @@ interface Props {
 }
 
 export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ }) => {
+  // Validates and updates the label width (total physical width)
   const handleWidthChange$ = $((value: string | number) => {
     const validatedWidth = validateWidth(value)
     onSettingsChange$({ labelWidth: validatedWidth })
+  })
+
+  // Validates and updates the printable height (not including margins)
+  const handleHeightChange$ = $((value: string | number) => {
+    const validatedHeight = validateHeight(value)
+    onSettingsChange$({ labelHeight: validatedHeight })
   })
 
   // Signal to store the shortened URL preview
@@ -162,7 +169,23 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
 
           <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
             <div class="flex items-center justify-between">
-              <span class="text-base text-gray-700">Width</span>
+              <div class="flex items-center gap-2">
+                <span class="text-base text-gray-700">Label Width</span>
+                <div class="relative group">
+                  <span class="cursor-help text-gray-400 hover:text-gray-600">
+                    <InfoIcon />
+                  </span>
+                  <div class="absolute transform -translate-x-1/4 sm:translate-x-0 sm:left-0 md:-translate-x-1/4 md:left-1/4 bottom-full mb-3 hidden group-hover:block min-w-[250px] max-w-[90vw] sm:max-w-xs bg-white rounded-lg shadow-lg text-sm text-gray-700 z-20">
+                    <div class="absolute -bottom-2 left-[10%] sm:left-4 w-4 h-4 bg-white transform rotate-45 z-10"></div>
+                    <div class="relative p-4 rounded-lg bg-white z-20">
+                      <p>
+                        The label width is the total physical width. The printable area is 4mm
+                        narrower (2mm margin on each side).
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="flex items-center gap-2">
                 <input
                   type="number"
@@ -187,6 +210,55 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
               <div class="flex justify-between text-xs text-gray-500">
                 <span>37mm</span>
                 <span>100mm</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-lg border border-gray-200 space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-base text-gray-700">Printable Height</span>
+                <div class="relative group">
+                  <span class="cursor-help text-gray-400 hover:text-gray-600">
+                    <InfoIcon />
+                  </span>
+                  <div class="absolute transform -translate-x-1/4 sm:translate-x-0 sm:left-0 md:-translate-x-1/4 md:left-1/4 bottom-full mb-3 hidden group-hover:block min-w-[250px] max-w-[90vw] sm:max-w-xs bg-white rounded-lg shadow-lg text-sm text-gray-700 z-20">
+                    <div class="absolute -bottom-2 left-[10%] sm:left-4 w-4 h-4 bg-white transform rotate-45 z-10"></div>
+                    <div class="relative p-4 rounded-lg bg-white z-20">
+                      <p>
+                        This controls the printable height (where content appears). The full label
+                        height will be 2mm taller (1mm margin on top and bottom).
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <input
+                  type="number"
+                  min="5"
+                  max="30"
+                  step="0.5"
+                  class="w-20 h-[40px] px-2 bg-gray-50 border border-gray-200 rounded text-right text-base text-gray-700"
+                  value={settings.labelHeight}
+                  onInput$={e => handleHeightChange$((e.target as HTMLInputElement).value)}
+                />
+                <span class="text-sm text-gray-600">mm</span>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <input
+                type="range"
+                min="5"
+                max="30"
+                step="0.5"
+                value={settings.labelHeight}
+                onInput$={e => handleHeightChange$((e.target as HTMLInputElement).value)}
+                class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              />
+              <div class="flex justify-between text-xs text-gray-500">
+                <span>5mm</span>
+                <span>30mm</span>
               </div>
             </div>
           </div>

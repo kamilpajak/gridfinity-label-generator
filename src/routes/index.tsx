@@ -38,6 +38,7 @@ export default component$(() => {
     showStandardName: true,
     showImage: true,
     labelWidth: 55,
+    labelHeight: 10,
     showQrCode: true,
     qrCodeContent: '',
   })
@@ -103,6 +104,9 @@ export default component$(() => {
     if (newSettings.labelWidth !== undefined) {
       settings.labelWidth = validateWidth(newSettings.labelWidth)
     }
+    if (newSettings.labelHeight !== undefined) {
+      settings.labelHeight = validateHeight(newSettings.labelHeight)
+    }
     if (newSettings.showStandardName !== undefined) {
       settings.showStandardName = newSettings.showStandardName
     }
@@ -157,6 +161,7 @@ export default component$(() => {
         topText,
         bottomText,
         settings.labelWidth,
+        settings.labelHeight,
         settings.showImage,
         settings.showQrCode,
         settings.qrCodeContent
@@ -188,6 +193,7 @@ export default component$(() => {
   // Automatically generate preview when input signals change.
   useTask$(({ track }) => {
     track(() => settings.labelWidth)
+    track(() => settings.labelHeight)
     track(() => settings.showStandardName)
     track(() => settings.showImage)
     track(() => settings.showQrCode)
@@ -336,6 +342,7 @@ export default component$(() => {
                 isLoading={isLoading.value}
                 labelUrl={labelPreviewUrl.value}
                 labelWidth={settings.labelWidth}
+                labelHeight={settings.labelHeight}
                 showQrCode={settings.showQrCode}
               />
 

@@ -10,14 +10,14 @@ import {
 } from './LabelPreview.test.helpers'
 
 describe('LabelPreview Component', () => {
-  // Test the dimensions calculations
-  test('calculates correct dimensions for tape size and printable area', () => {
+  // Test the dimensions calculations with default height
+  test('calculates correct dimensions for tape size and printable area with default height', () => {
     const labelWidth = 55
     const dimensions = calculateDimensions(labelWidth)
 
     // Check tape size dimensions
     expect(dimensions.tapeSize.width).toBe(labelWidth)
-    expect(dimensions.tapeSize.height).toBe(12)
+    expect(dimensions.tapeSize.height).toBe(12) // 10mm height + 2mm margins
     expect(dimensions.tapeSize.text).toContain(`${labelWidth}mm × 12mm`)
     expect(dimensions.tapeSize.text).toContain('tape size')
 
@@ -28,8 +28,27 @@ describe('LabelPreview Component', () => {
     expect(dimensions.printableArea.text).toContain('printable area')
   })
 
-  // Test the margin calculations
-  test('calculates correct margin percentages', () => {
+  // Test the dimensions calculations with custom height
+  test('calculates correct dimensions for tape size and printable area with custom height', () => {
+    const labelWidth = 55
+    const labelHeight = 15
+    const dimensions = calculateDimensions(labelWidth, labelHeight)
+
+    // Check tape size dimensions
+    expect(dimensions.tapeSize.width).toBe(labelWidth)
+    expect(dimensions.tapeSize.height).toBe(labelHeight + 2) // labelHeight + 2mm margins
+    expect(dimensions.tapeSize.text).toContain(`${labelWidth}mm × ${labelHeight + 2}mm`)
+    expect(dimensions.tapeSize.text).toContain('tape size')
+
+    // Check printable area dimensions
+    expect(dimensions.printableArea.width).toBe(labelWidth - 4)
+    expect(dimensions.printableArea.height).toBe(labelHeight)
+    expect(dimensions.printableArea.text).toContain(`${labelWidth - 4}mm × ${labelHeight}mm`)
+    expect(dimensions.printableArea.text).toContain('printable area')
+  })
+
+  // Test the margin calculations with default height
+  test('calculates correct margin percentages with default height', () => {
     const labelWidth = 55
     const margins = calculateMargins(labelWidth)
 
@@ -44,26 +63,61 @@ describe('LabelPreview Component', () => {
     expect(margins.right).toBeCloseTo(expectedLeftRightMargin)
   })
 
+  // Test the margin calculations with custom height
+  test('calculates correct margin percentages with custom height', () => {
+    const labelWidth = 55
+    const labelHeight = 15
+    const margins = calculateMargins(labelWidth, labelHeight)
+
+    // Calculate expected margin percentages
+    const expectedTopBottomMargin = (1 / (labelHeight + 2)) * 100 // 1mm out of 17mm = ~5.88%
+    const expectedLeftRightMargin = (2 / labelWidth) * 100 // 2mm out of 55mm = ~3.64%
+
+    // Test that our calculations match what we expect
+    expect(margins.top).toBeCloseTo(expectedTopBottomMargin)
+    expect(margins.bottom).toBeCloseTo(expectedTopBottomMargin)
+    expect(margins.left).toBeCloseTo(expectedLeftRightMargin)
+    expect(margins.right).toBeCloseTo(expectedLeftRightMargin)
+  })
+
   // Test the placeholder text
   test('returns correct placeholder text', () => {
     const placeholder = getPlaceholderText()
     expect(placeholder).toBe('Fill out the form to generate a label')
   })
 
-  // Test the image alt text
-  test('generates correct alt text with dimensions', () => {
+  // Test the image alt text with default height
+  test('generates correct alt text with default height', () => {
     const labelWidth = 55
     const altText = generateAltText(labelWidth)
 
     expect(altText).toBe(`Generated label with dimensions ${labelWidth - 4}mm × 10mm`)
   })
 
-  // Test the aspect ratio
-  test('calculates correct aspect ratio for tape container', () => {
+  // Test the image alt text with custom height
+  test('generates correct alt text with custom height', () => {
+    const labelWidth = 55
+    const labelHeight = 15
+    const altText = generateAltText(labelWidth, labelHeight)
+
+    expect(altText).toBe(`Generated label with dimensions ${labelWidth - 4}mm × ${labelHeight}mm`)
+  })
+
+  // Test the aspect ratio with default height
+  test('calculates correct aspect ratio for tape container with default height', () => {
     const labelWidth = 55
     const aspectRatio = getAspectRatio(labelWidth)
 
     expect(aspectRatio).toBe(`${labelWidth} / 12`)
+  })
+
+  // Test the aspect ratio with custom height
+  test('calculates correct aspect ratio for tape container with custom height', () => {
+    const labelWidth = 55
+    const labelHeight = 15
+    const aspectRatio = getAspectRatio(labelWidth, labelHeight)
+
+    expect(aspectRatio).toBe(`${labelWidth} / ${labelHeight + 2}`)
   })
 
   // Test QR code display
@@ -79,13 +133,14 @@ describe('LabelPreview Component', () => {
     expect(qrCodeInfo.isVisible).toBe(false)
   })
 
-  // Test that label elements don't overlap
-  test('ensures label elements (image, text, QR code) do not overlap', () => {
+  // Test that label elements don't overlap with default height
+  test('ensures label elements (image, text, QR code) do not overlap with default height', () => {
     // Test with all elements visible on a standard width label
     const standardWidth = 55
     let layout = validateLabelLayout(standardWidth, true, true)
     expect(layout.elementsOverlap).toBe(false)
     expect(layout.hasEnoughTextSpace).toBe(true)
+    expect(layout.labelHeight).toBe(10) // Default height
 
     // Verify positions - image on left, text in middle, QR on right
     expect(layout.layout.image?.x).toBe(0)
@@ -97,13 +152,6 @@ describe('LabelPreview Component', () => {
 
     // With all elements
     layout = validateLabelLayout(smallerWidth, true, true)
-    // With the fixed QR code position (2mm from right edge), there might be overlap on smaller labels
-    console.log(`45mm label with all elements - text area width: ${layout.textAreaWidth}mm`)
-    if (layout.textAreaWidth < 10) {
-      console.warn(
-        `Warning: Text area width (${layout.textAreaWidth}mm) is less than 10mm on a 45mm label with all elements`
-      )
-    }
 
     // With image but no QR code
     const layoutWithImageNoQr = validateLabelLayout(smallerWidth, true, false)
@@ -122,69 +170,74 @@ describe('LabelPreview Component', () => {
     expect(layout.elementsOverlap).toBe(false)
     expect(layout.hasEnoughTextSpace).toBe(true)
     expect(layout.textAreaWidth).toBe(smallerWidth)
+  })
 
+  // Test with different label heights
+  test('handles different label heights correctly', () => {
+    const standardWidth = 55
+
+    // Test with taller label (20mm)
+    let layout = validateLabelLayout(standardWidth, true, true, 20)
+    expect(layout.labelHeight).toBe(20)
+    expect(layout.elementsOverlap).toBe(false)
+    expect(layout.hasEnoughTextSpace).toBe(true)
+    // QR code should still be 10mm max
+    expect(layout.qrCodeWidth).toBe(10)
+    // Image can be larger
+    expect(layout.imageWidth).toBeGreaterThan(10)
+
+    // Test with shorter label (5mm)
+    layout = validateLabelLayout(standardWidth, true, true, 5)
+    expect(layout.labelHeight).toBe(5)
+    expect(layout.elementsOverlap).toBe(false)
+    expect(layout.hasEnoughTextSpace).toBe(true)
+    // QR code should be 5mm (same as height)
+    expect(layout.qrCodeWidth).toBe(5)
+    // Image should be smaller
+    expect(layout.imageWidth).toBeLessThanOrEqual(5)
+
+    // Test different combinations with custom height
+    const customHeight = 15
+    const width = 50
+
+    // With all elements
+    layout = validateLabelLayout(width, true, true, customHeight)
+    expect(layout.labelHeight).toBe(customHeight)
+    expect(layout.elementsOverlap).toBe(false)
+
+    // With image but no QR code
+    layout = validateLabelLayout(width, true, false, customHeight)
+    expect(layout.labelHeight).toBe(customHeight)
+    expect(layout.layout.qrCode).toBeNull()
+
+    // With QR code but no image
+    layout = validateLabelLayout(width, false, true, customHeight)
+    expect(layout.labelHeight).toBe(customHeight)
+    expect(layout.layout.image).toBeNull()
+
+    // With neither image nor QR code
+    layout = validateLabelLayout(width, false, false, customHeight)
+    expect(layout.labelHeight).toBe(customHeight)
+    expect(layout.layout.image).toBeNull()
+    expect(layout.layout.qrCode).toBeNull()
+  })
+
+  // Test edge cases with very narrow labels
+  test('handles edge cases with very narrow labels', () => {
     // Test with minimum viable width
     const minimumWidth = 40
-    layout = validateLabelLayout(minimumWidth, true, true)
-    console.log(`40mm label with all elements - text area width: ${layout.textAreaWidth}mm`)
-    if (layout.textAreaWidth < 10) {
-      console.warn(
-        `Warning: Text area width (${layout.textAreaWidth}mm) is less than 10mm on a 40mm label with all elements`
-      )
-    }
-
-    // Test with 35mm width
-    const smallWidth = 35
-    layout = validateLabelLayout(smallWidth, true, true)
-    console.log(`35mm label with all elements - text area width: ${layout.textAreaWidth}mm`)
-
-    // With the QR code positioned at the right edge, we should have more space for text
-    // We expect the text area width to be positive (no overlap)
-    expect(layout.textAreaWidth).toBeGreaterThan(0)
-
-    // For very narrow labels, we might still want to show a warning
-    if (layout.textAreaWidth < 10) {
-      console.warn(
-        `Warning: Text area width (${layout.textAreaWidth}mm) is less than recommended 10mm on a 35mm label with all elements`
-      )
-    }
-
-    // Test with only image and text (no QR)
-    layout = validateLabelLayout(standardWidth, true, false)
+    let layout = validateLabelLayout(minimumWidth, true, true)
     expect(layout.elementsOverlap).toBe(false)
-    expect(layout.hasEnoughTextSpace).toBe(true)
-    expect(layout.layout.qrCode).toBeNull()
 
-    // Test with only text and QR (no image)
-    layout = validateLabelLayout(standardWidth, false, true)
-    expect(layout.elementsOverlap).toBe(false)
-    expect(layout.hasEnoughTextSpace).toBe(true)
-    expect(layout.layout.image).toBeNull()
-
-    // Test with only text (no image, no QR)
-    layout = validateLabelLayout(standardWidth, false, false)
-    expect(layout.elementsOverlap).toBe(false)
-    expect(layout.hasEnoughTextSpace).toBe(true)
-    expect(layout.layout.image).toBeNull()
-    expect(layout.layout.qrCode).toBeNull()
-
-    // Test with a very narrow label
-    const narrowWidth = 15 // Very narrow label
+    // Test with very narrow label
+    const narrowWidth = 15
     layout = validateLabelLayout(narrowWidth, true, true)
-    console.log(`15mm label with all elements - text area width: ${layout.textAreaWidth}mm`)
-
-    // With our new implementation that prioritizes QR code, elements should not overlap
-    // even for very narrow labels, but the text area might be too small
     expect(layout.elementsOverlap).toBe(false)
-
-    // For very narrow labels, we expect the text area to be less than 10mm
     expect(layout.textAreaWidth).toBeLessThan(10)
 
-    // For extremely narrow labels, we might want to show a warning or disable certain elements
-    if (layout.textAreaWidth < 5) {
-      console.warn(
-        `Warning: Text area width (${layout.textAreaWidth}mm) is extremely small on a 15mm label with all elements`
-      )
-    }
+    // Test narrow label with custom height
+    layout = validateLabelLayout(narrowWidth, true, true, 15)
+    expect(layout.elementsOverlap).toBe(false)
+    expect(layout.labelHeight).toBe(15)
   })
 })

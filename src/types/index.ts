@@ -13,6 +13,7 @@ export interface LabelSettings {
   showStandardName: boolean
   showImage: boolean
   labelWidth: number
+  labelHeight: number
   showQrCode: boolean
   qrCodeContent: string
 }

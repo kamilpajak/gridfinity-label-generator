@@ -11,11 +11,7 @@ export const validateWidth = (value: string | number): number => {
 export const validateHeight = (value: string | number): number => {
   const allowedHeights = [9, 12, 18, 24]
 
-  if (value === null || value === undefined) {
-    return 12 // Default value
-  }
-
-  let newValue = typeof value === 'string' ? parseFloat(value) : value
+  const newValue = typeof value === 'string' ? parseFloat(value) : value
 
   if (isNaN(newValue)) {
     return 12 // Default value

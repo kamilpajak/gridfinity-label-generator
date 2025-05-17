@@ -1,6 +1,6 @@
 # Contributing to Gridfinity Label Generator
 
-Thank you for considering contributing to the Gridfinity Label Generator! This document outlines the process for contributing to the project, including development setup, coding standards, and the release process.
+Thank you for considering contributing to the Gridfinity Label Generator! This document outlines the development workflow for this single-developer personal project.
 
 ## Development Setup
 
@@ -32,29 +32,79 @@ Thank you for considering contributing to the Gridfinity Label Generator! This d
 
 4. Visit [http://localhost:5173/](http://localhost:5173/) to see the application.
 
-## Coding Standards
+## Development Workflow
+
+This project uses a streamlined workflow optimized for single-developer work:
+
+### 1. Feature Development
+
+```bash
+# Create a feature branch
+git checkout -b feature/new-feature
+
+# Make your changes
+# Code is automatically linted and formatted on commit
+
+# Commit with conventional commits
+git commit -m "feat: add new feature"
+
+# Push to GitHub
+git push origin feature/new-feature
+```
+
+### 2. Continuous Integration
+
+All branches automatically run:
+
+- Linting (`npm run lint`)
+- Formatting checks (`npm run fmt.check`)
+- Type checking (`npm run build.types`)
+- Tests (`npm test`)
+- Build verification (`npm run build`)
+
+### 3. Merging to Master
+
+Once CI passes, merge directly without PR:
+
+```bash
+# Switch to master
+git checkout master
+
+# Merge your feature
+git merge feature/new-feature
+
+# Push to master
+git push origin master
+```
+
+The release workflow will automatically:
+
+1. Bump version based on conventional commits
+2. Update CHANGELOG.md
+3. Create a git tag
+4. Create a GitHub Release
+5. Build and push Docker images
+
+## Code Quality
+
+### Pre-commit Hooks
+
+The project uses Husky and lint-staged to automatically:
+
+- Fix ESLint issues
+- Format code with Prettier
+- Validate TypeScript types
 
 ### Commit Messages
 
-This project follows [Conventional Commits](https://www.conventionalcommits.org/) for commit messages. This helps with automatic versioning and changelog generation.
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-Examples:
-
-- `feat: add new feature` (triggers a minor version bump)
-- `fix: resolve issue` (triggers a patch version bump)
+- `feat: add new feature` (triggers minor version bump)
+- `fix: resolve issue` (triggers patch version bump)
 - `docs: update documentation` (no version bump)
 - `chore: update dependencies` (no version bump)
 - `refactor: improve code structure` (no version bump)
 - `perf: improve performance` (no version bump)
-
-### Code Style
-
-- The project uses ESLint and Prettier for code formatting
-- Run `npm run lint` to check for linting issues
-- Run `npm run fmt` to automatically format TypeScript and Qwik files
-- Run `npm run fmt.check` to verify formatting without making changes
-- The project now uses a modern Prettier configuration with specific rules for Qwik components
-- Pre-commit hooks automatically format staged files using Husky and pretty-quick
 
 ### Testing
 
@@ -62,123 +112,74 @@ Examples:
 - Run `npm test` to run the test suite
 - Run `npm run test:coverage` to generate a coverage report
 
-## Pull Request Process
-
-1. Fork the repository and create a feature branch
-2. Make your changes and ensure tests pass
-3. Update documentation as needed
-4. Submit a pull request to the `master` branch
-5. Wait for code review and address any feedback
-
 ## Release Process
 
-The project has a robust release process that uses a two-step workflow:
+Releases are automated based on conventional commits:
 
-1. **Version Bump Workflow**: Updates version numbers and creates git tags
-2. **GitHub Release Workflow**: Creates GitHub Releases from tags and triggers Docker builds
+### Automatic Release
 
-### Standard Release (from master)
-
-For simple releases directly from the master branch:
+Simply push to master with proper commit messages:
 
 ```bash
-# For automatic version bump based on conventional commits
-npm run release:auto
-
-# For specific version bumps
-npm run release:patch  # 0.1.13 -> 0.1.14
-npm run release:minor  # 0.1.13 -> 0.2.0
-npm run release:major  # 0.1.13 -> 1.0.0
+git commit -m "feat: add new feature"
+git push origin master
 ```
 
-This will:
+The system will automatically:
 
-1. Bump the version in package.json
+1. Bump version (minor for feat, patch for fix)
 2. Update CHANGELOG.md
 3. Create a git tag
-4. Push changes and tag to GitHub
-5. Automatically trigger the GitHub Release workflow
-6. Build and push Docker images
+4. Create GitHub Release
+5. Build and push Docker images
 
-### Release Branch Workflow (for major changes)
+### Manual Release
 
-For significant releases that require testing:
+For specific version bumps:
 
-1. Create a release branch:
+```bash
+# Patch release (0.1.13 -> 0.1.14)
+npm run release:patch
 
-   ```bash
-   # Create a branch for the next patch version
-   npm run release:branch:patch  # Creates branch release/v0.1.14
+# Minor release (0.1.13 -> 0.2.0)
+npm run release:minor
 
-   # Create a branch for the next minor version
-   npm run release:branch:minor  # Creates branch release/v0.2.0
-
-   # Create a branch for the next major version
-   npm run release:branch:major  # Creates branch release/v1.0.0
-   ```
-
-2. Make any final changes and commit them to the release branch
-
-3. When ready, run the version bump on the release branch:
-
-   ```bash
-   npm run release:patch  # or release:minor, release:major
-   ```
-
-4. Create a pull request from the release branch to master
-
-5. After merging, the following will happen automatically:
-   - The Version Bump workflow will be skipped (to prevent loops)
-   - The GitHub Release workflow will be triggered by the tag
-   - A GitHub Release will be created with release notes
-   - Docker images will be built and pushed
-
-### Manual Release Workflow
-
-You can also trigger a version bump manually through the GitHub Actions UI:
-
-1. Go to the "Actions" tab in the GitHub repository
-2. Select the "Version Bump" workflow
-3. Click "Run workflow"
-4. Select the version type (patch, minor, major, or auto)
-5. Click "Run workflow"
-
-This will trigger the same process as the standard release.
+# Major release (0.1.13 -> 1.0.0)
+npm run release:major
+```
 
 ## Docker Images
 
-The project automatically builds and publishes Docker images to:
+Images are automatically published to:
 
 - DockerHub: `kamilpajak/storage-label-maker`
 - GitHub Container Registry: `ghcr.io/kamilpajak/gridfinity-label-generator`
 
-### Using the Docker Image
+### Local Docker Build
 
 ```bash
-# Pull the latest image from Docker Hub
-docker pull kamilpajak/storage-label-maker:latest
-
-# Or pull a specific version
-docker pull kamilpajak/storage-label-maker:0.1.13
-
-# Run the container
-docker run -p 80:80 kamilpajak/storage-label-maker:latest
+./scripts/docker-build.sh
 ```
 
-### Building Docker Images Locally
+## Quick Commands Reference
 
 ```bash
-# Using the convenience script
-./scripts/docker-build.sh
+# Development
+npm run dev              # Start dev server
+npm test                 # Run tests
+npm run lint             # Check linting
+npm run fmt              # Format code
 
-# Or manually
-docker build -t storage-label-maker \
-  --build-arg VERSION=$(node -p "require('./package.json').version") \
-  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-  --build-arg COMMIT_SHA=$(git rev-parse --short HEAD) \
-  .
+# Release
+npm run release:auto     # Auto version bump
+npm run release:patch    # Patch release
+npm run release:minor    # Minor release
+npm run release:major    # Major release
+
+# Docker
+./scripts/docker-build.sh  # Build locally
 ```
 
 ## Questions and Support
 
-If you have questions or need support, please open an issue on the GitHub repository.
+If you have questions, please open an issue on the GitHub repository.

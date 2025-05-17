@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.24](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.23...v0.1.24) (2025-05-17)
+
+### Documentation
+
+- add Docker image URLs to README ([9a65e80](https://github.com/kamilpajak/gridfinity-label-generator/commit/9a65e80c46d19bd2822b4205f4e0cbdf750c4232))
+
 ### [0.1.23](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.22...v0.1.23) (2025-05-17)
 
 ### Documentation

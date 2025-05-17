@@ -60,7 +60,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # IMPORTANT: You need to create a PAT with repo permissions
+          # Go to Settings > Developer settings > Personal access tokens
+          # Create a PAT with 'repo' scope
+          # Add it as secret RELEASE_TOKEN in your repository
+          token: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -92,7 +96,9 @@ jobs:
 
       - name: Push changes
         run: |
-          git push origin HEAD:${{ github.ref }}
+          # Push the commit (updated package.json and CHANGELOG.md)
+          git push origin HEAD:master
+          # Push the tags
           git push origin --tags
 
       - name: Debug - Check tag

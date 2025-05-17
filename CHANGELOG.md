@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.25](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.24...v0.1.25) (2025-05-17)
+
+### Features
+
+- implement comprehensive SEO improvements ([117f294](https://github.com/kamilpajak/gridfinity-label-generator/commit/117f2947a336fbe69ad38ebe3d4e3cc7680e4f82))
+
+### Bug Fixes
+
+- resolve console errors ([fb78c50](https://github.com/kamilpajak/gridfinity-label-generator/commit/fb78c5054a564fc9200584931a09b57000c2575d))
+- resolve type errors in structured data component ([69886fe](https://github.com/kamilpajak/gridfinity-label-generator/commit/69886fe75cf3e9220a6bc45d96196953136008e5))
+
 ### [0.1.24](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.23...v0.1.24) (2025-05-17)
 
 ### Documentation

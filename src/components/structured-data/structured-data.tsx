@@ -1,6 +1,10 @@
 import { component$ } from '@builder.io/qwik'
 
-export const StructuredData = component$(() => {
+export interface StructuredDataProps {
+  type?: 'webApplication' | 'softwareApplication'
+}
+
+export const StructuredData = component$<StructuredDataProps>(() => {
   const baseStructuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
@@ -59,20 +63,16 @@ export const StructuredData = component$(() => {
     },
   }
 
+  // Directly return script tags with JSON as text content
+  const baseDataString = JSON.stringify(baseStructuredData)
+  const breadcrumbDataString = JSON.stringify(breadcrumbStructuredData)
+  const websiteDataString = JSON.stringify(websiteStructuredData)
+
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(baseStructuredData) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteStructuredData) }}
-      />
+      <script type="application/ld+json">{baseDataString}</script>
+      <script type="application/ld+json">{breadcrumbDataString}</script>
+      <script type="application/ld+json">{websiteDataString}</script>
     </>
   )
 })

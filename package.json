@@ -79,7 +79,7 @@
     "vitest": "^3.0.8"
   },
   "dependencies": {
-    "express": "4.20.0",
+    "express": "^4.21.2",
     "qrcode": "^1.5.4",
     "validator": "^13.12.0"
   }

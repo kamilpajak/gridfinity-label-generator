@@ -1,5 +1,6 @@
 import { useDocumentHead, useLocation } from '@builder.io/qwik-city'
 import { component$, useVisibleTask$ } from '@builder.io/qwik'
+import { StructuredData } from '../structured-data/structured-data'
 
 /**
  * The global window._paq array for Matomo
@@ -81,7 +82,41 @@ export const RouterHead = component$(() => {
       />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={loc.url.href} />
+      <meta property="og:image" content="https://gridfinitylabels.com/og-image.png" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+
+      {/* Twitter Card Meta Tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta
+        name="twitter:title"
+        content="Gridfinity Label Generator - Print-Ready Storage Labels Online"
+      />
+      <meta
+        name="twitter:description"
+        content="Create custom Gridfinity labels for your storage system online. Free browser-based generator with text, icons, and printer support."
+      />
+      <meta name="twitter:image" content="https://gridfinitylabels.com/og-image.png" />
+
+      {/* Additional SEO Meta Tags */}
+      <meta name="robots" content="index, follow" />
+      <meta name="author" content="Kamil Pająk" />
+      <meta
+        name="keywords"
+        content="gridfinity, label generator, storage labels, organization, 3D printing, workshop organization, hardware labels, DIN standards, ISO standards"
+      />
+
+      {/* Favicon */}
       <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+      {/* Manifest for PWA */}
+      <link rel="manifest" href="/manifest.json" />
+      <meta name="theme-color" content="#1976d2" />
+
+      <StructuredData />
       {/* Use local fonts instead of Google Fonts */}
       <link rel="stylesheet" href="/fonts/fonts.css" />
       {head.meta.map(m => (

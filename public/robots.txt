@@ -1,3 +1,23 @@
 User-agent: *
 Allow: /
+
+# Disallow admin or API endpoints (if any)
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_app/
+
+# Disallow temporary or development files
+Disallow: /tmp/
+Disallow: /temp/
+Disallow: /*.json$
+Disallow: /*.xml$
+
+# Allow sitemap
+Allow: /sitemap.xml
+Allow: /ads.txt
+
+# Crawl delay to prevent server overload
+Crawl-delay: 1
+
+# Sitemap location
 Sitemap: https://gridfinitylabels.com/sitemap.xml

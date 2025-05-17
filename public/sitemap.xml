@@ -2,9 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://gridfinitylabels.com/</loc>
-    <lastmod>2025-03-02</lastmod>
+    <lastmod>2025-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
-  <!-- Możesz dodać więcej stron, jeśli Twoja aplikacja ma wiele podstron -->
+  <url>
+    <loc>https://gridfinitylabels.com/404</loc>
+    <lastmod>2025-05-17</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.1</priority>
+  </url>
 </urlset>

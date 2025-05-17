@@ -1,132 +1,143 @@
 # Gridfinity Label Generator
 
-A web application for generating labels for storage systems, with a focus on the Gridfinity system.
+<p align="center">
+  <img src="public/favicon.svg" alt="Gridfinity Label Generator Logo" width="120" height="120">
+</p>
 
-## Development
+<p align="center">
+  Create professional labels for your Gridfinity storage system - perfect for organizing hardware, tools, and parts.
+</p>
 
-### Express Server
+<p align="center">
+  <a href="https://github.com/kamilpajak/gridfinity-label-generator/releases">
+    <img src="https://img.shields.io/github/v/release/kamilpajak/gridfinity-label-generator?style=flat-square" alt="Latest Release">
+  </a>
+  <a href="https://github.com/kamilpajak/gridfinity-label-generator/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/kamilpajak/gridfinity-label-generator?style=flat-square" alt="License">
+  </a>
+  <a href="https://hub.docker.com/r/kamilpajak/storage-label-maker">
+    <img src="https://img.shields.io/docker/pulls/kamilpajak/storage-label-maker?style=flat-square" alt="Docker Pulls">
+  </a>
+</p>
 
-This app has a minimal [Express server](https://expressjs.com/) implementation. After running a full build, you can
-preview the build using the command:
+## 📋 Features
 
+- 🛠️ **Extensive Hardware Library**: Pre-loaded images for screws, nuts, and washers (DIN & ISO standards)
+- 📏 **Multiple Label Sizes**: Support for 50mm and 100mm Gridfinity labels
+- 🌍 **Measurement Systems**: Both metric and imperial unit support
+- 🎨 **Customizable Design**: Adjust fonts, sizes, layouts, and margins
+- 📱 **QR Code Integration**: Generate QR codes for part references or inventory tracking
+- 🖼️ **Custom Images**: Upload your own part images
+- 💾 **PNG Export**: Download high-quality label images for printing
+- 📱 **Mobile Friendly**: Responsive design works on all devices
+
+## 🚀 Getting Started
+
+### Try it Online
+
+Visit [https://gridfinitylabels.com](https://gridfinitylabels.com) to use the application without installation.
+
+### Run with Docker
+
+```bash
+# Using Docker Hub
+docker run -p 80:80 kamilpajak/storage-label-maker:latest
+
+# Using GitHub Container Registry
+docker run -p 80:80 ghcr.io/kamilpajak/gridfinity-label-generator:latest
 ```
-npm run serve
-```
 
-Then visit [http://localhost:8080/](http://localhost:8080/)
+Then visit [http://localhost](http://localhost)
 
-### Running Locally
+### Run Locally
 
-To run the application in development mode:
-
-```
+```bash
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
 ```
 
-## Versioning and Releases
+Visit [http://localhost:5173](http://localhost:5173)
 
-This project uses [Semantic Versioning](https://semver.org/) and automated release management through GitHub Actions.
+## 📖 Usage Guide
 
-### Creating a New Release
+1. **Select Hardware Type**: Choose from Screw, Nut, or Washer
+2. **Pick Your Standard**: Select the DIN/ISO standard for your hardware
+3. **Choose Specific Part**: Select the exact part number
+4. **Select Thread Size**: Pick the appropriate thread size
+5. **Customize Label**: Adjust text, add descriptions, or include QR codes
+6. **Export**: Download your label as a PNG file
 
-The project has multiple ways to create releases:
+## 🛠️ Development
 
-#### Standard Release (from master)
+### Building for Production
 
 ```bash
-# For automatic version bump based on conventional commits
+# Build the application
+npm run build
+
+# Preview the production build
+npm run serve
+```
+
+### Testing
+
+```bash
+# Run tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run linting
+npm run lint
+```
+
+### Docker Development
+
+```bash
+# Build local Docker image
+./docker-build.sh
+
+# Build and publish to DockerHub
+./docker-publish.sh
+```
+
+## 🔄 Version Management
+
+This project uses semantic versioning with automated releases:
+
+```bash
+# Automatic version bump based on commits
 npm run release:auto
 
-# For specific version bumps
+# Manual version bumps
 npm run release:patch  # 0.1.13 -> 0.1.14
 npm run release:minor  # 0.1.13 -> 0.2.0
 npm run release:major  # 0.1.13 -> 1.0.0
 ```
 
-#### Release Branch Workflow (for major changes)
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed release process.
 
-For significant releases that require testing:
+## 🤝 Contributing
 
-1. Create a release branch:
-   ```bash
-   npm run release:branch:patch  # Creates branch release/v0.1.14
-   npm run release:branch:minor  # Creates branch release/v0.2.0
-   npm run release:branch:major  # Creates branch release/v1.0.0
-   ```
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
-2. Make final changes, run the version bump, and create a PR to master.
+## 📝 License
 
-#### Manual Release via GitHub Actions
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-You can also trigger a release manually through the GitHub Actions UI.
+## 🙏 Acknowledgments
 
-For complete details on the release process, see [CONTRIBUTING.md](CONTRIBUTING.md).
+- [Gridfinity](https://www.youtube.com/watch?v=ra_9zU-mnl8) - The modular storage system by Zack Freedman
+- Hardware images sourced from DIN and ISO standard specifications
+- Built with [Qwik](https://qwik.builder.io/) and [TailwindCSS](https://tailwindcss.com/)
 
-## Docker
+## 🔗 Links
 
-### Automated Docker Builds
-
-Docker images are automatically built and published to both DockerHub and GitHub Container Registry when a new version tag is created. The images include proper metadata through OCI-compliant labels.
-
-### Using the Docker Image
-
-```bash
-# Pull the latest image from Docker Hub
-docker pull kamilpajak/storage-label-maker:latest
-
-# Or pull a specific version
-docker pull kamilpajak/storage-label-maker:0.1.13
-
-# Run the container
-docker run -p 80:80 kamilpajak/storage-label-maker:latest
-```
-
-### Building Locally
-
-The project includes two scripts for Docker operations:
-
-```bash
-# Build the image locally without pushing
-./docker-build.sh
-
-# Build, test locally, and push to DockerHub
-./docker-publish.sh
-```
-
-Or manually:
-
-```bash
-# Build the image
-docker build -t storage-label-maker \
-  --build-arg VERSION=$(node -p "require('./package.json').version") \
-  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-  --build-arg COMMIT_SHA=$(git rev-parse --short HEAD) \
-  .
-
-# Run the container
-docker run -p 80:80 storage-label-maker
-```
-
-### GitHub Container Registry
-
-The image is also available from GitHub Container Registry:
-
-```bash
-# Pull from GitHub Container Registry
-docker pull ghcr.io/kamilpajak/gridfinity-label-generator:latest
-
-# Run the container
-docker run -p 80:80 ghcr.io/kamilpajak/gridfinity-label-generator:latest
-```
-
-### Docker Image Metadata
-
-The Docker images include the following OCI-compliant labels:
-
-- `org.opencontainers.image.title`: "Gridfinity Label Generator"
-- `org.opencontainers.image.description`: "Label generator for storage systems, with a focus on the Gridfinity system"
-- `org.opencontainers.image.version`: The version from package.json
-- `org.opencontainers.image.created`: Build timestamp in ISO 8601 format
-- `org.opencontainers.image.revision`: Git commit SHA
-- `org.opencontainers.image.licenses`: "MIT"
+- [Documentation](https://github.com/kamilpajak/gridfinity-label-generator/wiki)
+- [Issues](https://github.com/kamilpajak/gridfinity-label-generator/issues)
+- [Releases](https://github.com/kamilpajak/gridfinity-label-generator/releases)
+- [Docker Hub](https://hub.docker.com/r/kamilpajak/storage-label-maker)

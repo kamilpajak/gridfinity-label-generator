@@ -23,36 +23,7 @@ permissions:
   packages: read # Optional: if you need to access GitHub packages
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run linting
-        run: npm run lint
-
-      - name: Check formatting
-        run: npm run fmt.check
-
-      - name: Build project
-        run: npm run build
-
-      - name: Run tests
-        run: npm test
-
   bump_version:
-    needs: validate
     runs-on: ubuntu-latest
     # Skip this job if the commit message contains "chore(release)" to prevent infinite loops
     if: ${{ (github.event_name == 'workflow_dispatch') || (!contains(github.event.head_commit.message, 'chore(release)')) }}
@@ -93,6 +64,14 @@ jobs:
             npm run release
           fi
           echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+
+      - name: Wait for CI checks
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: ${{ github.sha }}
+          check-name: validate
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
 
       - name: Push changes
         run: |

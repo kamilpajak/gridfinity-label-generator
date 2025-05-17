@@ -1,0 +1,9 @@
+# Ads.txt file for gridfinitylabels.com
+# This file helps prevent unauthorized ad inventory sales
+
+# Currently no advertising partners
+# This file is maintained to prevent ad fraud and indicate
+# that this domain does not participate in programmatic advertising
+
+# If you add advertising in the future, list authorized sellers here
+# Format: example.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

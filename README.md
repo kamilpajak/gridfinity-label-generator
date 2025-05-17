@@ -20,11 +20,10 @@
 ## 📋 Features
 
 - 🛠️ **Extensive Hardware Library**: Pre-loaded images for screws, nuts, and washers (DIN & ISO standards)
-- 📏 **Multiple Label Sizes**: Support for 50mm and 100mm Gridfinity labels
+- 📏 **Multiple Label Sizes**: Support for various Gridfinity label dimensions
 - 🌍 **Measurement Systems**: Both metric and imperial unit support
-- 🎨 **Customizable Design**: Adjust fonts, sizes, layouts, and margins
+- 🎨 **Smart Layout**: Automatically optimized text and image positioning
 - 📱 **QR Code Integration**: Generate QR codes for part references or inventory tracking
-- 🖼️ **Custom Images**: Upload your own part images
 - 💾 **PNG Export**: Download high-quality label images for printing
 - 📱 **Mobile Friendly**: Responsive design works on all devices
 

@@ -63,15 +63,15 @@ export const StructuredData = component$(() => {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={JSON.stringify(baseStructuredData)}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(baseStructuredData) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={JSON.stringify(breadcrumbStructuredData)}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbStructuredData) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={JSON.stringify(websiteStructuredData)}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteStructuredData) }}
       />
     </>
   )

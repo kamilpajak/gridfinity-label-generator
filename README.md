@@ -12,9 +12,6 @@
   <a href="https://github.com/kamilpajak/gridfinity-label-generator/releases">
     <img src="https://img.shields.io/github/v/release/kamilpajak/gridfinity-label-generator?style=flat-square" alt="Latest Release">
   </a>
-  <a href="https://github.com/kamilpajak/gridfinity-label-generator/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/kamilpajak/gridfinity-label-generator?style=flat-square" alt="License">
-  </a>
   <a href="https://hub.docker.com/r/kamilpajak/storage-label-maker">
     <img src="https://img.shields.io/docker/pulls/kamilpajak/storage-label-maker?style=flat-square" alt="Docker Pulls">
   </a>
@@ -121,13 +118,9 @@ npm run release:major  # 0.1.13 -> 1.0.0
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed release process.
 
-## 🤝 Contributing
+## 📝 Copyright
 
-Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+© 2025 Kamil Pająk. All rights reserved.
 
 ## 🙏 Acknowledgments
 

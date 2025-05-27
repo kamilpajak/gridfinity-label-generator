@@ -1,7 +1,7 @@
 {
   "name": "gridfinity-label-generator",
   "description": "Label generator for storage systems, with a focus on the Gridfinity system",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "engines": {
     "node": "^18.17.0 || ^20.3.0 || >=21.0.0"
   },

@@ -77,9 +77,9 @@ export const StructuredData = component$<StructuredDataProps>(() => {
 
   return (
     <>
-      <script type="application/ld+json">{baseDataString}</script>
-      <script type="application/ld+json">{breadcrumbDataString}</script>
-      <script type="application/ld+json">{websiteDataString}</script>
+      <script type="application/ld+json" dangerouslySetInnerHTML={baseDataString} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={breadcrumbDataString} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={websiteDataString} />
     </>
   )
 })

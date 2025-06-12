@@ -42,7 +42,9 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        # Using --legacy-peer-deps due to Vite 6 vs Qwik 1.14.1 peer dependency conflict
+        # Qwik 1.14.1 requires Vite ^5, but we're using Vite 6.3.5 which is backwards compatible
+        run: npm install --legacy-peer-deps
 
       - name: Git config
         run: |

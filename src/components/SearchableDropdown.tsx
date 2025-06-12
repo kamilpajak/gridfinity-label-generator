@@ -154,7 +154,7 @@ export const SearchableDropdown = component$<Props>(
                   data-option={index}
                   class={`
                     w-full h-20 px-4 flex items-center text-left
-                    hover:bg-gray-50 focus:bg-gray-50 focus:outline-none
+                    hover:bg-gray-50 focus:bg-gray-50 focus:outline-hidden
                   `}
                   onClick$={$(() => {
                     onSelect$(option.value)
@@ -170,7 +170,7 @@ export const SearchableDropdown = component$<Props>(
                         {option.text.replace(option.value + ' - ', '')}
                       </div>
                     </div>
-                    <div class="flex-shrink-0 w-24 h-16 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center">
+                    <div class="shrink-0 w-24 h-16 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center">
                       <img
                         src={option.image.replace('.svg', '.jpg')}
                         alt={option.value}

@@ -20,7 +20,7 @@ export const HardwareTypeSelector = component$<Props>(
             h-[60px] px-3 rounded text-base font-medium transition-all
             ${
               selectedType === type
-                ? 'bg-blue-600 text-white shadow-sm'
+                ? 'bg-blue-600 text-white shadow-xs'
                 : 'bg-transparent text-gray-700 hover:bg-gray-100'
             }
           `}

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.28](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.27...v0.1.28) (2025-06-12)
+
+### Features
+
+- migrate to TailwindCSS v4 ([#15](https://github.com/kamilpajak/gridfinity-label-generator/issues/15)) ([8703c9c](https://github.com/kamilpajak/gridfinity-label-generator/commit/8703c9c68d138eafb9ba2b43b60e894daed8e151))
+
+### Bug Fixes
+
+- resolve CI workflow issues ([6263b5b](https://github.com/kamilpajak/gridfinity-label-generator/commit/6263b5b9ab259ba73a18bab1bc00c5eefdb6a308))
+
 ### [0.1.27](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.26...v0.1.27) (2025-05-27)
 
 ### [0.1.26](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.25...v0.1.26) (2025-05-27)

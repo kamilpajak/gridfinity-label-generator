@@ -1,4 +1,4 @@
-ARG NODE_VERSION=18.18.2
+ARG NODE_VERSION=20.18.1
 
 ################################################################################
 # Use node image as the base image for all stages.
@@ -11,13 +11,17 @@ WORKDIR /usr/src/app
 # Create a stage for installing production dependencies.
 FROM base AS deps
 
-# Install dependencies using npm ci.
-# Mount package.json and package-lock.json to leverage caching.
-# Mount a cache to /root/.npm to speed up subsequent builds.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
-    npm ci
+# Copy package files for dependency installation
+COPY package*.json ./
+
+# Install dependencies using npm install with legacy peer deps.
+# Using --legacy-peer-deps due to Vite 6 vs Qwik 1.14.1 peer dependency conflict.
+# Qwik 1.14.1 requires Vite ^5, but we're using Vite 6.3.5 which is backwards compatible.
+# Using --ignore-scripts for security to prevent arbitrary script execution during install.
+RUN --mount=type=cache,target=/root/.npm \
+    npm install --legacy-peer-deps --ignore-scripts && \
+    npm rebuild && \
+    npm run prepare --if-present
 
 ################################################################################
 # Create a stage for building the application.

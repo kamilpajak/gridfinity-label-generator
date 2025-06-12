@@ -1,3 +1,27 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+server/
+tmp/
+.rollup.cache/
+tsconfig.tsbuildinfo
+*.local
+
+# Qwik specific
+.netlify/
+.cache/
+
+# Testing
+coverage/
+*.lcov
+.nyc_output/
+
 # Logs
 logs/
 *.log
@@ -7,35 +31,90 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Dependency directories
-node_modules/
-
-# Build outputs (adjust these folders if your build output differs)
-dist/
-dist-ssr/
-build/
-server/
-tmp/
-
-# Environment files (do not commit sensitive data)
+# Environment files
 .env
 .env.local
 .env.*.local
+.env.development
+.env.test
+.env.production
 
-# System files
+# Operating System files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+desktop.ini
 
 # Editor directories and files
+# VS Code - Ignore all except shared project settings
 .vscode/*
-!.vscode/extensions.json
+!.vscode/extensions.json    # Recommended extensions for the project
+!.vscode/launch.json        # Shared debug configurations
+!.vscode/tasks.json         # Shared task configurations
+# Consider also allowing:
+# !.vscode/settings.json    # If you have project-specific settings
+
+# JetBrains IDEs (IntelliJ, WebStorm, etc.)
 .idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+*.swp
+*.swo
+*.swn
+*.bak
+*~
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 
-# Other local files (e.g., configuration for local tools)
-*.local
-.bolt
+# Package manager locks (keep one, ignore others)
+# Uncomment the locks you don't use:
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Misc
+.history/
+.bolt/
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm/
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variable files
+.env.development.local
+.env.test.local
+.env.production.local
+
+# TypeScript cache
+*.tsbuildinfo
+.tsc-cache/
+
+# Optional stylelint cache
+.stylelintcache
+
+# Debug
+debug/

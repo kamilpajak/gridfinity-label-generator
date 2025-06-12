@@ -176,6 +176,8 @@ export const SearchableDropdown = component$<Props>(
                         alt={option.value}
                         class="max-h-full max-w-full object-contain"
                         loading="lazy"
+                        decoding="async"
+                        fetchPriority="low"
                       />
                     </div>
                   </div>

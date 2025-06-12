@@ -1,0 +1,32 @@
+# Auto detect text files and perform LF normalization
+* text=auto eol=lf
+
+# Denote all files that are truly binary and should not be modified
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.mov binary
+*.mp4 binary
+*.mp3 binary
+*.fla binary
+*.flv binary
+*.swf binary
+*.gz binary
+*.zip binary
+*.7z binary
+*.ttf binary
+*.eot binary
+*.woff binary
+*.woff2 binary
+*.otf binary
+
+# Windows specific files should use CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Docker files should use LF
+Dockerfile text eol=lf
+.dockerignore text eol=lf

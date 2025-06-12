@@ -1,12 +1,13 @@
 /* Local font definitions */
 
-/* Noto Sans Regular (400) - Using 900 weight file as requested */
+/* Noto Sans Regular (400) */
 @font-face {
   font-family: 'Noto Sans';
   font-style: normal;
   font-weight: 400;
-  src: local('Noto Sans'),
-       url('./noto-sans-v39-latin-900.woff2') format('woff2');
+  src:
+    local('Noto Sans'),
+    url('./noto-sans-v39-latin-400.woff2') format('woff2');
   font-display: swap;
 }
 
@@ -15,8 +16,9 @@
   font-family: 'Noto Sans';
   font-style: normal;
   font-weight: 900;
-  src: local('Noto Sans Black'),
-       url('./noto-sans-v39-latin-900.woff2') format('woff2');
+  src:
+    local('Noto Sans Black'),
+    url('./noto-sans-v39-latin-900.woff2') format('woff2');
   font-display: swap;
 }
 
@@ -25,17 +27,19 @@
   font-family: 'Oswald';
   font-style: normal;
   font-weight: 400;
-  src: local('Oswald Regular'),
-       url('./oswald-v53-latin-regular.woff2') format('woff2');
+  src:
+    local('Oswald Regular'),
+    url('./oswald-v53-latin-regular.woff2') format('woff2');
   font-display: swap;
 }
 
-/* Oswald Bold (700) - Using regular weight file as requested */
+/* Oswald Bold (700) */
 @font-face {
   font-family: 'Oswald';
   font-style: normal;
   font-weight: 700;
-  src: local('Oswald Bold'),
-       url('./oswald-v53-latin-regular.woff2') format('woff2');
+  src:
+    local('Oswald Bold'),
+    url('./oswald-v56-latin-700.woff2') format('woff2');
   font-display: swap;
 }

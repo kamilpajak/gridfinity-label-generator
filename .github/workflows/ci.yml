@@ -8,23 +8,37 @@ on:
 
 permissions:
   contents: read
+  # Required for uploading SARIF results
+  security-events: write
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [20, 22]
+        include:
+          # Add Windows/Mac for Node 20 only to save resources
+          - os: windows-latest
+            node: 20
+          - os: macos-latest
+            node: 20
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: ${{ matrix.node }}
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        # Using --legacy-peer-deps due to Vite 6 vs Qwik 1.14.1 peer dependency conflict
+        # Qwik 1.14.1 requires Vite ^5, but we're using Vite 6.3.5 which is backwards compatible
+        run: npm install --legacy-peer-deps
 
       - name: Run linting
         run: npm run lint
@@ -32,20 +46,85 @@ jobs:
       - name: Check formatting
         run: npm run fmt.check
 
-      - name: Build project
-        run: npm run build
-
-      - name: Run tests
-        run: npm test
-
       - name: Type check
         run: npm run build.types
 
-  # Optional: security checks
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 20
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Build project
+        run: npm run build
+
+      # Cache build artifacts for other workflows
+      - name: Upload build artifacts
+        if: matrix.os == 'ubuntu-latest' && matrix.node == 20 && github.ref == 'refs/heads/master'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            dist/
+            server/
+          retention-days: 1
+
   security:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
-      - name: Run npm audit
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        # Using --legacy-peer-deps due to Vite 6 vs Qwik 1.14.1 peer dependency conflict
+        run: npm install --legacy-peer-deps
+      
+      - name: Run npm audit (all dependencies)
+        run: npm audit
+        continue-on-error: true
+      
+      - name: Run npm audit (production only)
         run: npm audit --production
+
+      # Check for secrets in code
+      - name: Scan for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+          extra_args: --only-verified
+
+  docker-security:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build Docker image for scanning
+        run: docker build -t scanning-image .
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'scanning-image'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+      
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        continue-on-error: true
+        with:
+          sarif_file: 'trivy-results.sarif'

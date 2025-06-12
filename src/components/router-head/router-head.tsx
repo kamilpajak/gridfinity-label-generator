@@ -1,5 +1,5 @@
 import { useDocumentHead, useLocation } from '@builder.io/qwik-city'
-import { component$, useVisibleTask$ } from '@builder.io/qwik'
+import { component$, useTask$ } from '@builder.io/qwik'
 import { StructuredData } from '../structured-data/structured-data'
 
 /**
@@ -20,9 +20,13 @@ export const RouterHead = component$(() => {
   const loc = useLocation()
 
   // Initialize Matomo with SPA tracking
-  useVisibleTask$(() => {
+  useTask$(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return
+
     // Initialize Matomo
-    const _paq = (window._paq = window._paq || [])
+    window._paq = window._paq || []
+    const _paq = window._paq
     _paq.push(['trackPageView'])
     _paq.push(['enableLinkTracking'])
 

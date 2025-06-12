@@ -19,6 +19,7 @@ import {
 import { generateLabel, getLabelTexts } from '~/lib/labelGenerator'
 import type { LabelSettings } from '~/types'
 import { validateWidth, validateHeight } from '~/utils/measurements'
+import { logger } from '~/config/logging'
 
 export default component$(() => {
   // State signals
@@ -55,9 +56,9 @@ export default component$(() => {
           document.fonts.load('400 24px "Oswald"'),
           document.fonts.load('700 24px "Oswald"'),
         ])
-        console.log('Local fonts preloaded successfully')
+        logger.debug('Local fonts preloaded successfully')
       } catch (error) {
-        console.error('Failed to preload local fonts:', error)
+        logger.error('Failed to preload local fonts:', error)
         // Fonts will still be loaded by the browser through the CSS
         // This preloading is just to ensure they're available before rendering
       }
@@ -122,7 +123,7 @@ export default component$(() => {
   })
 
   const generatePreview$ = $(async () => {
-    console.log('Generate preview called with:', {
+    logger.debug('Generate preview called with:', {
       threadSize: threadSize.value,
       hardwareStandard: hardwareStandard.value,
       length: length.value,
@@ -131,13 +132,13 @@ export default component$(() => {
 
     // Check if we have the required fields
     if (!threadSize.value || !hardwareStandard.value) {
-      console.log('Missing thread size or hardware standard')
+      logger.debug('Missing thread size or hardware standard')
       return
     }
 
     // For screws, we need a length
     if (selectedType.value === 'Screw' && !length.value) {
-      console.log('Missing length for screw')
+      logger.debug('Missing length for screw')
       return
     }
 
@@ -153,12 +154,12 @@ export default component$(() => {
     }
 
     if (!standard) {
-      console.error('Standard not found:', hardwareStandard.value, 'for type:', selectedType.value)
+      logger.error('Standard not found:', hardwareStandard.value, 'for type:', selectedType.value)
       return
     }
 
     // Make sure the image URL is valid
-    console.log('Using standard:', standard.value, 'with image:', standard.image)
+    logger.debug('Using standard:', standard.value, 'with image:', standard.image)
 
     isLoading.value = true
     try {
@@ -184,14 +185,14 @@ export default component$(() => {
         qrCodeContent: settings.qrCodeContent,
       })
 
-      console.log('Label URL generated:', labelUrl)
+      logger.debug('Label URL generated:', labelUrl)
       if (labelUrl) {
         labelPreviewUrl.value = labelUrl
       } else {
-        console.error('Failed to generate label URL')
+        logger.error('Failed to generate label URL')
       }
     } catch (error) {
-      console.error('Error generating label:', error)
+      logger.error('Error generating label:', error)
     } finally {
       isLoading.value = false
     }
@@ -222,7 +223,7 @@ export default component$(() => {
 
     // Only basic tracking for initial render
     if (thread && standard && (type !== 'Screw' || len)) {
-      console.log('Initial preview generation')
+      logger.debug('Initial preview generation')
       generatePreview$()
     }
   })
@@ -243,7 +244,7 @@ export default component$(() => {
       hardwareStandard.value &&
       (selectedType.value !== 'Screw' || length.value)
     ) {
-      console.log('Settings changed, regenerating preview')
+      logger.debug('Settings changed, regenerating preview')
       setTimeout(() => generatePreview$(), 100) // Small delay to ensure UI is updated
     }
   })

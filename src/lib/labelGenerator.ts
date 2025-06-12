@@ -1,5 +1,6 @@
 import { computeDynamicFontSize, mmToPx } from '~/utils/measurements'
 import { shortenUrl, shouldShortenUrl } from '~/utils/urlShortener'
+import { logger } from '~/config/logging'
 
 /**
  * Loads required fonts before rendering.
@@ -20,7 +21,7 @@ async function ensureFontsLoaded(): Promise<void> {
       !document.fonts.check('900 16px "Noto Sans"') ||
       !document.fonts.check('700 16px "Oswald"')
     ) {
-      console.warn('Fonts not fully loaded, waiting for fonts ready event')
+      logger.warn('Fonts not fully loaded, waiting for fonts ready event')
       await document.fonts.ready
 
       // Double-check after fonts.ready
@@ -28,16 +29,16 @@ async function ensureFontsLoaded(): Promise<void> {
         !document.fonts.check('900 16px "Noto Sans"') ||
         !document.fonts.check('700 16px "Oswald"')
       ) {
-        console.warn('Fonts still not available after fonts.ready, using fallbacks')
+        logger.warn('Fonts still not available after fonts.ready, using fallbacks')
       }
     }
   } catch (error) {
-    console.error('Failed to load fonts:', error)
+    logger.error('Failed to load fonts:', error)
     // Wait for fonts ready as fallback
     try {
       await document.fonts.ready
     } catch (readyError) {
-      console.error('Failed to wait for fonts.ready:', readyError)
+      logger.error('Failed to wait for fonts.ready:', readyError)
     }
   }
 }
@@ -53,7 +54,7 @@ export function getLabelTexts(
   hardwareStandard: string,
   notes: string,
   showStandardName: boolean,
-  selectedScrewSubtype?: string
+  _selectedScrewSubtype?: string
 ): { topText: string; bottomText: string } {
   let topText: string
   if (selectedType === 'Screw') {
@@ -104,7 +105,7 @@ export function getLabelTexts(
 async function loadImage(url: string): Promise<HTMLImageElement | null> {
   // If no URL is provided, return null immediately
   if (!url || url.trim() === '') {
-    console.warn('No image URL provided')
+    logger.warn('No image URL provided')
     return null
   }
 
@@ -114,11 +115,11 @@ async function loadImage(url: string): Promise<HTMLImageElement | null> {
   try {
     await new Promise<void>(resolve => {
       img.onload = () => {
-        console.log('Image loaded successfully:', url)
+        logger.debug('Image loaded successfully:', url)
         resolve()
       }
       img.onerror = () => {
-        console.warn(`Failed to load image with original extension: ${url}`)
+        logger.warn(`Failed to load image with original extension: ${url}`)
         resolve()
       }
       img.src = url
@@ -131,17 +132,17 @@ async function loadImage(url: string): Promise<HTMLImageElement | null> {
     // Try with .jpg extension if it's an SVG
     if (url.toLowerCase().endsWith('.svg')) {
       const jpgUrl = url.replace(/\.svg$/i, '.jpg')
-      console.log('Trying JPG fallback:', jpgUrl)
+      logger.debug('Trying JPG fallback:', jpgUrl)
       const jpgImg = new Image()
       jpgImg.crossOrigin = 'anonymous'
 
       await new Promise<void>(resolve => {
         jpgImg.onload = () => {
-          console.log('JPG fallback loaded successfully')
+          logger.debug('JPG fallback loaded successfully')
           resolve()
         }
         jpgImg.onerror = () => {
-          console.error(`Failed to load both SVG and JPG: ${url}`)
+          logger.error(`Failed to load both SVG and JPG: ${url}`)
           resolve()
         }
         jpgImg.src = jpgUrl
@@ -153,10 +154,10 @@ async function loadImage(url: string): Promise<HTMLImageElement | null> {
     }
 
     // If we couldn't load the image, log an error
-    console.error('Failed to load image:', url)
+    logger.error('Failed to load image:', url)
     return null
   } catch (error) {
-    console.error('Error loading image:', error)
+    logger.error('Error loading image:', error)
     return null
   }
 }
@@ -275,17 +276,17 @@ function calculateCanvasDimensions(labelWidthMm: number, labelHeightMm: number):
   const printableHeightMm = labelHeightMm - 2
   const exactAspectRatio = printableWidthMm / printableHeightMm
 
-  console.log(`Label size (mm): ${labelWidthMm} × ${labelHeightMm}`)
-  console.log(`Printable area (mm): ${printableWidthMm} × ${printableHeightMm}`)
-  console.log(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`)
+  logger.debug(`Label size (mm): ${labelWidthMm} × ${labelHeightMm}`)
+  logger.debug(`Printable area (mm): ${printableWidthMm} × ${printableHeightMm}`)
+  logger.debug(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`)
 
   const printableHeightPx = Math.round(mmToPx(printableHeightMm))
   const printableWidthPx = Math.round(printableHeightPx * exactAspectRatio)
   const conversionFactor = printableWidthPx / printableWidthMm
 
-  console.log(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`)
-  console.log(`Canvas dimensions (px): ${printableWidthPx} × ${printableHeightPx}`)
-  console.log(`Canvas aspect ratio: ${(printableWidthPx / printableHeightPx).toFixed(6)}`)
+  logger.debug(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`)
+  logger.debug(`Canvas dimensions (px): ${printableWidthPx} × ${printableHeightPx}`)
+  logger.debug(`Canvas aspect ratio: ${(printableWidthPx / printableHeightPx).toFixed(6)}`)
 
   return {
     printableWidthMm,
@@ -310,15 +311,15 @@ function calculateTextDimensions(
   const gapPercentage = 0.167
   const baselineGap = labelHeightMm * gapPercentage
 
-  console.log(
+  logger.debug(
     `Text height (mm): ${adjustedTextHeightMm.toFixed(2)} (${(textHeightPercentage * 100).toFixed(1)}% of label height)`
   )
-  console.log(
+  logger.debug(
     `Baseline gap (mm): ${baselineGap.toFixed(2)} (${(gapPercentage * 100).toFixed(1)}% of label height)`
   )
 
   const gapPx = showImage && standardImg ? mmToPx(baselineGap) : 0
-  console.log(`Computed gap (mm): ${(gapPx / conversionFactor).toFixed(2)}`)
+  logger.debug(`Computed gap (mm): ${(gapPx / conversionFactor).toFixed(2)}`)
 
   return {
     adjustedTextHeightMm,
@@ -337,7 +338,7 @@ function createCanvas(dimensions: LabelDimensions): CanvasRenderingContext2D | n
   const ctx = canvas.getContext('2d')
 
   if (!ctx) {
-    console.error('Could not get canvas context.')
+    logger.error('Could not get canvas context.')
     return null
   }
 
@@ -362,7 +363,7 @@ async function drawQrCode(
   const qrCodeAllowed = labelHeightMm >= minHeightForQRMm
 
   if (!qrCodeAllowed && showQrCode) {
-    console.log(
+    logger.debug(
       `QR code disabled for ${labelHeightMm}mm label (minimum ${minHeightForQRMm}mm required for readability)`
     )
     return result
@@ -386,9 +387,9 @@ async function drawQrCode(
     if (shouldShortenUrl(qrCodeContent)) {
       try {
         finalQrContent = await shortenUrl(qrCodeContent)
-        console.log(`URL shortened: ${qrCodeContent} → ${finalQrContent}`)
+        logger.debug(`URL shortened: ${qrCodeContent} → ${finalQrContent}`)
       } catch (error) {
-        console.error('Error shortening URL:', error)
+        logger.error('Error shortening URL:', error)
       }
     }
 
@@ -404,7 +405,7 @@ async function drawQrCode(
     await new Promise<void>(resolve => {
       qrImg.onload = () => resolve()
       qrImg.onerror = () => {
-        console.error('Failed to load QR code image')
+        logger.error('Failed to load QR code image')
         resolve()
       }
       qrImg.src = qrDataUrl
@@ -414,11 +415,11 @@ async function drawQrCode(
       ctx.drawImage(qrImg, result.qrCodeX, qrY, qrSizePx, qrSizePx)
     }
 
-    console.log(
+    logger.debug(
       `QR code positioned at x=${(result.qrCodeX / dimensions.conversionFactor).toFixed(2)}mm, y=${(qrY / dimensions.conversionFactor).toFixed(2)}mm, size=${qrSizeMm.toFixed(2)}mm (max ${maxQrSizeMm}mm)`
     )
   } catch (error) {
-    console.error('Error generating QR code:', error)
+    logger.error('Error generating QR code:', error)
   }
 
   return result
@@ -475,11 +476,11 @@ function drawSingleLineText(params: DrawSingleLineTextParams): void {
     (printableHeightPx + metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2
   ctx.fillText(combinedText, textX, textY)
 
-  console.log(
+  logger.debug(
     `Single-line text dimensions (mm): width=${(metrics.width / conversionFactor).toFixed(2)}`
   )
   if (bottomText.trim() && bottomText !== topText) {
-    console.log(`Combined text due to height constraint: "${combinedText}"`)
+    logger.debug(`Combined text due to height constraint: "${combinedText}"`)
   }
 }
 
@@ -545,11 +546,11 @@ function drawTwoLineText(params: DrawTwoLineTextParams): void {
   const bottomY = groupY + topTextHeight + textGapPx + bottomResult.metrics.actualBoundingBoxAscent
   ctx.fillText(bottomText, bottomX, bottomY)
 
-  console.log(`Two-line text with ${textGapMm}mm gap, centered vertically`)
-  console.log(
+  logger.debug(`Two-line text with ${textGapMm}mm gap, centered vertically`)
+  logger.debug(
     `Top text dimensions (mm): width=${(topResult.metrics.width / conversionFactor).toFixed(2)}`
   )
-  console.log(
+  logger.debug(
     `Bottom text dimensions (mm): width=${(bottomResult.metrics.width / conversionFactor).toFixed(2)}`
   )
 }
@@ -576,9 +577,9 @@ export async function generateLabel(options: GenerateLabelOptions): Promise<stri
   } = options
 
   await ensureFontsLoaded()
-  console.log('Loading image from:', standardImgUrl)
+  logger.debug('Loading image from:', standardImgUrl)
   const standardImg = await loadImage(standardImgUrl)
-  console.log('Image loaded:', standardImg ? 'success' : 'failed')
+  logger.debug('Image loaded:', standardImg ? 'success' : 'failed')
 
   const dimensions = calculateCanvasDimensions(labelWidthMm, labelHeightMm)
   const textDimensions = calculateTextDimensions(
@@ -611,13 +612,13 @@ export async function generateLabel(options: GenerateLabelOptions): Promise<stri
     showImage
   )
   const imageUsedWidthMm = imageUsedWidth / dimensions.conversionFactor
-  console.log(`Image used width (mm): ${imageUsedWidthMm.toFixed(2)}`)
+  logger.debug(`Image used width (mm): ${imageUsedWidthMm.toFixed(2)}`)
 
   // Calculate text area dimensions
   const textAreaX = imageUsedWidth
   const textAreaWidth = availableWidthForImageAndText - textAreaX
-  console.log(`Text area starts at (mm): ${(textAreaX / dimensions.conversionFactor).toFixed(2)}`)
-  console.log(`Text area width (mm): ${(textAreaWidth / dimensions.conversionFactor).toFixed(2)}`)
+  logger.debug(`Text area starts at (mm): ${(textAreaX / dimensions.conversionFactor).toFixed(2)}`)
+  logger.debug(`Text area width (mm): ${(textAreaWidth / dimensions.conversionFactor).toFixed(2)}`)
 
   // Set text color and baseline
   ctx.fillStyle = 'black'
@@ -629,7 +630,7 @@ export async function generateLabel(options: GenerateLabelOptions): Promise<stri
     const minGapBetweenTextsMm = 1
     const minSpaceNeeded = textDimensions.adjustedTextHeightMm * 2 + minGapBetweenTextsMm
     if (minSpaceNeeded > dimensions.printableHeightMm) {
-      console.log(
+      logger.debug(
         `Two-line text would overlap (needs ${minSpaceNeeded.toFixed(2)}mm, have ${dimensions.printableHeightMm.toFixed(2)}mm). Switching to single-line mode.`
       )
       forceSingleLine = true
@@ -661,17 +662,17 @@ export async function generateLabel(options: GenerateLabelOptions): Promise<stri
     })
   }
 
-  console.log(
+  logger.debug(
     `Exported PNG dimensions (mm): width=${dimensions.printableWidthMm.toFixed(2)}mm, height=${dimensions.printableHeightMm.toFixed(2)}mm`
   )
 
   // Return the PNG data URL
   try {
     const dataUrl = ctx.canvas.toDataURL('image/png')
-    console.log('Successfully generated data URL')
+    logger.debug('Successfully generated data URL')
     return dataUrl
   } catch (error) {
-    console.error('Error generating data URL:', error)
+    logger.error('Error generating data URL:', error)
     return null
   }
 }

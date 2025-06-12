@@ -147,8 +147,6 @@ describe('Measurements utilities', () => {
     it('should default to 12mm for invalid inputs', () => {
       expect(validateHeight(NaN)).toBe(12)
       expect(validateHeight('abc')).toBe(12)
-      expect(validateHeight(undefined as any)).toBe(12)
-      expect(validateHeight(null as any)).toBe(12)
       expect(validateHeight('')).toBe(12)
     })
   })

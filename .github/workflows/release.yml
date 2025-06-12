@@ -28,7 +28,7 @@ jobs:
     # Skip this job if the commit message contains "chore(release)" to prevent infinite loops
     if: ${{ (github.event_name == 'workflow_dispatch') || (!contains(github.event.head_commit.message, 'chore(release)')) }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           # Use RELEASE_TOKEN to bypass branch protection
@@ -36,9 +36,9 @@ jobs:
           token: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies

@@ -3,6 +3,7 @@ import { $, component$, useSignal, useTask$ } from '@builder.io/qwik'
 import type { LabelSettings } from '~/types'
 import { validateWidth, validateHeight } from '~/utils/measurements'
 import { shouldShortenUrl, shortenUrl } from '~/utils/urlShortener'
+import { logger } from '~/config/logging'
 import {
   ChatBubbleIcon,
   IdentifierIcon,
@@ -42,7 +43,7 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
         const shortened = await shortenUrl(qrContent)
         shortenedUrlPreview.value = shortened
       } catch (error) {
-        console.error('Failed to get shortened URL preview:', error)
+        logger.error('Failed to get shortened URL preview:', error)
         shortenedUrlPreview.value = ''
       }
     } else {

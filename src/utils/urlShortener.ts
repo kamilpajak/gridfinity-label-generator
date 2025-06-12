@@ -1,39 +1,42 @@
 import isURL from 'validator/lib/isURL'
+import { logger } from '~/config/logging'
 
 // Test function to directly verify URL shortening functionality
 // This can be called from the browser console: window.testUrlShortening("example.com/very/long/path")
 ;(globalThis as any).testUrlShortening = async (url: string) => {
-  console.group('URL Shortening Test')
-  console.log('Testing URL:', url)
+  logger.group('URL Shortening Test')
+  logger.log('Testing URL:', url)
 
   // Check if protocol needs to be added
   const hasProtocol = url.match(/^https?:\/\//)
   const urlWithProtocol = hasProtocol ? url : `https://${url}`
 
   if (!hasProtocol) {
-    console.log('Protocol added:', urlWithProtocol)
+    logger.log('Protocol added:', urlWithProtocol)
   }
 
-  console.log('Is valid URL:', isValidUrl(url))
-  console.log('Should shorten:', shouldShortenUrl(url))
+  logger.log('Is valid URL:', isValidUrl(url))
+  logger.log('Should shorten:', shouldShortenUrl(url))
 
+  let result: string | null
   if (shouldShortenUrl(url)) {
     try {
       const shortened = await shortenUrl(url)
-      console.log('Original URL:', url)
-      console.log('URL with protocol:', urlWithProtocol)
-      console.log('Shortened URL:', shortened)
-      console.log('Shortening successful:', shortened !== urlWithProtocol)
-      return shortened
+      logger.log('Original URL:', url)
+      logger.log('URL with protocol:', urlWithProtocol)
+      logger.log('Shortened URL:', shortened)
+      logger.log('Shortening successful:', shortened !== urlWithProtocol)
+      result = shortened
     } catch (error) {
-      console.error('Error during test:', error)
-      return null
+      logger.error('Error during test:', error)
+      result = null
     }
   } else {
-    console.log('URL does not meet criteria for shortening')
-    return null
+    logger.log('URL does not meet criteria for shortening')
+    result = null
   }
-  console.groupEnd()
+  logger.groupEnd()
+  return result
 }
 
 /**
@@ -49,7 +52,7 @@ export function isValidUrl(text: string): boolean {
       require_protocol: true,
       require_valid_protocol: true,
     })
-    console.log(`URL validation check: "${text}" is ${isValid ? 'valid' : 'invalid'}`)
+    logger.debug(`URL validation check: "${text}" is ${isValid ? 'valid' : 'invalid'}`)
     return isValid
   }
 
@@ -61,7 +64,7 @@ export function isValidUrl(text: string): boolean {
     require_valid_protocol: true,
   })
 
-  console.log(`URL validation check: "${text}" is ${isValid ? 'valid with https://' : 'invalid'}`)
+  logger.debug(`URL validation check: "${text}" is ${isValid ? 'valid with https://' : 'invalid'}`)
   return isValid
 }
 
@@ -76,7 +79,7 @@ export function shouldShortenUrl(url: string): boolean {
 
   const shouldShorten = isValidUrl(url) && effectiveLength > 28
   if (isValidUrl(url)) {
-    console.log(
+    logger.debug(
       `URL length check: ${effectiveLength} characters (without protocol), ${shouldShorten ? 'should be shortened' : 'no need to shorten'}`
     )
   }
@@ -92,15 +95,15 @@ export async function shortenUrl(url: string): Promise<string> {
   // Add protocol if missing
   const urlToShorten = url.match(/^https?:\/\//) ? url : `https://${url}`
 
-  console.log(`Attempting to shorten URL: ${urlToShorten}`)
+  logger.debug(`Attempting to shorten URL: ${urlToShorten}`)
 
   if (!isValidUrl(url)) {
-    console.log(`Not a valid URL, returning original: ${url}`)
+    logger.debug(`Not a valid URL, returning original: ${url}`)
     return url // Return original text if not a valid URL
   }
 
   try {
-    console.log(`Calling TinyURL API for: ${urlToShorten}`)
+    logger.debug(`Calling TinyURL API for: ${urlToShorten}`)
     const response = await fetch(
       `https://tinyurl.com/api-create.php?url=${encodeURIComponent(urlToShorten)}`
     )
@@ -110,10 +113,10 @@ export async function shortenUrl(url: string): Promise<string> {
     }
 
     const shortUrl = await response.text()
-    console.log(`URL shortened successfully: ${urlToShorten} → ${shortUrl}`)
+    logger.debug(`URL shortened successfully: ${urlToShorten} → ${shortUrl}`)
     return shortUrl
   } catch (error) {
-    console.error('Error shortening URL:', error)
+    logger.error('Error shortening URL:', error)
     return url // Return original URL in case of error
   }
 }

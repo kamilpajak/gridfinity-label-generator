@@ -21,6 +21,7 @@ import { createServer as createHttpsServer } from 'node:https'
 import { readFileSync } from 'node:fs'
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface QwikCityPlatform extends PlatformNode {}
 }
 
@@ -149,7 +150,7 @@ app.use((req, res, next) => {
   // Protection against XSS
   res.setHeader(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' https://statistics.gridfinitylabels.com https://*.sharethis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.buymeacoffee.com https://*.sharethis.com; connect-src 'self' https://*.sharethis.com https://tinyurl.com https://statistics.gridfinitylabels.com"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' https://statistics.gridfinitylabels.com https://*.sharethis.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://cdn.buymeacoffee.com https://*.sharethis.com; connect-src 'self' https://*.sharethis.com https://tinyurl.com https://statistics.gridfinitylabels.com"
   )
 
   // Protection against clickjacking

@@ -18,6 +18,9 @@ export default defineConfig(({command, mode}): UserConfig => {
         optimizeDeps: {
             exclude: [],
         },
+        resolve: {
+            conditions: ['module', 'browser', mode === 'production' ? 'production' : 'development'],
+        },
         server: {
             headers: {
                 "Cache-Control": "public, max-age=0",

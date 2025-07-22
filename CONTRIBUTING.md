@@ -6,7 +6,7 @@ Thank you for considering contributing to the Gridfinity Label Generator! This d
 
 ### Prerequisites
 
-- Node.js (^18.17.0 || ^20.3.0 || >=21.0.0)
+- Node.js (>=20.17.0)
 - npm (comes with Node.js)
 
 ### Getting Started
@@ -21,7 +21,8 @@ Thank you for considering contributing to the Gridfinity Label Generator! This d
 2. Install dependencies:
 
    ```bash
-   npm install
+   # Using --legacy-peer-deps due to Vite 6 vs Qwik 1.14.1 peer dependency conflict
+   npm install --legacy-peer-deps
    ```
 
 3. Start the development server:
@@ -94,6 +95,14 @@ The project uses Husky and lint-staged to automatically:
 - Fix ESLint issues
 - Format code with Prettier
 - Validate TypeScript types
+
+### Linting
+
+The project uses ESLint 9 with a flat configuration file (`eslint.config.js`). The configuration includes:
+
+- TypeScript support with strict type checking
+- Qwik-specific linting rules
+- Prettier integration for consistent formatting
 
 ### Commit Messages
 

@@ -2,6 +2,7 @@ import {defineConfig, type UserConfig} from "vite";
 import {qwikVite} from "@builder.io/qwik/optimizer";
 import {qwikCity} from "@builder.io/qwik-city/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import tailwindcss from "@tailwindcss/vite";
 import pkg from "./package.json";
 
 type PkgDep = Record<string, string>;
@@ -14,7 +15,7 @@ errorOnDuplicatesPkgDeps(devDependencies, dependencies);
 
 export default defineConfig(({command, mode}): UserConfig => {
     return {
-        plugins: [qwikCity(), qwikVite(), tsconfigPaths()],
+        plugins: [qwikCity(), qwikVite(), tsconfigPaths(), tailwindcss()],
         optimizeDeps: {
             exclude: [],
         },

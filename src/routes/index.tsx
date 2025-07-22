@@ -45,6 +45,7 @@ export default component$(() => {
   })
 
   // Preload local fonts as soon as the component is visible
+  // eslint-disable-next-line qwik/no-use-visible-task
   useVisibleTask$(
     async () => {
       try {
@@ -220,6 +221,7 @@ export default component$(() => {
     // Also track changes to trigger preview regeneration
     track(() => selectedScrewSubtype.value)
     track(() => selectedSystem.value)
+    track(() => notes.value)
 
     // Only basic tracking for initial render
     if (thread && standard && (type !== 'Screw' || len)) {
@@ -327,9 +329,9 @@ export default component$(() => {
   )
 
   const renderDownloadSection = () => (
-    <div class="grid grid-cols-1 sm:grid-cols-[1fr,217px] gap-4">
+    <div class="flex gap-4">
       <button
-        class={`w-full flex items-center justify-center gap-3 h-[60px] rounded-lg text-base font-medium transition-all ${
+        class={`flex-1 flex items-center justify-center gap-3 h-[60px] rounded-lg text-base font-medium transition-all ${
           threadSize.value &&
           hardwareStandard.value &&
           (selectedType.value !== 'Screw' || length.value)
@@ -350,7 +352,7 @@ export default component$(() => {
         href="https://www.buymeacoffee.com/kamilpajak"
         target="_blank"
         rel="noopener noreferrer"
-        class="block mx-auto sm:inline-block"
+        class="flex-shrink-0"
       >
         <img
           src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"

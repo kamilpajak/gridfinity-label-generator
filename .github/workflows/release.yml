@@ -32,7 +32,7 @@ jobs:
         with:
           fetch-depth: 0
           # Use RELEASE_TOKEN to bypass branch protection
-          # See RELEASE_TOKEN_SETUP.md for configuration instructions
+          # See docs/setup/RELEASE_TOKEN_SETUP.md for configuration instructions
           token: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js

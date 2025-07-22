@@ -8,7 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Install dependencies
-npm install
+# Using --legacy-peer-deps due to Vite 6 vs Qwik 1.14.1 peer dependency conflict
+npm install --legacy-peer-deps
 
 # Start development server
 npm run dev

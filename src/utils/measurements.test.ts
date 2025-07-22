@@ -1,6 +1,20 @@
+/**
+ * @fileoverview Tests for measurement conversion and validation utilities
+ * @module measurements.test
+ */
+
 import { describe, it, expect } from 'vitest'
 import { mmToPx, validateWidth, validateHeight, validateTextSize } from './measurements'
+import {
+  testValidationFunction,
+  testDiscreteValidation,
+  testRoundingValidation,
+} from '~/test-utils/validation.helpers'
+import { LABEL_DIMENSIONS, TEXT_SIZES } from '~/test-utils/constants'
 
+/**
+ * Test suite for measurement utilities
+ */
 describe('Measurements utilities', () => {
   describe('mmToPx', () => {
     it('should convert millimeters to pixels correctly', () => {
@@ -40,8 +54,8 @@ describe('Measurements utilities', () => {
 
     it('should calculate printable area dimensions correctly', () => {
       // Tape size dimensions
-      const tapeWidthMm = 54
-      const tapeHeightMm = 12
+      const tapeWidthMm = LABEL_DIMENSIONS.WIDTHS.DEFAULT
+      const tapeHeightMm = LABEL_DIMENSIONS.HEIGHTS.DEFAULT
 
       // Printable area dimensions (4mm narrower, 2mm shorter)
       const printableWidthMm = tapeWidthMm - 4
@@ -67,61 +81,48 @@ describe('Measurements utilities', () => {
   })
 
   describe('validateWidth', () => {
-    it('should return the input value if it is within valid range', () => {
-      expect(validateWidth(37)).toBe(37)
-      expect(validateWidth(55)).toBe(55)
-      expect(validateWidth(100)).toBe(100)
-    })
-
-    it('should convert string values to numbers', () => {
-      expect(validateWidth('50')).toBe(50)
-      expect(validateWidth('75')).toBe(75)
-    })
-
-    it('should enforce minimum width of 37mm', () => {
-      expect(validateWidth(30)).toBe(37)
-      expect(validateWidth('20')).toBe(37)
-    })
-
-    it('should enforce maximum width of 100mm', () => {
-      expect(validateWidth(120)).toBe(100)
-      expect(validateWidth('150')).toBe(100)
-    })
-
-    it('should default to 55mm for invalid inputs', () => {
-      expect(validateWidth(NaN)).toBe(55)
-      expect(validateWidth('abc')).toBe(55)
+    testValidationFunction(validateWidth, {
+      defaultValue: 55, // validateWidth defaults to 55mm
+      validCases: [
+        [LABEL_DIMENSIONS.WIDTHS.MIN, LABEL_DIMENSIONS.WIDTHS.MIN],
+        [LABEL_DIMENSIONS.WIDTHS.DEFAULT, LABEL_DIMENSIONS.WIDTHS.DEFAULT],
+        [LABEL_DIMENSIONS.WIDTHS.MAX, LABEL_DIMENSIONS.WIDTHS.MAX],
+      ],
+      stringCases: [
+        ['50', 50],
+        ['75', 75],
+      ],
+      minCases: [
+        [30, LABEL_DIMENSIONS.WIDTHS.MIN],
+        [20, LABEL_DIMENSIONS.WIDTHS.MIN],
+      ],
+      maxCases: [
+        [120, LABEL_DIMENSIONS.WIDTHS.MAX],
+        [150, LABEL_DIMENSIONS.WIDTHS.MAX],
+      ],
+      invalidCases: [NaN, 'abc'],
+      functionName: 'validateWidth',
     })
   })
 
   describe('validateHeight', () => {
-    it('should return exact values for allowed heights (9, 12, 18, 24)', () => {
-      expect(validateHeight(9)).toBe(9)
-      expect(validateHeight(12)).toBe(12)
-      expect(validateHeight(18)).toBe(18)
-      expect(validateHeight(24)).toBe(24)
-    })
-
-    it('should snap to nearest allowed height for in-between values', () => {
-      // Values closer to lower option
-      expect(validateHeight(8)).toBe(9)
-      expect(validateHeight(10)).toBe(9)
-      expect(validateHeight(13)).toBe(12)
-      expect(validateHeight(19)).toBe(18)
-      expect(validateHeight(25)).toBe(24)
-
-      // Values closer to higher option
-      expect(validateHeight(8)).toBe(9)
-      expect(validateHeight(11)).toBe(12)
-      expect(validateHeight(17)).toBe(18)
-      expect(validateHeight(23)).toBe(24)
-      expect(validateHeight(30)).toBe(24)
-    })
-
-    it('should handle equidistant values by choosing the first (lower) option', () => {
-      expect(validateHeight(10.5)).toBe(9) // Equidistant from 9 and 12
-      expect(validateHeight(15)).toBe(12) // Equidistant from 12 and 18
-      expect(validateHeight(21)).toBe(18) // Equidistant from 18 and 24
+    testDiscreteValidation(validateHeight, {
+      allowedValues: [...LABEL_DIMENSIONS.HEIGHTS.ALLOWED_VALUES],
+      defaultValue: LABEL_DIMENSIONS.HEIGHTS.DEFAULT,
+      snapCases: [
+        [8, 9],
+        [10, 9],
+        [10.5, 9], // Equidistant from 9 and 12
+        [11, 12],
+        [13, 12],
+        [15, 12], // Equidistant from 12 and 18
+        [17, 18],
+        [19, 18],
+        [21, 18], // Equidistant from 18 and 24
+        [23, 24],
+        [25, 24],
+      ],
+      functionName: 'validateHeight',
     })
 
     it('should handle string inputs correctly', () => {
@@ -132,18 +133,6 @@ describe('Measurements utilities', () => {
       expect(validateHeight('28')).toBe(24)
     })
 
-    it('should handle extreme values', () => {
-      // Very small values snap to minimum (9)
-      expect(validateHeight(0)).toBe(9)
-      expect(validateHeight(-5)).toBe(9)
-      expect(validateHeight(5)).toBe(9)
-
-      // Very large values snap to maximum (24)
-      expect(validateHeight(50)).toBe(24)
-      expect(validateHeight(100)).toBe(24)
-      expect(validateHeight(1000)).toBe(24)
-    })
-
     it('should default to 12mm for invalid inputs', () => {
       expect(validateHeight(NaN)).toBe(12)
       expect(validateHeight('abc')).toBe(12)
@@ -152,35 +141,35 @@ describe('Measurements utilities', () => {
   })
 
   describe('validateTextSize', () => {
-    it('should return the input value if it is within valid range', () => {
-      expect(validateTextSize(50)).toBe(50)
-      expect(validateTextSize(100)).toBe(100)
-      expect(validateTextSize(150)).toBe(150)
+    testValidationFunction(validateTextSize, {
+      defaultValue: 100, // validateTextSize defaults to 100%
+      validCases: [
+        [TEXT_SIZES.MIN, TEXT_SIZES.MIN], // 50%
+        [100, 100], // 100%
+        [TEXT_SIZES.MAX, TEXT_SIZES.MAX], // 150%
+      ],
+      stringCases: [
+        ['75', 75],
+        ['125', 125],
+      ],
+      minCases: [
+        [25, TEXT_SIZES.MIN], // 25 -> 50
+        [30, TEXT_SIZES.MIN], // 30 -> 50
+      ],
+      maxCases: [
+        [175, TEXT_SIZES.MAX], // 175 -> 150
+        [200, TEXT_SIZES.MAX], // 200 -> 150
+      ],
+      invalidCases: [NaN, 'abc'],
+      functionName: 'validateTextSize',
     })
 
-    it('should convert string values to numbers', () => {
-      expect(validateTextSize('75')).toBe(75)
-      expect(validateTextSize('125')).toBe(125)
-    })
-
-    it('should round values to nearest integer', () => {
-      expect(validateTextSize(75.4)).toBe(75)
-      expect(validateTextSize(75.5)).toBe(76)
-    })
-
-    it('should enforce minimum text size of 50%', () => {
-      expect(validateTextSize(25)).toBe(50)
-      expect(validateTextSize('30')).toBe(50)
-    })
-
-    it('should enforce maximum text size of 150%', () => {
-      expect(validateTextSize(175)).toBe(150)
-      expect(validateTextSize('200')).toBe(150)
-    })
-
-    it('should default to 100% for invalid inputs', () => {
-      expect(validateTextSize(NaN)).toBe(100)
-      expect(validateTextSize('abc')).toBe(100)
+    testRoundingValidation(validateTextSize, {
+      roundingCases: [
+        [75.4, 75],
+        [75.5, 76],
+      ],
+      functionName: 'validateTextSize rounding',
     })
   })
 })

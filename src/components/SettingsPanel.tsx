@@ -4,6 +4,9 @@ import type { LabelSettings } from '~/types'
 import { validateWidth, validateHeight } from '~/utils/measurements'
 import { shouldShortenUrl, shortenUrl } from '~/utils/urlShortener'
 import { logger } from '~/config/logging'
+import { ToggleSwitch } from './shared/ToggleSwitch'
+import { Tooltip } from './shared/Tooltip'
+import { COMMON_STYLES } from '~/utils/styles'
 import {
   ChatBubbleIcon,
   IdentifierIcon,
@@ -13,11 +16,31 @@ import {
   SettingsIcon,
 } from './icons'
 
+/**
+ * Properties for SettingsPanel component
+ * @typedef {Object} SettingsPanelProps
+ * @property {LabelSettings} settings - Current label settings
+ * @property {PropFunction<(settings: Partial<LabelSettings>) => void>} onSettingsChange$ - Handler for settings changes
+ */
 interface Props {
   settings: LabelSettings
   onSettingsChange$: PropFunction<(settings: Partial<LabelSettings>) => void>
 }
 
+/**
+ * Settings panel component for label configuration.
+ * Provides controls for toggling features, setting dimensions, and configuring label options.
+ *
+ * @component
+ * @param {SettingsPanelProps} props - Component properties
+ * @returns {JSX.Element} Rendered settings panel
+ *
+ * @example
+ * <SettingsPanel
+ *   settings={labelSettings}
+ *   onSettingsChange$={(updates) => updateSettings(updates)}
+ * />
+ */
 export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ }) => {
   // Validates and updates the label width (total physical width)
   const handleWidthChange$ = $((value: string | number) => {
@@ -62,108 +85,63 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
         </div>
 
         <div class="space-y-4">
-          <div class="flex items-center justify-between bg-white h-[60px] px-4 rounded-lg border border-gray-200">
+          <div class={COMMON_STYLES.settingsRow}>
             <div class="flex items-center gap-3">
               <IdentifierIcon />
               <span class="text-base text-gray-700">Standard Reference</span>
             </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={settings.showStandardName}
-                onChange$={e =>
-                  onSettingsChange$({
-                    showStandardName: (e.target as HTMLInputElement).checked,
-                  })
-                }
-                class="sr-only peer"
-              />
-              <div class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all" />
-            </label>
+            <ToggleSwitch
+              checked={settings.showStandardName}
+              onChange$={checked => onSettingsChange$({ showStandardName: checked })}
+              label="Show standard reference on label"
+            />
           </div>
 
-          <div class="flex items-center justify-between bg-white h-[60px] px-4 rounded-lg border border-gray-200">
+          <div class={COMMON_STYLES.settingsRow}>
             <div class="flex items-center gap-3">
               <ImageIcon />
               <span class="text-base text-gray-700">Image</span>
             </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={settings.showImage}
-                onChange$={e =>
-                  onSettingsChange$({
-                    showImage: (e.target as HTMLInputElement).checked,
-                  })
-                }
-                class="sr-only peer"
-              />
-              <div class="w-12 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all" />
-            </label>
+            <ToggleSwitch
+              checked={settings.showImage}
+              onChange$={checked => onSettingsChange$({ showImage: checked })}
+              label="Show image on label"
+            />
           </div>
 
-          <div class="flex items-center justify-between bg-white h-[60px] px-4 rounded-lg border border-gray-200">
+          <div class={COMMON_STYLES.settingsRow}>
             <div class="flex items-center gap-3">
               <QrCodeIcon />
               <span class="text-base text-gray-700">QR Code</span>
               {settings.labelHeight < 12 && (
-                <div class="relative group">
-                  <span class="text-gray-400 hover:text-gray-600 cursor-help">
+                <Tooltip text="Minimum 12mm height required">
+                  <span class="text-gray-400 hover:text-gray-600">
                     <InfoIcon />
                   </span>
-                  <div class="absolute left-0 bottom-full mb-2 hidden group-hover:block z-10">
-                    <div class="bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
-                      Minimum 12mm height required
-                    </div>
-                    <div class="absolute left-2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
-                  </div>
-                </div>
+                </Tooltip>
               )}
             </div>
-            <label class="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={settings.showQrCode}
-                disabled={settings.labelHeight < 12}
-                onChange$={e =>
-                  onSettingsChange$({
-                    showQrCode: (e.target as HTMLInputElement).checked,
-                  })
-                }
-                class="sr-only peer"
-              />
-              <div
-                class={`w-12 h-6 rounded-full peer after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all ${
-                  settings.labelHeight < 12
-                    ? 'bg-gray-100 cursor-not-allowed'
-                    : 'bg-gray-200 peer-checked:after:translate-x-full peer-checked:bg-blue-600'
-                }`}
-              />
-            </label>
+            <ToggleSwitch
+              checked={settings.showQrCode}
+              onChange$={checked => onSettingsChange$({ showQrCode: checked })}
+              disabled={settings.labelHeight < 12}
+              label="Show QR code on label"
+            />
           </div>
 
           {settings.showQrCode && settings.labelHeight >= 12 && (
             <div class="bg-white p-4 rounded-lg border border-gray-200">
               <div class="flex items-center gap-2 mb-2">
                 <label class="block text-base text-gray-700">QR Code Content</label>
-                {/* Info icon with tooltip for URL shortening */}
-                <div class="relative group">
+                <Tooltip
+                  text="Long URLs will be automatically shortened for better QR code readability. This makes the QR code simpler and easier to scan on small labels."
+                  multiline={true}
+                  class="min-w-[250px] max-w-[90vw] sm:max-w-xs"
+                >
                   <span class="cursor-help text-gray-400 hover:text-gray-600">
                     <InfoIcon />
                   </span>
-                  <div class="absolute transform -translate-x-1/4 sm:translate-x-0 sm:left-0 md:-translate-x-1/4 md:left-1/4 bottom-full mb-3 hidden group-hover:block min-w-[250px] max-w-[90vw] sm:max-w-xs bg-white rounded-lg shadow-lg text-sm text-gray-700 z-20">
-                    {/* Triangle pointer */}
-                    <div class="absolute -bottom-2 left-[10%] sm:left-4 w-4 h-4 bg-white transform rotate-45 z-10"></div>
-
-                    {/* Content container with higher z-index to appear above the triangle */}
-                    <div class="relative p-4 rounded-lg bg-white z-20">
-                      <p>
-                        Long URLs will be automatically shortened for better QR code readability.
-                        This makes the QR code simpler and easier to scan on small labels.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                </Tooltip>
               </div>
               <input
                 type="text"
@@ -192,20 +170,15 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <span class="text-base text-gray-700">Label Width</span>
-                <div class="relative group">
+                <Tooltip
+                  text="The label width is the total physical width. The printable area is 4mm narrower (2mm margin on each side)."
+                  multiline={true}
+                  class="min-w-[250px] max-w-[90vw] sm:max-w-xs"
+                >
                   <span class="cursor-help text-gray-400 hover:text-gray-600">
                     <InfoIcon />
                   </span>
-                  <div class="absolute transform -translate-x-1/4 sm:translate-x-0 sm:left-0 md:-translate-x-1/4 md:left-1/4 bottom-full mb-3 hidden group-hover:block min-w-[250px] max-w-[90vw] sm:max-w-xs bg-white rounded-lg shadow-lg text-sm text-gray-700 z-20">
-                    <div class="absolute -bottom-2 left-[10%] sm:left-4 w-4 h-4 bg-white transform rotate-45 z-10"></div>
-                    <div class="relative p-4 rounded-lg bg-white z-20">
-                      <p>
-                        The label width is the total physical width. The printable area is 4mm
-                        narrower (2mm margin on each side).
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                </Tooltip>
               </div>
               <div class="flex items-center gap-2">
                 <input
@@ -239,20 +212,15 @@ export const SettingsPanel = component$<Props>(({ settings, onSettingsChange$ })
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
                 <span class="text-base text-gray-700">Label Height</span>
-                <div class="relative group">
+                <Tooltip
+                  text="This controls the total physical height of the label. The printable area is 2mm shorter (1mm margin on top and bottom)."
+                  multiline={true}
+                  class="min-w-[250px] max-w-[90vw] sm:max-w-xs"
+                >
                   <span class="cursor-help text-gray-400 hover:text-gray-600">
                     <InfoIcon />
                   </span>
-                  <div class="absolute transform -translate-x-1/4 sm:translate-x-0 sm:left-0 md:-translate-x-1/4 md:left-1/4 bottom-full mb-3 hidden group-hover:block min-w-[250px] max-w-[90vw] sm:max-w-xs bg-white rounded-lg shadow-lg text-sm text-gray-700 z-20">
-                    <div class="absolute -bottom-2 left-[10%] sm:left-4 w-4 h-4 bg-white transform rotate-45 z-10"></div>
-                    <div class="relative p-4 rounded-lg bg-white z-20">
-                      <p>
-                        This controls the total physical height of the label. The printable area is
-                        2mm shorter (1mm margin on top and bottom).
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                </Tooltip>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-2">

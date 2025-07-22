@@ -4,17 +4,34 @@ import {
   calculateExpectedPrintedWidth,
   calculateScalingFactor,
 } from './printCalibration'
+import { PRINT_CALIBRATION } from '~/test-utils/constants'
 
 describe('Print Calibration Utilities', () => {
   describe('calculateWidthForPrinting', () => {
     it('should calculate the correct width to set for desired printed width', () => {
       // Test with default scaling factor (1.0)
-      expect(calculateWidthForPrinting(54)).toBeCloseTo(54, 2)
-      expect(calculateWidthForPrinting(100)).toBeCloseTo(100, 2)
+      expect(calculateWidthForPrinting(PRINT_CALIBRATION.TEST_WIDTHS.STANDARD)).toBeCloseTo(
+        PRINT_CALIBRATION.TEST_WIDTHS.STANDARD,
+        2
+      )
+      expect(calculateWidthForPrinting(PRINT_CALIBRATION.TEST_WIDTHS.LARGE)).toBeCloseTo(
+        PRINT_CALIBRATION.TEST_WIDTHS.LARGE,
+        2
+      )
 
       // Test with custom scaling factor
-      expect(calculateWidthForPrinting(54, 1.1)).toBeCloseTo(49.09, 2)
-      expect(calculateWidthForPrinting(100, 1.2)).toBeCloseTo(83.33, 2)
+      expect(
+        calculateWidthForPrinting(
+          PRINT_CALIBRATION.TEST_WIDTHS.STANDARD,
+          PRINT_CALIBRATION.SCALING_FACTORS.MEDIUM
+        )
+      ).toBeCloseTo(PRINT_CALIBRATION.EXPECTED_VALUES.WIDTH_54_SCALE_1_1, 2)
+      expect(
+        calculateWidthForPrinting(
+          PRINT_CALIBRATION.TEST_WIDTHS.LARGE,
+          PRINT_CALIBRATION.SCALING_FACTORS.LARGE
+        )
+      ).toBeCloseTo(PRINT_CALIBRATION.EXPECTED_VALUES.WIDTH_100_SCALE_1_2, 2)
     })
 
     it('should handle edge cases', () => {
@@ -22,22 +39,38 @@ describe('Print Calibration Utilities', () => {
       expect(calculateWidthForPrinting(0)).toBe(0)
 
       // Very small width
-      expect(calculateWidthForPrinting(1)).toBeCloseTo(1, 2)
+      expect(calculateWidthForPrinting(PRINT_CALIBRATION.TEST_WIDTHS.SMALL)).toBeCloseTo(
+        PRINT_CALIBRATION.TEST_WIDTHS.SMALL,
+        2
+      )
 
       // Very large width
-      expect(calculateWidthForPrinting(1000)).toBeCloseTo(1000, 1)
+      expect(calculateWidthForPrinting(PRINT_CALIBRATION.TEST_WIDTHS.VERY_LARGE)).toBeCloseTo(
+        PRINT_CALIBRATION.TEST_WIDTHS.VERY_LARGE,
+        1
+      )
     })
   })
 
   describe('calculateExpectedPrintedWidth', () => {
     it('should calculate the expected printed width based on set width', () => {
       // Test with default scaling factor (1.0)
-      expect(calculateExpectedPrintedWidth(54)).toBeCloseTo(54, 2)
-      expect(calculateExpectedPrintedWidth(100)).toBeCloseTo(100, 2)
+      expect(calculateExpectedPrintedWidth(PRINT_CALIBRATION.TEST_WIDTHS.STANDARD)).toBeCloseTo(
+        PRINT_CALIBRATION.TEST_WIDTHS.STANDARD,
+        2
+      )
+      expect(calculateExpectedPrintedWidth(PRINT_CALIBRATION.TEST_WIDTHS.LARGE)).toBeCloseTo(
+        PRINT_CALIBRATION.TEST_WIDTHS.LARGE,
+        2
+      )
 
       // Test with custom scaling factor
-      expect(calculateExpectedPrintedWidth(49.09, 1.1)).toBeCloseTo(54, 2)
-      expect(calculateExpectedPrintedWidth(83.33, 1.2)).toBeCloseTo(100, 2)
+      expect(
+        calculateExpectedPrintedWidth(49.09, PRINT_CALIBRATION.SCALING_FACTORS.MEDIUM)
+      ).toBeCloseTo(PRINT_CALIBRATION.EXPECTED_VALUES.PRINTED_49_09_SCALE_1_1, 2)
+      expect(
+        calculateExpectedPrintedWidth(83.33, PRINT_CALIBRATION.SCALING_FACTORS.LARGE)
+      ).toBeCloseTo(PRINT_CALIBRATION.EXPECTED_VALUES.PRINTED_83_33_SCALE_1_2, 2)
     })
 
     it('should handle edge cases', () => {
@@ -45,17 +78,29 @@ describe('Print Calibration Utilities', () => {
       expect(calculateExpectedPrintedWidth(0)).toBe(0)
 
       // Very small width
-      expect(calculateExpectedPrintedWidth(1)).toBeCloseTo(1, 2)
+      expect(calculateExpectedPrintedWidth(PRINT_CALIBRATION.TEST_WIDTHS.SMALL)).toBeCloseTo(
+        PRINT_CALIBRATION.TEST_WIDTHS.SMALL,
+        2
+      )
 
       // Very large width
-      expect(calculateExpectedPrintedWidth(1000)).toBeCloseTo(1000, 1)
+      expect(calculateExpectedPrintedWidth(PRINT_CALIBRATION.TEST_WIDTHS.VERY_LARGE)).toBeCloseTo(
+        PRINT_CALIBRATION.TEST_WIDTHS.VERY_LARGE,
+        1
+      )
     })
   })
 
   describe('calculateScalingFactor', () => {
     it('should calculate the correct scaling factor', () => {
-      expect(calculateScalingFactor(54, 58)).toBeCloseTo(1.074, 3)
-      expect(calculateScalingFactor(100, 110)).toBeCloseTo(1.1, 3)
+      expect(calculateScalingFactor(PRINT_CALIBRATION.TEST_WIDTHS.STANDARD, 58)).toBeCloseTo(
+        PRINT_CALIBRATION.SCALING_FACTORS.SMALL,
+        3
+      )
+      expect(calculateScalingFactor(PRINT_CALIBRATION.TEST_WIDTHS.LARGE, 110)).toBeCloseTo(
+        PRINT_CALIBRATION.SCALING_FACTORS.MEDIUM,
+        3
+      )
     })
 
     it('should handle edge cases', () => {
@@ -74,7 +119,7 @@ describe('Print Calibration Utilities', () => {
       // then calculate expected printed width from that result,
       // we should get back the original desired width
 
-      const desiredWidth = 54
+      const desiredWidth = PRINT_CALIBRATION.TEST_WIDTHS.STANDARD
       const widthToSet = calculateWidthForPrinting(desiredWidth)
       const expectedPrintedWidth = calculateExpectedPrintedWidth(widthToSet)
 

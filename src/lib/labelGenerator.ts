@@ -1,6 +1,7 @@
 import { computeDynamicFontSize, mmToPx } from '~/utils/measurements'
 import { shortenUrl, shouldShortenUrl } from '~/utils/urlShortener'
 import { logger } from '~/config/logging'
+import { calculateCanvasDimensions, type LabelDimensions } from '~/utils/labelDimensions'
 
 /**
  * Loads required fonts before rendering.
@@ -249,13 +250,6 @@ export interface GenerateLabelOptions {
 }
 
 // Helper types and interfaces for refactoring
-interface LabelDimensions {
-  printableWidthMm: number
-  printableHeightMm: number
-  printableWidthPx: number
-  printableHeightPx: number
-  conversionFactor: number
-}
 
 interface TextDimensions {
   adjustedTextHeightMm: number
@@ -266,35 +260,6 @@ interface TextDimensions {
 interface QrCodeDimensions {
   qrCodeWidth: number
   qrCodeX: number
-}
-
-/**
- * Calculates canvas dimensions based on label dimensions
- */
-function calculateCanvasDimensions(labelWidthMm: number, labelHeightMm: number): LabelDimensions {
-  const printableWidthMm = labelWidthMm - 4
-  const printableHeightMm = labelHeightMm - 2
-  const exactAspectRatio = printableWidthMm / printableHeightMm
-
-  logger.debug(`Label size (mm): ${labelWidthMm} × ${labelHeightMm}`)
-  logger.debug(`Printable area (mm): ${printableWidthMm} × ${printableHeightMm}`)
-  logger.debug(`Exact aspect ratio: ${exactAspectRatio.toFixed(6)}`)
-
-  const printableHeightPx = Math.round(mmToPx(printableHeightMm))
-  const printableWidthPx = Math.round(printableHeightPx * exactAspectRatio)
-  const conversionFactor = printableWidthPx / printableWidthMm
-
-  logger.debug(`Conversion factor: ${conversionFactor.toFixed(6)} px/mm`)
-  logger.debug(`Canvas dimensions (px): ${printableWidthPx} × ${printableHeightPx}`)
-  logger.debug(`Canvas aspect ratio: ${(printableWidthPx / printableHeightPx).toFixed(6)}`)
-
-  return {
-    printableWidthMm,
-    printableHeightMm,
-    printableWidthPx,
-    printableHeightPx,
-    conversionFactor,
-  }
 }
 
 /**

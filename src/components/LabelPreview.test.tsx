@@ -1,3 +1,11 @@
+/**
+ * @fileoverview Tests for LabelPreview component helpers
+ * @module LabelPreview.test
+ *
+ * Note: The core dimension calculation logic is tested in src/utils/labelDimensions.test.ts
+ * These tests focus on component-specific helpers and layout validation.
+ */
+
 import { describe, expect, test } from 'vitest'
 import {
   calculateDimensions,
@@ -7,9 +15,9 @@ import {
   getAspectRatio,
   getPlaceholderText,
   validateLabelLayout,
-} from './LabelPreview.test.helpers'
+} from '~/test-utils/label-preview.helpers'
 
-describe('LabelPreview Component', () => {
+describe('LabelPreview Component Helpers', () => {
   // Test the dimensions calculations with default height
   test('calculates correct dimensions for tape size and printable area with default height', () => {
     const labelWidth = 55

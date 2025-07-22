@@ -70,6 +70,17 @@ const getStandardValue = (standard: Standard) => `${standard.type} ${standard.nu
 const getStandardImage = (standard: Standard) =>
   `/${standard.folder}/${standard.type.toLowerCase()}_${standard.number}.svg`
 
+/**
+ * Transforms a Standard object into a formatted option for dropdowns
+ * @param {Standard} standard - The standard to transform
+ * @returns {Object} Formatted option with value, text, and image properties
+ */
+const transformStandardToOption = (standard: Standard) => ({
+  value: getStandardValue(standard),
+  text: getStandardText(standard),
+  image: getStandardImage(standard),
+})
+
 const standards = {
   screw: [
     createStandard('DIN', '11014', 'Hexagon Head Screw', 'screws'),
@@ -220,42 +231,31 @@ const isScrew = (standard: Standard): boolean => {
   )
 }
 
-// Get standards filtered by screw subtype
+/**
+ * Gets hardware standards filtered by screw subtype (Screw vs Bolt)
+ * @param {ScrewSubtype} subtype - The screw subtype to filter by
+ * @returns {Array} Array of formatted standard options
+ */
 export const getScrewStandardsBySubtype = (subtype: ScrewSubtype) => {
   if (subtype === 'Screw') {
-    return standards.screw.filter(isScrew).map(std => ({
-      value: getStandardValue(std),
-      text: getStandardText(std),
-      image: getStandardImage(std),
-    }))
+    return standards.screw.filter(isScrew).map(transformStandardToOption)
   } else {
     // Bolt
-    return standards.screw
-      .filter(std => !isScrew(std))
-      .map(std => ({
-        value: getStandardValue(std),
-        text: getStandardText(std),
-        image: getStandardImage(std),
-      }))
+    return standards.screw.filter(std => !isScrew(std)).map(transformStandardToOption)
   }
 }
 
+/**
+ * Exported hardware standards formatted for UI dropdowns
+ * @constant {Object} dinStandards
+ * @property {Array} screw - All screw standards
+ * @property {Array} nut - All nut standards
+ * @property {Array} washer - All washer standards
+ */
 export const dinStandards = {
-  screw: standards.screw.map(std => ({
-    value: getStandardValue(std),
-    text: getStandardText(std),
-    image: getStandardImage(std),
-  })),
-  nut: standards.nut.map(std => ({
-    value: getStandardValue(std),
-    text: getStandardText(std),
-    image: getStandardImage(std),
-  })),
-  washer: standards.washer.map(std => ({
-    value: getStandardValue(std),
-    text: getStandardText(std),
-    image: getStandardImage(std),
-  })),
+  screw: standards.screw.map(transformStandardToOption),
+  nut: standards.nut.map(transformStandardToOption),
+  washer: standards.washer.map(transformStandardToOption),
 } as const
 
 export type HardwareType = keyof typeof dinStandards

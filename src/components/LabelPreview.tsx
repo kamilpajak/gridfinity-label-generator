@@ -1,5 +1,6 @@
 import { component$ } from '@builder.io/qwik'
 import { InfoIcon, LabelIcon } from './icons'
+import { getPrintableArea, getMarginPercentages, LABEL_MARGINS } from '~/utils/labelDimensions'
 
 interface Props {
   isLoading: boolean
@@ -29,7 +30,8 @@ const renderHeader = (labelWidth: number, labelHeight: number) => {
             <div class="relative p-4 rounded-lg bg-white z-20">
               <p class="mb-2">
                 The selected width and height determine the label dimensions. The printable area is
-                4mm narrower (2mm margin on each side) than the total width.
+                {LABEL_MARGINS.HORIZONTAL}mm narrower ({LABEL_MARGINS.HORIZONTAL_SINGLE}mm margin on
+                each side) than the total width.
               </p>
               <p class="mt-2">
                 <strong>Note:</strong> The printed width will match the tape size width of{' '}
@@ -44,7 +46,8 @@ const renderHeader = (labelWidth: number, labelHeight: number) => {
           {labelWidth}mm × {labelHeight}mm <span class="text-gray-400">(label size)</span>
         </div>
         <div class="text-xs text-gray-400">
-          {labelWidth - 4}mm × {labelHeight - 2}mm (printable area)
+          {getPrintableArea(labelWidth, labelHeight).width}mm ×{' '}
+          {getPrintableArea(labelWidth, labelHeight).height}mm (printable area)
         </div>
       </div>
     </div>
@@ -55,8 +58,8 @@ const renderHeader = (labelWidth: number, labelHeight: number) => {
 // The container sets the width while the image uses width:100% and height:auto to preserve its proportions.
 const renderLabelImage = (labelUrl: string, labelWidth: number, labelHeight: number) => {
   // Calculate margin percentages for the tape container
-  const topBottomMarginPercent = (1 / (labelHeight + 2)) * 100 // 1mm margin on each side
-  const leftRightMarginPercent = (2 / labelWidth) * 100 // 2mm out of labelWidth
+  const { topBottom: topBottomMarginPercent, leftRight: leftRightMarginPercent } =
+    getMarginPercentages(labelWidth, labelHeight)
 
   return (
     <div class="relative w-full">
@@ -67,7 +70,7 @@ const renderLabelImage = (labelUrl: string, labelWidth: number, labelHeight: num
       {/* Full tape container with white background */}
       <div
         class="relative bg-white border border-gray-200 rounded-sm overflow-hidden group"
-        style={{ aspectRatio: `${labelWidth} / ${labelHeight + 2}` }}
+        style={{ aspectRatio: `${labelWidth} / ${labelHeight + LABEL_MARGINS.VERTICAL}` }}
       >
         {/* Tape margins indicators are below */}
 
@@ -88,9 +91,11 @@ const renderLabelImage = (labelUrl: string, labelWidth: number, labelHeight: num
           <div class="w-full h-full flex items-center justify-center">
             <img
               src={labelUrl}
-              alt={`Generated label with dimensions ${labelWidth - 4}mm × ${labelHeight}mm`}
+              alt={`Generated label with dimensions ${getPrintableArea(labelWidth, labelHeight).width}mm × ${labelHeight}mm`}
               class="w-full h-full"
               style={{ objectFit: 'contain' }}
+              width={getPrintableArea(labelWidth, labelHeight).width}
+              height={labelHeight}
             />
           </div>
         </div>

@@ -25,6 +25,7 @@ export const RouterHead = component$(() => {
     if (typeof window === 'undefined') return
 
     // Initialize Matomo
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     window._paq = window._paq || []
     const _paq = window._paq
     _paq.push(['trackPageView'])
@@ -40,6 +41,7 @@ export const RouterHead = component$(() => {
     const s = d.getElementsByTagName('script')[0]
     g.async = true
     g.src = u + 'matomo.js'
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (s && s.parentNode) {
       s.parentNode.insertBefore(g, s)
     } else {

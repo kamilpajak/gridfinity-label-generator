@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.29](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.28...v0.1.29) (2025-07-22)
+
+### Code Refactoring
+
+- Extract shared components and fix notes field tracking ([#20](https://github.com/kamilpajak/gridfinity-label-generator/issues/20)) ([8915949](https://github.com/kamilpajak/gridfinity-label-generator/commit/891594911f4d0cc634e446e72fbb6e39879122e9))
+
 ### [0.1.28](https://github.com/kamilpajak/gridfinity-label-generator/compare/v0.1.27...v0.1.28) (2025-06-12)
 
 ### Features

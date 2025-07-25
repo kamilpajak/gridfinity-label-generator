@@ -1,0 +1,52 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+### Development
+- `npm run dev` - Start development server with hot reload
+- `npm run dev -- --open` - Start dev server and open in browser
+- `npm run build` - Build production version
+- `npm run preview` - Preview production build
+
+### Testing
+- `npm run test` - Run all tests (unit and e2e)
+- `npm run test:unit` - Run Vitest unit tests in watch mode
+- `npm run test:unit -- --run` - Run unit tests once
+- `npm run test:e2e` - Run Playwright e2e tests
+- Run a single test file: `npm run test:unit -- path/to/test.ts`
+
+### Code Quality
+- `npm run check` - Run svelte-check for TypeScript errors
+- `npm run lint` - Check code formatting and ESLint rules
+- `npm run format` - Auto-format code with Prettier
+
+## Architecture
+
+### Stack
+- **SvelteKit** - Full-stack framework with file-based routing
+- **Svelte 5** - Using runes syntax (`$props()`, `@render`)
+- **TypeScript** - Full type safety
+- **Tailwind CSS v4** - Utility-first CSS via Vite plugin
+- **Zustand** - State management (installed but not yet implemented)
+- **Vitest** - Unit testing with browser and node environments
+- **Playwright** - E2E testing
+
+### Project Structure
+- `/src/routes/` - File-based routing, each `+page.svelte` is a route
+- `/src/lib/` - Shared utilities and components
+- `/src/app.css` - Global styles with Tailwind directives
+- `/src/app.d.ts` - TypeScript ambient declarations
+
+### Testing Setup
+- Unit tests use Vitest with separate browser and node environments
+- Browser tests: `*.svelte.test.ts` files run in Playwright browser
+- Node tests: Regular `*.test.ts` or `*.spec.ts` files
+- E2E tests in `/e2e/` directory using Playwright
+
+### Key Patterns
+- Components use Svelte 5 runes syntax
+- Layout uses `$props()` and `@render children()`
+- CSS can be component-scoped `<style>` blocks or Tailwind utilities
+- Build uses Vite with SvelteKit and Tailwind CSS plugins

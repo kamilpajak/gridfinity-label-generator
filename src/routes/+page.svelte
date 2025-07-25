@@ -1,59 +1,51 @@
 <script lang="ts">
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcomeFallback from '$lib/images/svelte-welcome.png';
+	import * as Card from "$lib/components/ui/card";
+	import * as Tabs from "$lib/components/ui/tabs";
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Gridfinity Label Generator</title>
+	<meta name="description" content="Print-Ready Labels for Your Gridfinity System" />
 </svelte:head>
 
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcomeFallback} alt="Welcome" />
-			</picture>
-		</span>
+<div class="container mx-auto px-4 py-8">
+	<!-- Hero Section -->
+	<div class="text-center mb-8">
+		<h1 class="text-4xl font-bold mb-2">Gridfinity Label Generator</h1>
+		<p class="text-xl text-muted-foreground">Print-Ready Labels for Your Gridfinity System</p>
+	</div>
 
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
-</section>
-
-<style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
-</style>
+	<!-- Tabs Component -->
+	<Tabs.Root value="single" class="w-full max-w-6xl mx-auto">
+		<Tabs.List class="grid w-full grid-cols-2">
+			<Tabs.Trigger value="single">Single Label</Tabs.Trigger>
+			<Tabs.Trigger value="batch">Batch Mode</Tabs.Trigger>
+		</Tabs.List>
+		
+		<Tabs.Content value="single" class="mt-6">
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>Single Label</Card.Title>
+					<Card.Description>Create one label at a time</Card.Description>
+				</Card.Header>
+				<Card.Content>
+					<!-- Placeholder for Single Label content -->
+					<p class="text-muted-foreground">Single Label configuration will go here</p>
+				</Card.Content>
+			</Card.Root>
+		</Tabs.Content>
+		
+		<Tabs.Content value="batch" class="mt-6">
+			<Card.Root>
+				<Card.Header>
+					<Card.Title>Batch Mode</Card.Title>
+					<Card.Description>Create multiple labels at once</Card.Description>
+				</Card.Header>
+				<Card.Content>
+					<!-- Placeholder for Batch Mode content -->
+					<p class="text-muted-foreground">Batch Mode configuration will go here</p>
+				</Card.Content>
+			</Card.Root>
+		</Tabs.Content>
+	</Tabs.Root>
+</div>

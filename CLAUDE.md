@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Important Notes
+
+### UI Components Documentation
+- **ALWAYS use shadcn-svelte documentation** (https://www.shadcn-svelte.com/) for component references
+- **DO NOT use shadcn/ui documentation** (https://ui.shadcn.com/) which is for React
+- Key differences between shadcn-svelte and shadcn/ui:
+  - Props: `value` instead of `defaultValue` for Tabs
+  - Imports: Different import paths and structures
+  - Syntax: Svelte-specific patterns vs React patterns
+
 ## Commands
 
 ### Development

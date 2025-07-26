@@ -21,7 +21,7 @@
 		"@eslint/js": "^9.18.0",
 		"@fontsource/fira-mono": "^5.0.0",
 		"@internationalized/date": "^3.8.2",
-		"@lucide/svelte": "^0.525.0",
+		"@lucide/svelte": "^0.515.0",
 		"@neoconfetti/svelte": "^2.0.0",
 		"@playwright/test": "^1.49.1",
 		"@sveltejs/adapter-auto": "^6.0.0",

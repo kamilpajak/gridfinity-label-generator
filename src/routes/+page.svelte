@@ -5,6 +5,7 @@
 	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
 	import { Input } from '$lib/components/ui/input';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
+	import { Slider } from '$lib/components/ui/slider';
 	
 	let showStandard = $state(false);
 	let showHardwareImage = $state(false);
@@ -16,9 +17,18 @@
 	
 	let lengthPlaceholder = $derived(
 		measurementSystem === 'metric' 
-			? 'Length (e.g., 10)' 
-			: 'Length (e.g., 3/8″)'
+			? 'Length in mm (e.g., 10, 25)' 
+			: 'Length in inches (e.g., 1/4, 3/8)'
 	);
+	
+	let threadSizePlaceholder = $derived(
+		measurementSystem === 'metric'
+			? 'Thread size (e.g., M3, M5)'
+			: 'Thread size (e.g., #4-40, 1/4-20)'
+	);
+	
+	let labelHeight = $state('12');
+	let labelWidth = $state(35);
 </script>
 
 <svelte:head>
@@ -70,7 +80,7 @@
 								<div>
 									<Select type="single">
 										<SelectTrigger id="thread-size" class="w-full">
-											Select thread size
+											{threadSizePlaceholder}
 										</SelectTrigger>
 										<SelectContent>
 											<SelectItem value="m3">M3</SelectItem>
@@ -107,7 +117,7 @@
 							</div>
 							
 							<div class="mt-4">
-								<Input placeholder="QR code content (optional)" class="w-full" disabled={!showQRCode} />
+								<Input placeholder="QR code (URL, part number, etc.)" class="w-full" disabled={!showQRCode} />
 							</div>
 						</Card.Content>
 					</Card.Root>
@@ -116,7 +126,7 @@
 				<div>
 					<Card.Root>
 						<Card.Header>
-							<Card.Title>Display Options</Card.Title>
+							<Card.Title>Label Settings</Card.Title>
 						</Card.Header>
 						<Card.Content class="space-y-4">
 							<div class="flex items-center justify-between space-x-2">
@@ -141,6 +151,35 @@
 									<div class="text-sm text-muted-foreground">Add scannable code</div>
 								</div>
 								<Switch bind:checked={showQRCode} />
+							</div>
+							
+							<div class="border-t pt-4 mt-4">
+								<h4 class="font-medium mb-3">Dimensions</h4>
+								
+								<div class="space-y-3">
+									<div>
+										<div class="text-sm text-muted-foreground mb-2">Height (Brother P-Touch tape)</div>
+										<ToggleGroup bind:value={labelHeight} variant="outline" type="single" class="w-full">
+											<ToggleGroupItem value="9" class="flex-1">9mm</ToggleGroupItem>
+											<ToggleGroupItem value="12" class="flex-1">12mm</ToggleGroupItem>
+										</ToggleGroup>
+									</div>
+									
+									<div>
+										<div class="flex justify-between items-center mb-2">
+											<span class="text-sm text-muted-foreground">Width</span>
+											<span class="text-sm font-medium">{labelWidth}mm</span>
+										</div>
+										<Slider 
+											bind:value={labelWidth}
+											type="single"
+											min={30}
+											max={80}
+											step={1}
+											class="w-full"
+										/>
+									</div>
+								</div>
 							</div>
 						</Card.Content>
 					</Card.Root>

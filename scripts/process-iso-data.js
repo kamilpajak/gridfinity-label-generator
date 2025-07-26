@@ -1,5 +1,31 @@
 #!/usr/bin/env node
 
+/**
+ * ISO Standards Data Processor
+ * 
+ * This script processes the raw ISO deliverables metadata JSONL file and extracts
+ * fastener standards from ISO Technical Committee 2 (TC 2 - Fasteners).
+ * 
+ * Purpose:
+ * - Extract fastener standards from ~78k ISO standards
+ * - Filter out withdrawn and replaced standards
+ * - Map ICS codes to hardware types
+ * - Generate a clean JSON file for the application
+ * 
+ * Usage:
+ *   npm run process-standards
+ *   # or
+ *   node scripts/process-iso-data.js
+ * 
+ * Input:
+ *   data/raw/iso_deliverables_metadata.jsonl - Raw ISO metadata (one JSON per line)
+ * 
+ * Output:
+ *   src/lib/data/standards-processed.json - Processed fastener standards
+ * 
+ * @requires Node.js 14+ (for ES modules)
+ */
+
 import fs from 'fs';
 import readline from 'readline';
 import path from 'path';

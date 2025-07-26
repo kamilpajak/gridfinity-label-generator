@@ -33,111 +33,33 @@ export interface ISODINStandard {
   }>;
   
   /** Hardware types this standard applies to */
-  hardwareTypes: ('screw' | 'bolt' | 'nut' | 'washer')[];
+  hardwareTypes: ('screw' | 'bolt' | 'nut' | 'washer' | 'pin' | 'rivet' | 'clamp' | 'spring' | 'fastener')[];
   
   /** Path to visual representation (relative to /static/) */
   image?: string;
   
   /** Category for grouping similar standards */
-  category?: 'socket' | 'countersunk' | 'set' | 'hex' | 'flat' | 'pan' | 'button';
+  category?: 'socket' | 'countersunk' | 'set' | 'hex' | 'flat' | 'pan' | 'button' | 'cheese' | 'fillister' | 'round' | 'truss' | 'binding' | 'thumb' | 'wing' | 'square' | 'carriage' | 'flange' | 'weld' | 'special';
+  
+  /** ICS (International Classification for Standards) codes */
+  icsCode?: string[];
+  
+  /** ISO reference (e.g., "ISO 4762:2004") */
+  reference?: string;
+  
+  /** Brief scope description */
+  scope?: string;
 }
 
 /**
- * Master list of all supported ISO/DIN standards
+ * Import generated standards
  */
-export const standards: ISODINStandard[] = [
-  {
-    id: 'iso4762',
-    description: 'Socket Head Cap Screw',
-    designations: [
-      { system: 'ISO', code: '4762' },
-      { system: 'DIN', code: '912' },
-      { system: 'ANSI', code: 'B18.3' },
-      { system: 'PN', code: '82005' }
-    ],
-    hardwareTypes: ['screw', 'bolt'],
-    category: 'socket',
-    image: '/images/standards/iso4762.png'
-  },
-  {
-    id: 'iso4032',
-    description: 'Hex Nut',
-    designations: [
-      { system: 'ISO', code: '4032' },
-      { system: 'DIN', code: '934' },
-      { system: 'ANSI', code: 'B18.2.2' },
-      { system: 'PN', code: '82144' }
-    ],
-    hardwareTypes: ['nut'],
-    category: 'hex'
-  },
-  {
-    id: 'iso10642',
-    description: 'Countersunk Head Screw',
-    designations: [
-      { system: 'ISO', code: '10642' },
-      { system: 'DIN', code: '7991' },
-      { system: 'ANSI', code: 'B18.3.2' },
-      { system: 'PN', code: '82009' }
-    ],
-    hardwareTypes: ['screw', 'bolt'],
-    category: 'countersunk'
-  },
-  {
-    id: 'iso7089',
-    description: 'Plain Washer',
-    designations: [
-      { system: 'ISO', code: '7089' },
-      { system: 'DIN', code: '125' },
-      { system: 'ANSI', code: 'B18.22.1' },
-      { system: 'PN', code: '82005' }
-    ],
-    hardwareTypes: ['washer'],
-    category: 'flat'
-  },
-  {
-    id: 'iso4026',
-    description: 'Set Screw with Flat Point',
-    designations: [
-      { system: 'ISO', code: '4026' },
-      { system: 'DIN', code: '913' },
-      { system: 'ANSI', code: 'B18.3.6M' }
-    ],
-    hardwareTypes: ['screw'],
-    category: 'set'
-  },
-  {
-    id: 'iso14579',
-    description: 'Hexalobular Socket Head Screw',
-    designations: [
-      { system: 'ISO', code: '14579' },
-      { system: 'DIN', code: '34822' }
-    ],
-    hardwareTypes: ['screw', 'bolt'],
-    category: 'socket'
-  },
-  {
-    id: 'iso4035',
-    description: 'Hex Thin Nut',
-    designations: [
-      { system: 'ISO', code: '4035' },
-      { system: 'DIN', code: '439' },
-      { system: 'ANSI', code: 'B18.2.2' }
-    ],
-    hardwareTypes: ['nut'],
-    category: 'hex'
-  },
-  {
-    id: 'iso7380',
-    description: 'Button Head Socket Screw',
-    designations: [
-      { system: 'ISO', code: '7380' },
-      { system: 'DIN', code: '9427' }
-    ],
-    hardwareTypes: ['screw', 'bolt'],
-    category: 'button'
-  }
-];
+import { generatedStandards } from './standards-generated';
+
+/**
+ * Main standards array - generated from build pipeline
+ */
+export const standards = generatedStandards;
 
 /**
  * Type definitions for filtering and categorization

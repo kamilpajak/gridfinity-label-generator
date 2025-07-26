@@ -15,7 +15,8 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
-		"process-standards": "node scripts/process-iso-data.js"
+		"process-standards": "node scripts/process-iso-data.js",
+		"build-standards": "node scripts/build-standards.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",

@@ -11,8 +11,7 @@
 	let showHardwareImage = $state(false);
 	let showQRCode = $state(false);
 	
-	let hardwareType = $state('screw');
-	let screwType = $state('bolt');
+	let hardwareType = $state('bolt');
 	let measurementSystem = $state('metric');
 	
 	let lengthPlaceholder = $derived(
@@ -58,21 +57,17 @@
 							<Card.Title>Hardware Configuration</Card.Title>
 						</Card.Header>
 						<Card.Content class="space-y-4">
-							<div class="grid grid-cols-3 gap-2">
+							<div class="grid grid-cols-2 gap-4">
 								<ToggleGroup bind:value={hardwareType} variant="outline" type="single" size="lg" class="w-full">
-									<ToggleGroupItem value="screw">Screw</ToggleGroupItem>
-									<ToggleGroupItem value="nut">Nut</ToggleGroupItem>
-									<ToggleGroupItem value="washer">Washer</ToggleGroupItem>
-								</ToggleGroup>
-								
-								<ToggleGroup bind:value={screwType} variant="outline" type="single" size="lg" disabled={hardwareType === 'nut' || hardwareType === 'washer'} class="w-full">
-									<ToggleGroupItem value="bolt">Bolt</ToggleGroupItem>
-									<ToggleGroupItem value="screw">Screw</ToggleGroupItem>
+									<ToggleGroupItem value="bolt" class="flex-1">Bolt</ToggleGroupItem>
+									<ToggleGroupItem value="screw" class="flex-1">Screw</ToggleGroupItem>
+									<ToggleGroupItem value="nut" class="flex-1">Nut</ToggleGroupItem>
+									<ToggleGroupItem value="washer" class="flex-1">Washer</ToggleGroupItem>
 								</ToggleGroup>
 								
 								<ToggleGroup bind:value={measurementSystem} variant="outline" type="single" size="lg" class="w-full">
-									<ToggleGroupItem value="metric">Metric</ToggleGroupItem>
-									<ToggleGroupItem value="imperial">Imperial</ToggleGroupItem>
+									<ToggleGroupItem value="metric" class="flex-1">Metric</ToggleGroupItem>
+									<ToggleGroupItem value="imperial" class="flex-1">Imperial</ToggleGroupItem>
 								</ToggleGroup>
 							</div>
 							

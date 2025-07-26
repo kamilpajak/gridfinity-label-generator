@@ -27,7 +27,7 @@ This directory contains data processing scripts for the Gridfinity Label Generat
                        ▼
             ┌─────────────────────────┐
             │ standards-generated.ts  │
-            │ (40 priority standards) │
+            │ (146 standards)         │
             └─────────────────────────┘
 ```
 
@@ -48,6 +48,8 @@ npm run process-standards
 ```
 
 **Input:** `data/raw/iso_deliverables_metadata.jsonl`  
+- Source: [ISO Open Data](https://isopublicstorageprod.blob.core.windows.net/opendata/_latest/iso_deliverables_metadata/json/iso_deliverables_metadata.jsonl)
+
 **Output:** `src/lib/data/standards-processed.json`
 
 ### build-standards.js
@@ -55,9 +57,9 @@ npm run process-standards
 Merges ISO standards with cross-reference mappings.
 
 **Purpose:**
-- Combines ISO data with DIN/ANSI/PN equivalents
+- Combines ISO data with DIN equivalents
 - Auto-categorizes standards by head/drive type
-- Filters to 40 priority standards for performance
+- Includes all 146 standards for comprehensive coverage
 - Generates TypeScript module
 
 **Usage:**
@@ -75,13 +77,15 @@ npm run build-standards
 
 ### standards-crossref.json
 
-Manual mapping of ISO standards to their equivalents:
+Manual mapping of ISO standards to their DIN equivalents based on:
+- [Fuller Fasteners DIN-ISO crossover chart](https://fullerfasteners.com/tech/din-iso-en-crossover-chart/)
+- Additional industry sources
+
+Example structure:
 ```json
 {
   "iso4762": {
-    "din": ["912"],
-    "ansi": ["B18.3"],
-    "pn": ["82005"]
+    "din": ["912"]
   }
 }
 ```
@@ -96,7 +100,7 @@ Filtered ISO standards with metadata:
     "tc2Standards": 666,
     "currentStandards": 146
   },
-  "standards": [...]
+  "standards": []
 }
 ```
 
@@ -106,18 +110,21 @@ Filtered ISO standards with metadata:
 2. **Run build script**: `npm run build-standards`
 3. **Test** the generated data in the application
 
-## Including All Standards
+## Filtering to Priority Standards
 
-To include all 146 standards instead of the priority 40:
+By default, all 146 standards are included. To filter to 40 priority standards:
 
 1. Edit `scripts/build-standards.js`
-2. Comment out the filter on line 166-167:
+2. Uncomment the filter on line 169:
    ```javascript
+   // Change from:
    // .filter(std => priorityStandards.includes(std.id))
+   // To:
+   .filter(std => priorityStandards.includes(std.id))
    ```
 3. Re-run: `npm run build-standards`
 
 ## Requirements
 
 - Node.js 14+ (for ES modules)
-- Raw ISO data file in `data/raw/`
+- Raw ISO data file in `data/raw/` (download from [ISO Open Data](https://isopublicstorageprod.blob.core.windows.net/opendata/_latest/iso_deliverables_metadata/json/iso_deliverables_metadata.jsonl))

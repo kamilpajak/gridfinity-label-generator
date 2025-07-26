@@ -9,13 +9,13 @@
  * Purpose:
  * - Merge ISO standards with DIN/ANSI/PN cross-references
  * - Categorize standards based on description keywords
- * - Filter to priority standards for optimal client-side performance
+ * - Include all standards for comprehensive coverage
  * - Generate TypeScript module with proper typing
  * 
  * Data Pipeline:
  *   1. process-iso-data.js → standards-processed.json (146 ISO standards)
  *   2. Manual curation → standards-crossref.json (designation mappings)
- *   3. build-standards.js → standards-generated.ts (40 priority standards)
+ *   3. build-standards.js → standards-generated.ts (146 standards)
  * 
  * Usage:
  *   npm run build-standards
@@ -123,7 +123,7 @@ async function buildStandards() {
     // Build the standard object
     const standard = {
       id: std.id,
-      description: crossref.description || std.description,
+      description: std.description,
       designations,
       hardwareTypes: std.hardwareTypes
     };
@@ -145,7 +145,7 @@ async function buildStandards() {
   });
   
   // Filter to most common standards
-  // This reduces the client-side bundle from 146 to 40 standards
+  // This would reduce the client-side bundle to 40 standards if enabled
   // Includes the most commonly used fastener standards
   // To include all standards, comment out the filter below
   const priorityStandards = [

@@ -70,3 +70,6 @@ lerna-debug.log*
 .pnp.*
 .yarn/
 .npm
+
+# Data files
+/data/raw/

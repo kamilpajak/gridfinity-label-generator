@@ -1,6 +1,24 @@
 <script lang="ts">
 	import * as Card from "$lib/components/ui/card";
 	import * as Tabs from "$lib/components/ui/tabs";
+	import { Switch } from '$lib/components/ui/switch';
+	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
+	import { Input } from '$lib/components/ui/input';
+	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
+	
+	let showStandard = $state(false);
+	let showHardwareImage = $state(false);
+	let showQRCode = $state(false);
+	
+	let hardwareType = $state('screw');
+	let screwType = $state('bolt');
+	let measurementSystem = $state('metric');
+	
+	let lengthPlaceholder = $derived(
+		measurementSystem === 'metric' 
+			? 'Length (e.g., 10)' 
+			: 'Length (e.g., 3/8″)'
+	);
 </script>
 
 <svelte:head>
@@ -23,16 +41,111 @@
 		</Tabs.List>
 		
 		<Tabs.Content value="single" class="mt-6">
-			<Card.Root>
-				<Card.Header>
-					<Card.Title>Single Label</Card.Title>
-					<Card.Description>Create one label at a time</Card.Description>
-				</Card.Header>
-				<Card.Content>
-					<!-- Placeholder for Single Label content -->
-					<p class="text-muted-foreground">Single Label configuration will go here</p>
-				</Card.Content>
-			</Card.Root>
+			<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+				<div class="lg:col-span-2">
+					<Card.Root>
+						<Card.Header>
+							<Card.Title>Hardware Configuration</Card.Title>
+						</Card.Header>
+						<Card.Content class="space-y-4">
+							<div class="grid grid-cols-3 gap-2">
+								<ToggleGroup bind:value={hardwareType} variant="outline" type="single" size="lg" class="w-full">
+									<ToggleGroupItem value="screw">Screw</ToggleGroupItem>
+									<ToggleGroupItem value="nut">Nut</ToggleGroupItem>
+									<ToggleGroupItem value="washer">Washer</ToggleGroupItem>
+								</ToggleGroup>
+								
+								<ToggleGroup bind:value={screwType} variant="outline" type="single" size="lg" disabled={hardwareType === 'nut' || hardwareType === 'washer'} class="w-full">
+									<ToggleGroupItem value="bolt">Bolt</ToggleGroupItem>
+									<ToggleGroupItem value="screw">Screw</ToggleGroupItem>
+								</ToggleGroup>
+								
+								<ToggleGroup bind:value={measurementSystem} variant="outline" type="single" size="lg" class="w-full">
+									<ToggleGroupItem value="metric">Metric</ToggleGroupItem>
+									<ToggleGroupItem value="imperial">Imperial</ToggleGroupItem>
+								</ToggleGroup>
+							</div>
+							
+							<div class="grid grid-cols-2 gap-4 mt-4">
+								<div>
+									<Select type="single">
+										<SelectTrigger id="thread-size" class="w-full">
+											Select thread size
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="m3">M3</SelectItem>
+											<SelectItem value="m4">M4</SelectItem>
+											<SelectItem value="m5">M5</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
+								<div>
+									<Input id="length" placeholder={lengthPlaceholder} disabled={hardwareType === 'nut' || hardwareType === 'washer'} class="w-full" />
+								</div>
+							</div>
+							
+							<div class="grid grid-cols-2 gap-4 mt-4">
+								<div>
+									<Select type="single">
+										<SelectTrigger class="w-full">
+											Select ISO/DIN standard
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="iso4762">ISO 4762 - Socket Head Cap Screw</SelectItem>
+											<SelectItem value="din912">DIN 912 - Socket Head Cap Screw</SelectItem>
+											<SelectItem value="iso14579">ISO 14579 - Socket Head Screw</SelectItem>
+											<SelectItem value="iso10642">ISO 10642 - Countersunk Head Screw</SelectItem>
+											<SelectItem value="din7991">DIN 7991 - Countersunk Head Screw</SelectItem>
+											<SelectItem value="iso4026">ISO 4026 - Set Screw</SelectItem>
+											<SelectItem value="din913">DIN 913 - Set Screw</SelectItem>
+										</SelectContent>
+									</Select>
+								</div>
+								<div>
+									<Input placeholder="Optional note" class="w-full" />
+								</div>
+							</div>
+							
+							<div class="mt-4">
+								<Input placeholder="QR code content (optional)" class="w-full" disabled={!showQRCode} />
+							</div>
+						</Card.Content>
+					</Card.Root>
+				</div>
+				
+				<div>
+					<Card.Root>
+						<Card.Header>
+							<Card.Title>Display Options</Card.Title>
+						</Card.Header>
+						<Card.Content class="space-y-4">
+							<div class="flex items-center justify-between space-x-2">
+								<div class="space-y-0.5">
+									<div class="font-medium">Standard Reference</div>
+									<div class="text-sm text-muted-foreground">Show ISO/DIN standard</div>
+								</div>
+								<Switch bind:checked={showStandard} />
+							</div>
+							
+							<div class="flex items-center justify-between space-x-2">
+								<div class="space-y-0.5">
+									<div class="font-medium">Hardware Image</div>
+									<div class="text-sm text-muted-foreground">Visual representation</div>
+								</div>
+								<Switch bind:checked={showHardwareImage} />
+							</div>
+							
+							<div class="flex items-center justify-between space-x-2">
+								<div class="space-y-0.5">
+									<div class="font-medium">QR Code</div>
+									<div class="text-sm text-muted-foreground">Add scannable code</div>
+								</div>
+								<Switch bind:checked={showQRCode} />
+							</div>
+						</Card.Content>
+					</Card.Root>
+				</div>
+			</div>
 		</Tabs.Content>
 		
 		<Tabs.Content value="batch" class="mt-6">

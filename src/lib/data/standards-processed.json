@@ -1,0 +1,2972 @@
+{
+  "metadata": {
+    "generated": "2025-07-26T12:28:03.497Z",
+    "totalRecords": 78869,
+    "tc2Standards": 666,
+    "currentStandards": 146,
+    "source": "ISO Deliverables Metadata"
+  },
+  "standards": [
+    {
+      "id": "iso225",
+      "description": "Fasteners — Bolts, screws, studs and nuts — Symbols and descriptions of dimensions",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "225"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 225:2010",
+      "publicationDate": "2010-09-24",
+      "edition": 3,
+      "scope": "<p>ISO 225:2010 defines the symbols and gives descriptions of the dimensions of bolts, screws, studs and nuts in English, French and Russian, for use in the appropriate product standards and drawings.</p>\n<p>The figures of the fasteners in ISO 225:2010 are given only as examples.</p>\n<p>In addition to terms used in the three official ISO languages (English, French and Russian), ISO 225:2010 gives the equivalent terms in Chinese, German, Italian, Japanese, Spanish and Swedish.</p>\n"
+    },
+    {
+      "id": "iso272",
+      "description": "Fasteners — Hexagon products — Widths across flats — Amendment 1",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "272"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01"
+      ],
+      "reference": "ISO 272:1982/DAmd 1",
+      "publicationDate": null,
+      "edition": 2
+    },
+    {
+      "id": "iso273",
+      "description": "Fasteners — Clearance holes for bolts and screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "273"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01"
+      ],
+      "reference": "ISO 273:1979",
+      "publicationDate": "1979-06-01",
+      "edition": 1,
+      "scope": "<p>Specifies diameters for general purpose applications; tabulates the hole diameters for fine, medium and coarse series for thread diameters from 1 mm up to 150 mm; holes for special applications should be selected on the basis of design requirements.</p>\n"
+    },
+    {
+      "id": "iso887",
+      "description": "Plain washers for metric bolts, screws and nuts for general purposes — General plan",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "887"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 887:2000",
+      "publicationDate": "2000-06-08",
+      "edition": 2
+    },
+    {
+      "id": "iso898",
+      "description": "Mechanical properties of fasteners made of carbon steel and alloy steel — Part 5: Set screws and similar threaded fasteners with specified hardness classes — Coarse thread and fine pitch thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "898"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 898-5:2012",
+      "publicationDate": "2012-05-30",
+      "edition": 3,
+      "scope": "<p>ISO 898-5:2012 specifies mechanical and physical properties of set screws and similar threaded fasteners made of carbon steel or alloy steel when tested at an ambient temperature range of 10 °C to 35 °C. Fasteners (the term used when set screws and similar threaded fasteners are considered all together) which conform to the requirements of ISO 898-5:2012 are evaluated at that ambient temperature range.</p>\n<p>Fasteners according to ISO 898-5:2012 are classified to specified hardness classes and are intended for use under compressive stress only.</p>\n<p>ISO 898-5:2012 is applicable to set screws and similar fasteners:</p>\n<ul>\n<li>made of carbon steel or alloy steel,</li>\n<li>having a triangular ISO metric screw thread according to ISO 68-1,</li>\n<li>with a coarse pitch thread M1,6 to M30, and fine pitch thread M8×1 to M30×2,</li>\n<li>with diameter/pitch combinations according to ISO 261 and ISO 262, and</li>\n<li>having thread tolerances according to ISO 965-1 and ISO 965-2.</li>\n</ul>\n\n"
+    },
+    {
+      "id": "iso1051",
+      "description": "Rivet shank diameters",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "1051"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 1051:1999",
+      "publicationDate": "1999-11-25",
+      "edition": 1,
+      "scope": "<p>This International Standard specifies two series of shank diameters of rivets for general use, except blind rivets, in</p>\n<p>the range from 1 mm up to and including 36 mm.</p>\n"
+    },
+    {
+      "id": "iso1207",
+      "description": "Slotted cheese head screws — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "1207"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 1207:2011",
+      "publicationDate": "2011-07-21",
+      "edition": 3,
+      "scope": "<p>ISO 1207:2011 specifies the characteristics of slotted cheese head screws of product grade A and with threads from M1,6 to M10 inclusive.</p>\n"
+    },
+    {
+      "id": "iso1234",
+      "description": "Split pins",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "1234"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 1234:1997",
+      "publicationDate": "1997-10-30",
+      "edition": 2
+    },
+    {
+      "id": "iso1478",
+      "description": "Tapping screws thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "1478"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.040.30"
+      ],
+      "reference": "ISO 1478:1999",
+      "publicationDate": "1999-11-04",
+      "edition": 2
+    },
+    {
+      "id": "iso1479",
+      "description": "Hexagon head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "1479"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 1479:2011",
+      "publicationDate": "2011-07-21",
+      "edition": 2,
+      "scope": "<p>ISO 1479:2011 specifies the characteristics of hexagon head tapping screws with thread sizes from ST 2,2 to ST 9,5 inclusive.</p>\n"
+    },
+    {
+      "id": "iso1481",
+      "description": "Slotted pan head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "1481"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 1481:2011",
+      "publicationDate": "2011-07-21",
+      "edition": 2,
+      "scope": "<p>ISO 1481:2011 specifies the characteristics of slotted pan head tapping screws with thread sizes from ST 2,2 to ST 9,5 inclusive.</p>\n"
+    },
+    {
+      "id": "iso1482",
+      "description": "Slotted countersunk (flat) head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "1482"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 1482:2011",
+      "publicationDate": "2011-07-21",
+      "edition": 2,
+      "scope": "<p>ISO 1482:2011 specifies the characteristics of slotted countersunk (flat) head tapping screws with thread sizes from ST 2,2 to ST 9,5 inclusive.</p>\n"
+    },
+    {
+      "id": "iso1483",
+      "description": "Slotted raised countersunk (oval) head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "1483"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 1483:2011",
+      "publicationDate": "2011-07-21",
+      "edition": 2,
+      "scope": "<p>ISO 1483:2011 specifies the characteristics of slotted raised countersunk (oval) head tapping screws with thread sizes from ST 2,2 to ST 9,5 inclusive.</p>\n\n"
+    },
+    {
+      "id": "iso1580",
+      "description": "Slotted pan head screws — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "1580"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 1580:2011",
+      "publicationDate": "2011-08-26",
+      "edition": 3,
+      "scope": "<p>ISO 1580:2011 specifies the characteristics of slotted pan head screws of product grade A and with threads from M1,6 to M10 inclusive.</p>\n\n"
+    },
+    {
+      "id": "iso1891",
+      "description": "Fasteners — Vocabulary — Part 4: Control, inspection, delivery, acceptance and quality",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "1891"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01",
+        "01.040.21"
+      ],
+      "reference": "ISO 1891-4:2018",
+      "publicationDate": "2018-05-23",
+      "edition": 1,
+      "scope": "<p>This document specifies terms and definitions for fasteners related to control, inspection, delivery, acceptance and quality.</p>\n<p>These terms are mainly intended for use in conjunction with ISO 3269, ISO 16228 and ISO 16426.</p>\n<p>A multilingual list of terms in alphabetical order is given in Annex A.</p>\n<p>NOTE 1   For a fasteners quality assurance system, see ISO 16426.</p>\n<p>NOTE 2   For other fasteners terms, see, for example, ISO 225, and other parts of ISO 1891, ISO 4753 and ISO 14588.</p>\n<p>NOTE 3   For other general terms related to quality and statistics, see, for example, ISO 9000, ISO 3534‑1, ISO 3534‑2 and ISO 3534-3.</p>\n<p>Successive order of languages:</p>\n<p>en:  English</p>\n<p>fr:    French</p>\n<p>ru:   Russian</p>\n<p>de:  German</p>\n<p>zh:  Chinese</p>\n<p>it:    Italian</p>\n<p>ja:   Japanese</p>\n<p>sv:  Swedish</p>\n<p>NOTE 4   In addition to the official ISO languages, this document includes the terms and definitions in German and also gives the terms in Chinese, Italian, Japanese and Swedish.</p>\n"
+    },
+    {
+      "id": "iso2009",
+      "description": "Slotted countersunk flat head screws — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "2009"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 2009:2011",
+      "publicationDate": "2011-08-26",
+      "edition": 4,
+      "scope": "<p>ISO 2009:2011 specifies the characteristics of slotted countersunk flat head screws of product grade A and with threads from M1,6 to M10 inclusive.</p>\n\n"
+    },
+    {
+      "id": "iso2010",
+      "description": "Slotted raised countersunk head screws — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "2010"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 2010:2011",
+      "publicationDate": "2011-08-26",
+      "edition": 4,
+      "scope": "<p>ISO 2010:2011 specifies the characteristics of countersunk slotted raised head screws of product grade A and with threads from M1,6 to M10 inclusive.</p>\n\n"
+    },
+    {
+      "id": "iso2320",
+      "description": "Fasteners — Prevailing torque steel nuts — Functional properties",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "2320"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 2320:2015",
+      "publicationDate": "2015-11-30",
+      "edition": 5,
+      "scope": "<p>ISO 2320:2015 specifies the functional properties for prevailing torque steel nuts when tested at an ambient temperature range of +10 °C to +35 °C. It includes a combined test method to determine the prevailing torque properties and the torque/clamp force properties at the same time.</p>\n<p>It applies to prevailing torque all metal type nuts and prevailing torque non-metallic insert type nuts:</p>\n<p>-      with triangular ISO thread in accordance with ISO 68‑1;</p>\n<p>-      with diameter/pitch combination in accordance with ISO 261 and ISO 262;</p>\n<p>-      with coarse pitch thread M5 to M39 or with fine pitch thread M8 × 1 to M39 × 3;</p>\n<p>-      with thread tolerances in accordance with ISO 965-2;</p>\n<p>-      with mechanical properties in accordance with ISO 898‑2;</p>\n<p>Prevailing torque values specified in this standard are based on laboratory test conditions.</p>\n<p>NOTE 1       Actual prevailing torques in practical application can vary.</p>\n<p>NOTE 2       All metal type nuts conforming to the requirements of this International Standard are used in applications ranging from −50 °C to +150 °C.</p>\n<p>NOTE 3       Non-metallic insert type nuts conforming to the requirements of this International Standard are used in applications ranging from −50 °C to +120 °C.</p>\n<p>WARNING ? Temperatures outside the ambient temperature range can influence the functional properties (torque/clamp force and prevailing torque properties), see Annex A.</p>\n\n"
+    },
+    {
+      "id": "iso2338",
+      "description": "Parallel pins, of unhardened steel and austenitic stainless steel",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "2338"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 2338:1997",
+      "publicationDate": "1997-10-30",
+      "edition": 3
+    },
+    {
+      "id": "iso2339",
+      "description": "Taper pins, unhardened",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "2339"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 2339:1986",
+      "publicationDate": "1986-10-30",
+      "edition": 2,
+      "scope": "<p>Specifies the characteristics of products with metric dimensions and nominal diameters from 0,6 mm up to and including 50 mm; includes specifications with reference to International Standards; gives an example for the designation.</p>\n"
+    },
+    {
+      "id": "iso2340",
+      "description": "Clevis pins without head",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "2340"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 2340:1986",
+      "publicationDate": "1986-10-30",
+      "edition": 2,
+      "scope": "<p>Specifies the characteristics of products without (type A) and with split pin holes (type B) with metric dimensions and nominal diameters from 3 mm up to and including 100 mm with reference to International Standards; gives examples for the designation.</p>\n"
+    },
+    {
+      "id": "iso2341",
+      "description": "Clevis pins with head",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "2341"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 2341:1986",
+      "publicationDate": "1986-10-30",
+      "edition": 2,
+      "scope": "<p>Specifies the characteristics of products without (type A) and with split pin hole (type B) with metric dimensions and nominal diameters from 3 mm up to and including 100 mm; includes specifications with reference to International Standards; gives examples for the designation.</p>\n"
+    },
+    {
+      "id": "iso2342",
+      "description": "Slotted headless screws with shank",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "2342"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 2342:2003",
+      "publicationDate": "2003-12-05",
+      "edition": 2,
+      "scope": "<p>ISO 2342:2003 specifies the characteristics of slotted headless screws with shank with threads from M1 up to and including M10.</p>\n"
+    },
+    {
+      "id": "iso2702",
+      "description": "Fasteners — Heat treated tapping screws — Mechanical and physical properties",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "2702"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 2702:2022",
+      "publicationDate": "2022-12-12",
+      "edition": 4,
+      "scope": "<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">This document specifies the mechanical and physical properties of heat treated tapping screws made of steel, with thread sizes ST2,2 to ST9,5 in accordance with <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">ISO</span></span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">1478</span></span></span>, when tested at the ambient temperature range of 10 °C to 35 °C, and the related test methods.</span></p>\n<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">Tapping screws are designed to form mating threads in sheet metals, without their own threads being deformed. Tapping screws are not intended to be pretensioned by design, even though they can experience varying degrees of low-level tensile stress after installation.</span></p>"
+    },
+    {
+      "id": "iso3506",
+      "description": "Mechanical properties of corrosion-resistant stainless steel fasteners — Part 1: Bolts, screws and studs — Amendment 1",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "3506"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 3506-1:2009/WD Amd 1",
+      "publicationDate": null,
+      "edition": 2
+    },
+    {
+      "id": "iso3508",
+      "description": "Thread run-outs for fasteners with thread in accordance with ISO 261 and ISO 262",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "3508"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01"
+      ],
+      "reference": "ISO 3508:1976",
+      "publicationDate": "1976-02-01",
+      "edition": 1,
+      "scope": "<p>Specifies for fully threaded screws with machined, or rolled threads pitches of the thread ranging from 0,2 mm to 6 mm and thread diameters (coarse thread) ranging from 1 mm to 68 mm; it does not apply to those threaded fasteners where special requirements are laid down in the product standards.</p>\n"
+    },
+    {
+      "id": "iso3800",
+      "description": "Threaded fasteners — Axial load fatigue testing — Test methods and evaluation of results",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "3800"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01"
+      ],
+      "reference": "ISO 3800:1993",
+      "publicationDate": "1993-12-23",
+      "edition": 1,
+      "scope": "<p>Specifies the conditions for carrying out the tests as well as recommendations for the evaluation of the results. Unless otherwise agreed, the tests are of the fluctuating tension type and are carried out at room temperature. The influence of the compliance of clamped parts on the strain of the fastener is not taken into account. The test results can be influenced by the test conditions. For this reason, minimum requirements are specified to reduce this effect. In addition, calibration and centring control methods for the testing apparatus are included.</p>\n"
+    },
+    {
+      "id": "iso4014",
+      "description": "Fasteners — Hexagon head bolts — Product grades A and B",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4014"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 4014:2022",
+      "publicationDate": "2022-06-28",
+      "edition": 5,
+      "scope": "<p>This document specifies the characteristics of hexagon head bolts, in steel and stainless steel, with metric coarse pitch threads M1,6 to M64, and with product grades A and B.</p>\n<p>If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-1 or ISO 3506-1, and dimensional options from ISO 888 or ISO 4753.</p>"
+    },
+    {
+      "id": "iso4015",
+      "description": "Fasteners — Hexagon head bolts with reduced shank (shank diameter ≈ pitch diameter) — Product grade B",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4015"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 4015:2022",
+      "publicationDate": "2022-06-28",
+      "edition": 2,
+      "scope": "<p>This document specifies the characteristics of hexagon head bolts with reduced shank (shank diameter approximately equal to pitch diameter), in steel and stainless steel, with metric coarse pitch threads M3 to M20, and with product grade B.</p>\n<p>If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-1 or ISO 3506-1, and dimensional options from ISO 888 or ISO 4753.</p>\n<p>NOTE      For hexagon head bolts with full shank, see ISO 4014.</p>"
+    },
+    {
+      "id": "iso4016",
+      "description": "Fasteners — Hexagon head bolts — Product grade C",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4016"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 4016:2022",
+      "publicationDate": "2022-06-28",
+      "edition": 5,
+      "scope": "<p>This document specifies the characteristics of hexagon head bolts, in steel, with metric coarse pitch threads M5 to M64, and with product grade C.</p>\n<p>If in certain cases other specifications are requested, property classes can be selected from ISO 898-1 and dimensional options from ISO 888 or ISO 4753.</p>"
+    },
+    {
+      "id": "iso4017",
+      "description": "Fasteners — Hexagon head screws — Product grades A and B",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4017"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 4017:2022",
+      "publicationDate": "2022-06-28",
+      "edition": 6,
+      "scope": "<p>This document specifies the characteristics of hexagon head screws, in steel and stainless steel, with metric coarse pitch threads M1,6 to M64, and with product grades A and B.</p>\n<p>If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-1 or ISO 3506-1, and dimensional options from ISO 888 or ISO 4753.</p>"
+    },
+    {
+      "id": "iso4018",
+      "description": "Fasteners — Hexagon head screws — Product grade C",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4018"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 4018:2022",
+      "publicationDate": "2022-06-28",
+      "edition": 5,
+      "scope": "<p>This document specifies the characteristics of hexagon head screws, in steel, with metric coarse pitch threads M5 to M64, and with product grade C.</p>\n<p>If in certain cases other specifications are requested, property classes can be selected from ISO 898-1, and dimensional options from ISO 888 or ISO 4753.</p>"
+    },
+    {
+      "id": "iso4032",
+      "description": "Fasteners — Hexagon regular nuts (style 1)",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4032"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 4032:2023",
+      "publicationDate": "2023-08-22",
+      "edition": 5,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of hexagon regular nuts (style 1), in steel and stainless steel, with metric coarse pitch thread M5 to M39, and with product grades A and B.</span></p>\n<p class=\"Note\"><span lang=\"EN-GB\">NOTE<span style=\"mso-tab-count: 1;\">            </span>For nuts with sizes <em style=\"mso-bidi-font-style: normal;\">D</em> &lt; M5 and <em style=\"mso-bidi-font-style: normal;\">D</em> &gt; M39, see Annex A.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-2 or ISO 3506-2.</span></p>"
+    },
+    {
+      "id": "iso4033",
+      "description": "Fasteners — Hexagon high nuts (style 2)",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4033"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 4033:2023",
+      "publicationDate": "2023-08-31",
+      "edition": 4,
+      "scope": "<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">This document specifies the characteristics of hexagon high nuts (style 2), in steel and stainless steel, with metric coarse pitch thread M5 to M39, and with product grades A and B.</span></p>\n<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext;\">ISO</span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">898</span></span>-<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">2</span></span> or <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext;\">ISO</span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">3506</span></span>-<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">2</span></span>.</span></p>"
+    },
+    {
+      "id": "iso4035",
+      "description": "Fasteners — Hexagon thin nuts (style 0)",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4035"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 4035:2023",
+      "publicationDate": "2023-08-31",
+      "edition": 5,
+      "scope": "<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">This document specifies the characteristics of hexagon thin nuts (style 0), in steel and stainless steel, with metric coarse pitch thread M1,6 to M64, and with product grades A and B.</span></p>\n<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">Thin nuts used as jam nuts are to be assembled together with a regular or high nut.</span></p>\n<p class=\"Notice\"><span lang=\"EN-GB\">WARNING — Thin nuts (style 0) have a reduced loadability compared to regular nuts or high nuts, and are not designed to provide resistance to thread stripping (see </span><span class=\"stdpublisher\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; color: black; mso-color-alt: windowtext;\">ISO</span></span><span lang=\"EN-GB\"> </span><span class=\"stddocNumber\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; color: black; mso-color-alt: windowtext;\">898</span></span><span lang=\"EN-GB\">-</span><span class=\"stddocPartNumber\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; color: black; mso-color-alt: windowtext;\">2</span></span><span lang=\"EN-GB\">).</span></p>\n<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">If in certain cases other specifications are requested, stainless steel grades and property classes can be selected from <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext;\">ISO</span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">3506</span></span>-<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">2</span></span>.</span></p>"
+    },
+    {
+      "id": "iso4042",
+      "description": "Fasteners — Electroplated coating systems",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4042"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01"
+      ],
+      "reference": "ISO 4042:2022",
+      "publicationDate": "2022-06-03",
+      "edition": 4,
+      "scope": "<p>This document specifies requirements for steel fasteners with electroplated coatings and coating systems. The requirements related to dimensional properties also apply to fasteners made of copper or copper alloys.</p>\n<p>It also specifies requirements and gives recommendations to minimize the risk of hydrogen embrittlement, see 4.4 and Annex B.</p>\n<p>It mainly applies to fasteners with zinc and zinc alloy coating systems (zinc, zinc-nickel, zinc-iron) and cadmium, primarily intended for corrosion protection and other functional properties:</p>\n<p>—    with or without conversion coating,</p>\n<p>—    with or without sealant,</p>\n<p>—    with or without top coat,</p>\n<p>—    with or without lubricant (integral lubricant and/or subsequently added lubricant).</p>\n<p>Specifications for other electroplated coatings and coating systems (tin, tin-zinc, copper-tin, copper-silver, copper, silver, copper-zinc, nickel, nickel-chromium, copper-nickel, copper-nickel-chromium) are included in this document only for dimensional requirements related to fasteners with ISO metric threads.</p>\n<p>The requirements of this document for electroplated fasteners take precedence over other documents  dealing with electroplating.</p>\n<p>This document applies to steel bolts, screws, studs and nuts with ISO metric thread, to other threaded fasteners and to non-threaded fasteners such as washers, pins, clips and rivets.</p>\n<p>NOTE       Electroplating is also applied to stainless steel fasteners, e.g. for the purpose of lubrication in order to avoid galling.</p>\n<p>Information for design and assembly of coated fasteners is given in Annex A.</p>\n<p>This document does not specify requirements for properties such as weldability or paintability.</p>"
+    },
+    {
+      "id": "iso4162",
+      "description": "Hexagon bolts with flange — Small series — Product grade A with driving feature of product grade B",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4162"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 4162:2012",
+      "publicationDate": "2012-06-25",
+      "edition": 2,
+      "scope": "<p>ISO 4162:2012 specifies the characteristics of hexagon bolts with flanges, small series, of product grade A (except the driving feature which is according to product grade B), with threads from M5 up to and including M16, and property classes 8.8 to 10.9 and A2‑70.</p>\n<p>If, in special cases, specifications other than those listed in ISO 4162:2012 are required, they can be selected from existing International Standards, for example ISO 261, ISO 888, ISO 898‑1, ISO 965‑2 and ISO 3506-1.</p>\n"
+    },
+    {
+      "id": "iso4753",
+      "description": "Fasteners — Ends of parts with external ISO metric thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4753"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01"
+      ],
+      "reference": "ISO 4753:2011",
+      "publicationDate": "2011-10-25",
+      "edition": 3,
+      "scope": "<p>ISO 4753:2011 specifies the form and dimensions of ends of parts with external ISO metric screw thread (e.g. bolt, screw and stud ends) recommended for use. They apply to standardized or non-standardized threaded parts.</p>\n<p>For each end type, a symbol is specified and it is intended that  these symbols be used when specifying one of the ends for threaded fasteners.</p>\n"
+    },
+    {
+      "id": "iso4755",
+      "description": "Fasteners — Thread undercuts for external metric ISO threads",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4755"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01"
+      ],
+      "reference": "ISO 4755:1983",
+      "publicationDate": "1983-02-01",
+      "edition": 1,
+      "scope": "<p>Lays down the form and dimensions of undercuts for bolts, screws and similar externally threaded products, recommended for use in those cases where it is needed for components such as plugs.</p>\n"
+    },
+    {
+      "id": "iso4757",
+      "description": "Cross recesses for screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4757"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 4757:1983",
+      "publicationDate": "1983-08-01",
+      "edition": 1,
+      "scope": "<p>Defines the type H and type Z; dimensions are illustrated by figures; tabulates gauge dimensions from No. 0 up to and including No. 4; includes a method of penetration gauging for both types.</p>\n"
+    },
+    {
+      "id": "iso4759",
+      "description": "Tolerances for fasteners — Part 1: Bolts, screws, studs and nuts — Product grades A, B and C",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4759"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt",
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.10",
+        "21.060.20"
+      ],
+      "reference": "ISO 4759-1:2000",
+      "publicationDate": "2000-11-09",
+      "edition": 2
+    },
+    {
+      "id": "iso4762",
+      "description": "Hexagon socket head cap screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4762"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 4762:2004",
+      "publicationDate": "2004-02-27",
+      "edition": 4,
+      "scope": "<p>ISO 4762:2004 specifies the characteristics of hexagon socket head cap screws with coarse pitch thread from M1,6 up to and including M64 and product grade A.</p>\n"
+    },
+    {
+      "id": "iso4766",
+      "description": "Fasteners — Slotted set screws with flat point",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "4766"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 4766:2024",
+      "publicationDate": "2024-06-18",
+      "edition": 3,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of slotted set screws with flat point, in steel and stainless steel, with metric coarse pitch threads M1,2 to M12, and with product grade A.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, hardness classes and stainless steel grades can be selected from ISO 898-5 or ISO 3506-3, and dimensional options from ISO 888, ISO 965-1 or ISO 4753.</span></p>"
+    },
+    {
+      "id": "iso7040",
+      "description": "Fasteners — Prevailing torque hexagon nuts — Regular nuts (with non-metallic insert)",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7040"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 7040:2025",
+      "publicationDate": "2025-06-10",
+      "edition": 4,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of prevailing torque hexagon regular nuts (with non‑metallic insert), in steel and stainless steel, with metric coarse pitch thread M3 to M39, and with product grades A and B.</span></p>\n<p class=\"Note\"><span lang=\"EN-GB\">NOTE<span style=\"mso-tab-count: 1;\">            </span>These nuts are designed with an overall height equal to <em style=\"mso-bidi-font-style: normal;\">m</em><sub>min</sub> (as specified in ISO 898-2 and ISO 4032 for style 1) plus the prevailing torque feature. The height of the prevailing torque feature (<em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> – <em style=\"mso-bidi-font-style: normal;\">m</em><sub>min</sub>) for the non-metallic insert is identical for regular, high and thin nuts for a given diameter.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">Nuts with sizes <em style=\"mso-bidi-font-style: normal;\">D</em> &lt; M5 and design principles in accordance with style 1 are specified in Annex A.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-2 or ISO 3506-2.</span></p>"
+    },
+    {
+      "id": "iso7041",
+      "description": "Fasteners — Prevailing torque hexagon nuts — High nuts (with non-metallic insert)",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7041"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 7041:2025",
+      "publicationDate": "2025-06-11",
+      "edition": 5,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of prevailing torque hexagon high nuts (with non‑metallic insert), in steel and stainless steel, with metric coarse pitch thread M5 to M39, and with product grades A and B.</span></p>\n<p class=\"Note\"><span lang=\"EN-GB\">NOTE<span style=\"mso-tab-count: 1;\">            </span>These nuts are designed with an overall height equal to <em style=\"mso-bidi-font-style: normal;\">m</em><sub>min</sub> (as specified in ISO 898-2 and ISO 4033 for style 2) plus the prevailing torque feature. The height of the prevailing torque feature (<em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> – <em style=\"mso-bidi-font-style: normal;\">m</em><sub>min</sub>) for the non-metallic insert is identical for regular, high and thin nuts for a given diameter.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-2 or ISO 3506-2.</span></p>"
+    },
+    {
+      "id": "iso7042",
+      "description": "Fasteners — Prevailing torque hexagon nuts — High nuts (all metal)",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7042"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 7042:2025",
+      "publicationDate": "2025-06-12",
+      "edition": 4,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of prevailing torque (all metal) hexagon high nuts, in steel and stainless steel, with metric coarse pitch thread M5 to M39, and with product grades A and B.</span></p>\n<p class=\"Note\"><span lang=\"EN-GB\">NOTE<span style=\"mso-tab-count: 1;\">            </span>These nuts are designed with an overall heigth <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub> = <em style=\"mso-bidi-font-style: normal;\">m</em><sub>min</sub> (as specified in ISO 898-2 and ISO 4033 for style 2) plus the prevailing torque feature. <em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> has been established in function of <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub>; therefore, the tolerance (<em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> – <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub>) does not follow the ISO code system for tolerances (IT system). The wrenching height <em style=\"mso-bidi-font-style: normal;\">m</em><sub>w,min</sub> corresponds to the values specified for style 1.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-2 or ISO 3506-2.</span></p>"
+    },
+    {
+      "id": "iso7045",
+      "description": "Pan head screws with type H or type Z cross recess — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7045"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7045:2011",
+      "publicationDate": "2011-08-26",
+      "edition": 3,
+      "scope": "<p>ISO 7045:2011 specifies the characteristics of pan head screws of product grade A, with threads from M1,6 to M10 inclusive, and with type H or type Z cross recess.</p>\n\n"
+    },
+    {
+      "id": "iso7046",
+      "description": "Countersunk flat head screws (common head style) with type H or type Z cross recess — Product grade A — Part 1: Steel screws of property class 4.8",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7046"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7046-1:2011",
+      "publicationDate": "2011-08-26",
+      "edition": 2,
+      "scope": "<p>ISO 7046-1:2011 specifies the characteristics of countersunk flat head screws with threads from M1,6 to M10 inclusive, of product grade A and property class 4.8, and with type H or type Z cross recess.</p>\n\n"
+    },
+    {
+      "id": "iso7047",
+      "description": "Raised countersunk head screws (common head style) with type H or type Z cross recess — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7047"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7047:2011",
+      "publicationDate": "2011-08-26",
+      "edition": 3,
+      "scope": "<p>ISO 7047:2011 specifies the characteristics of countersunk raised head screws of product grade A, with threads from M1,6 to M10 inclusive and with type H or type Z cross recess.</p>\n\n"
+    },
+    {
+      "id": "iso7048",
+      "description": "Cross-recessed cheese head screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7048"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7048:2011",
+      "publicationDate": "2011-04-01",
+      "edition": 2,
+      "scope": "<p>ISO 7048:2011 specifies the characteristics of cross-recessed cheese head screws of product grade A, with threads from M2,5 to M8 inclusive, and with cross recesses of types H and Z.</p>\n"
+    },
+    {
+      "id": "iso7049",
+      "description": "Cross-recessed pan head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7049"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7049:2011",
+      "publicationDate": "2011-07-21",
+      "edition": 2,
+      "scope": "<p>ISO 7049:2011 specifies the characteristics of cross-recessed pan head tapping screws with thread sizes from ST 2,2 to ST 9,5 inclusive.</p>\n\n"
+    },
+    {
+      "id": "iso7050",
+      "description": "Cross-recessed countersunk (flat) head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7050"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7050:2011",
+      "publicationDate": "2011-07-21",
+      "edition": 2,
+      "scope": "<p>ISO 7050:2011 specifies the characteristics of cross-recessed countersunk (flat) head tapping screws with thread sizes from ST 2,2 to ST 9,5 inclusive.</p>\n\n"
+    },
+    {
+      "id": "iso7051",
+      "description": "Cross-recessed raised countersunk (oval) head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7051"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7051:2011",
+      "publicationDate": "2011-07-21",
+      "edition": 2,
+      "scope": "<p>ISO 7051:2011 specifies the characteristics of cross-recessed raised countersunk (oval) head tapping screws with thread sizes from ST 2,2 to ST 9,5 inclusive.</p>\n\n"
+    },
+    {
+      "id": "iso7053",
+      "description": "Fasteners — Hexagon washer head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7053"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7053:2019",
+      "publicationDate": "2019-06-06",
+      "edition": 3,
+      "scope": "<p>This document specifies the characteristics of hexagon washer head tapping screws, made of steel and stainless steel, with thread sizes ST2,2 to ST8, and with product grade A.</p>\n\n"
+    },
+    {
+      "id": "iso7089",
+      "description": "Plain washers — Normal series — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7089"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 7089:2000",
+      "publicationDate": "2000-06-01",
+      "edition": 2
+    },
+    {
+      "id": "iso7090",
+      "description": "Plain washers, chamfered — Normal series — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7090"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 7090:2000",
+      "publicationDate": "2000-06-01",
+      "edition": 2
+    },
+    {
+      "id": "iso7091",
+      "description": "Plain washers — Normal series — Product grade C",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7091"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 7091:2000",
+      "publicationDate": "2000-06-01",
+      "edition": 2
+    },
+    {
+      "id": "iso7092",
+      "description": "Plain washers — Small series — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7092"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 7092:2000",
+      "publicationDate": "2000-06-01",
+      "edition": 2
+    },
+    {
+      "id": "iso7093",
+      "description": "Plain washers — Large series — Part 1: Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7093"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 7093-1:2000",
+      "publicationDate": "2000-06-08",
+      "edition": 1
+    },
+    {
+      "id": "iso7094",
+      "description": "Plain washers — Extra large series — Product grade C",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7094"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 7094:2000",
+      "publicationDate": "2000-06-08",
+      "edition": 2
+    },
+    {
+      "id": "iso7378",
+      "description": "Fasteners — Bolts, screws and studs — Split pin holes and wire holes",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7378"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7378:1983",
+      "publicationDate": "1983-02-01",
+      "edition": 1,
+      "scope": "<p>Lays down the dimensions and position of holes for products, recommended for use; tabulates dimensions for thread diameters from 4 mm up to and including 52 mm; gives tolerances for the product grades A, B and C</p>\n"
+    },
+    {
+      "id": "iso7379",
+      "description": "Hexagon socket head shoulder screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7379"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7379:1983",
+      "publicationDate": "1983-10-01",
+      "edition": 1,
+      "scope": "<p>Lays down the specification for products with metric dimensions and nominal shoulder diameters form 6,5 mm up to and including 25 mm; gives geometrical tolerances; includes specifications with reference to International Standards; gives an example for the designation.</p>\n"
+    },
+    {
+      "id": "iso7380",
+      "description": "Fasteners — Button head screws with reduced loadability — Part 1: Hexagon socket button head screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7380"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7380-1:2022",
+      "publicationDate": "2022-12-16",
+      "edition": 2,
+      "scope": "<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho'; mso-fareast-theme-font: minor-fareast;\">This document specifies the characteristics of hexagon socket button head screws with reduced loadability due to head design, in steel and stainless steel, with metric coarse pitch threads M3 to M16, and with product grade A.</span></p>\n<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho'; mso-fareast-theme-font: minor-fareast;\">If, in certain cases, other specifications are requested, stainless steel grades can be selected from </span><span class=\"stdpublisher\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">ISO</span></span></span><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho'; mso-fareast-theme-font: minor-fareast;\"> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">3506</span></span></span>-<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">1</span></span></span>, and the dimensional options from <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">ISO</span></span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">888</span></span></span> or <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">ISO</span></span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">4753</span></span></span>.</span></p>\n<p class=\"Note\" style=\"line-height: 12.0pt; tab-stops: 19.85pt 39.7pt 48.25pt 59.55pt 79.4pt 99.25pt 119.05pt 138.9pt 158.75pt 178.6pt 7.0cm; mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho'; mso-fareast-theme-font: minor-fareast;\">NOTE<span style=\"mso-tab-count: 1;\">      </span>The reduced loadability (related to the head dimensions in combination with penetration of the hexagon socket specified in this document) implies a limitation of ultimate tensile load shown by a specific marking (property class preceded by a zero). The loadability in the head is assumed to be 80 % of that in the thread for all sizes and all property classes, see </span><span class=\"citetbl\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">Tabl<span style=\"border: none;\">e 4</span></span></span></span><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho'; mso-fareast-theme-font: minor-fareast;\">.</span></p>"
+    },
+    {
+      "id": "iso7434",
+      "description": "Fasteners — Slotted set screws with cone point",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7434"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7434:2024",
+      "publicationDate": "2024-06-18",
+      "edition": 2,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of slotted set screws with cone point, in steel and stainless steel, with metric coarse pitch threads M1,2 to M12, and with product grade A.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, hardness classes and stainless steel grades can be selected from ISO 898-5 or ISO 3506-3, and dimensional options from ISO 888, ISO 965-1 or ISO 4753.</span></p>"
+    },
+    {
+      "id": "iso7435",
+      "description": "Fasteners — Slotted set screws with dog point",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7435"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7435:2024",
+      "publicationDate": "2024-06-18",
+      "edition": 2,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of slotted set screws with long dog point for regular standard lengths and with short dog point for short standard lengths, in steel and stainless steel, with metric coarse pitch threads M1,6 to M12 and with product grade A.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, hardness classes and stainless steel grades can be selected from ISO 898-5 or ISO 3506-3, and dimensional options from ISO 888, ISO 965-1 or ISO 4753.</span></p>"
+    },
+    {
+      "id": "iso7436",
+      "description": "Fasteners — Slotted set screws with cup point",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7436"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7436:2024",
+      "publicationDate": "2024-06-18",
+      "edition": 2,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of slotted set screws with cup point, in steel and stainless steel, with metric coarse pitch threads M1,6 to M12 and with product grade A.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, hardness classes and stainless steel grades can be selected from ISO 898-5, or ISO 3506-3, and dimensional options from ISO 888, ISO 965-1 or ISO 4753.</span></p>"
+    },
+    {
+      "id": "iso7719",
+      "description": "Fasteners — Prevailing torque hexagon nuts — Regular nuts (all metal)",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7719"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 7719:2025",
+      "publicationDate": "2025-06-12",
+      "edition": 4,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of prevailing torque (all metal) hexagon regular nuts, in steel and stainless steel, with metric coarse pitch thread M5 to M39, and with product grades A and B.</span></p>\n<p class=\"Note\"><span lang=\"EN-GB\">NOTE<span style=\"mso-tab-count: 1;\">            </span>These nuts are designed with an overall height <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub> = <em style=\"mso-bidi-font-style: normal;\">m</em><sub>min</sub> (as specified in ISO 898-2 and ISO 4032 for style 1) plus the prevailing torque feature. <em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> has been established in function of <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub>; therefore, the tolerance (<em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> – <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub>) does not follow the ISO code system for tolerances (IT system).</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-2 or ISO 3506-2.</span></p>"
+    },
+    {
+      "id": "iso7720",
+      "description": "Fasteners — Prevailing torque hexagon nuts — High nuts (all metal) with slot(s)",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7720"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 7720:2025",
+      "publicationDate": "2025-06-10",
+      "edition": 4,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of prevailing torque (all metal) hexagon high nuts with slot(s), in steel and stainless steel, with metric coarse pitch thread M5 to M39, and with product grades A and B.</span></p>\n<p class=\"Note\"><span lang=\"EN-GB\">NOTE<span style=\"mso-tab-count: 1;\">            </span>These nuts are designed with <em style=\"mso-bidi-font-style: normal;\">m</em><sub>min</sub> as specified ISO 4032 and with an overall height <em style=\"mso-bidi-font-style: normal;\">h</em> greater than in ISO 7042, in order to accommodate the prevailing torque feature with slot(s); this height <em style=\"mso-bidi-font-style: normal;\">h</em> contributes to the nut resistance due to the number of engaged threads. <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub> values have been calculated as a function of <em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> together with a ratio <em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub>/<em style=\"mso-bidi-font-style: normal;\">D</em> that progresses regularly with increasing diameter; therefore, the tolerance (<em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> – <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub>) does not follow the ISO code system for tolerances (IT system).</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-2 or ISO 3506-2.</span></p>"
+    },
+    {
+      "id": "iso7721",
+      "description": "Countersunk head screws — Head configuration and gauging",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "7721"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 7721:1983",
+      "publicationDate": "1983-09-01",
+      "edition": 1,
+      "scope": "<p>Specifies the characteristics of products with thread sizes from M 1,6 up to and including M 20; it recommends a gauging method for the dimensions laid down in the respective product standards; the annex contains the calculation basis</p>\n"
+    },
+    {
+      "id": "iso8673",
+      "description": "Fasteners — Hexagon regular nuts (style 1), with fine pitch thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8673"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 8673:2023",
+      "publicationDate": "2023-08-31",
+      "edition": 4,
+      "scope": "<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">This document specifies the characteristics of hexagon regular nuts (style 1), in steel and stainless steel, with metric fine pitch thread 8 mm to 39 mm, and with product grades A and B.</span></p>\n<p class=\"Note\" style=\"tab-stops: 19.85pt 39.7pt 48.25pt 59.55pt 79.4pt 99.25pt 119.05pt 138.9pt 158.75pt 178.6pt 7.0cm; mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">NOTE<span style=\"mso-tab-count: 1;\">       </span>For nuts with sizes <em style=\"mso-bidi-font-style: normal;\">D</em> &gt; 39 mm, see <span class=\"citeapp\"><span style=\"color: black; mso-color-alt: windowtext;\">Annex A</span></span>.</span></p>\n<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext;\">ISO</span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">898</span></span>-<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">2</span></span> or <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext;\">ISO</span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">3506</span></span>-<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">2</span></span>.</span></p>"
+    },
+    {
+      "id": "iso8674",
+      "description": "Fasteners — Hexagon high nuts (style 2), with fine pitch thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8674"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 8674:2023",
+      "publicationDate": "2023-08-31",
+      "edition": 4,
+      "scope": "<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">This document specifies the characteristics of hexagon high nuts (style 2), in steel and stainless steel, with metric fine pitch thread 8 mm to 39 mm, and with product grades A and B.</span></p>\n<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext;\">ISO</span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">898</span></span>-<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">2</span></span> or <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext;\">ISO</span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">3506</span></span>-<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">2</span></span>.</span></p>"
+    },
+    {
+      "id": "iso8675",
+      "description": "Fasteners — Hexagon thin nuts (style 0), with fine pitch thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8675"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 8675:2023",
+      "publicationDate": "2023-08-31",
+      "edition": 4,
+      "scope": "<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">This document specifies the characteristics of hexagon thin nuts (style 0), in steel and stainless steel, with metric fine pitch thread 8 mm to 64 mm, and with product grades A and B.</span></p>\n<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">Thin nuts used as jam nuts are to be assembled together with a regular or high nut.</span></p>\n<p class=\"Notice\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">WARNING — Thin nuts (style 0) have a reduced loadability compared to regular nuts or high nuts, and are not designed to provide resistance to thread stripping (see <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext;\">ISO</span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">898</span></span>-<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">2</span></span>).</span></p>\n<p class=\"MsoBodyText\" style=\"mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt;\">If in certain cases other specifications are requested, stainless steel grades and property classes can be selected from <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext;\">ISO</span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">3506</span></span>-<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext;\">2</span></span>.</span></p>"
+    },
+    {
+      "id": "iso8676",
+      "description": "Fasteners — Hexagon head screws, with fine pitch thread — Product grades A and B",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8676"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 8676:2022",
+      "publicationDate": "2022-06-28",
+      "edition": 4,
+      "scope": "<p>This document specifies the characteristics of hexagon head screws, in steel and stainless steel, with metric fine pitch threads M8×1 to M64×4, and with product grades A and B.</p>\n<p>If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-1 or ISO 3506-1, and dimensional options from ISO 888 or ISO 4753.</p>"
+    },
+    {
+      "id": "iso8678",
+      "description": "Cup head square neck bolts with small head and short neck — Product grade B",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8678"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 8678:1988",
+      "publicationDate": "1988-06-16",
+      "edition": 1,
+      "scope": "<p>Specifies the characteristics of products with metric dimensions and thread sizes from M 6 up to and including M 20; tabulates thread sizes M 6 up to M 20 with nominal lengths from 12 mm up to 160 mm and specifications with reference to International Standards; gives an example for the designation.</p>\n"
+    },
+    {
+      "id": "iso8733",
+      "description": "Parallel pins with internal thread, of unhardened steel and austenitic stainless steel",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8733"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8733:1997",
+      "publicationDate": "1997-11-13",
+      "edition": 2
+    },
+    {
+      "id": "iso8734",
+      "description": "Parallel pins, of hardened steel and martensitic stainless steel (Dowel pins)",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8734"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8734:1997",
+      "publicationDate": "1997-11-13",
+      "edition": 2
+    },
+    {
+      "id": "iso8735",
+      "description": "Parallel pins with internal thread, of hardened steel and martensitic stainless steel",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8735"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8735:1997",
+      "publicationDate": "1997-11-13",
+      "edition": 2
+    },
+    {
+      "id": "iso8736",
+      "description": "Taper pins with internal thread, unhardened",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8736"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8736:1986",
+      "publicationDate": "1986-11-06",
+      "edition": 1,
+      "scope": "<p>Specifies the characteristics of products with metric dimensions and nominal diameters from 6 mm up to and including 50 mm; tabulates thread sizes M 6 up to M 50 with nominal lengths from 16 mm up to 200 mm and specifications with reference to International Standards; gives an example for the designation.</p>\n"
+    },
+    {
+      "id": "iso8737",
+      "description": "Taper pins with external thread, unhardened",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8737"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8737:1986",
+      "publicationDate": "1986-11-06",
+      "edition": 1,
+      "scope": "<p>Specifies the characteristics of products with metric dimensions and nominal diameters from 5 mm up to and including 50 mm; tabulates thread sizes M 5 up to M 50 with nominal lengths from 40 mm up to 400 mm and specifications with reference to International Standards; gives an example for the designation.</p>\n"
+    },
+    {
+      "id": "iso8738",
+      "description": "Plain washers for clevis pins — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8738"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 8738:1986",
+      "publicationDate": "1986-11-06",
+      "edition": 1,
+      "scope": "<p>Specifies the characteristics of products according to ISO 2340 and ISO 2341; includes nominal sizes from 3 mm up to and including 100 mm as well as specifications with reference to International Standards; gives an example for the designation.</p>\n"
+    },
+    {
+      "id": "iso8740",
+      "description": "Fasteners — Parallel grooved pins, with chamfer point — Full-length diamond grooves",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8740"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8740:2025",
+      "publicationDate": "2025-02-25",
+      "edition": 3,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of parallel grooved pins with chamfer point and full-length diamond grooves (with open ends), in steel and stainless steel, and with nominal diameter 1 mm to 25 mm.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">These grooved pins are designed to fulfil the main following function: locking together two or more parts, with an easy installation (due to the chamfer point) and a highest level of pull-out resistance (due to the elastic fit behaviour of the pin).</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">The general requirements (including functional principles for grooved pins and assembly) are specified in ISO 13669.</span></p>"
+    },
+    {
+      "id": "iso8741",
+      "description": "Fasteners — Reverse-taper grooved pins — Half-length progressive grooves",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8741"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8741:2025",
+      "publicationDate": "2025-02-25",
+      "edition": 3,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of reverse-taper grooved pins with half-length progressive grooves (with closed ends), in steel and stainless steel, and with nominal diameter 1 mm to 25 mm.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">These grooved pins are designed to fulfil the main following functions:</span></p>\n<p class=\"ListContinue1\" style=\"mso-list: l0 level1 lfo1;\"><!-- [if !supportLists]--><span lang=\"EN-GB\" style=\"mso-fareast-font-family: Cambria; mso-bidi-font-family: Cambria;\"><span style=\"mso-list: Ignore;\">—<span style=\"font: 7.0pt 'Times New Roman';\">     </span></span></span><!--[endif]--><span lang=\"EN-GB\">positioning or guiding, and</span></p>\n<p class=\"ListContinue1\" style=\"mso-list: l0 level1 lfo1;\"><!-- [if !supportLists]--><span lang=\"EN-GB\" style=\"mso-fareast-font-family: Cambria; mso-bidi-font-family: Cambria;\"><span style=\"mso-list: Ignore;\">—<span style=\"font: 7.0pt 'Times New Roman';\">     </span></span></span><!--[endif]--><span lang=\"EN-GB\">relative rotation of the assembled parts,</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">with an easy installation (due to its shape) and a medium level of pull-out resistance (due to the elastic fit behaviour of the pin).</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">The general requirements (including functional principles for grooved pins and assembly) are specified in ISO 13669.</span></p>"
+    },
+    {
+      "id": "iso8744",
+      "description": "Fasteners — Taper grooved pins — Full-length progressive grooves",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8744"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8744:2025",
+      "publicationDate": "2025-02-25",
+      "edition": 3,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of taper grooved pins with full-length progressive grooves (with closed end at the insertion side), in steel and stainless steel, and with nominal diameter 1 mm to 25 mm.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">These grooved pins are designed to fulfil the main following function: locking together two or more parts, with an easy installation (due to its shape) and a high level of pull-out resistance (due to the elastic fit behaviour of the pin).</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">The general requirements (including functional principles for grooved pins and assembly) are specified in ISO 13669.</span></p>"
+    },
+    {
+      "id": "iso8745",
+      "description": "Fasteners — Taper grooved pins — Half-length progressive grooves",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8745"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8745:2025",
+      "publicationDate": "2025-02-25",
+      "edition": 3,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of taper grooved pins with half-length progressive grooves (with close-end at the insertion side), in steel and stainless steel, and with nominal diameter 1 mm to 25 mm.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">These grooved pins are designed to fulfil the main following functions:</span></p>\n<p class=\"ListContinue1\" style=\"mso-list: l0 level1 lfo1;\"><!-- [if !supportLists]--><span lang=\"EN-GB\" style=\"mso-fareast-font-family: Cambria; mso-bidi-font-family: Cambria;\"><span style=\"mso-list: Ignore;\">—<span style=\"font: 7.0pt 'Times New Roman';\">     </span></span></span><!--[endif]--><span lang=\"EN-GB\">positioning or guiding, and</span></p>\n<p class=\"ListContinue1\" style=\"mso-list: l0 level1 lfo1;\"><!-- [if !supportLists]--><span lang=\"EN-GB\" style=\"mso-fareast-font-family: Cambria; mso-bidi-font-family: Cambria;\"><span style=\"mso-list: Ignore;\">—<span style=\"font: 7.0pt 'Times New Roman';\">     </span></span></span><!--[endif]--><span lang=\"EN-GB\">relative rotation of the assembled parts,</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">with an easy installation (due to its shape) and a medium level of pull-out resistance (due to the elastic fit behaviour of the pin).</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">The general requirements (including functional principles for grooved pins and assembly) are specified in ISO 13669.</span></p>"
+    },
+    {
+      "id": "iso8746",
+      "description": "Fasteners — Grooved pins with round head — Full-length diamond grooves",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8746"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8746:2025",
+      "publicationDate": "2025-02-25",
+      "edition": 3,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of grooved pins with round head, full-length diamond grooves and pilot point or chamfered point, in steel and stainless steel, and with nominal diameter 2 mm to 20 mm.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">These grooved pins are designed to fulfil the main following function: locking together two or more parts, with the easiest installation (due to the pilot or chamfer point) and a highest level of pull-out resistance (due to the elastic fit behaviour of the pin).</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">The general requirements (including functional principles for grooved pins and assembly) are specified in ISO 13669.</span></p>"
+    },
+    {
+      "id": "iso8747",
+      "description": "Fasteners — Grooved pins with countersunk head — Full-length diamond grooves",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8747"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8747:2025",
+      "publicationDate": "2025-02-25",
+      "edition": 3,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of grooved pins with countersunk head and full-length diamond grooves and pilot or chamfer point, in steel and stainless steel, and with nominal diameter 2 mm to 20 mm.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">These grooved pins are designed to fulfil the main following function: locking together two or more parts, with the easiest installation (due to the pilot or chamfer point) and a highest level of pull-out resistance (due to the elastic fit behaviour of the pin).</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">The general requirements (including functional principles for grooved pins and assembly) are specified in ISO 13669.</span></p>"
+    },
+    {
+      "id": "iso8748",
+      "description": "Spring-type straight pins — Coiled, heavy duty",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8748"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8748:2007",
+      "publicationDate": "2007-04-19",
+      "edition": 3,
+      "scope": "<p>ISO 8748:2007 specifies the characteristics of coiled, heavy duty spring-type straight pins made of steel or of austenitic or martensitic stainless steel, with a nominal diameter of from 1,5 mm to 20 mm inclusive.</p>\n"
+    },
+    {
+      "id": "iso8749",
+      "description": "Pins and grooved pins — Shear test",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8749"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8749:1986",
+      "publicationDate": "1986-11-06",
+      "edition": 1,
+      "scope": "<p>Specifies the test method for metallic pins with nominal diameters from 0,8 mm up to and including 25 mm; includes a figure with a typical test fixture.</p>\n"
+    },
+    {
+      "id": "iso8750",
+      "description": "Spring-type straight pins — Coiled, standard duty",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8750"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8750:2007",
+      "publicationDate": "2007-04-19",
+      "edition": 3,
+      "scope": "<p>ISO 8750:2007 specifies the characteristics of coiled, standard duty spring-type straight pins made of steel or of austenitic or martensitic stainless steel, with a nominal diameter of from 0,8 mm to 20 mm inclusive.</p>\n"
+    },
+    {
+      "id": "iso8751",
+      "description": "Spring-type straight pins — Coiled, light duty",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8751"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8751:2007",
+      "publicationDate": "2007-04-19",
+      "edition": 3,
+      "scope": "<p>ISO 8751:2007 specifies the characteristics of coiled, light duty spring-type straight pins made of steel or of austenitic or martensitic stainless steel, with a nominal diameter of from 1,5 mm to 8 mm inclusive.</p>\n"
+    },
+    {
+      "id": "iso8752",
+      "description": "Spring-type straight pins — Slotted, heavy duty",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8752"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 8752:2009",
+      "publicationDate": "2009-06-08",
+      "edition": 3,
+      "scope": "<p>ISO 8752:2009 specifies the characteristics of slotted spring-type straight pins, made of steel or of austenitic or martensitic stainless steel, heavy duty, with nominal diameter from 1 mm to 50 mm inclusive.</p>\n"
+    },
+    {
+      "id": "iso8765",
+      "description": "Fasteners — Hexagon head bolts, with fine pitch thread — Product grades A and B",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8765"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 8765:2022",
+      "publicationDate": "2022-06-28",
+      "edition": 4,
+      "scope": "<p>This document specifies the characteristics of hexagon head bolts, in steel and stainless steel, with metric fine pitch threads M8×1 to M64×4, and with product grades A and B.</p>\n<p>If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-1 or ISO 3506-1, and dimensional options from ISO 888 or ISO 4753.</p>"
+    },
+    {
+      "id": "iso8991",
+      "description": "Designation system for fasteners",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "8991"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01"
+      ],
+      "reference": "ISO 8991:1986",
+      "publicationDate": "1986-11-27",
+      "edition": 1,
+      "scope": "<p>Specifies and describes a system for use in product standards; gives examples for hexagon head bolts, screws, and nuts, tapping screws, parallel pins, and washers.</p>\n"
+    },
+    {
+      "id": "iso10509",
+      "description": "Hexagon flange head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "10509"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 10509:2012",
+      "publicationDate": "2012-05-08",
+      "edition": 2
+    },
+    {
+      "id": "iso10510",
+      "description": "Tapping screw and washer assemblies with plain washers",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "10510"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 10510:2011",
+      "publicationDate": "2011-03-22",
+      "edition": 2,
+      "scope": "<p>ISO 10510:2011 specifies the requirements for tapping screws and plain washer assemblies with spaced threads from ST2,2 to ST9,5 inclusive, flat seating heads and mechanical properties as specified in ISO 2702.</p>\n"
+    },
+    {
+      "id": "iso10511",
+      "description": "Prevailing torque type hexagon thin nuts (with non-metallic insert) — Technical Corrigendum 1",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "10511"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 10511:2012/CD Cor 1",
+      "publicationDate": null,
+      "edition": 2
+    },
+    {
+      "id": "iso10512",
+      "description": "Fasteners — Prevailing torque hexagon nuts — Regular nuts (with non-metallic insert), with fine pitch thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "10512"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 10512:2025",
+      "publicationDate": "2025-06-13",
+      "edition": 3,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of prevailing torque hexagon regular nuts (with non‑metallic insert), in steel and stainless steel, with metric fine pitch thread 8 mm to 39 mm, and with product grades A and B.</span></p>\n<p class=\"Note\"><span lang=\"EN-GB\">NOTE<span style=\"mso-tab-count: 1;\">            </span>These nuts are designed with an overall height equal to <em style=\"mso-bidi-font-style: normal;\">m</em><sub>min</sub> (as specified in ISO 898-2 and ISO 8673 for style 1) plus the prevailing torque feature. The height of the prevailing torque feature (<em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> – <em style=\"mso-bidi-font-style: normal;\">m</em><sub>min</sub>) for the non-metallic insert is identical for regular, high and thin nuts for a given diameter.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-2 or ISO 3506-2.</span></p>"
+    },
+    {
+      "id": "iso10513",
+      "description": "Fasteners — Prevailing torque hexagon nuts — High nuts (all metal), with fine pitch thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "10513"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 10513:2025",
+      "publicationDate": "2025-06-13",
+      "edition": 3,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of prevailing torque (all metal) hexagon high nuts, in steel and stainless steel, with metric fine pitch thread 8 mm to 39 mm, and with product grades A and B.</span></p>\n<p class=\"Note\"><span lang=\"EN-GB\">NOTE<span style=\"mso-tab-count: 1;\">            </span>These nuts are designed with an overall height <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub> = <em style=\"mso-bidi-font-style: normal;\">m</em><sub>min</sub> (as specified in ISO 898-2 and ISO 8674 for style 2) plus the prevailing torque feature. <em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> has been established in function of <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub>; therefore, the tolerance (<em style=\"mso-bidi-font-style: normal;\">h</em><sub>max</sub> – <em style=\"mso-bidi-font-style: normal;\">h</em><sub>min</sub>) does not follow the ISO code system for tolerances (IT system). The wrenching height <em style=\"mso-bidi-font-style: normal;\">m</em><sub>w,min</sub> corresponds to the values specified for style 1.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">If in certain cases other specifications are requested, property classes and stainless steel grades can be selected from ISO 898-2 or ISO 3506-2.</span></p>"
+    },
+    {
+      "id": "iso10644",
+      "description": "Screw and washer assemblies made of steel with plain washers — Washer hardness classes 200 HV and 300 HV",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "10644"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 10644:2009",
+      "publicationDate": "2009-06-16",
+      "edition": 2,
+      "scope": "<p>ISO 10644:2009 specifies the requirements for metric screw and plain washer assemblies made of steel with coarse thread M2 to M12 inclusive, flat seating heads, property classes up to and including 10.9 and washer hardness classes 200 HV or 300 HV. The plain washers are captive, i.e. prevented from disassembly and free to rotate.</p>\n"
+    },
+    {
+      "id": "iso10664",
+      "description": "Hexalobular internal driving feature for bolts and screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "10664"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 10664:2014",
+      "publicationDate": "2014-09-30",
+      "edition": 3,
+      "scope": "<p>ISO 10664:2014 specifies the shape and basic dimensions of the hexalobular internal driving feature for bolts and screws, including the gauging method. The curvature of the contour of the hexalobular internal driving feature is defined and additional information which can be used when drawing the contour given.</p>\n<p>The intent is to provide the details necessary for inspection of the hexalobular driving feature. ISO 10664:2014 is not suitable for, nor intended to be used as, a manufacturing standard.</p>\n"
+    },
+    {
+      "id": "iso10669",
+      "description": "Plain washers for tapping screw and washer assemblies — Normal and large series — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "10669"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 10669:1999",
+      "publicationDate": "1999-08-19",
+      "edition": 1
+    },
+    {
+      "id": "iso10673",
+      "description": "Plain washers for screw and washer assemblies — Small, normal and large series — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "10673"
+        }
+      ],
+      "hardwareTypes": [
+        "washer"
+      ],
+      "icsCode": [
+        "21.060.30"
+      ],
+      "reference": "ISO 10673:2009",
+      "publicationDate": "2009-06-16",
+      "edition": 2,
+      "scope": "<p>ISO 10673:2009 specifies the characteristics of plain steel washers, small, normal and large series, of product grade A for metric screw and washer assemblies in accordance with ISO 10644.</p>\n"
+    },
+    {
+      "id": "iso10683",
+      "description": "Fasteners — Non-electrolytically applied zinc flake coating systems",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "10683"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01",
+        "25.220.40"
+      ],
+      "reference": "ISO 10683:2018",
+      "publicationDate": "2018-08-13",
+      "edition": 3,
+      "scope": "<p>This document specifies requirements for non-electrolytically applied zinc flake coating systems for steel fasteners. It is applicable to coatings:</p>\n<p>—          with or without hexavalent chromium;</p>\n<p>—          with or without top coat;</p>\n<p>—          with or without lubricant (integral lubricant and/or subsequently added lubricant).</p>\n<p>It is applicable to bolts, screws, studs and nuts with ISO metric thread, to fasteners with non-ISO metric thread, and to non-threaded fasteners such as washers, pins, clips, etc.</p>\n<p>This document does not specify requirements for such fastener properties as weldability or paintability. It is not applicable to mechanically applied zinc coatings.</p>\n<p>NOTE       Coatings in accordance with this document are especially used for high strength fasteners (≥ 1 000 MPa) to avoid risk of internal hydrogen embrittlement (IHE — see 4.4).</p>\n<p>Information for design and assembly of coated fasteners is given in Annex A.</p>\n\n"
+    },
+    {
+      "id": "iso12474",
+      "description": "Hexagon socket head cap screws with metric fine pitch thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "12474"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 12474:2010",
+      "publicationDate": "2010-09-21",
+      "edition": 1,
+      "scope": "<p>ISO 12474:2010 specifies the characteristics of hexagon socket head cap screws with metric fine pitch thread with nominal thread diameters from 8 mm up to 36 mm and product grade A.</p>\n"
+    },
+    {
+      "id": "iso13337",
+      "description": "Spring-type straight pins — Slotted, light duty",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "13337"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 13337:2009",
+      "publicationDate": "2009-06-08",
+      "edition": 2,
+      "scope": "<p>ISO 13337:2009 specifies the characteristics of slotted spring-type straight pins, made of steel or of austenitic or martensitic stainless steel, light duty, with nominal diameter from 2 mm to 50 mm inclusive.</p>\n"
+    },
+    {
+      "id": "iso13669",
+      "description": "Fasteners — Grooved pins — General requirements",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "13669"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 13669:2025",
+      "publicationDate": "2025-07-08",
+      "edition": 1,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the general characteristics of grooved pins, made of steel and stainless steel, with nominal diameters 1 mm to 25 mm.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">These grooved pins are designed to fulfil the main following functions, due to the elastic fit behaviour of the grooves:</span></p>\n<p class=\"ListContinue1\" style=\"mso-list: l0 level1 lfo1;\"><!-- [if !supportLists]--><span lang=\"EN-GB\" style=\"mso-fareast-font-family: Cambria; mso-bidi-font-family: Cambria;\"><span style=\"mso-list: Ignore;\">—<span style=\"font: 7.0pt 'Times New Roman';\">     </span></span></span><!--[endif]--><span lang=\"EN-GB\">locking of two (or more) parts,</span></p>\n<p class=\"ListContinue1\" style=\"mso-list: l0 level1 lfo1;\"><!-- [if !supportLists]--><span lang=\"EN-GB\" style=\"mso-fareast-font-family: Cambria; mso-bidi-font-family: Cambria;\"><span style=\"mso-list: Ignore;\">—<span style=\"font: 7.0pt 'Times New Roman';\">     </span></span></span><!--[endif]--><span lang=\"EN-GB\">positioning or guiding,</span></p>\n<p class=\"ListContinue1\" style=\"mso-list: l0 level1 lfo1;\"><!-- [if !supportLists]--><span lang=\"EN-GB\" style=\"mso-fareast-font-family: Cambria; mso-bidi-font-family: Cambria;\"><span style=\"mso-list: Ignore;\">—<span style=\"font: 7.0pt 'Times New Roman';\">     </span></span></span><!--[endif]--><span lang=\"EN-GB\">relative rotation of the assembled parts.</span></p>"
+    },
+    {
+      "id": "iso13670",
+      "description": "Fasteners — Reverse-taper grooved pins — One quarter-length progressive grooves on both sides",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "13670"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 13670",
+      "publicationDate": null,
+      "edition": 1,
+      "scope": "This document specifies the characteristics of grooved reverse-taper pins with one quarter-length progressive grooves on both sides (close-ends), with rounded or chamfered pin ends, in steel and stainless steel, with nominal diameters 2 mm to 25 mm.\nThese grooved pins are designed to fulfil the main following functions: \n— relative rotation of the assembled parts, \n— locking of two (or more) parts, \n— positioning. \nThe general requirements (including principles for grooved pins and assembly) are specified in ISO 13669.\n"
+    },
+    {
+      "id": "iso13672",
+      "description": "Fasteners — Parallel grooved pins — Half-length diamond grooves",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "13672"
+        }
+      ],
+      "hardwareTypes": [
+        "pin"
+      ],
+      "icsCode": [
+        "21.060.50"
+      ],
+      "reference": "ISO 13672:2025",
+      "publicationDate": "2025-02-25",
+      "edition": 1,
+      "scope": "<p class=\"MsoBodyText\"><span lang=\"EN-GB\">This document specifies the characteristics of parallel grooved pins with half-length diamond grooves (with closed ends), in steel and stainless steel, and with nominal diameters 1 mm to 25 mm.</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">These grooved pins are designed to fulfil the main following functions:</span></p>\n<p class=\"ListContinue1\" style=\"mso-list: l0 level1 lfo1;\"><!-- [if !supportLists]--><span lang=\"EN-GB\" style=\"mso-fareast-font-family: Cambria; mso-bidi-font-family: Cambria;\"><span style=\"mso-list: Ignore;\">—<span style=\"font: 7.0pt 'Times New Roman';\">     </span></span></span><!--[endif]--><span lang=\"EN-GB\">positioning or guiding, and</span></p>\n<p class=\"ListContinue1\" style=\"mso-list: l0 level1 lfo1;\"><!-- [if !supportLists]--><span lang=\"EN-GB\" style=\"mso-fareast-font-family: Cambria; mso-bidi-font-family: Cambria;\"><span style=\"mso-list: Ignore;\">—<span style=\"font: 7.0pt 'Times New Roman';\">     </span></span></span><!--[endif]--><span lang=\"EN-GB\">relative rotation of the assembled parts,</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">with a more significant insertion force (due to its shape) and a high level of pull-out resistance (due to the elastic fit behaviour of the pin).</span></p>\n<p class=\"MsoBodyText\"><span lang=\"EN-GB\">The general requirements (including functional principles for grooved pins and assembly) are specified in ISO 13669.</span></p>"
+    },
+    {
+      "id": "iso14579",
+      "description": "Hexalobular socket head cap screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14579"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 14579:2011",
+      "publicationDate": "2011-03-16",
+      "edition": 2,
+      "scope": "<p>ISO 14579:2011 specifies the characteristics of hexalobular socket head cap screws, with thread sizes from M2 up to and including M20, of product grade A.</p>\n"
+    },
+    {
+      "id": "iso14580",
+      "description": "Hexalobular socket cheese head screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14580"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 14580:2011",
+      "publicationDate": "2011-03-16",
+      "edition": 2,
+      "scope": "<p>ISO 14580:2011 specifies the characteristics of hexalobular socket cheese head screws of product grade A and with thread sizes from M2 up to and including M10.</p>\n"
+    },
+    {
+      "id": "iso14581",
+      "description": "Fasteners — Hexalobular socket countersunk flat head screws (common head style) with reduced loadability",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14581"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 14581:2022",
+      "publicationDate": "2022-12-16",
+      "edition": 2,
+      "scope": "<p class=\"MsoBodyText\" style=\"margin-bottom: 12.0pt; mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho';\">This document specifies the characteristics of hexalobular socket countersunk flat head screws with reduced loadability due to head design, in steel and stainless steel, with metric coarse pitch threads M2 to M10, and with product grade A.</span></p>\n<p class=\"MsoBodyText\" style=\"margin-bottom: 12.0pt; mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho';\">If in certain cases other specifications are requested, stainless steel grades can be selected from </span><span class=\"stdpublisher\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">ISO</span></span></span><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho';\"> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">3506</span></span></span>‑<span class=\"stddocPartNumber\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">1</span></span></span>, and dimensional options from <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">ISO</span></span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">888</span></span></span> or <span class=\"stdpublisher\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">ISO</span></span></span> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">4753</span></span></span>.</span></p>\n<p class=\"Note\" style=\"tab-stops: 19.85pt 39.7pt 48.25pt 59.55pt 79.4pt 99.25pt 119.05pt 138.9pt 158.75pt 178.6pt 7.0cm; mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho';\">NOTE 1<span style=\"mso-tab-count: 1;\">   </span>The reduced loadability (related to the countersunk head dimensions in combination with penetration of the hexalobular socket specified in this document) implies a limitation of ultimate tensile load shown by a specific marking (property class preceded by a zero). The loadability in the head is assumed to be 80 % of that in the thread for all sizes and all property classes; see </span><span class=\"citetbl\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">Table 3</span></span></span><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho';\">.</span></p>\n<p class=\"Note\" style=\"tab-stops: 19.85pt 39.7pt 48.25pt 59.55pt 79.4pt 99.25pt 119.05pt 138.9pt 158.75pt 178.6pt 7.0cm; mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho';\">NOTE 2<span style=\"mso-tab-count: 1;\">   </span>Hexalobular socket countersunk head screws (high head), with full loadability are specified in </span><span class=\"stdpublisher\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">ISO</span></span></span><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho';\"> <span class=\"stddocNumber\"><span style=\"color: black; mso-color-alt: windowtext; border: none;\"><span style=\"border: none;\">14582</span></span></span>, but these products are not interchangeable, because of different head heights.</span></p>\n<p class=\"Note\" style=\"tab-stops: 19.85pt 39.7pt 48.25pt 59.55pt 79.4pt 99.25pt 119.05pt 138.9pt 158.75pt 178.6pt 7.0cm; mso-layout-grid-align: none; text-autospace: none;\"><span lang=\"EN-GB\" style=\"mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 'MS Mincho';\">NOTE 3<span style=\"mso-tab-count: 1;\">   </span>Particular attention is needed to ensure alignment of the countersunk head with the bearing surface of the countersink in the assembly.</span></p>"
+    },
+    {
+      "id": "iso14582",
+      "description": "Fasteners — Hexalobular socket countersunk head screws, high head",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14582"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 14582:2013",
+      "publicationDate": "2013-09-12",
+      "edition": 1,
+      "scope": "<p>ISO 14582:2013 specifies hexalobular socket countersunk head bolts and screws with high head (full loadability), of product grade A, and thread diameters from M3 up to and including M10 and property classes 4.8, 8.8 and 10.9.</p>\n"
+    },
+    {
+      "id": "iso14583",
+      "description": "Hexalobular socket pan head screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14583"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 14583:2011",
+      "publicationDate": "2011-03-16",
+      "edition": 2,
+      "scope": "<p>ISO 14583:2011 specifies the characteristics of hexalobular socket pan head screws of product grade A and with thread sizes from M2 up to and including M10.</p>\n"
+    },
+    {
+      "id": "iso14584",
+      "description": "Hexalobular socket raised countersunk head screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14584"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 14584:2011",
+      "publicationDate": "2011-03-16",
+      "edition": 2,
+      "scope": "<p>ISO 14584:2011 specifies the characteristics of hexalobular socket raised countersunk head screws of product grade A, and with thread sizes from M2 up to and including M10.</p>\n"
+    },
+    {
+      "id": "iso14585",
+      "description": "Hexalobular socket pan head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14585"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 14585:2011",
+      "publicationDate": "2011-02-08",
+      "edition": 2,
+      "scope": "<p>ISO 14585:2011 specifies the characteristics of hexalobular socket pan head tapping screws with thread sizes from ST2,9 to ST6,3 inclusive.</p>\n<p>If, in special cases, specifications other than those listed in ISO 14585:2011 are required, they can be selected from existing International Standards, for example ISO 1478, ISO 2702, ISO 4759-1.</p>\n"
+    },
+    {
+      "id": "iso14586",
+      "description": "Hexalobular socket countersunk head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14586"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 14586:2011",
+      "publicationDate": "2011-02-08",
+      "edition": 2,
+      "scope": "<p>ISO 14586:2011 specifies the characteristics of hexalobular socket countersunk head tapping screws with thread sizes from ST2,9 to ST6,3 inclusive.</p>\n<p>If, in special cases, specifications other than those listed in ISO 14586:2011 are required, they can be selected from existing International Standards, for example ISO 1478, ISO 2702, ISO 4759-1.</p>\n"
+    },
+    {
+      "id": "iso14587",
+      "description": "Hexalobular socket raised countersunk (oval) head tapping screws",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14587"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 14587:2011",
+      "publicationDate": "2011-02-08",
+      "edition": 2,
+      "scope": "<p>ISO 14587:2011 specifies the characteristics of hexalobular socket raised countersunk (oval) head tapping screws with thread sizes from ST2,9 to ST6,3 inclusive.</p>\n<p>If, in special cases, specifications other than those listed in ISO 14587:2011 are required, they can be selected from existing International Standards, for example ISO 1478, ISO 2702, ISO 4759-1.</p>\n"
+    },
+    {
+      "id": "iso14588",
+      "description": "Blind rivets — Terminology and definitions",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14588"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40",
+        "01.040.21"
+      ],
+      "reference": "ISO 14588:2000",
+      "publicationDate": "2000-12-21",
+      "edition": 1
+    },
+    {
+      "id": "iso14589",
+      "description": "Blind rivets — Mechanical testing",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "14589"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 14589:2000",
+      "publicationDate": "2000-12-21",
+      "edition": 1
+    },
+    {
+      "id": "iso15065",
+      "description": "Countersinks for countersunk head screws with head configuration in accordance with ISO 7721",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15065"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 15065:2005",
+      "publicationDate": "2005-02-10",
+      "edition": 1,
+      "scope": "<p>ISO 15065:2005 specifies the dimensions and designation of countersinks for countersunk head screws with a head configuration in accordance with ISO 7721. It is applicable to the types of screws according to ISO 2009, ISO 2010, ISO 1482, ISO 1483, ISO 7046-1 and ISO 7046-2, ISO 7047, ISO 7050, ISO 7051, ISO 15482, ISO 15483, ISO 14584, ISO 14586, and ISO 14587.</p>\n"
+    },
+    {
+      "id": "iso15071",
+      "description": "Hexagon bolts with flange — Small series — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15071"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 15071:2011",
+      "publicationDate": "2011-05-19",
+      "edition": 2,
+      "scope": "<p>ISO 15071:2011 specifies the characteristics of hexagon bolts with flange, small series, of product grade A, with threads from M5 up to and including M16, and property classes 8.8, 9.8, 10.9 and A2‑70.</p>\n"
+    },
+    {
+      "id": "iso15072",
+      "description": "Hexagon bolts with flange with metric fine pitch thread — Small series — Product grade A",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15072"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 15072:2012",
+      "publicationDate": "2012-07-03",
+      "edition": 2,
+      "scope": "<p>ISO 15072:2012 specifies the characteristics of hexagon bolts with flange with metric fine pitch thread, small series, with product grade A, and with nominal thread diameters from 8 mm up to and including 16 mm and property classes 8.8, 9.8, 10.9, 12.9 or 12.9 (underlined) and A2‑70.</p>\n"
+    },
+    {
+      "id": "iso15480",
+      "description": "Fasteners — Hexagon washer head drilling screws with tapping screw thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15480"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 15480:2019",
+      "publicationDate": "2019-06-06",
+      "edition": 2,
+      "scope": "<p>This document specifies the characteristics of hexagon washer head drilling screws with tapping screw threads, made of steel, with thread sizes ST2,9 to ST6,3, and with product grade A.</p>\n\n"
+    },
+    {
+      "id": "iso15481",
+      "description": "Cross recessed pan head drilling screws with tapping screw thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15481"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 15481:1999",
+      "publicationDate": "1999-09-02",
+      "edition": 1
+    },
+    {
+      "id": "iso15482",
+      "description": "Cross recessed countersunk head drilling screws with tapping screw thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15482"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 15482:1999",
+      "publicationDate": "1999-09-02",
+      "edition": 1
+    },
+    {
+      "id": "iso15483",
+      "description": "Cross recessed raised countersunk head drilling screws with tapping screw thread",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15483"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 15483:1999",
+      "publicationDate": "1999-09-02",
+      "edition": 1
+    },
+    {
+      "id": "iso15973",
+      "description": "Closed end blind rivets with break pull mandrel and protruding head — AlA/St",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15973"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15973:2000",
+      "publicationDate": "2000-12-21",
+      "edition": 1
+    },
+    {
+      "id": "iso15974",
+      "description": "Closed end blind rivets with break pull mandrel and countersunk head — AlA/St",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15974"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15974:2000",
+      "publicationDate": "2000-12-21",
+      "edition": 1
+    },
+    {
+      "id": "iso15975",
+      "description": "Closed end blind rivets with break pull mandrel and protruding head — AI/AIA",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15975"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15975:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 15975 specifies dimensional and mechanical characteristics and application data for closed end blind rivets with break pull mandrel and protruding head, with a commercially pure aluminium body (Al) and an aluminium alloy mandrel (AlA) and with nominal diameters from 3,2 mm up to and including 4,8 mm.</p>\n"
+    },
+    {
+      "id": "iso15976",
+      "description": "Closed end blind rivets with break pull mandrel and protruding head — St/St",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15976"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15976:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 15976 specifies dimensional and mechanical characteristics and application data for closed end blind rivets with break pull mandrel and protruding head, with a steel body (St) and an steel mandrel (St) and with nominal diameters from 3,2 mm up to and including 6,4 mm.</p>\n"
+    },
+    {
+      "id": "iso15977",
+      "description": "Open end blind rivets with break pull mandrel and protruding head — AIA/St",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15977"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15977:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 15977 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel and protruding head, with an aluminium alloy body and a steel mandrel and with nominal diameters from 2,4 mm up to and including 6,4 mm.</p>\n"
+    },
+    {
+      "id": "iso15978",
+      "description": "Open end blind rivets with break pull mandrel and countersunk head — AIA/St",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15978"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15978:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 15978 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel and countersunk head, with an aluminium alloy body and a steel mandrel with nominal diameters from 2,4 mm up to and including 5 mm.</p>\n"
+    },
+    {
+      "id": "iso15979",
+      "description": "Open end blind rivets with break pull mandrel and protruding head — St/St",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15979"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15979:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 15979 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel and protruding head, with a steel body and a steel mandrel and with nominal diameters from 2,4 mm up to and including 6,4 mm.</p>\n"
+    },
+    {
+      "id": "iso15980",
+      "description": "Open end blind rivets with break pull mandrel and countersunk head — St/St",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15980"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15980:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 15980 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel and protruding head, with a steel body and a steel mandrel and with nominal diameters from 2,4 mm up to and including 6,4 mm.</p>\n"
+    },
+    {
+      "id": "iso15981",
+      "description": "Open end blind rivets with break pull mandrel and protruding head — AIA/AIA",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15981"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15981:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 15981 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel and protruding head, with an aluminium alloy body (AlA) and an aluminium alloy mandrel (AlA) and with nominal diameters from 2,4 mm up to and including 6,4 mm.</p>\n"
+    },
+    {
+      "id": "iso15982",
+      "description": "Open end blind rivets with break pull mandrel and countersunk head — AIA/AIA",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15982"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15982:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 15982 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel and countersunk head, with an aluminium alloy body (AlA) and an aluminium alloy mandrel (AlA) and with nominal diameters from 2,4 mm up to and including 6,4 mm.</p>\n"
+    },
+    {
+      "id": "iso15983",
+      "description": "Open end blind rivets with break pull mandrel and protruding head — A2/A2",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15983"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15983:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 15983 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel and protruding head, with an austenitic stainless steel body (A2) and an austenitic stainless steel mandrel (A2) and with nominal diameters from 3 mm up to and including 5 mm.</p>\n"
+    },
+    {
+      "id": "iso15984",
+      "description": "Open end blind rivets with break pull mandrel and countersunk head — A2/A2",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "15984"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 15984:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 15984 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel and countersunk head, with an austenitic stainless steel body (A2) and an austenitic stainless steel mandrel (A2) and with nominal diameters from 3 mm up to and including 5 mm.</p>\n"
+    },
+    {
+      "id": "iso16228",
+      "description": "Fasteners — Types of inspection documents",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "16228"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01"
+      ],
+      "reference": "ISO 16228:2017",
+      "publicationDate": "2017-11-29",
+      "edition": 1,
+      "scope": "<p>ISO 16228:2017 specifies the different types of fastener inspection documents issued by the fastener manufacturer or distributor and/or by the external authorized representative on specific request of the purchaser at the time of the order.</p>\n<p>-      declaration of compliance (F2.1);</p>\n<p>-      test reports (F2.2, F3.1 and F3.2).</p>\n<p>NOTE       The term \"certificate\" is in common use, however for fastener inspection documents the terminology to be used is \"test report\".</p>\n<p>ISO 16228:2017 specifies requirements for the content of each fastener inspection document, in conjunction with the order, the relevant standards and/or specified requirements.</p>\n<p>ISO 16228:2017 is applicable to finished fasteners such as bolts, screws, studs, nuts, washers, pins, rivets, etc. made of steel, stainless steel, non-ferrous metal or non-metallic material.</p>\n<p>ISO 16228:2017 does not apply to special-purpose or specially engineered applications requiring other types of procedures (e.g. initial samples).</p>\n<p>Examples of inspection documents are given in Annex A. An example of a coding system identifying the sections in fastener inspection documents is given in Annex B.</p>\n\n"
+    },
+    {
+      "id": "iso16426",
+      "description": "Fasteners — Quality assurance system",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "16426"
+        }
+      ],
+      "hardwareTypes": [
+        "fastener"
+      ],
+      "icsCode": [
+        "21.060.01"
+      ],
+      "reference": "ISO 16426:2002",
+      "publicationDate": "2002-11-18",
+      "edition": 1,
+      "scope": "<p>ISO 16426 specifies requirements for a fastener quality assurance system to be met by the fastener manufacturers and distributors. These requirements are intended to reduce or prevent the production of non-conforming fasteners with the objective of approaching zero defects for the characteristics specified.</p>\n<p>This International Standard outlines the requirements from receipt of raw material through the manufacturing process to delivery at the distributor or the user, who is the installer.</p>\n"
+    },
+    {
+      "id": "iso16582",
+      "description": "Open end blind rivets with break pull mandrel and protruding head — Cu/St or Cu/Br or Cu/SSt",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "16582"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 16582:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 16582 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel and protruding head, with a copper body (Cu) and either a steel (St) or a bronze (Br) or a stainless steel (SSt) mandrel and with nominal diameters from 3 mm up to and including 4,8 mm.</p>\n"
+    },
+    {
+      "id": "iso16583",
+      "description": "Open end blind rivets with break pull mandrel and countersunk head — Cu/St or Cu/Br or Cu/SSt",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "16583"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 16583:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 16583 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel and countersunk head, with a copper body (Cu) and either a steel (St) or a bronze (Br) or a stainless steel (SSt) mandrel and with nominal diameters from 3 mm up to and including 4,8 mm.</p>\n"
+    },
+    {
+      "id": "iso16584",
+      "description": "Open end blind rivets with break pull mandrel and protruding head — NiCu/St or NiCu/SSt",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "16584"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 16584:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 16584 specifies dimensional and mechanical characteristics and application data for open end blind rivets with break pull mandrel, protruding head, with a nickel copper body (NiCu) and either a steel (St) or stainless steel (SSt) mandrel and with nominal diameters from 3,2 mm up to and including 6,4 mm.</p>\n"
+    },
+    {
+      "id": "iso16585",
+      "description": "Closed end blind rivets with pull mandrel and protruding head — A2/SSt",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "16585"
+        }
+      ],
+      "hardwareTypes": [
+        "rivet"
+      ],
+      "icsCode": [
+        "21.060.40"
+      ],
+      "reference": "ISO 16585:2002",
+      "publicationDate": "2002-10-22",
+      "edition": 1,
+      "scope": "<p>ISO 16585 specifies dimensional and mechanical characteristics and application data for closed end blind rivets with break pull mandrel and protruding head, with an austenitic stainless-steel body (A2) and a stainless-steel mandrel (SSt) and with nominal diameters from 3,2 mm up to and including 6,4 mm.</p>\n"
+    },
+    {
+      "id": "iso21670",
+      "description": "Fasteners — Hexagon weld nuts with flange",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "21670"
+        }
+      ],
+      "hardwareTypes": [
+        "nut"
+      ],
+      "icsCode": [
+        "21.060.20"
+      ],
+      "reference": "ISO 21670:2014",
+      "publicationDate": "2014-05-15",
+      "edition": 2,
+      "scope": "<p>ISO 21670:2014 specifies characteristics for hexagon weld nuts with flange, with sizes M5 to M16 (coarse thread) or d = 8 mm to 16 mm (fine pitch thread), of product grade A. Weld nuts conforming to ISO 21670:2014 are suitable for use with bolts of property classes up to 10.9 according to ISO 898‑1.</p>\n"
+    },
+    {
+      "id": "iso23429",
+      "description": "Gauging of hexagon sockets",
+      "designations": [
+        {
+          "system": "ISO",
+          "code": "23429"
+        }
+      ],
+      "hardwareTypes": [
+        "screw",
+        "bolt"
+      ],
+      "icsCode": [
+        "21.060.10"
+      ],
+      "reference": "ISO 23429:2004",
+      "publicationDate": "2004-01-06",
+      "edition": 1,
+      "scope": "<p>ISO 23429:2004 specifies gauges for hexagon sockets with tolerances as specified in ISO 4759-1.</p>\n"
+    }
+  ]
+}

@@ -1,130 +1,126 @@
 # Scripts Directory
 
-This directory contains data processing scripts for the Gridfinity Label Generator.
+This directory contains a unified script for processing and generating standards data for the Gridfinity Label Generator.
 
 ## Data Processing Pipeline
 
 ```
-┌─────────────────────────┐
-│ ISO Metadata JSONL File │
-│ (~78k standards)        │
-└───────────┬─────────────┘
-            │
-            ▼
-    process-iso-data.js
-            │
-            ▼
-┌─────────────────────────┐     ┌────────────────────┐
-│ standards-processed.json│     │standards-crossref. │
-│ (146 TC 2 standards)    │ ←───│json (manual)       │
-└───────────┬─────────────┘     └────────┬───────────┘
-            │                            │
-            └──────────┬─────────────────┘
+┌─────────────────────────┐     ┌─────────────────────────┐
+│ ISO Metadata JSONL File │     │  standards-config.json  │
+│ (~78k standards)        │     │  (crossref, DIN-only,   │
+└───────────┬─────────────┘     │   image mappings)       │
+            │                   └───────────┬─────────────┘
+            │                               │
+            └──────────┬────────────────────┘
                        │
                        ▼
-               build-standards.js
+             build-all-standards.js
                        │
                        ▼
             ┌─────────────────────────┐
             │ standards-generated.ts  │
-            │ (146 standards)         │
+            │ (247 standards total)   │
+            │ • 145 ISO standards     │
+            │ • 102 DIN-only          │
             └─────────────────────────┘
 ```
 
-## Scripts
+## Script
 
-### process-iso-data.js
+### build-all-standards.js
 
-Processes raw ISO metadata to extract fastener standards.
+Unified script that processes all standards data in a single pipeline.
 
 **Purpose:**
+- Processes raw ISO metadata from JSONL format
 - Filters ~78,000 ISO standards to find fasteners (TC 2 committee)
 - Excludes withdrawn and replaced standards
-- Maps ICS codes to hardware types
-
-**Usage:**
-```bash
-npm run process-standards
-```
-
-**Input:** `data/raw/iso_deliverables_metadata.jsonl`  
-- Source: [ISO Open Data](https://isopublicstorageprod.blob.core.windows.net/opendata/_latest/iso_deliverables_metadata/json/iso_deliverables_metadata.jsonl)
-
-**Output:** `src/lib/data/standards-processed.json`
-
-### build-standards.js
-
-Merges ISO standards with cross-reference mappings.
-
-**Purpose:**
-- Combines ISO data with DIN equivalents
-- Auto-categorizes standards by head/drive type
-- Includes all 146 standards for comprehensive coverage
-- Generates TypeScript module
+- Maps images to standards
+- Applies cross-references and mappings
+- Includes DIN-only standards
+- Generates final TypeScript module
 
 **Usage:**
 ```bash
 npm run build-standards
 ```
 
-**Input:** 
-- `src/lib/data/standards-processed.json`
-- `data/standards-crossref.json`
+**Input:**
+- `data/raw/iso_deliverables_metadata.jsonl` - Raw ISO standards data
+  - Source: [ISO Open Data](https://isopublicstorageprod.blob.core.windows.net/opendata/_latest/iso_deliverables_metadata/json/iso_deliverables_metadata.jsonl)
+- `data/standards-config.json` - All configurations
 
-**Output:** `src/lib/data/standards-generated.ts`
+**Output:**
+- `src/lib/data/standards-generated.ts` - TypeScript module with all standards
+
+**Features:**
+- Processes everything in memory (no intermediate files)
+- Supports multiple designation systems (ISO, DIN, ANSI, PN)
+- Maps images to standards
+- Supports multiple designation systems (ISO, DIN, ANSI, PN)
 
 ## Data Files
 
-### standards-crossref.json
+### standards-config.json
 
-Manual mapping of ISO standards to their DIN equivalents based on:
-- [Fuller Fasteners DIN-ISO crossover chart](https://fullerfasteners.com/tech/din-iso-en-crossover-chart/)
-- Additional industry sources
+Unified configuration file containing:
 
-Example structure:
 ```json
 {
-  "iso4762": {
-    "din": ["912"]
-  }
-}
-```
-
-### standards-processed.json
-
-Filtered ISO standards with metadata:
-```json
-{
-  "metadata": {
-    "generated": "2025-07-26T12:28:03.497Z",
-    "tc2Standards": 666,
-    "currentStandards": 146
+  "crossref": {
+    "iso4762": {"din": ["912"]},
+    // ... ISO to DIN/ANSI/PN mappings
   },
-  "standards": []
+  "dinOnly": {
+    "din127": {
+      "description": "Spring lock washers, Type A"
+    },
+    // ... DIN standards without ISO equivalents
+  },
+  "imageMappings": {
+    "iso4762": "/images/standards/din_912.jpg",
+    // ... standard to image mappings
+  }
 }
 ```
 
 ## Adding New Standards
 
-1. **Add cross-references** to `data/standards-crossref.json`
-2. **Run build script**: `npm run build-standards`
-3. **Test** the generated data in the application
-
-## Filtering to Priority Standards
-
-By default, all 146 standards are included. To filter to 40 priority standards:
-
-1. Edit `scripts/build-standards.js`
-2. Uncomment the filter on line 169:
-   ```javascript
-   // Change from:
-   // .filter(std => priorityStandards.includes(std.id))
-   // To:
-   .filter(std => priorityStandards.includes(std.id))
+### Add ISO→DIN Cross-reference
+1. Edit `data/standards-config.json`
+2. Add to `crossref` section:
+   ```json
+   "iso1234": {"din": ["5678"]}
    ```
-3. Re-run: `npm run build-standards`
+3. Run: `npm run build-standards`
+
+### Add DIN-only Standard
+1. Edit `data/standards-config.json`
+2. Add to `dinOnly` section:
+   ```json
+   "din999": {
+     "description": "Description here"
+   }
+   ```
+3. Run: `npm run build-standards`
+
+### Add Image Mapping
+1. Edit `data/standards-config.json`
+2. Add to `imageMappings` section:
+   ```json
+   "iso1234": "/images/standards/din_5678.jpg"
+   ```
+3. Run: `npm run build-standards`
+
+## Data Sources
+
+- ISO metadata: [ISO Open Data](https://isopublicstorageprod.blob.core.windows.net/opendata/_latest/iso_deliverables_metadata/json/iso_deliverables_metadata.jsonl)
+- Cross-references based on:
+  - [Fuller Fasteners DIN-ISO crossover chart](https://fullerfasteners.com/tech/din-iso-en-crossover-chart/)
+  - [Inoxa standards table](https://inoxa.pl/blog/post/tabela-norm-wedlug-din-pn-iso)
+  - Industry standard mappings
 
 ## Requirements
 
 - Node.js 14+ (for ES modules)
-- Raw ISO data file in `data/raw/` (download from [ISO Open Data](https://isopublicstorageprod.blob.core.windows.net/opendata/_latest/iso_deliverables_metadata/json/iso_deliverables_metadata.jsonl))
+- Raw ISO data file in `data/raw/` (3.7MB, download from ISO Open Data link above)

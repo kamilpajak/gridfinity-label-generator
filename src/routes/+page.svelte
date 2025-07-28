@@ -6,13 +6,44 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import { Slider } from '$lib/components/ui/slider';
+	import * as Command from "$lib/components/ui/command";
+	import * as Popover from "$lib/components/ui/popover";
+	import { Button } from "$lib/components/ui/button";
+	import CheckIcon from "@lucide/svelte/icons/check";
+	import ChevronsUpDownIcon from "@lucide/svelte/icons/chevrons-up-down";
+	import { standards, formatDesignations } from '$lib/data/standards';
+	import { tick } from "svelte";
+	import { cn } from "$lib/utils";
 	
 	let showStandard = $state(false);
 	let showHardwareImage = $state(false);
 	let showQRCode = $state(false);
 	
-	let hardwareType = $state('bolt');
+	let labelMode = $state('standard');
 	let measurementSystem = $state('metric');
+	
+	let measurementSystemDisabled = $derived(labelMode !== 'standard');
+	
+	// Store previous values
+	let previousLabelMode = 'standard';
+	let previousMeasurementSystem = 'metric';
+	
+	// Ensure exactly one value is always selected
+	$effect(() => {
+		if (!labelMode || labelMode === '') {
+			labelMode = previousLabelMode;
+		} else {
+			previousLabelMode = labelMode;
+		}
+	});
+	
+	$effect(() => {
+		if (!measurementSystem || measurementSystem === '') {
+			measurementSystem = previousMeasurementSystem;
+		} else {
+			previousMeasurementSystem = measurementSystem;
+		}
+	});
 	
 	let lengthPlaceholder = $derived(
 		measurementSystem === 'metric' 
@@ -28,6 +59,21 @@
 	
 	let labelHeight = $state('12');
 	let labelWidth = $state(35);
+	
+	let standardsOpen = $state(false);
+	let selectedStandardId = $state('');
+	
+	const standardsWithImages = $derived(
+		standards.filter((s) => s.image)
+	);
+	
+	const selectedStandard = $derived(
+		standards.find((s) => s.id === selectedStandardId)
+	);
+	
+	function closeStandardsAndFocusTrigger() {
+		standardsOpen = false;
+	}
 </script>
 
 <svelte:head>
@@ -54,61 +100,105 @@
 				<div class="lg:col-span-2">
 					<Card.Root>
 						<Card.Header>
-							<Card.Title>Hardware Configuration</Card.Title>
+							<Card.Title>Label Content</Card.Title>
 						</Card.Header>
 						<Card.Content class="space-y-4">
-							<div class="grid grid-cols-2 gap-4">
-								<ToggleGroup bind:value={hardwareType} variant="outline" type="single" size="lg" class="w-full">
-									<ToggleGroupItem value="bolt" class="flex-1">Bolt</ToggleGroupItem>
-									<ToggleGroupItem value="screw" class="flex-1">Screw</ToggleGroupItem>
-									<ToggleGroupItem value="nut" class="flex-1">Nut</ToggleGroupItem>
-									<ToggleGroupItem value="washer" class="flex-1">Washer</ToggleGroupItem>
+							<div class="flex flex-col gap-4 sm:grid sm:grid-cols-2">
+								<ToggleGroup bind:value={labelMode} variant="outline" type="single" size="default" class="w-full">
+									<ToggleGroupItem value="standard" class="flex-1">Fastener</ToggleGroupItem>
+									<ToggleGroupItem value="custom" class="flex-1">General Item</ToggleGroupItem>
 								</ToggleGroup>
 								
-								<ToggleGroup bind:value={measurementSystem} variant="outline" type="single" size="lg" class="w-full">
+								<ToggleGroup bind:value={measurementSystem} variant="outline" type="single" size="default" class="w-full {measurementSystemDisabled ? 'opacity-50 pointer-events-none' : ''}">
 									<ToggleGroupItem value="metric" class="flex-1">Metric</ToggleGroupItem>
 									<ToggleGroupItem value="imperial" class="flex-1">Imperial</ToggleGroupItem>
 								</ToggleGroup>
 							</div>
 							
-							<div class="grid grid-cols-2 gap-4 mt-4">
-								<div>
-									<Select type="single">
-										<SelectTrigger id="thread-size" class="w-full">
-											{threadSizePlaceholder}
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="m3">M3</SelectItem>
-											<SelectItem value="m4">M4</SelectItem>
-											<SelectItem value="m5">M5</SelectItem>
-										</SelectContent>
-									</Select>
+							{#if labelMode === 'standard'}
+								<div class="flex flex-col gap-4 sm:grid sm:grid-cols-2 mt-4">
+									<div>
+										<Select type="single">
+											<SelectTrigger id="thread-size" class="w-full">
+												{threadSizePlaceholder}
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="m3">M3</SelectItem>
+												<SelectItem value="m4">M4</SelectItem>
+												<SelectItem value="m5">M5</SelectItem>
+											</SelectContent>
+										</Select>
+									</div>
+									<div>
+										<Input id="length" placeholder={lengthPlaceholder} class="w-full" />
+									</div>
 								</div>
-								<div>
-									<Input id="length" placeholder={lengthPlaceholder} disabled={hardwareType === 'nut' || hardwareType === 'washer'} class="w-full" />
+							{:else}
+								<div class="space-y-4 mt-4">
+									<Input placeholder="Primary text (e.g., Resistors 10kΩ)" class="w-full" />
+									<Input placeholder="Secondary text (e.g., 1/4W ±5%)" class="w-full" />
 								</div>
-							</div>
+							{/if}
 							
-							<div class="grid grid-cols-2 gap-4 mt-4">
-								<div>
-									<Select type="single">
-										<SelectTrigger class="w-full">
-											Select ISO/DIN standard
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="iso4762">ISO 4762 - Socket Head Cap Screw</SelectItem>
-											<SelectItem value="din912">DIN 912 - Socket Head Cap Screw</SelectItem>
-											<SelectItem value="iso14579">ISO 14579 - Socket Head Screw</SelectItem>
-											<SelectItem value="iso10642">ISO 10642 - Countersunk Head Screw</SelectItem>
-											<SelectItem value="din7991">DIN 7991 - Countersunk Head Screw</SelectItem>
-											<SelectItem value="iso4026">ISO 4026 - Set Screw</SelectItem>
-											<SelectItem value="din913">DIN 913 - Set Screw</SelectItem>
-										</SelectContent>
-									</Select>
+							{#if labelMode === 'standard'}
+								<div class="space-y-4 mt-4">
+									<Popover.Root bind:open={standardsOpen}>
+										<Popover.Trigger>
+											{#snippet child({ props })}
+												<Button
+													{...props}
+													variant="outline"
+													role="combobox"
+													aria-expanded={standardsOpen}
+													class="w-full justify-between font-normal"
+												>
+													{selectedStandard ? formatDesignations(selectedStandard) : "Select ISO/DIN standard"}
+													<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+												</Button>
+											{/snippet}
+										</Popover.Trigger>
+										<Popover.Content class="w-[400px] p-0">
+											<Command.Root>
+												<Command.Input placeholder="Search standards..." />
+												<Command.Empty>No standard with image found.</Command.Empty>
+												<Command.Group class="max-h-[300px] overflow-y-auto">
+													{#each standardsWithImages as standard}
+														<Command.Item
+															value={standard.id}
+															onSelect={() => {
+																selectedStandardId = standard.id;
+																closeStandardsAndFocusTrigger();
+															}}
+															class="flex items-center justify-between"
+														>
+															<div class="flex items-center flex-1">
+																<CheckIcon
+																	class={cn(
+																		"mr-2 h-4 w-4",
+																		selectedStandardId !== standard.id && "text-transparent"
+																	)}
+																/>
+																<div class="flex flex-col">
+																	<span>{formatDesignations(standard)}</span>
+																	<span class="text-xs text-muted-foreground">{standard.description}</span>
+																</div>
+															</div>
+															<img 
+																src={standard.image} 
+																alt={formatDesignations(standard)}
+																class="h-10 w-10 object-contain ml-3 flex-shrink-0"
+															/>
+														</Command.Item>
+													{/each}
+												</Command.Group>
+											</Command.Root>
+										</Popover.Content>
+									</Popover.Root>
 								</div>
-								<div>
-									<Input placeholder="Optional note" class="w-full" />
-								</div>
+							{/if}
+							
+							<div class="mt-4">
+								<Input placeholder="Optional note" class="w-full" />
 							</div>
 							
 							<div class="mt-4">

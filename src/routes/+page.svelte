@@ -21,8 +21,24 @@
 	
 	let labelMode = $state('standard');
 	let measurementSystem = $state('metric');
+	let threadSize = $state('');
 	
 	let measurementSystemDisabled = $derived(labelMode !== 'standard');
+	
+	// Thread size options
+	const metricThreadSizes = [
+		'M1.4', 'M1.6', 'M2', 'M2.5', 'M3', 'M4', 'M5', 
+		'M6', 'M8', 'M10', 'M12', 'M16', 'M20'
+	];
+	
+	const imperialThreadSizes = [
+		'#4', '#6', '#8', '#10', 
+		'1/4″', '5/16″', '3/8″', '1/2″', '5/8″'
+	];
+	
+	let availableThreadSizes = $derived(
+		measurementSystem === 'metric' ? metricThreadSizes : imperialThreadSizes
+	);
 	
 	// Store previous values
 	let previousLabelMode = 'standard';
@@ -43,6 +59,12 @@
 		} else {
 			previousMeasurementSystem = measurementSystem;
 		}
+	});
+	
+	// Reset thread size when measurement system changes
+	$effect(() => {
+		measurementSystem; // Track dependency
+		threadSize = '';
 	});
 	
 	let lengthPlaceholder = $derived(
@@ -118,14 +140,14 @@
 							{#if labelMode === 'standard'}
 								<div class="flex flex-col gap-4 sm:grid sm:grid-cols-2 mt-4">
 									<div>
-										<Select type="single">
+										<Select bind:value={threadSize} type="single">
 											<SelectTrigger id="thread-size" class="w-full">
-												{threadSizePlaceholder}
+												{threadSize || threadSizePlaceholder}
 											</SelectTrigger>
 											<SelectContent>
-												<SelectItem value="m3">M3</SelectItem>
-												<SelectItem value="m4">M4</SelectItem>
-												<SelectItem value="m5">M5</SelectItem>
+												{#each availableThreadSizes as size}
+													<SelectItem value={size}>{size}</SelectItem>
+												{/each}
 											</SelectContent>
 										</Select>
 									</div>

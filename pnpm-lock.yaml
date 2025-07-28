@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/noto-sans':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource/oswald':
+        specifier: ^5.2.6
+        version: 5.2.6
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
@@ -359,6 +365,12 @@ packages:
 
   '@fontsource/fira-mono@5.2.6':
     resolution: {integrity: sha512-6pyiGeFH+5DP5sICSwx5wu+9BlTEMTKki7bTppsEqXJysi1MiK82n6oSUaYkQWRLH51+DK7zv2JJsi82cOIS3g==}
+
+  '@fontsource/noto-sans@5.2.7':
+    resolution: {integrity: sha512-mTpMSMft6Nb+ZSF4DSiJVYnLzKCRjHNFieZ/swuxSDQK+v1hjUeDTBxLHKUdfmC+ZPg6TUEWw4oRq2ltnDbSjQ==}
+
+  '@fontsource/oswald@5.2.6':
+    resolution: {integrity: sha512-2rMxNdRrTjuhz2alrqMgOR45HOdxcLdzHYTdmque2idEH7TmG7fsYEpRr3qCL3TFpInr5OygAYvTEGWBy2d06g==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -2114,6 +2126,10 @@ snapshots:
   '@floating-ui/utils@0.2.10': {}
 
   '@fontsource/fira-mono@5.2.6': {}
+
+  '@fontsource/noto-sans@5.2.7': {}
+
+  '@fontsource/oswald@5.2.6': {}
 
   '@humanfs/core@0.19.1': {}
 

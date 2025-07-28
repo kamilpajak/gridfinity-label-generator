@@ -1,4 +1,6 @@
 <script lang="ts">
+	import '@fontsource/noto-sans/900.css'; // Import Noto Sans Black 900
+	import '@fontsource/oswald/300.css'; // Import Oswald Light 300
 	import QRCode from 'qrcode';
 	import { shortenUrl, shouldShortenUrl, isValidUrl } from '$lib/utils/url-shortener';
 	import type { ISODINStandard } from '$lib/data/standards';
@@ -149,9 +151,9 @@
 					<text
 						x={textPositions.x}
 						y={textPositions.primaryY}
-						font-family="Arial, sans-serif"
+						font-family="Noto Sans, sans-serif"
 						font-size={fontSizes.primary}
-						font-weight="bold"
+						font-weight="900"
 						fill="black"
 					>
 						{primaryText}
@@ -163,8 +165,9 @@
 					<text
 						x={textPositions.x}
 						y={textPositions.secondaryY}
-						font-family="Arial, sans-serif"
+						font-family="Oswald, sans-serif"
 						font-size={fontSizes.secondary}
+						font-weight="300"
 						fill="black"
 					>
 						{(secondaryText ||

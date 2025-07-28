@@ -9,11 +9,8 @@
 	import * as Command from "$lib/components/ui/command";
 	import * as Popover from "$lib/components/ui/popover";
 	import { Button } from "$lib/components/ui/button";
-	import CheckIcon from "@lucide/svelte/icons/check";
 	import ChevronsUpDownIcon from "@lucide/svelte/icons/chevrons-up-down";
 	import { standards, formatDesignations } from '$lib/data/standards';
-	import { tick } from "svelte";
-	import { cn } from "$lib/utils";
 	
 	let showStandard = $state(false);
 	let showHardwareImage = $state(false);
@@ -193,17 +190,9 @@
 															}}
 															class="flex items-center justify-between"
 														>
-															<div class="flex items-center flex-1">
-																<CheckIcon
-																	class={cn(
-																		"mr-2 h-4 w-4",
-																		selectedStandardId !== standard.id && "text-transparent"
-																	)}
-																/>
-																<div class="flex flex-col">
-																	<span>{formatDesignations(standard)}</span>
-																	<span class="text-xs text-muted-foreground">{standard.description}</span>
-																</div>
+															<div class="flex flex-col flex-1">
+																<span>{formatDesignations(standard)}</span>
+																<span class="text-xs text-muted-foreground">{standard.description}</span>
 															</div>
 															<img 
 																src={standard.image} 

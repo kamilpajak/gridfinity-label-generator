@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Important Notes
 
 ### UI Components Documentation
+
 - **ALWAYS use shadcn-svelte documentation** (https://www.shadcn-svelte.com/) for component references
 - **DO NOT use shadcn/ui documentation** (https://ui.shadcn.com/) which is for React
 - Key differences between shadcn-svelte and shadcn/ui:
@@ -15,12 +16,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ### Development
+
 - `npm run dev` - Start development server with hot reload
 - `npm run dev -- --open` - Start dev server and open in browser
 - `npm run build` - Build production version
 - `npm run preview` - Preview production build
 
 ### Testing
+
 - `npm run test` - Run all tests (unit and e2e)
 - `npm run test:unit` - Run Vitest unit tests in watch mode
 - `npm run test:unit -- --run` - Run unit tests once
@@ -28,6 +31,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Run a single test file: `npm run test:unit -- path/to/test.ts`
 
 ### Code Quality
+
 - `npm run check` - Run svelte-check for TypeScript errors
 - `npm run lint` - Check code formatting and ESLint rules
 - `npm run format` - Auto-format code with Prettier
@@ -35,6 +39,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Architecture
 
 ### Stack
+
 - **SvelteKit** - Full-stack framework with file-based routing
 - **Svelte 5** - Using runes syntax (`$props()`, `@render`)
 - **TypeScript** - Full type safety
@@ -44,18 +49,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Playwright** - E2E testing
 
 ### Project Structure
+
 - `/src/routes/` - File-based routing, each `+page.svelte` is a route
 - `/src/lib/` - Shared utilities and components
 - `/src/app.css` - Global styles with Tailwind directives
 - `/src/app.d.ts` - TypeScript ambient declarations
 
 ### Testing Setup
+
 - Unit tests use Vitest with separate browser and node environments
 - Browser tests: `*.svelte.test.ts` files run in Playwright browser
 - Node tests: Regular `*.test.ts` or `*.spec.ts` files
 - E2E tests in `/e2e/` directory using Playwright
 
 ### Key Patterns
+
 - Components use Svelte 5 runes syntax
 - Layout uses `$props()` and `@render children()`
 - CSS can be component-scoped `<style>` blocks or Tailwind utilities

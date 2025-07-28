@@ -1,46 +1,62 @@
 <script lang="ts">
-	import * as Card from "$lib/components/ui/card";
-	import * as Tabs from "$lib/components/ui/tabs";
+	import * as Card from '$lib/components/ui/card';
+	import * as Tabs from '$lib/components/ui/tabs';
 	import { Switch } from '$lib/components/ui/switch';
 	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
 	import { Input } from '$lib/components/ui/input';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import { Slider } from '$lib/components/ui/slider';
-	import * as Command from "$lib/components/ui/command";
-	import * as Popover from "$lib/components/ui/popover";
-	import { Button } from "$lib/components/ui/button";
-	import ChevronsUpDownIcon from "@lucide/svelte/icons/chevrons-up-down";
+	import * as Command from '$lib/components/ui/command';
+	import * as Popover from '$lib/components/ui/popover';
+	import { Button } from '$lib/components/ui/button';
+	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 	import { standards, formatDesignations } from '$lib/data/standards';
-	
+	import LabelPreview from '$lib/components/label/label-preview.svelte';
+	import { formatPrimaryText, formatSecondaryText } from '$lib/utils/label-formatter';
+
 	let showStandard = $state(false);
 	let showHardwareImage = $state(false);
 	let showQRCode = $state(false);
-	
+
 	let labelMode = $state('standard');
 	let measurementSystem = $state('metric');
 	let threadSize = $state('');
-	
+	let length = $state('');
+	let primaryText = $state('');
+	let secondaryText = $state('');
+	let optionalNote = $state('');
+	let qrCodeUrl = $state('');
+
 	let measurementSystemDisabled = $derived(labelMode !== 'standard');
-	
+
 	// Thread size options
 	const metricThreadSizes = [
-		'M1.4', 'M1.6', 'M2', 'M2.5', 'M3', 'M4', 'M5', 
-		'M6', 'M8', 'M10', 'M12', 'M16', 'M20'
+		'M1.4',
+		'M1.6',
+		'M2',
+		'M2.5',
+		'M3',
+		'M4',
+		'M5',
+		'M6',
+		'M8',
+		'M10',
+		'M12',
+		'M16',
+		'M20'
 	];
-	
-	const imperialThreadSizes = [
-		'#4', '#6', '#8', '#10', 
-		'1/4″', '5/16″', '3/8″', '1/2″', '5/8″'
-	];
-	
+
+	const imperialThreadSizes = ['#4', '#6', '#8', '#10', '1/4″', '5/16″', '3/8″', '1/2″', '5/8″'];
+
 	let availableThreadSizes = $derived(
 		measurementSystem === 'metric' ? metricThreadSizes : imperialThreadSizes
 	);
-	
+
 	// Store previous values
 	let previousLabelMode = 'standard';
 	let previousMeasurementSystem = 'metric';
-	
+	let previousLabelHeight = '12';
+
 	// Ensure exactly one value is always selected
 	$effect(() => {
 		if (!labelMode || labelMode === '') {
@@ -49,7 +65,7 @@
 			previousLabelMode = labelMode;
 		}
 	});
-	
+
 	$effect(() => {
 		if (!measurementSystem || measurementSystem === '') {
 			measurementSystem = previousMeasurementSystem;
@@ -57,42 +73,57 @@
 			previousMeasurementSystem = measurementSystem;
 		}
 	});
-	
+
+	$effect(() => {
+		if (!labelHeight || labelHeight === '') {
+			labelHeight = previousLabelHeight;
+		} else {
+			previousLabelHeight = labelHeight;
+		}
+	});
+
 	// Reset thread size when measurement system changes
 	$effect(() => {
 		measurementSystem; // Track dependency
 		threadSize = '';
 	});
-	
+
 	let lengthPlaceholder = $derived(
-		measurementSystem === 'metric' 
-			? 'Length in mm (e.g., 10, 25)' 
+		measurementSystem === 'metric'
+			? 'Length in mm (e.g., 10, 25)'
 			: 'Length in inches (e.g., 1/4, 3/8)'
 	);
-	
-	let threadSizePlaceholder = $derived(
-		measurementSystem === 'metric'
-			? 'Thread size (e.g., M3, M5)'
-			: 'Thread size (e.g., #4-40, 1/4-20)'
-	);
-	
+
+	const threadSizePlaceholder = 'Select thread size';
+
 	let labelHeight = $state('12');
 	let labelWidth = $state(35);
-	
+
 	let standardsOpen = $state(false);
 	let selectedStandardId = $state('');
-	
-	const standardsWithImages = $derived(
-		standards.filter((s) => s.image)
-	);
-	
-	const selectedStandard = $derived(
-		standards.find((s) => s.id === selectedStandardId)
-	);
-	
+
+	const standardsWithImages = $derived(standards.filter((s) => s.image));
+
+	const selectedStandard = $derived(standards.find((s) => s.id === selectedStandardId));
+
 	function closeStandardsAndFocusTrigger() {
 		standardsOpen = false;
 	}
+
+	// Derived values for label preview
+	const labelPrimaryText = $derived(formatPrimaryText(labelMode, threadSize, length, primaryText));
+
+	const labelSecondaryText = $derived(formatSecondaryText(labelMode, secondaryText));
+
+	// Disable QR Code for 9mm labels
+	const qrCodeDisabled = $derived(labelHeight === '9');
+
+	// Reset QR Code when switching to 9mm
+	$effect(() => {
+		if (labelHeight === '9' && showQRCode) {
+			showQRCode = false;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -102,20 +133,20 @@
 
 <div class="container mx-auto px-4 py-8">
 	<!-- Hero Section -->
-	<div class="text-center mb-8">
-		<h1 class="text-4xl font-bold mb-2">Gridfinity Label Generator</h1>
+	<div class="mb-8 text-center">
+		<h1 class="mb-2 text-4xl font-bold">Gridfinity Label Generator</h1>
 		<p class="text-xl text-muted-foreground">Print-Ready Labels for Your Gridfinity System</p>
 	</div>
 
 	<!-- Tabs Component -->
-	<Tabs.Root value="single" class="w-full max-w-6xl mx-auto">
+	<Tabs.Root value="single" class="mx-auto w-full max-w-6xl">
 		<Tabs.List class="grid w-full grid-cols-2">
 			<Tabs.Trigger value="single">Single Label</Tabs.Trigger>
 			<Tabs.Trigger value="batch">Batch Mode</Tabs.Trigger>
 		</Tabs.List>
-		
+
 		<Tabs.Content value="single" class="mt-6">
-			<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+			<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
 				<div class="lg:col-span-2">
 					<Card.Root>
 						<Card.Header>
@@ -123,19 +154,31 @@
 						</Card.Header>
 						<Card.Content class="space-y-4">
 							<div class="flex flex-col gap-4 sm:grid sm:grid-cols-2">
-								<ToggleGroup bind:value={labelMode} variant="outline" type="single" size="default" class="w-full">
+								<ToggleGroup
+									bind:value={labelMode}
+									variant="outline"
+									type="single"
+									size="default"
+									class="w-full"
+								>
 									<ToggleGroupItem value="standard" class="flex-1">Fastener</ToggleGroupItem>
 									<ToggleGroupItem value="custom" class="flex-1">General Item</ToggleGroupItem>
 								</ToggleGroup>
-								
-								<ToggleGroup bind:value={measurementSystem} variant="outline" type="single" size="default" class="w-full {measurementSystemDisabled ? 'opacity-50 pointer-events-none' : ''}">
+
+								<ToggleGroup
+									bind:value={measurementSystem}
+									variant="outline"
+									type="single"
+									size="default"
+									class="w-full {measurementSystemDisabled ? 'pointer-events-none opacity-50' : ''}"
+								>
 									<ToggleGroupItem value="metric" class="flex-1">Metric</ToggleGroupItem>
 									<ToggleGroupItem value="imperial" class="flex-1">Imperial</ToggleGroupItem>
 								</ToggleGroup>
 							</div>
-							
+
 							{#if labelMode === 'standard'}
-								<div class="flex flex-col gap-4 sm:grid sm:grid-cols-2 mt-4">
+								<div class="mt-4 flex flex-col gap-4 sm:grid sm:grid-cols-2">
 									<div>
 										<Select bind:value={threadSize} type="single">
 											<SelectTrigger id="thread-size" class="w-full">
@@ -149,18 +192,31 @@
 										</Select>
 									</div>
 									<div>
-										<Input id="length" placeholder={lengthPlaceholder} class="w-full" />
+										<Input
+											id="length"
+											bind:value={length}
+											placeholder={lengthPlaceholder}
+											class="w-full"
+										/>
 									</div>
 								</div>
 							{:else}
-								<div class="space-y-4 mt-4">
-									<Input placeholder="Primary text (e.g., Resistors 10kΩ)" class="w-full" />
-									<Input placeholder="Secondary text (e.g., 1/4W ±5%)" class="w-full" />
+								<div class="mt-4 space-y-4">
+									<Input
+										bind:value={primaryText}
+										placeholder="Primary text (e.g., Resistors 10kΩ)"
+										class="w-full"
+									/>
+									<Input
+										bind:value={secondaryText}
+										placeholder="Secondary text (e.g., 1/4W ±5%)"
+										class="w-full"
+									/>
 								</div>
 							{/if}
-							
+
 							{#if labelMode === 'standard'}
-								<div class="space-y-4 mt-4">
+								<div class="mt-4 space-y-4">
 									<Popover.Root bind:open={standardsOpen}>
 										<Popover.Trigger>
 											{#snippet child({ props })}
@@ -171,7 +227,9 @@
 													aria-expanded={standardsOpen}
 													class="w-full justify-between font-normal"
 												>
-													{selectedStandard ? formatDesignations(selectedStandard) : "Select ISO/DIN standard"}
+													{selectedStandard
+														? formatDesignations(selectedStandard)
+														: 'Select ISO/DIN standard'}
 													<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 												</Button>
 											{/snippet}
@@ -190,14 +248,16 @@
 															}}
 															class="flex items-center justify-between"
 														>
-															<div class="flex flex-col flex-1">
+															<div class="flex flex-1 flex-col">
 																<span>{formatDesignations(standard)}</span>
-																<span class="text-xs text-muted-foreground">{standard.description}</span>
+																<span class="text-xs text-muted-foreground"
+																	>{standard.description}</span
+																>
 															</div>
-															<img 
-																src={standard.image} 
+															<img
+																src={standard.image}
 																alt={formatDesignations(standard)}
-																class="h-10 w-10 object-contain ml-3 flex-shrink-0"
+																class="ml-3 h-10 w-10 flex-shrink-0 object-contain"
 															/>
 														</Command.Item>
 													{/each}
@@ -207,18 +267,23 @@
 									</Popover.Root>
 								</div>
 							{/if}
-							
+
 							<div class="mt-4">
-								<Input placeholder="Optional note" class="w-full" />
+								<Input bind:value={optionalNote} placeholder="Optional note" class="w-full" />
 							</div>
-							
+
 							<div class="mt-4">
-								<Input placeholder="QR code (URL, part number, etc.)" class="w-full" disabled={!showQRCode} />
+								<Input
+									bind:value={qrCodeUrl}
+									placeholder="QR code (URL, part number, etc.)"
+									class="w-full"
+									disabled={!showQRCode}
+								/>
 							</div>
 						</Card.Content>
 					</Card.Root>
 				</div>
-				
+
 				<div>
 					<Card.Root>
 						<Card.Header>
@@ -232,7 +297,7 @@
 								</div>
 								<Switch bind:checked={showStandard} />
 							</div>
-							
+
 							<div class="flex items-center justify-between space-x-2">
 								<div class="space-y-0.5">
 									<div class="font-medium">Hardware Image</div>
@@ -240,33 +305,40 @@
 								</div>
 								<Switch bind:checked={showHardwareImage} />
 							</div>
-							
+
 							<div class="flex items-center justify-between space-x-2">
 								<div class="space-y-0.5">
 									<div class="font-medium">QR Code</div>
 									<div class="text-sm text-muted-foreground">Add scannable code</div>
 								</div>
-								<Switch bind:checked={showQRCode} />
+								<Switch bind:checked={showQRCode} disabled={qrCodeDisabled} />
 							</div>
-							
-							<div class="border-t pt-4 mt-4">
-								<h4 class="font-medium mb-3">Dimensions</h4>
-								
+
+							<div class="mt-4 border-t pt-4">
+								<h4 class="mb-3 font-medium">Dimensions</h4>
+
 								<div class="space-y-3">
 									<div>
-										<div class="text-sm text-muted-foreground mb-2">Height (Brother P-Touch tape)</div>
-										<ToggleGroup bind:value={labelHeight} variant="outline" type="single" class="w-full">
+										<div class="mb-2 text-sm text-muted-foreground">
+											Height (Brother P-Touch tape)
+										</div>
+										<ToggleGroup
+											bind:value={labelHeight}
+											variant="outline"
+											type="single"
+											class="w-full"
+										>
 											<ToggleGroupItem value="9" class="flex-1">9mm</ToggleGroupItem>
 											<ToggleGroupItem value="12" class="flex-1">12mm</ToggleGroupItem>
 										</ToggleGroup>
 									</div>
-									
+
 									<div>
-										<div class="flex justify-between items-center mb-2">
+										<div class="mb-2 flex items-center justify-between">
 											<span class="text-sm text-muted-foreground">Width</span>
 											<span class="text-sm font-medium">{labelWidth}mm</span>
 										</div>
-										<Slider 
+										<Slider
 											bind:value={labelWidth}
 											type="single"
 											min={30}
@@ -281,8 +353,30 @@
 					</Card.Root>
 				</div>
 			</div>
+
+			<Card.Root class="mt-6">
+				<Card.Header>
+					<Card.Title>Label Preview</Card.Title>
+				</Card.Header>
+				<Card.Content>
+					<div class="mx-auto max-w-2xl">
+						<LabelPreview
+							primaryText={labelPrimaryText}
+							secondaryText={labelSecondaryText}
+							{optionalNote}
+							standard={selectedStandard}
+							{showStandard}
+							{showHardwareImage}
+							{showQRCode}
+							{qrCodeUrl}
+							labelHeight={parseInt(labelHeight)}
+							{labelWidth}
+						/>
+					</div>
+				</Card.Content>
+			</Card.Root>
 		</Tabs.Content>
-		
+
 		<Tabs.Content value="batch" class="mt-6">
 			<Card.Root>
 				<Card.Header>

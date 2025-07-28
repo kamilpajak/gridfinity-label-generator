@@ -1,14 +1,14 @@
 /**
  * ISO/DIN Standards Data
- * 
+ *
  * This file contains the master list of all hardware standards supported by the Gridfinity Label Generator.
  * Each standard includes its designation, description, and applicable hardware types.
- * 
+ *
  * Purpose:
  * - Central repository for all ISO/DIN standard definitions
  * - Type-safe data structure ensuring consistency across the application
  * - Supports quick lookup and selection in the UI
- * 
+ *
  * Usage:
  * - Import this data into components that need to display or select standards
  * - Search by ISO/DIN designation or description
@@ -19,32 +19,32 @@
  * Interface defining the structure of an ISO/DIN standard
  */
 export interface ISODINStandard {
-  /** Unique identifier for the standard */
-  id: string;
-  
-  /** Primary standard system (ISO or DIN) */
-  primarySystem: 'ISO' | 'DIN';
-  
-  /** Human-readable description of the standard */
-  description: string;
-  
-  /** All standard designations (ISO, DIN, ANSI/ASME, PN, etc.) */
-  designations: Array<{
-    system: 'ISO' | 'DIN' | 'ANSI' | 'ASME' | 'PN' | 'GB' | 'JIS';
-    code: string;
-  }>;
-  
-  /** Path to visual representation (relative to /static/) */
-  image?: string;
-  
-  /** ICS (International Classification for Standards) codes */
-  icsCode?: string[];
-  
-  /** ISO reference (e.g., "ISO 4762:2004") */
-  reference?: string;
-  
-  /** Brief scope description */
-  scope?: string;
+	/** Unique identifier for the standard */
+	id: string;
+
+	/** Primary standard system (ISO or DIN) */
+	primarySystem: 'ISO' | 'DIN';
+
+	/** Human-readable description of the standard */
+	description: string;
+
+	/** All standard designations (ISO, DIN, ANSI/ASME, PN, etc.) */
+	designations: Array<{
+		system: 'ISO' | 'DIN' | 'ANSI' | 'ASME' | 'PN' | 'GB' | 'JIS';
+		code: string;
+	}>;
+
+	/** Path to visual representation (relative to /static/) */
+	image?: string;
+
+	/** ICS (International Classification for Standards) codes */
+	icsCode?: string[];
+
+	/** ISO reference (e.g., "ISO 4762:2004") */
+	reference?: string;
+
+	/** Brief scope description */
+	scope?: string;
 }
 
 /**
@@ -67,28 +67,25 @@ export const DEFAULT_STANDARD_ID = 'iso4762';
  * @param query - The search query (can be ISO, DIN, ANSI, PN code or description)
  * @returns Array of matching standards
  */
-export function searchStandards(
-  query: string
-): ISODINStandard[] {
-  const normalizedQuery = query.toLowerCase().trim();
-  
-  return standards.filter(std => {
-    
-    // Search in all designation codes
-    const matchesDesignation = std.designations.some(des => 
-      des.code.toLowerCase().includes(normalizedQuery)
-    );
-    
-    // Search in description
-    const matchesDescription = std.description.toLowerCase().includes(normalizedQuery);
-    
-    // Search in the combined designation string (e.g., "ISO 4762", "DIN 912")
-    const matchesFullDesignation = std.designations.some(des => 
-      `${des.system} ${des.code}`.toLowerCase().includes(normalizedQuery)
-    );
-    
-    return matchesDesignation || matchesDescription || matchesFullDesignation;
-  });
+export function searchStandards(query: string): ISODINStandard[] {
+	const normalizedQuery = query.toLowerCase().trim();
+
+	return standards.filter((std) => {
+		// Search in all designation codes
+		const matchesDesignation = std.designations.some((des) =>
+			des.code.toLowerCase().includes(normalizedQuery)
+		);
+
+		// Search in description
+		const matchesDescription = std.description.toLowerCase().includes(normalizedQuery);
+
+		// Search in the combined designation string (e.g., "ISO 4762", "DIN 912")
+		const matchesFullDesignation = std.designations.some((des) =>
+			`${des.system} ${des.code}`.toLowerCase().includes(normalizedQuery)
+		);
+
+		return matchesDesignation || matchesDescription || matchesFullDesignation;
+	});
 }
 
 /**
@@ -97,7 +94,5 @@ export function searchStandards(
  * @returns Formatted string like "ISO 4762 / DIN 912 / ANSI B18.3"
  */
 export function formatDesignations(standard: ISODINStandard): string {
-  return standard.designations
-    .map(d => `${d.system} ${d.code}`)
-    .join(' / ');
+	return standard.designations.map((d) => `${d.system} ${d.code}`).join(' / ');
 }

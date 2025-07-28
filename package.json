@@ -31,6 +31,7 @@
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/typography": "^0.5.15",
 		"@tailwindcss/vite": "^4.0.0",
+		"@types/qrcode": "^1.5.5",
 		"@vitest/browser": "^3.2.3",
 		"bits-ui": "^2.8.12",
 		"clsx": "^2.1.1",
@@ -60,6 +61,8 @@
 		]
 	},
 	"dependencies": {
+		"qrcode": "^1.5.4",
+		"svelte-qrcode": "^1.0.1",
 		"zustand": "^5.0.6"
 	}
 }

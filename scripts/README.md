@@ -32,6 +32,7 @@ This directory contains a unified script for processing and generating standards
 Unified script that processes all standards data in a single pipeline.
 
 **Purpose:**
+
 - Processes raw ISO metadata from JSONL format
 - Filters ~78,000 ISO standards to find fasteners (TC 2 committee)
 - Excludes withdrawn and replaced standards
@@ -41,19 +42,23 @@ Unified script that processes all standards data in a single pipeline.
 - Generates final TypeScript module
 
 **Usage:**
+
 ```bash
 npm run build-standards
 ```
 
 **Input:**
+
 - `data/raw/iso_deliverables_metadata.jsonl` - Raw ISO standards data
   - Source: [ISO Open Data](https://isopublicstorageprod.blob.core.windows.net/opendata/_latest/iso_deliverables_metadata/json/iso_deliverables_metadata.jsonl)
 - `data/standards-config.json` - All configurations
 
 **Output:**
+
 - `src/lib/data/standards-generated.ts` - TypeScript module with all standards
 
 **Features:**
+
 - Processes everything in memory (no intermediate files)
 - Supports multiple designation systems (ISO, DIN, ANSI, PN)
 - Maps images to standards
@@ -67,26 +72,27 @@ Unified configuration file containing:
 
 ```json
 {
-  "crossref": {
-    "iso4762": {"din": ["912"]},
-    // ... ISO to DIN/ANSI/PN mappings
-  },
-  "dinOnly": {
-    "din127": {
-      "description": "Spring lock washers, Type A"
-    },
-    // ... DIN standards without ISO equivalents
-  },
-  "imageMappings": {
-    "iso4762": "/images/standards/din_912.jpg",
-    // ... standard to image mappings
-  }
+	"crossref": {
+		"iso4762": { "din": ["912"] }
+		// ... ISO to DIN/ANSI/PN mappings
+	},
+	"dinOnly": {
+		"din127": {
+			"description": "Spring lock washers, Type A"
+		}
+		// ... DIN standards without ISO equivalents
+	},
+	"imageMappings": {
+		"iso4762": "/images/standards/din_912.jpg"
+		// ... standard to image mappings
+	}
 }
 ```
 
 ## Adding New Standards
 
 ### Add ISO→DIN Cross-reference
+
 1. Edit `data/standards-config.json`
 2. Add to `crossref` section:
    ```json
@@ -95,6 +101,7 @@ Unified configuration file containing:
 3. Run: `npm run build-standards`
 
 ### Add DIN-only Standard
+
 1. Edit `data/standards-config.json`
 2. Add to `dinOnly` section:
    ```json
@@ -105,6 +112,7 @@ Unified configuration file containing:
 3. Run: `npm run build-standards`
 
 ### Add Image Mapping
+
 1. Edit `data/standards-config.json`
 2. Add to `imageMappings` section:
    ```json

@@ -1,900 +1,670 @@
 {
-  "crossref": {
-    "iso1051": {
-      "din": [
-        "660"
-      ]
-    },
-    "iso1207": {
-      "din": [
-        "84"
-      ]
-    },
-    "iso1234": {
-      "din": [
-        "94"
-      ]
-    },
-    "iso1478": {
-      "din": [
-        "7970"
-      ]
-    },
-    "iso1479": {
-      "din": [
-        "7976"
-      ]
-    },
-    "iso1481": {
-      "din": [
-        "7971"
-      ]
-    },
-    "iso1482": {
-      "din": [
-        "7972"
-      ]
-    },
-    "iso1483": {
-      "din": [
-        "7973"
-      ]
-    },
-    "iso1580": {
-      "din": [
-        "85"
-      ]
-    },
-    "iso1581": {
-      "din": [
-        "7972"
-      ]
-    },
-    "iso2009": {
-      "din": [
-        "963",
-        "964"
-      ]
-    },
-    "iso2010": {
-      "din": [
-        "965",
-        "966"
-      ]
-    },
-    "iso2338": {
-      "din": [
-        "7",
-        "6325"
-      ]
-    },
-    "iso2339": {
-      "din": [
-        "1"
-      ]
-    },
-    "iso2340": {
-      "din": [
-        "1433"
-      ]
-    },
-    "iso2341": {
-      "din": [
-        "1443"
-      ]
-    },
-    "iso2342": {
-      "din": [
-        "551"
-      ]
-    },
-    "iso3266": {
-      "din": [
-        "580"
-      ]
-    },
-    "iso3506": {
-      "din": [
-        "267"
-      ]
-    },
-    "iso4014": {
-      "din": [
-        "931"
-      ]
-    },
-    "iso4016": {
-      "din": [
-        "601"
-      ]
-    },
-    "iso4017": {
-      "din": [
-        "933"
-      ]
-    },
-    "iso4018": {
-      "din": [
-        "558",
-        "561"
-      ]
-    },
-    "iso4026": {
-      "din": [
-        "913"
-      ]
-    },
-    "iso4027": {
-      "din": [
-        "914"
-      ]
-    },
-    "iso4028": {
-      "din": [
-        "915"
-      ]
-    },
-    "iso4029": {
-      "din": [
-        "916"
-      ]
-    },
-    "iso4032": {
-      "din": [
-        "934"
-      ]
-    },
-    "iso4033": {
-      "din": [
-        "982"
-      ]
-    },
-    "iso4034": {
-      "din": [
-        "555",
-        "934"
-      ]
-    },
-    "iso4035": {
-      "din": [
-        "439"
-      ]
-    },
-    "iso4036": {
-      "din": [
-        "936"
-      ]
-    },
-    "iso4162": {
-      "din": [
-        "6921"
-      ]
-    },
-    "iso4762": {
-      "din": [
-        "912"
-      ]
-    },
-    "iso4766": {
-      "din": [
-        "1481"
-      ]
-    },
-    "iso7040": {
-      "din": [
-        "985"
-      ]
-    },
-    "iso7041": {
-      "din": [
-        "982"
-      ]
-    },
-    "iso7042": {
-      "din": [
-        "980",
-        "982"
-      ]
-    },
-    "iso7045": {
-      "din": [
-        "7985"
-      ]
-    },
-    "iso7046": {
-      "din": [
-        "963",
-        "965"
-      ]
-    },
-    "iso7047": {
-      "din": [
-        "964",
-        "966"
-      ]
-    },
-    "iso7048": {
-      "din": [
-        "7971"
-      ]
-    },
-    "iso7049": {
-      "din": [
-        "7981",
-        "7983"
-      ]
-    },
-    "iso7050": {
-      "din": [
-        "7982"
-      ]
-    },
-    "iso7051": {
-      "din": [
-        "7973"
-      ]
-    },
-    "iso7053": {
-      "din": [
-        "7967"
-      ]
-    },
-    "iso7089": {
-      "din": [
-        "125"
-      ]
-    },
-    "iso7090": {
-      "din": [
-        "125"
-      ]
-    },
-    "iso7091": {
-      "din": [
-        "126"
-      ]
-    },
-    "iso7092": {
-      "din": [
-        "433"
-      ]
-    },
-    "iso7093": {
-      "din": [
-        "9021"
-      ]
-    },
-    "iso7094": {
-      "din": [
-        "440"
-      ]
-    },
-    "iso7379": {
-      "din": [
-        "6912"
-      ]
-    },
-    "iso7380": {
-      "din": [
-        "9427"
-      ]
-    },
-    "iso7434": {
-      "din": [
-        "553"
-      ]
-    },
-    "iso7435": {
-      "din": [
-        "417"
-      ]
-    },
-    "iso7436": {
-      "din": [
-        "438"
-      ]
-    },
-    "iso7719": {
-      "din": [
-        "980"
-      ]
-    },
-    "iso7720": {
-      "din": [
-        "982"
-      ]
-    },
-    "iso7980": {
-      "din": [
-        "127"
-      ]
-    },
-    "iso8673": {
-      "din": [
-        "934"
-      ]
-    },
-    "iso8674": {
-      "din": [
-        "982"
-      ]
-    },
-    "iso8675": {
-      "din": [
-        "439"
-      ]
-    },
-    "iso8676": {
-      "din": [
-        "961"
-      ]
-    },
-    "iso8678": {
-      "din": [
-        "603"
-      ]
-    },
-    "iso8733": {
-      "din": [
-        "7979"
-      ]
-    },
-    "iso8734": {
-      "din": [
-        "6325",
-        "7"
-      ]
-    },
-    "iso8735": {
-      "din": [
-        "7978"
-      ]
-    },
-    "iso8736": {
-      "din": [
-        "7977"
-      ]
-    },
-    "iso8737": {
-      "din": [
-        "7977"
-      ]
-    },
-    "iso8738": {
-      "din": [
-        "1440"
-      ]
-    },
-    "iso8740": {
-      "din": [
-        "1473"
-      ]
-    },
-    "iso8741": {
-      "din": [
-        "1474"
-      ]
-    },
-    "iso8744": {
-      "din": [
-        "1471"
-      ]
-    },
-    "iso8745": {
-      "din": [
-        "1472"
-      ]
-    },
-    "iso8746": {
-      "din": [
-        "1476"
-      ]
-    },
-    "iso8747": {
-      "din": [
-        "1477"
-      ]
-    },
-    "iso8748": {
-      "din": [
-        "7343"
-      ]
-    },
-    "iso8750": {
-      "din": [
-        "7343"
-      ]
-    },
-    "iso8751": {
-      "din": [
-        "7343"
-      ]
-    },
-    "iso8752": {
-      "din": [
-        "1481"
-      ]
-    },
-    "iso8765": {
-      "din": [
-        "960"
-      ]
-    },
-    "iso10509": {
-      "din": [
-        "6923"
-      ]
-    },
-    "iso10510": {
-      "din": [
-        "6902"
-      ]
-    },
-    "iso10511": {
-      "din": [
-        "985"
-      ]
-    },
-    "iso10512": {
-      "din": [
-        "985"
-      ]
-    },
-    "iso10513": {
-      "din": [
-        "980"
-      ]
-    },
-    "iso10642": {
-      "din": [
-        "7991"
-      ]
-    },
-    "iso10644": {
-      "din": [
-        "7981"
-      ]
-    },
-    "iso10669": {
-      "din": [
-        "6902"
-      ]
-    },
-    "iso10673": {
-      "din": [
-        "6902"
-      ]
-    },
-    "iso12474": {
-      "din": [
-        "912"
-      ]
-    },
-    "iso13337": {
-      "din": [
-        "7346"
-      ]
-    },
-    "iso14579": {
-      "din": [
-        "34822"
-      ]
-    },
-    "iso14580": {
-      "din": [
-        "34823"
-      ]
-    },
-    "iso14581": {
-      "din": [
-        "7988"
-      ]
-    },
-    "iso14582": {
-      "din": [
-        "7989"
-      ]
-    },
-    "iso14583": {
-      "din": [
-        "7996"
-      ]
-    },
-    "iso14584": {
-      "din": [
-        "7997"
-      ]
-    },
-    "iso14585": {
-      "din": [
-        "7995"
-      ]
-    },
-    "iso14586": {
-      "din": [
-        "7995"
-      ]
-    },
-    "iso14587": {
-      "din": [
-        "7982"
-      ]
-    },
-    "iso15071": {
-      "din": [
-        "6921"
-      ]
-    },
-    "iso15072": {
-      "din": [
-        "6921"
-      ]
-    },
-    "iso15480": {
-      "din": [
-        "7504"
-      ]
-    },
-    "iso15481": {
-      "din": [
-        "7504"
-      ]
-    },
-    "iso15482": {
-      "din": [
-        "7504"
-      ]
-    },
-    "iso15483": {
-      "din": [
-        "7504"
-      ]
-    },
-    "iso21670": {
-      "din": [
-        "929"
-      ]
-    },
-    "iso23429": {
-      "din": [
-        "911"
-      ]
-    }
-  },
-  "dinOnly": {
-    "din93": {
-      "description": "Tab washers with long tab"
-    },
-    "din95": {
-      "description": "Slotted countersunk flat head wood screws"
-    },
-    "din96": {
-      "description": "Slotted round head wood screws"
-    },
-    "din97": {
-      "description": "Slotted countersunk flat head wood screws"
-    },
-    "din127": {
-      "description": "Spring lock washers, Type A"
-    },
-    "din128": {
-      "description": "Curved spring lock washers, Type B"
-    },
-    "din137": {
-      "description": "Wave spring washers, Type A"
-    },
-    "din186": {
-      "description": "T-head bolts"
-    },
-    "din261": {
-      "description": "T-slot bolts"
-    },
-    "din315": {
-      "description": "Wing nuts, German type"
-    },
-    "din316": {
-      "description": "Wing nuts, American type"
-    },
-    "din404": {
-      "description": "Hexagon socket head shoulder screws"
-    },
-    "din431": {
-      "description": "Pipe nuts"
-    },
-    "din432": {
-      "description": "Tab washers with nose"
-    },
-    "din434": {
-      "description": "Square taper washers for U-sections"
-    },
-    "din435": {
-      "description": "Square taper washers for I-sections"
-    },
-    "din436": {
-      "description": "Square washers for wood constructions"
-    },
-    "din444": {
-      "description": "Eye bolts"
-    },
-    "din462": {
-      "description": "Tab washers with 2 tabs"
-    },
-    "din463": {
-      "description": "Tab washers with long tab and wing"
-    },
-    "din464": {
-      "description": "Knurled thumb screws, high type"
-    },
-    "din466": {
-      "description": "Knurled nuts, high type"
-    },
-    "din467": {
-      "description": "Knurled nuts, low type"
-    },
-    "din478": {
-      "description": "Square head bolts with collar"
-    },
-    "din479": {
-      "description": "Square head bolts"
-    },
-    "din480": {
-      "description": "Square head bolts with short thread"
-    },
-    "din508": {
-      "description": "T-slot stones"
-    },
-    "din546": {
-      "description": "Round nuts with set pin holes in side"
-    },
-    "din557": {
-      "description": "Square nuts"
-    },
-    "din562": {
-      "description": "Square thin nuts"
-    },
-    "din564": {
-      "description": "Square head set screws with flat point"
-    },
-    "din571": {
-      "description": "Hexagon head wood screws"
-    },
-    "din580": {
-      "description": "Lifting eye bolts"
-    },
-    "din582": {
-      "description": "Lifting eye nuts"
-    },
-    "din604": {
-      "description": "Mushroom head square neck bolts with flat bearing surface"
-    },
-    "din605": {
-      "description": "Countersunk head square neck bolts"
-    },
-    "din607": {
-      "description": "Cup head square neck bolts with enlarged head"
-    },
-    "din608": {
-      "description": "Countersunk head square neck bolts with high square"
-    },
-    "din609": {
-      "description": "Cup head square neck bolts"
-    },
-    "din610": {
-      "description": "Countersunk head rivets"
-    },
-    "din653": {
-      "description": "Knurled head screws"
-    },
-    "din787": {
-      "description": "Hook bolts"
-    },
-    "din792": {
-      "description": "Tee bolts"
-    },
-    "din917": {
-      "description": "Hexagon socket pipe plugs"
-    },
-    "din928": {
-      "description": "Square weld nuts"
-    },
-    "din935": {
-      "description": "Hexagon castle nuts"
-    },
-    "din936": {
-      "description": "Hexagon thin nuts"
-    },
-    "din937": {
-      "description": "Hexagon crown nuts"
-    },
-    "din979": {
-      "description": "Hexagon thin nuts with collar"
-    },
-    "din981": {
-      "description": "Serrated hexagon nuts"
-    },
-    "din986": {
-      "description": "Prevailing torque type hexagon domed cap nuts"
-    },
-    "din988": {
-      "description": "Studs with collar"
-    },
-    "din1052": {
-      "description": "Slotted round washers"
-    },
-    "din1441": {
-      "description": "Washers for clevis pins"
-    },
-    "din1478": {
-      "description": "Hexagon socket set screws with thrust point"
-    },
-    "din1479": {
-      "description": "Hexagon socket head shoulder screws"
-    },
-    "din1480": {
-      "description": "Hexagon fit bolts"
-    },
-    "din1587": {
-      "description": "Hexagon domed cap nuts"
-    },
-    "din1804": {
-      "description": "Fastening nuts for shaft ends"
-    },
-    "din1816": {
-      "description": "Slotted headless screws with shank"
-    },
-    "din2093": {
-      "description": "Disc springs"
-    },
-    "din2510": {
-      "description": "DIN 2510 fastener"
-    },
-    "din5406": {
-      "description": "Tapping screws for metal"
-    },
-    "din5903": {
-      "description": "Washers for HV bolts"
-    },
-    "din6319": {
-      "description": "Spherical washers, conical seats"
-    },
-    "din6330": {
-      "description": "Hexagon nuts for structural steel bolting"
-    },
-    "din6331": {
-      "description": "Spherical nuts"
-    },
-    "din6334": {
-      "description": "Coupling nuts"
-    },
-    "din6340": {
-      "description": "Washers for clamping devices"
-    },
-    "din6796": {
-      "description": "Conical spring washers for bolted connections"
-    },
-    "din6797": {
-      "description": "Countersunk serrated lock washers, Type A"
-    },
-    "din6798": {
-      "description": "Serrated lock washers, Type J"
-    },
-    "din6914": {
-      "description": "Hexagon socket button head screws with collar"
-    },
-    "din6915": {
-      "description": "Hexagon socket set screws with dog point and collar"
-    },
-    "din6916": {
-      "description": "Hexagon socket set screws with cup point and collar"
-    },
-    "din6917": {
-      "description": "Hexagon socket countersunk head screws with collar"
-    },
-    "din6918": {
-      "description": "Hexagon socket head cap screws with collar"
-    },
-    "din6925": {
-      "description": "Prevailing torque type hexagon nuts with flange"
-    },
-    "din6926": {
-      "description": "Prevailing torque type hexagon flange nuts"
-    },
-    "din6927": {
-      "description": "Prevailing torque type all-metal hexagon flange nuts"
-    },
-    "din7349": {
-      "description": "Shim rings"
-    },
-    "din7603": {
-      "description": "Sealing washers"
-    },
-    "din7965": {
-      "description": "Thread cutting screws, cross recessed pan head"
-    },
-    "din7968": {
-      "description": "Cross recessed pan head drilling screws with tapping screw thread"
-    },
-    "din7969": {
-      "description": "Cross recessed countersunk head drilling screws"
-    },
-    "din7980": {
-      "description": "Lock washers for cheese head screws"
-    },
-    "din7984": {
-      "description": "Hexagon socket low head cap screws"
-    },
-    "din7990": {
-      "description": "Hexagon socket set screws with flat point and brass tip"
-    },
-    "din7991": {
-      "description": "Hexagon socket countersunk flat head screws"
-    },
-    "din7999": {
-      "description": "Threaded studs"
-    },
-    "din11014": {
-      "description": "Hexagon head bolts with flange"
-    },
-    "din15237": {
-      "description": "Eye bolts for lifting purposes"
-    },
-    "din21346": {
-      "description": "Stud bolts for flanges"
-    },
-    "din22424": {
-      "description": "Parallel pins with internal thread"
-    },
-    "din25193": {
-      "description": "Railway screws"
-    },
-    "din25201": {
-      "description": "Wedge locking washers"
-    },
-    "din34817": {
-      "description": "Spring steel disc washers"
-    },
-    "din70852": {
-      "description": "Pan head tapping screws with collar"
-    },
-    "din70952": {
-      "description": "Round head square neck bolts"
-    },
-    "din74361": {
-      "description": "O-ring retaining washers"
-    },
-    "din80701": {
-      "description": "Wing screws"
-    },
-    "din80705": {
-      "description": "Wing screws with rounded wings"
-    }
-  },
-  "imageMappings": {
-    "iso7089": "/images/standards/din_125.jpg",
-    "iso8738": "/images/standards/din_1440.jpg",
-    "iso7092": "/images/standards/din_433.jpg",
-    "iso4035": "/images/standards/din_439.jpg",
-    "iso7094": "/images/standards/din_440.jpg",
-    "iso4018": "/images/standards/din_561.jpg",
-    "iso8678": "/images/standards/din_603.jpg",
-    "iso7379": "/images/standards/iso_7379.jpg",
-    "iso4162": "/images/standards/din_6921.jpg",
-    "iso10509": "/images/standards/din_6923.jpg",
-    "iso7053": "/images/standards/din_7967.jpg",
-    "iso14582": "/images/standards/din_7989.jpg",
-    "iso14585": "/images/standards/din_7995.jpg",
-    "iso14583": "/images/standards/din_7996.jpg",
-    "iso14584": "/images/standards/din_7997.jpg",
-    "iso7093": "/images/standards/din_9021.jpg",
-    "iso4762": "/images/standards/din_912.jpg",
-    "iso21670": "/images/standards/din_929.jpg",
-    "iso4014": "/images/standards/din_931.jpg",
-    "iso4017": "/images/standards/din_933.jpg",
-    "iso4032": "/images/standards/din_934.jpg",
-    "iso8765": "/images/standards/din_960.jpg",
-    "iso8676": "/images/standards/din_961.jpg",
-    "iso7042": "/images/standards/din_980.jpg",
-    "iso4033": "/images/standards/din_982.jpg",
-    "iso7040": "/images/standards/iso_7040.jpg"
-  }
+	"crossref": {
+		"iso1051": {
+			"din": ["660"]
+		},
+		"iso1207": {
+			"din": ["84"]
+		},
+		"iso1234": {
+			"din": ["94"]
+		},
+		"iso1478": {
+			"din": ["7970"]
+		},
+		"iso1479": {
+			"din": ["7976"]
+		},
+		"iso1481": {
+			"din": ["7971"]
+		},
+		"iso1482": {
+			"din": ["7972"]
+		},
+		"iso1483": {
+			"din": ["7973"]
+		},
+		"iso1580": {
+			"din": ["85"]
+		},
+		"iso1581": {
+			"din": ["7972"]
+		},
+		"iso2009": {
+			"din": ["963", "964"]
+		},
+		"iso2010": {
+			"din": ["965", "966"]
+		},
+		"iso2338": {
+			"din": ["7", "6325"]
+		},
+		"iso2339": {
+			"din": ["1"]
+		},
+		"iso2340": {
+			"din": ["1433"]
+		},
+		"iso2341": {
+			"din": ["1443"]
+		},
+		"iso2342": {
+			"din": ["551"]
+		},
+		"iso3266": {
+			"din": ["580"]
+		},
+		"iso3506": {
+			"din": ["267"]
+		},
+		"iso4014": {
+			"din": ["931"]
+		},
+		"iso4016": {
+			"din": ["601"]
+		},
+		"iso4017": {
+			"din": ["933"]
+		},
+		"iso4018": {
+			"din": ["558", "561"]
+		},
+		"iso4026": {
+			"din": ["913"]
+		},
+		"iso4027": {
+			"din": ["914"]
+		},
+		"iso4028": {
+			"din": ["915"]
+		},
+		"iso4029": {
+			"din": ["916"]
+		},
+		"iso4032": {
+			"din": ["934"]
+		},
+		"iso4033": {
+			"din": ["982"]
+		},
+		"iso4034": {
+			"din": ["555", "934"]
+		},
+		"iso4035": {
+			"din": ["439"]
+		},
+		"iso4036": {
+			"din": ["936"]
+		},
+		"iso4162": {
+			"din": ["6921"]
+		},
+		"iso4762": {
+			"din": ["912"]
+		},
+		"iso4766": {
+			"din": ["1481"]
+		},
+		"iso7040": {
+			"din": ["985"]
+		},
+		"iso7041": {
+			"din": ["982"]
+		},
+		"iso7042": {
+			"din": ["980", "982"]
+		},
+		"iso7045": {
+			"din": ["7985"]
+		},
+		"iso7046": {
+			"din": ["963", "965"]
+		},
+		"iso7047": {
+			"din": ["964", "966"]
+		},
+		"iso7048": {
+			"din": ["7971"]
+		},
+		"iso7049": {
+			"din": ["7981", "7983"]
+		},
+		"iso7050": {
+			"din": ["7982"]
+		},
+		"iso7051": {
+			"din": ["7973"]
+		},
+		"iso7053": {
+			"din": ["7967"]
+		},
+		"iso7089": {
+			"din": ["125"]
+		},
+		"iso7090": {
+			"din": ["125"]
+		},
+		"iso7091": {
+			"din": ["126"]
+		},
+		"iso7092": {
+			"din": ["433"]
+		},
+		"iso7093": {
+			"din": ["9021"]
+		},
+		"iso7094": {
+			"din": ["440"]
+		},
+		"iso7379": {
+			"din": ["6912"]
+		},
+		"iso7380": {
+			"din": ["9427"]
+		},
+		"iso7434": {
+			"din": ["553"]
+		},
+		"iso7435": {
+			"din": ["417"]
+		},
+		"iso7436": {
+			"din": ["438"]
+		},
+		"iso7719": {
+			"din": ["980"]
+		},
+		"iso7720": {
+			"din": ["982"]
+		},
+		"iso7980": {
+			"din": ["127"]
+		},
+		"iso8673": {
+			"din": ["934"]
+		},
+		"iso8674": {
+			"din": ["982"]
+		},
+		"iso8675": {
+			"din": ["439"]
+		},
+		"iso8676": {
+			"din": ["961"]
+		},
+		"iso8678": {
+			"din": ["603"]
+		},
+		"iso8733": {
+			"din": ["7979"]
+		},
+		"iso8734": {
+			"din": ["6325", "7"]
+		},
+		"iso8735": {
+			"din": ["7978"]
+		},
+		"iso8736": {
+			"din": ["7977"]
+		},
+		"iso8737": {
+			"din": ["7977"]
+		},
+		"iso8738": {
+			"din": ["1440"]
+		},
+		"iso8740": {
+			"din": ["1473"]
+		},
+		"iso8741": {
+			"din": ["1474"]
+		},
+		"iso8744": {
+			"din": ["1471"]
+		},
+		"iso8745": {
+			"din": ["1472"]
+		},
+		"iso8746": {
+			"din": ["1476"]
+		},
+		"iso8747": {
+			"din": ["1477"]
+		},
+		"iso8748": {
+			"din": ["7343"]
+		},
+		"iso8750": {
+			"din": ["7343"]
+		},
+		"iso8751": {
+			"din": ["7343"]
+		},
+		"iso8752": {
+			"din": ["1481"]
+		},
+		"iso8765": {
+			"din": ["960"]
+		},
+		"iso10509": {
+			"din": ["6923"]
+		},
+		"iso10510": {
+			"din": ["6902"]
+		},
+		"iso10511": {
+			"din": ["985"]
+		},
+		"iso10512": {
+			"din": ["985"]
+		},
+		"iso10513": {
+			"din": ["980"]
+		},
+		"iso10642": {
+			"din": ["7991"]
+		},
+		"iso10644": {
+			"din": ["7981"]
+		},
+		"iso10669": {
+			"din": ["6902"]
+		},
+		"iso10673": {
+			"din": ["6902"]
+		},
+		"iso12474": {
+			"din": ["912"]
+		},
+		"iso13337": {
+			"din": ["7346"]
+		},
+		"iso14579": {
+			"din": ["34822"]
+		},
+		"iso14580": {
+			"din": ["34823"]
+		},
+		"iso14581": {
+			"din": ["7988"]
+		},
+		"iso14582": {
+			"din": ["7989"]
+		},
+		"iso14583": {
+			"din": ["7996"]
+		},
+		"iso14584": {
+			"din": ["7997"]
+		},
+		"iso14585": {
+			"din": ["7995"]
+		},
+		"iso14586": {
+			"din": ["7995"]
+		},
+		"iso14587": {
+			"din": ["7982"]
+		},
+		"iso15071": {
+			"din": ["6921"]
+		},
+		"iso15072": {
+			"din": ["6921"]
+		},
+		"iso15480": {
+			"din": ["7504"]
+		},
+		"iso15481": {
+			"din": ["7504"]
+		},
+		"iso15482": {
+			"din": ["7504"]
+		},
+		"iso15483": {
+			"din": ["7504"]
+		},
+		"iso21670": {
+			"din": ["929"]
+		},
+		"iso23429": {
+			"din": ["911"]
+		}
+	},
+	"dinOnly": {
+		"din93": {
+			"description": "Tab washers with long tab"
+		},
+		"din95": {
+			"description": "Slotted countersunk flat head wood screws"
+		},
+		"din96": {
+			"description": "Slotted round head wood screws"
+		},
+		"din97": {
+			"description": "Slotted countersunk flat head wood screws"
+		},
+		"din127": {
+			"description": "Spring lock washers, Type A"
+		},
+		"din128": {
+			"description": "Curved spring lock washers, Type B"
+		},
+		"din137": {
+			"description": "Wave spring washers, Type A"
+		},
+		"din186": {
+			"description": "T-head bolts"
+		},
+		"din261": {
+			"description": "T-slot bolts"
+		},
+		"din315": {
+			"description": "Wing nuts, German type"
+		},
+		"din316": {
+			"description": "Wing nuts, American type"
+		},
+		"din404": {
+			"description": "Hexagon socket head shoulder screws"
+		},
+		"din431": {
+			"description": "Pipe nuts"
+		},
+		"din432": {
+			"description": "Tab washers with nose"
+		},
+		"din434": {
+			"description": "Square taper washers for U-sections"
+		},
+		"din435": {
+			"description": "Square taper washers for I-sections"
+		},
+		"din436": {
+			"description": "Square washers for wood constructions"
+		},
+		"din444": {
+			"description": "Eye bolts"
+		},
+		"din462": {
+			"description": "Tab washers with 2 tabs"
+		},
+		"din463": {
+			"description": "Tab washers with long tab and wing"
+		},
+		"din464": {
+			"description": "Knurled thumb screws, high type"
+		},
+		"din466": {
+			"description": "Knurled nuts, high type"
+		},
+		"din467": {
+			"description": "Knurled nuts, low type"
+		},
+		"din478": {
+			"description": "Square head bolts with collar"
+		},
+		"din479": {
+			"description": "Square head bolts"
+		},
+		"din480": {
+			"description": "Square head bolts with short thread"
+		},
+		"din508": {
+			"description": "T-slot stones"
+		},
+		"din546": {
+			"description": "Round nuts with set pin holes in side"
+		},
+		"din557": {
+			"description": "Square nuts"
+		},
+		"din562": {
+			"description": "Square thin nuts"
+		},
+		"din564": {
+			"description": "Square head set screws with flat point"
+		},
+		"din571": {
+			"description": "Hexagon head wood screws"
+		},
+		"din580": {
+			"description": "Lifting eye bolts"
+		},
+		"din582": {
+			"description": "Lifting eye nuts"
+		},
+		"din604": {
+			"description": "Mushroom head square neck bolts with flat bearing surface"
+		},
+		"din605": {
+			"description": "Countersunk head square neck bolts"
+		},
+		"din607": {
+			"description": "Cup head square neck bolts with enlarged head"
+		},
+		"din608": {
+			"description": "Countersunk head square neck bolts with high square"
+		},
+		"din609": {
+			"description": "Cup head square neck bolts"
+		},
+		"din610": {
+			"description": "Countersunk head rivets"
+		},
+		"din653": {
+			"description": "Knurled head screws"
+		},
+		"din787": {
+			"description": "Hook bolts"
+		},
+		"din792": {
+			"description": "Tee bolts"
+		},
+		"din917": {
+			"description": "Hexagon socket pipe plugs"
+		},
+		"din928": {
+			"description": "Square weld nuts"
+		},
+		"din935": {
+			"description": "Hexagon castle nuts"
+		},
+		"din936": {
+			"description": "Hexagon thin nuts"
+		},
+		"din937": {
+			"description": "Hexagon crown nuts"
+		},
+		"din979": {
+			"description": "Hexagon thin nuts with collar"
+		},
+		"din981": {
+			"description": "Serrated hexagon nuts"
+		},
+		"din986": {
+			"description": "Prevailing torque type hexagon domed cap nuts"
+		},
+		"din988": {
+			"description": "Studs with collar"
+		},
+		"din1052": {
+			"description": "Slotted round washers"
+		},
+		"din1441": {
+			"description": "Washers for clevis pins"
+		},
+		"din1478": {
+			"description": "Hexagon socket set screws with thrust point"
+		},
+		"din1479": {
+			"description": "Hexagon socket head shoulder screws"
+		},
+		"din1480": {
+			"description": "Hexagon fit bolts"
+		},
+		"din1587": {
+			"description": "Hexagon domed cap nuts"
+		},
+		"din1804": {
+			"description": "Fastening nuts for shaft ends"
+		},
+		"din1816": {
+			"description": "Slotted headless screws with shank"
+		},
+		"din2093": {
+			"description": "Disc springs"
+		},
+		"din2510": {
+			"description": "DIN 2510 fastener"
+		},
+		"din5406": {
+			"description": "Tapping screws for metal"
+		},
+		"din5903": {
+			"description": "Washers for HV bolts"
+		},
+		"din6319": {
+			"description": "Spherical washers, conical seats"
+		},
+		"din6330": {
+			"description": "Hexagon nuts for structural steel bolting"
+		},
+		"din6331": {
+			"description": "Spherical nuts"
+		},
+		"din6334": {
+			"description": "Coupling nuts"
+		},
+		"din6340": {
+			"description": "Washers for clamping devices"
+		},
+		"din6796": {
+			"description": "Conical spring washers for bolted connections"
+		},
+		"din6797": {
+			"description": "Countersunk serrated lock washers, Type A"
+		},
+		"din6798": {
+			"description": "Serrated lock washers, Type J"
+		},
+		"din6914": {
+			"description": "Hexagon socket button head screws with collar"
+		},
+		"din6915": {
+			"description": "Hexagon socket set screws with dog point and collar"
+		},
+		"din6916": {
+			"description": "Hexagon socket set screws with cup point and collar"
+		},
+		"din6917": {
+			"description": "Hexagon socket countersunk head screws with collar"
+		},
+		"din6918": {
+			"description": "Hexagon socket head cap screws with collar"
+		},
+		"din6925": {
+			"description": "Prevailing torque type hexagon nuts with flange"
+		},
+		"din6926": {
+			"description": "Prevailing torque type hexagon flange nuts"
+		},
+		"din6927": {
+			"description": "Prevailing torque type all-metal hexagon flange nuts"
+		},
+		"din7349": {
+			"description": "Shim rings"
+		},
+		"din7603": {
+			"description": "Sealing washers"
+		},
+		"din7965": {
+			"description": "Thread cutting screws, cross recessed pan head"
+		},
+		"din7968": {
+			"description": "Cross recessed pan head drilling screws with tapping screw thread"
+		},
+		"din7969": {
+			"description": "Cross recessed countersunk head drilling screws"
+		},
+		"din7980": {
+			"description": "Lock washers for cheese head screws"
+		},
+		"din7984": {
+			"description": "Hexagon socket low head cap screws"
+		},
+		"din7990": {
+			"description": "Hexagon socket set screws with flat point and brass tip"
+		},
+		"din7991": {
+			"description": "Hexagon socket countersunk flat head screws"
+		},
+		"din7999": {
+			"description": "Threaded studs"
+		},
+		"din11014": {
+			"description": "Hexagon head bolts with flange"
+		},
+		"din15237": {
+			"description": "Eye bolts for lifting purposes"
+		},
+		"din21346": {
+			"description": "Stud bolts for flanges"
+		},
+		"din22424": {
+			"description": "Parallel pins with internal thread"
+		},
+		"din25193": {
+			"description": "Railway screws"
+		},
+		"din25201": {
+			"description": "Wedge locking washers"
+		},
+		"din34817": {
+			"description": "Spring steel disc washers"
+		},
+		"din70852": {
+			"description": "Pan head tapping screws with collar"
+		},
+		"din70952": {
+			"description": "Round head square neck bolts"
+		},
+		"din74361": {
+			"description": "O-ring retaining washers"
+		},
+		"din80701": {
+			"description": "Wing screws"
+		},
+		"din80705": {
+			"description": "Wing screws with rounded wings"
+		}
+	},
+	"imageMappings": {
+		"iso7089": "/images/standards/din_125.jpg",
+		"iso8738": "/images/standards/din_1440.jpg",
+		"iso7092": "/images/standards/din_433.jpg",
+		"iso4035": "/images/standards/din_439.jpg",
+		"iso7094": "/images/standards/din_440.jpg",
+		"iso4018": "/images/standards/din_561.jpg",
+		"iso8678": "/images/standards/din_603.jpg",
+		"iso7379": "/images/standards/iso_7379.jpg",
+		"iso4162": "/images/standards/din_6921.jpg",
+		"iso10509": "/images/standards/din_6923.jpg",
+		"iso7053": "/images/standards/din_7967.jpg",
+		"iso14582": "/images/standards/din_7989.jpg",
+		"iso14585": "/images/standards/din_7995.jpg",
+		"iso14583": "/images/standards/din_7996.jpg",
+		"iso14584": "/images/standards/din_7997.jpg",
+		"iso7093": "/images/standards/din_9021.jpg",
+		"iso4762": "/images/standards/din_912.jpg",
+		"iso21670": "/images/standards/din_929.jpg",
+		"iso4014": "/images/standards/din_931.jpg",
+		"iso4017": "/images/standards/din_933.jpg",
+		"iso4032": "/images/standards/din_934.jpg",
+		"iso8765": "/images/standards/din_960.jpg",
+		"iso8676": "/images/standards/din_961.jpg",
+		"iso7042": "/images/standards/din_980.jpg",
+		"iso4033": "/images/standards/din_982.jpg",
+		"iso7040": "/images/standards/iso_7040.jpg"
+	}
 }

@@ -40,6 +40,7 @@
 	}: Props = $props();
 
 	// Label dimensions
+	// Physical label has margins: 2mm left/right, 1mm top/bottom
 	const dimensions = $derived<LabelDimensions>({
 		width: labelWidth,
 		height: labelHeight,
@@ -132,7 +133,7 @@
 				stroke-width="0.1"
 			/>
 
-			<!-- Printable area (visual guide - remove in production) -->
+			<!-- Printable area boundary (visual guide - remove in production) -->
 			<rect
 				x="2"
 				y="1"
@@ -145,6 +146,8 @@
 			/>
 
 			<!-- Printable area content group - offset by margins -->
+			<!-- This transform shifts the coordinate origin to the printable area -->
+			<!-- All child elements use coordinates relative to printable area (0,0) -->
 			<g transform="translate(2, 1)">
 				<!-- Primary text -->
 				{#if primaryText}

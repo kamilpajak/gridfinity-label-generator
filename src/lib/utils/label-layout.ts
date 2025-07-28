@@ -2,13 +2,17 @@
  * Label Layout Utilities
  *
  * Provides functions for calculating element positions on labels
+ * 
+ * IMPORTANT: All position calculations in this file are relative to the PRINTABLE AREA,
+ * not the physical label dimensions. The printable area starts at origin (0,0) and
+ * excludes the physical margins (2mm left/right, 1mm top/bottom).
  */
 
 export interface LabelDimensions {
-	width: number;
-	height: number;
-	printableWidth: number;
-	printableHeight: number;
+	width: number; // Physical label width
+	height: number; // Physical label height
+	printableWidth: number; // Usable width after margins
+	printableHeight: number; // Usable height after margins
 }
 
 export interface TextPositions {
@@ -58,11 +62,12 @@ export function calculateRightElementsLayout(
 	showQRCode: boolean,
 	showHardwareImage: boolean
 ): RightElementsLayout {
-	const size = 10; // Stały rozmiar 10x10mm
+	const size = 10; // Fixed size 10x10mm
 
-	// All positions relative to printable area origin (0,0)
+	// All positions are relative to printable area origin (0,0)
+	// NOT relative to physical label edges
 	const x = dimensions.printableWidth - size; // Right edge of printable area
-	const y = (dimensions.printableHeight - size) / 2; // Centered vertically
+	const y = (dimensions.printableHeight - size) / 2; // Centered vertically in printable area
 
 	// Hardware image shifts left when QR code is also shown
 	const hardwareImageX =

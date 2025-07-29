@@ -366,27 +366,21 @@
 				</div>
 			</div>
 
-			<Card.Root class="mt-6">
-				<Card.Header>
-					<Card.Title>Label Preview</Card.Title>
-				</Card.Header>
-				<Card.Content>
-					<div class="mx-auto max-w-2xl">
-						<LabelPreview
-							primaryText={labelPrimaryText}
-							secondaryText={labelSecondaryText}
-							{optionalNote}
-							standard={selectedStandard}
-							{showStandard}
-							{showHardwareImage}
-							{showQRCode}
-							{qrCodeUrl}
-							labelHeight={parseInt(labelHeight)}
-							{labelWidth}
-						/>
-					</div>
-				</Card.Content>
-			</Card.Root>
+			<section class="mt-4">
+				<h3 class="text-lg font-medium mb-3">Label Preview</h3>
+				<LabelPreview
+					primaryText={labelPrimaryText}
+					secondaryText={labelSecondaryText}
+					{optionalNote}
+					standard={selectedStandard}
+					{showStandard}
+					{showHardwareImage}
+					{showQRCode}
+					{qrCodeUrl}
+					labelHeight={parseInt(labelHeight)}
+					{labelWidth}
+				/>
+			</section>
 		</Tabs.Content>
 
 		<Tabs.Content value="batch" class="mt-6">

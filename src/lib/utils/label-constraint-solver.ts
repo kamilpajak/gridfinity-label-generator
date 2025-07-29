@@ -42,9 +42,12 @@ export interface SolverOutput {
 	textClipWidth: number; // Width available for text before right elements
 }
 
-const ELEMENT_SIZE = 10; // Fixed size for QR code and hardware image (10x10mm)
+const QR_SIZE = 10; // Fixed size for QR code (10x10mm)
 const MIN_SPACING = 1; // Minimum spacing between elements (1mm)
 const TEXT_VERTICAL_SPACING = 1; // Minimum vertical spacing between text lines
+const MIN_IMAGE_SIZE = 6; // Minimum hardware image size (6mm)
+const MAX_IMAGE_HEIGHT_RATIO = 0.8; // Maximum image height as ratio of printable height
+const MIN_TEXT_WIDTH = 15; // Minimum width reserved for text (15mm)
 
 export function solveLabelLayout(input: SolverInput): SolverOutput {
 	const { dimensions, primaryText, secondaryText } = input;
@@ -178,31 +181,92 @@ export function solveLabelLayout(input: SolverInput): SolverOutput {
 }
 
 /**
+ * Calculates optimal image size based on available space and aspect ratio
+ */
+function calculateOptimalImageSize(
+	dimensions: LabelDimensions,
+	showQRCode: boolean
+): { width: number; height: number } {
+	// Calculate maximum available height
+	const maxHeight = Math.min(
+		dimensions.printableHeight * MAX_IMAGE_HEIGHT_RATIO,
+		dimensions.printableHeight - 2 // Leave minimal margin
+	);
+
+	// Calculate maximum available width considering text needs
+	let availableWidth = dimensions.printableWidth;
+	if (showQRCode) {
+		availableWidth -= QR_SIZE + MIN_SPACING;
+	}
+
+	// Reserve space for text - dynamic based on label width
+	// For wider labels, we can afford larger images
+	const textReserve = Math.max(
+		MIN_TEXT_WIDTH,
+		dimensions.printableWidth * 0.5 // Reserve at least 50% for text
+	);
+	
+	const maxWidth = availableWidth - textReserve - MIN_SPACING;
+
+	// Start with height-constrained size
+	let imageSize = maxHeight;
+
+	// For label heights, scale differently
+	if (dimensions.height === 9) {
+		// 9mm labels should have smaller images
+		imageSize = Math.min(imageSize, 7);
+	} else if (dimensions.height === 12) {
+		// 12mm labels can have larger images
+		imageSize = Math.min(imageSize, 9);
+	}
+
+	// Ensure minimum size
+	imageSize = Math.max(imageSize, MIN_IMAGE_SIZE);
+
+	// Constrain by available width
+	if (imageSize > maxWidth) {
+		imageSize = maxWidth;
+	}
+
+	// Return square dimensions (we'll handle aspect ratio later)
+	return {
+		width: imageSize,
+		height: imageSize
+	};
+}
+
+/**
  * Solves layout constraints to determine available space
  */
-function solveLayoutConstraints(input: SolverInput): { textClipWidth: number; rightmostX: number } {
+function solveLayoutConstraints(
+	input: SolverInput
+): { textStartX: number; textClipWidth: number; imageSize?: { width: number; height: number } } {
 	const { dimensions, showQRCode, showHardwareImage } = input;
 
-	// Calculate rightmost element position
-	let rightmostX = dimensions.printableWidth;
+	let imageSize: { width: number; height: number } | undefined;
 
-	if (showQRCode) {
-		rightmostX = dimensions.printableWidth - ELEMENT_SIZE;
-	}
-
+	// Calculate text start position based on left elements
+	let textStartX = 0;
 	if (showHardwareImage) {
-		if (showQRCode) {
-			// Image is left of QR code with spacing
-			rightmostX = dimensions.printableWidth - 2 * ELEMENT_SIZE - MIN_SPACING;
-		} else {
-			// Image is at right edge
-			rightmostX = dimensions.printableWidth - ELEMENT_SIZE;
-		}
+		// Calculate optimal image size
+		imageSize = calculateOptimalImageSize(dimensions, showQRCode);
+		// Image is on the left, text starts after it
+		textStartX = imageSize.width + MIN_SPACING;
 	}
+
+	// Calculate rightmost position based on right elements
+	let rightmostX = dimensions.printableWidth;
+	if (showQRCode) {
+		rightmostX = dimensions.printableWidth - QR_SIZE - MIN_SPACING;
+	}
+
+	// Calculate available width for text
+	const textClipWidth = rightmostX - textStartX;
 
 	return {
-		textClipWidth: rightmostX - MIN_SPACING,
-		rightmostX
+		textStartX,
+		textClipWidth,
+		imageSize
 	};
 }
 
@@ -213,7 +277,7 @@ function solveWithFontSizes(
 	input: SolverInput,
 	primaryFontSize: number,
 	secondaryFontSize: number,
-	layoutInfo: { textClipWidth: number; rightmostX: number }
+	layoutInfo: { textStartX: number; textClipWidth: number; imageSize?: { width: number; height: number } }
 ): SolverOutput {
 	const solver = new Solver();
 	const { dimensions, showQRCode, showHardwareImage, secondaryText } = input;
@@ -243,9 +307,14 @@ function solveWithFontSizes(
 	const imageX = new Variable();
 	const imageY = new Variable();
 
-	// Primary text horizontal position (always left-aligned)
+	// Primary text horizontal position (starts after left elements)
 	solver.addConstraint(
-		new Constraint(new Expression(primaryTextX), Operator.Eq, 0, Strength.required)
+		new Constraint(
+			new Expression(primaryTextX),
+			Operator.Eq,
+			layoutInfo.textStartX,
+			Strength.required
+		)
 	);
 
 	// Primary text vertical relationships
@@ -277,9 +346,14 @@ function solveWithFontSizes(
 		)
 	);
 
-	// Secondary text horizontal position (always left-aligned)
+	// Secondary text horizontal position (starts after left elements)
 	solver.addConstraint(
-		new Constraint(new Expression(secondaryTextX), Operator.Eq, 0, Strength.required)
+		new Constraint(
+			new Expression(secondaryTextX),
+			Operator.Eq,
+			layoutInfo.textStartX,
+			Strength.required
+		)
 	);
 
 	if (hasSecondaryText) {
@@ -370,7 +444,7 @@ function solveWithFontSizes(
 			new Constraint(
 				new Expression(qrX),
 				Operator.Eq,
-				dimensions.printableWidth - ELEMENT_SIZE,
+				dimensions.printableWidth - QR_SIZE,
 				Strength.required
 			)
 		);
@@ -380,42 +454,23 @@ function solveWithFontSizes(
 			new Constraint(
 				new Expression(qrY),
 				Operator.Eq,
-				(dimensions.printableHeight - ELEMENT_SIZE) / 2,
+				(dimensions.printableHeight - QR_SIZE) / 2,
 				Strength.required
 			)
 		);
 	}
 
 	// Hardware image constraints
-	if (showHardwareImage) {
-		if (showQRCode) {
-			// Image is left of QR code with spacing
-			solver.addConstraint(
-				new Constraint(
-					new Expression(imageX),
-					Operator.Eq,
-					dimensions.printableWidth - 2 * ELEMENT_SIZE - MIN_SPACING,
-					Strength.required
-				)
-			);
-		} else {
-			// Image is at right edge
-			solver.addConstraint(
-				new Constraint(
-					new Expression(imageX),
-					Operator.Eq,
-					dimensions.printableWidth - ELEMENT_SIZE,
-					Strength.required
-				)
-			);
-		}
+	if (showHardwareImage && layoutInfo.imageSize) {
+		// Image is always at left edge
+		solver.addConstraint(new Constraint(new Expression(imageX), Operator.Eq, 0, Strength.required));
 
 		// Image vertically centered
 		solver.addConstraint(
 			new Constraint(
 				new Expression(imageY),
 				Operator.Eq,
-				(dimensions.printableHeight - ELEMENT_SIZE) / 2,
+				(dimensions.printableHeight - layoutInfo.imageSize.height) / 2,
 				Strength.required
 			)
 		);
@@ -430,11 +485,11 @@ function solveWithFontSizes(
 		// This ensures we always return valid positions
 		return {
 			primaryText: {
-				x: 0,
+				x: layoutInfo.textStartX,
 				y: primaryFontSize * 0.8 // Baseline position at top
 			},
 			secondaryText: {
-				x: 0,
+				x: layoutInfo.textStartX,
 				y: hasSecondaryText ? dimensions.printableHeight - secondaryFontSize * 0.2 : 0 // Baseline at bottom
 			},
 			primaryFontSize,
@@ -442,20 +497,18 @@ function solveWithFontSizes(
 			textClipWidth: layoutInfo.textClipWidth,
 			...(showQRCode && {
 				qrCode: {
-					x: dimensions.printableWidth - ELEMENT_SIZE,
-					y: (dimensions.printableHeight - ELEMENT_SIZE) / 2,
-					width: ELEMENT_SIZE,
-					height: ELEMENT_SIZE
+					x: dimensions.printableWidth - QR_SIZE,
+					y: (dimensions.printableHeight - QR_SIZE) / 2,
+					width: QR_SIZE,
+					height: QR_SIZE
 				}
 			}),
-			...(showHardwareImage && {
+			...(showHardwareImage && layoutInfo.imageSize && {
 				hardwareImage: {
-					x: showQRCode
-						? dimensions.printableWidth - 2 * ELEMENT_SIZE - MIN_SPACING
-						: dimensions.printableWidth - ELEMENT_SIZE,
-					y: (dimensions.printableHeight - ELEMENT_SIZE) / 2,
-					width: ELEMENT_SIZE,
-					height: ELEMENT_SIZE
+					x: 0, // Always at left edge
+					y: (dimensions.printableHeight - layoutInfo.imageSize.height) / 2,
+					width: layoutInfo.imageSize.width,
+					height: layoutInfo.imageSize.height
 				}
 			})
 		};
@@ -480,17 +533,17 @@ function solveWithFontSizes(
 		output.qrCode = {
 			x: qrX.value(),
 			y: qrY.value(),
-			width: ELEMENT_SIZE,
-			height: ELEMENT_SIZE
+			width: QR_SIZE,
+			height: QR_SIZE
 		};
 	}
 
-	if (showHardwareImage) {
+	if (showHardwareImage && layoutInfo.imageSize) {
 		output.hardwareImage = {
 			x: imageX.value(),
 			y: imageY.value(),
-			width: ELEMENT_SIZE,
-			height: ELEMENT_SIZE
+			width: layoutInfo.imageSize.width,
+			height: layoutInfo.imageSize.height
 		};
 	}
 

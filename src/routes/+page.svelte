@@ -117,11 +117,17 @@
 
 	// Disable QR Code for 9mm labels
 	const qrCodeDisabled = $derived(labelHeight === '9');
+	const hardwareImageDisabled = $derived(labelHeight === '9');
 
-	// Reset QR Code when switching to 9mm
+	// Reset QR Code and Hardware Image when switching to 9mm
 	$effect(() => {
-		if (labelHeight === '9' && showQRCode) {
-			showQRCode = false;
+		if (labelHeight === '9') {
+			if (showQRCode) {
+				showQRCode = false;
+			}
+			if (showHardwareImage) {
+				showHardwareImage = false;
+			}
 		}
 	});
 </script>
@@ -301,15 +307,21 @@
 							<div class="flex items-center justify-between space-x-2">
 								<div class="space-y-0.5">
 									<div class="font-medium">Hardware Image</div>
-									<div class="text-sm text-muted-foreground">Visual representation</div>
+									<div class="text-sm text-muted-foreground">
+										{hardwareImageDisabled
+											? 'Not available for 9mm labels'
+											: 'Visual representation'}
+									</div>
 								</div>
-								<Switch bind:checked={showHardwareImage} />
+								<Switch bind:checked={showHardwareImage} disabled={hardwareImageDisabled} />
 							</div>
 
 							<div class="flex items-center justify-between space-x-2">
 								<div class="space-y-0.5">
 									<div class="font-medium">QR Code</div>
-									<div class="text-sm text-muted-foreground">Add scannable code</div>
+									<div class="text-sm text-muted-foreground">
+										{qrCodeDisabled ? 'Not available for 9mm labels' : 'Add scannable code'}
+									</div>
 								</div>
 								<Switch bind:checked={showQRCode} disabled={qrCodeDisabled} />
 							</div>

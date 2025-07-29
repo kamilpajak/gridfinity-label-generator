@@ -14,8 +14,8 @@
 	import LabelPreview from '$lib/components/label/label-preview.svelte';
 	import { formatPrimaryText, formatSecondaryText } from '$lib/utils/label-formatter';
 
-	let showStandard = $state(false);
-	let showHardwareImage = $state(false);
+	let showStandard = $state(true);
+	let showHardwareImage = $state(true);
 	let showQRCode = $state(false);
 
 	let labelMode = $state('standard');
@@ -299,7 +299,7 @@
 							<div class="flex items-center justify-between space-x-2">
 								<div class="space-y-0.5">
 									<div class="font-medium">Standard Reference</div>
-									<div class="text-sm text-muted-foreground">Show ISO/DIN standard</div>
+									<div class="text-sm text-muted-foreground">Display standard designation</div>
 								</div>
 								<Switch bind:checked={showStandard} />
 							</div>
@@ -310,7 +310,7 @@
 									<div class="text-sm text-muted-foreground">
 										{hardwareImageDisabled
 											? 'Not available for 9mm labels'
-											: 'Visual representation'}
+											: 'Show fastener type icon'}
 									</div>
 								</div>
 								<Switch bind:checked={showHardwareImage} disabled={hardwareImageDisabled} />
@@ -332,7 +332,7 @@
 								<div class="space-y-3">
 									<div>
 										<div class="mb-2 text-sm text-muted-foreground">
-											Height (Brother P-Touch tape)
+											Height (label tape)
 										</div>
 										<ToggleGroup
 											bind:value={labelHeight}

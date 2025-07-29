@@ -14,6 +14,9 @@ importers:
       '@fontsource/oswald':
         specifier: ^5.2.6
         version: 5.2.6
+      '@lume/kiwi':
+        specifier: ^0.4.4
+        version: 0.4.4
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
@@ -416,6 +419,9 @@ packages:
     resolution: {integrity: sha512-CEAyqcZmNBfYzVgaRmK2RFJP5tnbXxekRyDk0XX/eZQRfsJmkDvmQwXNX8C869BgNeryzmrRyjHhUL6g9ZOHNA==}
     peerDependencies:
       svelte: ^5
+
+  '@lume/kiwi@0.4.4':
+    resolution: {integrity: sha512-ie0YTKgiZqD4TXlJ4eUbfi4UEoKs6YlLRYNTfPm5eUXwfudTBmPRs7Qcxz2SWKDpVTwThv3sWG6zwtyAA0nPpw==}
 
   '@neoconfetti/svelte@2.2.2':
     resolution: {integrity: sha512-E7xCFVEEm5Ctnj2udTJy1b9oaTvjz1zi1mYdEtE8rB5BVwq6kHisosDS+zdWN5PMfEMjtbsOV9Cl6tsNSAD1sA==}
@@ -2169,6 +2175,8 @@ snapshots:
   '@lucide/svelte@0.515.0(svelte@5.36.16)':
     dependencies:
       svelte: 5.36.16
+
+  '@lume/kiwi@0.4.4': {}
 
   '@neoconfetti/svelte@2.2.2(svelte@5.36.16)':
     dependencies:

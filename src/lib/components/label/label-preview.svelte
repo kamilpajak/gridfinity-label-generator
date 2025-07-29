@@ -6,12 +6,11 @@
 	import type { ISODINStandard } from '$lib/data/standards';
 	import { AspectRatio } from '$lib/components/ui/aspect-ratio';
 	import {
-		calculateTextPositions,
-		calculateRightElementsLayout,
-		calculateFontSizes,
-		calculateQRCodeSize,
-		type LabelDimensions
-	} from '$lib/utils/label-layout';
+		solveLabelLayout,
+		type LabelDimensions,
+		type SolverOutput
+	} from '$lib/utils/label-constraint-solver';
+	import { measureText } from '$lib/utils/text-measurer';
 
 	interface Props {
 		primaryText: string;
@@ -48,13 +47,39 @@
 		printableHeight: labelHeight - 2 // 1mm top + 1mm bottom margins
 	});
 
-	// Calculate layout
-	const textPositions = $derived(calculateTextPositions(dimensions));
-	const fontSizes = $derived(calculateFontSizes(labelHeight));
-	const qrCodeSize = $derived(calculateQRCodeSize(labelHeight));
-	const rightElements = $derived(
-		calculateRightElementsLayout(dimensions, qrCodeSize, showQRCode, showHardwareImage)
+	// Prepare full secondary text including optional note
+	const fullSecondaryText = $derived(
+		(secondaryText ||
+			(showStandard && standard
+				? standard.designations.map((d) => `${d.system} ${d.code}`).join(' / ')
+				: '')) + (optionalNote ? ` ${optionalNote}` : '')
 	);
+
+	// Calculate layout using constraint solver
+	const layout = $derived<SolverOutput>(
+		solveLabelLayout({
+			dimensions,
+			showQRCode,
+			showHardwareImage,
+			showStandard,
+			primaryText: primaryText || '',
+			secondaryText: fullSecondaryText
+		})
+	);
+
+	// Debug: Measure actual text widths with optimized font sizes
+	const primaryTextWidth = $derived(
+		primaryText ? measureText(primaryText, 'Noto Sans', layout.primaryFontSize, '900') : 0
+	);
+
+	const secondaryTextWidth = $derived(
+		fullSecondaryText
+			? measureText(fullSecondaryText, 'Oswald', layout.secondaryFontSize, '300')
+			: 0
+	);
+
+	// Debug mode flag
+	const showDebug = false;
 
 	// Process QR code
 	let qrCodeSvg = $state('');
@@ -86,7 +111,7 @@
 			try {
 				const svg = await QRCode.toString(data, {
 					type: 'svg',
-					width: rightElements.size * 10, // Scale up for quality
+					width: 100, // Scale up for quality (10mm * 10)
 					margin: 0,
 					color: {
 						dark: '#000000',
@@ -149,13 +174,36 @@
 			<!-- This transform shifts the coordinate origin to the printable area -->
 			<!-- All child elements use coordinates relative to printable area (0,0) -->
 			<g transform="translate(2, 1)">
+				<!-- Debug: Show available text width -->
+				{#if showDebug}
+					<rect
+						x="0"
+						y="0"
+						width={layout.textClipWidth}
+						height={dimensions.printableHeight}
+						fill="red"
+						opacity="0.1"
+						stroke="red"
+						stroke-width="0.1"
+					/>
+
+					<!-- Debug info text -->
+					<text x="0" y="-2" font-size="2" fill="red">
+						Available: {layout.textClipWidth.toFixed(1)}mm, Primary: {(
+							primaryTextWidth / 10
+						).toFixed(1)}mm @ {layout.primaryFontSize.toFixed(1)}px, Secondary: {(
+							secondaryTextWidth / 10
+						).toFixed(1)}mm @ {layout.secondaryFontSize.toFixed(1)}px
+					</text>
+				{/if}
+
 				<!-- Primary text -->
 				{#if primaryText}
 					<text
-						x={textPositions.x}
-						y={textPositions.primaryY}
+						x={layout.primaryText.x}
+						y={layout.primaryText.y}
 						font-family="Noto Sans, sans-serif"
-						font-size={fontSizes.primary}
+						font-size={layout.primaryFontSize}
 						font-weight="900"
 						fill="black"
 					>
@@ -164,40 +212,38 @@
 				{/if}
 
 				<!-- Secondary text (standard or custom) -->
-				{#if secondaryText || (showStandard && standard)}
+				{#if fullSecondaryText}
 					<text
-						x={textPositions.x}
-						y={textPositions.secondaryY}
+						x={layout.secondaryText.x}
+						y={layout.secondaryText.y}
 						font-family="Oswald, sans-serif"
-						font-size={fontSizes.secondary}
+						font-size={layout.secondaryFontSize}
 						font-weight="300"
 						fill="black"
 					>
-						{(secondaryText ||
-							standard?.designations.map((d) => `${d.system} ${d.code}`).join(' / ') ||
-							'') + (optionalNote ? ` ${optionalNote}` : '')}
+						{fullSecondaryText}
 					</text>
 				{/if}
 
 				<!-- Hardware image -->
-				{#if showHardwareImage && standard?.image}
+				{#if showHardwareImage && standard?.image && layout.hardwareImage}
 					<image
-						x={rightElements.hardwareImageX}
-						y={rightElements.y}
-						width={rightElements.size}
-						height={rightElements.size}
+						x={layout.hardwareImage.x}
+						y={layout.hardwareImage.y}
+						width={layout.hardwareImage.width}
+						height={layout.hardwareImage.height}
 						href={standard.image}
 						preserveAspectRatio="xMidYMid meet"
 					/>
 				{/if}
 
 				<!-- QR Code -->
-				{#if showQRCode && qrCodeSvg && !isProcessingUrl}
+				{#if showQRCode && qrCodeSvg && !isProcessingUrl && layout.qrCode}
 					<svg
-						x={rightElements.x}
-						y={rightElements.y}
-						width={rightElements.size}
-						height={rightElements.size}
+						x={layout.qrCode.x}
+						y={layout.qrCode.y}
+						width={layout.qrCode.width}
+						height={layout.qrCode.height}
 						viewBox={qrCodeViewBox}
 					>
 						{@html qrCodeSvg}
@@ -205,10 +251,10 @@
 				{/if}
 
 				<!-- Loading indicator for QR code -->
-				{#if showQRCode && isProcessingUrl}
+				{#if showQRCode && isProcessingUrl && layout.qrCode}
 					<text
-						x={rightElements.x + rightElements.size / 2}
-						y={rightElements.y + rightElements.size / 2}
+						x={layout.qrCode.x + 5}
+						y={layout.qrCode.y + 5}
 						font-family="Arial, sans-serif"
 						font-size="1"
 						fill="#999"

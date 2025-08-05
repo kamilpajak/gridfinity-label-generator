@@ -21,41 +21,45 @@ vi.mock('./label-constraint-solver', () => ({
 }));
 
 describe('label-exporter', () => {
-	let mockCanvas: any;
-	let mockContext: any;
+	let mockCanvas: Partial<HTMLCanvasElement> & { toBlob: ReturnType<typeof vi.fn> };
+	let mockContext: Partial<CanvasRenderingContext2D>;
 	let mockBlob: Blob;
-	let createElementSpy: any;
-	let createObjectURLSpy: any;
-	let revokeObjectURLSpy: any;
-	let requestAnimationFrameSpy: any;
-	let mockAnchor: any;
+	let createObjectURLSpy: ReturnType<typeof vi.spyOn>;
+	let revokeObjectURLSpy: ReturnType<typeof vi.spyOn>;
+	let requestAnimationFrameSpy: ReturnType<typeof vi.spyOn> | undefined;
+	let mockAnchor: Partial<HTMLAnchorElement> & { click: ReturnType<typeof vi.fn> };
 
 	beforeEach(() => {
 		// Mock global document if not available
 		if (typeof document === 'undefined') {
-			(global as any).document = {
+			const globalAny = global as typeof global & { document: Partial<Document> };
+			globalAny.document = {
 				createElement: vi.fn(),
 				body: {
 					appendChild: vi.fn(),
 					removeChild: vi.fn()
-				},
+				} as unknown as HTMLBodyElement,
 				fonts: {
 					load: vi.fn(() => Promise.resolve())
-				}
-			};
+				} as unknown as FontFaceSet
+			} as Partial<Document>;
 		}
 
 		// Mock global URL if not available
 		if (typeof URL === 'undefined') {
-			(global as any).URL = {
+			const globalAny = global as typeof global & { URL: typeof URL };
+			globalAny.URL = {
 				createObjectURL: vi.fn(),
 				revokeObjectURL: vi.fn()
-			};
+			} as unknown as typeof URL;
 		}
 
 		// Mock requestAnimationFrame if not available
 		if (typeof requestAnimationFrame === 'undefined') {
-			(global as any).requestAnimationFrame = vi.fn((callback) => {
+			const globalAny = global as typeof global & {
+				requestAnimationFrame: typeof requestAnimationFrame;
+			};
+			globalAny.requestAnimationFrame = vi.fn((callback) => {
 				callback(0);
 				return 0;
 			});
@@ -88,11 +92,16 @@ describe('label-exporter', () => {
 		};
 
 		// Mock document methods
-		const doc = (global as any).document || document;
-		createElementSpy = vi.spyOn(doc, 'createElement').mockImplementation((tag: string) => {
-			if (tag === 'canvas') return mockCanvas;
-			if (tag === 'a') return mockAnchor;
-			return {} as any;
+		const globalAny = global as typeof global & {
+			document?: Document;
+			URL?: typeof URL;
+			requestAnimationFrame?: typeof requestAnimationFrame;
+		};
+		const doc = globalAny.document || document;
+		vi.spyOn(doc, 'createElement').mockImplementation((tag: string) => {
+			if (tag === 'canvas') return mockCanvas as unknown as HTMLCanvasElement;
+			if (tag === 'a') return mockAnchor as unknown as HTMLAnchorElement;
+			return {} as unknown as HTMLElement;
 		});
 
 		// Mock document.body methods
@@ -100,17 +109,19 @@ describe('label-exporter', () => {
 		doc.body.removeChild = vi.fn();
 
 		// Mock URL methods
-		const urlObj = (global as any).URL || URL;
+		const urlObj = globalAny.URL || URL;
 		createObjectURLSpy = vi.spyOn(urlObj, 'createObjectURL').mockReturnValue('blob:mock-url');
 		revokeObjectURLSpy = vi.spyOn(urlObj, 'revokeObjectURL');
 
 		// Mock requestAnimationFrame
-		const raf = (global as any).requestAnimationFrame || window?.requestAnimationFrame;
+		const raf = globalAny.requestAnimationFrame || window?.requestAnimationFrame;
 		if (raf) {
-			requestAnimationFrameSpy = vi.spyOn(global as any, 'requestAnimationFrame').mockImplementation((callback) => {
-				callback(0);
-				return 0;
-			});
+			requestAnimationFrameSpy = vi
+				.spyOn(globalAny, 'requestAnimationFrame')
+				.mockImplementation((callback) => {
+					callback(0);
+					return 0;
+				});
 		}
 
 		// Clear all mocks
@@ -280,7 +291,8 @@ describe('label-exporter', () => {
 			expect(mockAnchor.style.display).toBe('none');
 
 			// Check anchor was added to DOM, clicked, and removed
-			const doc = (global as any).document || document;
+			const globalAny = global as typeof global & { document?: Document };
+			const doc = globalAny.document || document;
 			expect(doc.body.appendChild).toHaveBeenCalledWith(mockAnchor);
 			expect(mockAnchor.click).toHaveBeenCalled();
 			expect(doc.body.removeChild).toHaveBeenCalledWith(mockAnchor);
@@ -316,15 +328,17 @@ describe('label-exporter', () => {
 			// Console.error should be called
 			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-			await expect(exportCanvasLabelAsPNG({
-				labelWidth: 35,
-				labelHeight: 12,
-				primaryText: 'Test',
-				secondaryText: '',
-				showStandard: false,
-				showHardwareImage: false,
-				showQRCode: false
-			})).rejects.toThrow('Render failed');
+			await expect(
+				exportCanvasLabelAsPNG({
+					labelWidth: 35,
+					labelHeight: 12,
+					primaryText: 'Test',
+					secondaryText: '',
+					showStandard: false,
+					showHardwareImage: false,
+					showQRCode: false
+				})
+			).rejects.toThrow('Render failed');
 
 			expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to render canvas:', renderError);
 			consoleErrorSpy.mockRestore();
@@ -337,15 +351,17 @@ describe('label-exporter', () => {
 
 			const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-			await expect(exportCanvasLabelAsPNG({
-				labelWidth: 35,
-				labelHeight: 12,
-				primaryText: 'Test',
-				secondaryText: '',
-				showStandard: false,
-				showHardwareImage: false,
-				showQRCode: false
-			})).rejects.toThrow('Failed to create PNG blob');
+			await expect(
+				exportCanvasLabelAsPNG({
+					labelWidth: 35,
+					labelHeight: 12,
+					primaryText: 'Test',
+					secondaryText: '',
+					showStandard: false,
+					showHardwareImage: false,
+					showQRCode: false
+				})
+			).rejects.toThrow('Failed to create PNG blob');
 
 			expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to create PNG blob');
 			consoleErrorSpy.mockRestore();

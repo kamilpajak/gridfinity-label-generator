@@ -205,7 +205,7 @@ function calculateOptimalImageSize(
 		MIN_TEXT_WIDTH,
 		dimensions.printableWidth * 0.5 // Reserve at least 50% for text
 	);
-	
+
 	const maxWidth = availableWidth - textReserve - MIN_SPACING;
 
 	// Start with height-constrained size
@@ -238,9 +238,11 @@ function calculateOptimalImageSize(
 /**
  * Solves layout constraints to determine available space
  */
-function solveLayoutConstraints(
-	input: SolverInput
-): { textStartX: number; textClipWidth: number; imageSize?: { width: number; height: number } } {
+function solveLayoutConstraints(input: SolverInput): {
+	textStartX: number;
+	textClipWidth: number;
+	imageSize?: { width: number; height: number };
+} {
 	const { dimensions, showQRCode, showHardwareImage } = input;
 
 	let imageSize: { width: number; height: number } | undefined;
@@ -277,7 +279,11 @@ function solveWithFontSizes(
 	input: SolverInput,
 	primaryFontSize: number,
 	secondaryFontSize: number,
-	layoutInfo: { textStartX: number; textClipWidth: number; imageSize?: { width: number; height: number } }
+	layoutInfo: {
+		textStartX: number;
+		textClipWidth: number;
+		imageSize?: { width: number; height: number };
+	}
 ): SolverOutput {
 	const solver = new Solver();
 	const { dimensions, showQRCode, showHardwareImage, secondaryText } = input;
@@ -503,14 +509,15 @@ function solveWithFontSizes(
 					height: QR_SIZE
 				}
 			}),
-			...(showHardwareImage && layoutInfo.imageSize && {
-				hardwareImage: {
-					x: 0, // Always at left edge
-					y: (dimensions.printableHeight - layoutInfo.imageSize.height) / 2,
-					width: layoutInfo.imageSize.width,
-					height: layoutInfo.imageSize.height
-				}
-			})
+			...(showHardwareImage &&
+				layoutInfo.imageSize && {
+					hardwareImage: {
+						x: 0, // Always at left edge
+						y: (dimensions.printableHeight - layoutInfo.imageSize.height) / 2,
+						width: layoutInfo.imageSize.width,
+						height: layoutInfo.imageSize.height
+					}
+				})
 		};
 	}
 

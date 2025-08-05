@@ -31,11 +31,11 @@ const mockCanvas = {
 // Mock Image
 class MockImage {
 	onload: (() => void) | null = null;
-	onerror: ((e: any) => void) | null = null;
+	onerror: ((e: Event) => void) | null = null;
 	src = '';
 	width = 0;
 	height = 0;
-	
+
 	constructor() {
 		// Set default dimensions for testing
 		this.width = 100;
@@ -64,11 +64,11 @@ vi.mock('./url-shortener', () => ({
 
 describe('label-renderer', () => {
 	beforeEach(() => {
-		global.Image = MockImage as any;
+		global.Image = MockImage as unknown as typeof Image;
 		global.document = {
 			fonts: mockFonts,
 			createElement: vi.fn(() => mockCanvas)
-		} as any;
+		} as unknown as Document;
 		vi.clearAllMocks();
 		clearRenderCaches(); // Clear image and QR caches
 	});
@@ -80,7 +80,7 @@ describe('label-renderer', () => {
 
 	describe('image aspect ratio preservation', () => {
 		const baseOptions = {
-			canvas: mockCanvas as any,
+			canvas: mockCanvas as unknown as HTMLCanvasElement,
 			dimensions: {
 				width: 35,
 				height: 12,
@@ -105,7 +105,7 @@ describe('label-renderer', () => {
 					description: 'Hex nut',
 					designations: [],
 					primarySystem: 'ISO'
-				} as any,
+				} as ISODINStandard,
 				showStandard: true,
 				showHardwareImage: true,
 				showQRCode: false
@@ -117,7 +117,7 @@ describe('label-renderer', () => {
 			const mockImg = new MockImage();
 			mockImg.width = 100;
 			mockImg.height = 200;
-			
+
 			// Override Image constructor for this test
 			global.Image = class extends MockImage {
 				constructor() {
@@ -128,7 +128,7 @@ describe('label-renderer', () => {
 						if (this.onload) this.onload();
 					}, 0);
 				}
-			} as any;
+			} as unknown as typeof Image;
 
 			await renderLabelToCanvas(baseOptions);
 
@@ -141,9 +141,9 @@ describe('label-renderer', () => {
 			expect(mockContext.drawImage).toHaveBeenCalledWith(
 				expect.any(MockImage),
 				1 + 1.5, // x position + centering offset
-				2,       // y position
-				3,       // width (maintains aspect ratio)
-				6        // height (full available height)
+				2, // y position
+				3, // width (maintains aspect ratio)
+				6 // height (full available height)
 			);
 		});
 
@@ -158,7 +158,7 @@ describe('label-renderer', () => {
 						if (this.onload) this.onload();
 					}, 0);
 				}
-			} as any;
+			} as unknown as typeof Image;
 
 			await renderLabelToCanvas(baseOptions);
 
@@ -170,10 +170,10 @@ describe('label-renderer', () => {
 			// Image should be centered: y offset = (6-3)/2 = 1.5
 			expect(mockContext.drawImage).toHaveBeenCalledWith(
 				expect.any(MockImage),
-				1,           // x position
-				2 + 1.5,     // y position + centering offset
-				6,           // width (full available width)
-				3            // height (maintains aspect ratio)
+				1, // x position
+				2 + 1.5, // y position + centering offset
+				6, // width (full available width)
+				3 // height (maintains aspect ratio)
 			);
 		});
 
@@ -188,17 +188,17 @@ describe('label-renderer', () => {
 						if (this.onload) this.onload();
 					}, 0);
 				}
-			} as any;
+			} as unknown as typeof Image;
 
 			await renderLabelToCanvas(baseOptions);
 
 			// Square image should fill the square space exactly
 			expect(mockContext.drawImage).toHaveBeenCalledWith(
 				expect.any(MockImage),
-				1,  // x position
-				2,  // y position
-				6,  // width
-				6   // height
+				1, // x position
+				2, // y position
+				6, // width
+				6 // height
 			);
 		});
 
@@ -217,7 +217,7 @@ describe('label-renderer', () => {
 						if (this.onload) this.onload();
 					}, 0);
 				}
-			} as any;
+			} as unknown as typeof Image;
 
 			await renderLabelToCanvas(scaledOptions);
 
@@ -226,25 +226,25 @@ describe('label-renderer', () => {
 			// Centering offset: (6-3)/2 = 1.5
 			expect(mockContext.drawImage).toHaveBeenCalledWith(
 				expect.any(MockImage),
-				(1 + 1.5) * 2,  // (x + center offset) * scale
-				2 * 2,          // y * scale
-				3 * 2,          // width * scale
-				6 * 2           // height * scale
+				(1 + 1.5) * 2, // (x + center offset) * scale
+				2 * 2, // y * scale
+				3 * 2, // width * scale
+				6 * 2 // height * scale
 			);
 		});
 
 		it('should not exceed the specified bounds', async () => {
 			// Test with various aspect ratios
 			const testCases = [
-				{ width: 50, height: 300 },   // Very tall
-				{ width: 300, height: 50 },   // Very wide
+				{ width: 50, height: 300 }, // Very tall
+				{ width: 300, height: 50 }, // Very wide
 				{ width: 1000, height: 1000 }, // Large square
-				{ width: 10, height: 10 }      // Small square
+				{ width: 10, height: 10 } // Small square
 			];
 
 			for (const testCase of testCases) {
 				vi.clearAllMocks();
-				
+
 				global.Image = class extends MockImage {
 					constructor() {
 						super();
@@ -254,13 +254,13 @@ describe('label-renderer', () => {
 							if (this.onload) this.onload();
 						}, 0);
 					}
-				} as any;
+				} as unknown as typeof Image;
 
 				await renderLabelToCanvas(baseOptions);
 
 				const call = mockContext.drawImage.mock.calls[0];
 				const [, x, y, width, height] = call;
-				
+
 				// Check that image stays within bounds
 				expect(x).toBeGreaterThanOrEqual(1);
 				expect(y).toBeGreaterThanOrEqual(2);

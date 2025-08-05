@@ -74,23 +74,23 @@
 	// Render to canvas whenever dependencies change
 	$effect(() => {
 		if (!canvasRef || !container) return;
-		
+
 		// Set canvas size based on container and device pixel ratio
 		const dpr = window.devicePixelRatio || 1;
 		const rect = container.getBoundingClientRect();
-		
+
 		if (rect.width > 0 && rect.height > 0) {
 			// Calculate scale to fit container
 			scale = Math.min(rect.width / labelWidth, rect.height / labelHeight);
-			
+
 			// Set canvas size
 			canvasRef.width = labelWidth * scale * dpr;
 			canvasRef.height = labelHeight * scale * dpr;
-			
+
 			// Set display size
 			canvasRef.style.width = `${labelWidth * scale}px`;
 			canvasRef.style.height = `${labelHeight * scale}px`;
-			
+
 			// Render label
 			renderLabelToCanvas({
 				canvas: canvasRef,
@@ -107,7 +107,7 @@
 				},
 				scale: scale * dpr,
 				showMargins: true
-			}).catch(error => {
+			}).catch((error) => {
 				console.error('Failed to render label:', error);
 			});
 		}

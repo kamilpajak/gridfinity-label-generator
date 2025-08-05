@@ -44,7 +44,7 @@ Unified script that processes all standards data in a single pipeline.
 **Usage:**
 
 ```bash
-npm run build-standards
+pnpm build-standards
 ```
 
 **Input:**
@@ -98,7 +98,7 @@ Unified configuration file containing:
    ```json
    "iso1234": {"din": ["5678"]}
    ```
-3. Run: `npm run build-standards`
+3. Run: `pnpm build-standards`
 
 ### Add DIN-only Standard
 
@@ -109,7 +109,7 @@ Unified configuration file containing:
      "description": "Description here"
    }
    ```
-3. Run: `npm run build-standards`
+3. Run: `pnpm build-standards`
 
 ### Add Image Mapping
 
@@ -118,7 +118,7 @@ Unified configuration file containing:
    ```json
    "iso1234": "/images/standards/din_5678.jpg"
    ```
-3. Run: `npm run build-standards`
+3. Run: `pnpm build-standards`
 
 ## Data Sources
 

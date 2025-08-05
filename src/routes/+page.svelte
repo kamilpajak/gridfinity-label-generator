@@ -87,8 +87,10 @@
 
 	// Reset thread size when measurement system changes
 	$effect(() => {
-		measurementSystem; // Track dependency
-		threadSize = '';
+		// Track measurementSystem dependency to reset threadSize when it changes
+		if (measurementSystem || !measurementSystem) {
+			threadSize = '';
+		}
 	});
 
 	let lengthPlaceholder = $derived(
@@ -140,20 +142,21 @@
 	// Download label as PNG
 	async function downloadLabelAsPNG() {
 		console.log('downloadLabelAsPNG called');
-		
+
 		// Prepare full secondary text including optional note
-		const fullSecondaryText = (labelSecondaryText ||
-			(showStandard && selectedStandard
-				? selectedStandard.designations.map((d) => `${d.system} ${d.code}`).join(' / ')
-				: '')) + (optionalNote ? ` ${optionalNote}` : '');
-		
+		const fullSecondaryText =
+			(labelSecondaryText ||
+				(showStandard && selectedStandard
+					? selectedStandard.designations.map((d) => `${d.system} ${d.code}`).join(' / ')
+					: '')) + (optionalNote ? ` ${optionalNote}` : '');
+
 		console.log('Calling exportCanvasLabelAsPNG with:', {
 			labelWidth: Number(labelWidth),
 			labelHeight: Number(labelHeight),
 			primaryText: labelPrimaryText,
 			secondaryText: fullSecondaryText
 		});
-		
+
 		try {
 			await exportCanvasLabelAsPNG({
 				labelWidth: Number(labelWidth),
@@ -174,7 +177,10 @@
 
 	// Provide feedback function
 	function provideFeedback() {
-		window.open('https://docs.google.com/forms/d/e/1FAIpQLSegG3P2FED1dOJ1P5Pjv68R4bAq1IFFoc-2U-5_Gt-7IoSDvQ/viewform?usp=dialog', '_blank');
+		window.open(
+			'https://docs.google.com/forms/d/e/1FAIpQLSegG3P2FED1dOJ1P5Pjv68R4bAq1IFFoc-2U-5_Gt-7IoSDvQ/viewform?usp=dialog',
+			'_blank'
+		);
 	}
 </script>
 
@@ -237,7 +243,7 @@
 												{threadSize || threadSizePlaceholder}
 											</SelectTrigger>
 											<SelectContent>
-												{#each availableThreadSizes as size}
+												{#each availableThreadSizes as size (size)}
 													<SelectItem value={size}>{size}</SelectItem>
 												{/each}
 											</SelectContent>
@@ -291,7 +297,7 @@
 												<Command.Input placeholder="Search standards..." />
 												<Command.Empty>No standard with image found.</Command.Empty>
 												<Command.Group class="max-h-[300px] overflow-y-auto">
-													{#each standardsWithImages as standard}
+													{#each standardsWithImages as standard (standard.id)}
 														<Command.Item
 															value={standard.id}
 															onSelect={() => {
@@ -321,11 +327,7 @@
 							{/if}
 
 							<div class="mt-4">
-								<Input 
-									bind:value={optionalNote}
-									placeholder="Optional note" 
-									class="w-full" 
-								/>
+								<Input bind:value={optionalNote} placeholder="Optional note" class="w-full" />
 							</div>
 
 							<div class="mt-4">
@@ -381,9 +383,7 @@
 
 								<div class="space-y-3">
 									<div>
-										<div class="mb-2 text-sm text-muted-foreground">
-											Height (label tape)
-										</div>
+										<div class="mb-2 text-sm text-muted-foreground">Height (label tape)</div>
 										<ToggleGroup
 											bind:value={labelHeight}
 											variant="outline"
@@ -417,7 +417,7 @@
 			</div>
 
 			<section class="mt-4">
-				<h3 class="text-lg font-medium mb-3">Label Preview</h3>
+				<h3 class="mb-3 text-lg font-medium">Label Preview</h3>
 				<LabelPreview
 					primaryText={labelPrimaryText}
 					secondaryText={labelSecondaryText}
@@ -431,16 +431,16 @@
 					{labelWidth}
 					bind:canvasRef
 				/>
-				<div class="mt-4 flex justify-center items-center gap-3">
+				<div class="mt-4 flex items-center justify-center gap-3">
 					<Button onclick={downloadLabelAsPNG} variant="outline" class="gap-2">
 						<DownloadIcon class="h-4 w-4" />
 						Download PNG
 					</Button>
 					<a href="https://www.buymeacoffee.com/kamilpajak" target="_blank" class="inline-flex">
-						<img 
-							src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
-							alt="Buy Me A Coffee" 
-							style="height: 36px !important;" 
+						<img
+							src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+							alt="Buy Me A Coffee"
+							style="height: 36px !important;"
 						/>
 					</a>
 					<Button onclick={provideFeedback} variant="outline" size="sm" class="gap-1">
@@ -465,4 +465,3 @@
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
-

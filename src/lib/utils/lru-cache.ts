@@ -18,12 +18,12 @@ export class LRUCache<K, V> {
 		if (!this.cache.has(key)) {
 			return undefined;
 		}
-		
+
 		// Remove and re-add to move to end
 		const value = this.cache.get(key)!;
 		this.cache.delete(key);
 		this.cache.set(key, value);
-		
+
 		return value;
 	}
 
@@ -41,7 +41,7 @@ export class LRUCache<K, V> {
 			const firstKey = this.cache.keys().next().value;
 			this.cache.delete(firstKey);
 		}
-		
+
 		// Add the new item to the end (most recently used)
 		this.cache.set(key, value);
 	}

@@ -1,6 +1,6 @@
 /**
  * Label Canvas Renderer
- * 
+ *
  * Renders labels to canvas for both preview and export
  */
 
@@ -44,11 +44,10 @@ const qrCache = new LRUCache<string, string>(50);
 export async function renderLabelToCanvas(options: RenderOptions): Promise<void> {
 	const { canvas, dimensions, layout, content, scale = 1, showMargins = true } = options;
 	const ctx = canvas.getContext('2d');
-	
+
 	if (!ctx) {
 		throw new Error('Failed to get canvas context');
 	}
-
 
 	// Reset transform to ensure we're starting fresh
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -146,10 +145,12 @@ async function drawText(
 	}
 ): Promise<void> {
 	ctx.save();
-	
+
 	// Ensure font is loaded
 	try {
-		await document.fonts.load(`${options.fontWeight} ${options.fontSize}px "${options.fontFamily}"`);
+		await document.fonts.load(
+			`${options.fontWeight} ${options.fontSize}px "${options.fontFamily}"`
+		);
 	} catch (e) {
 		console.warn('Font loading failed:', e);
 	}
@@ -159,7 +160,7 @@ async function drawText(
 	ctx.textAlign = 'left';
 	ctx.textBaseline = 'alphabetic';
 	ctx.fillText(options.text, options.x, options.y);
-	
+
 	ctx.restore();
 }
 
@@ -178,7 +179,7 @@ async function drawImage(
 ): Promise<void> {
 	// Check cache first
 	let img = imageCache.get(options.src);
-	
+
 	if (!img) {
 		img = await loadImage(options.src);
 		imageCache.set(options.src, img);
@@ -187,12 +188,12 @@ async function drawImage(
 	// Calculate aspect ratio preserving dimensions
 	const imgAspectRatio = img.width / img.height;
 	const boxAspectRatio = options.width / options.height;
-	
+
 	let drawWidth = options.width;
 	let drawHeight = options.height;
 	let offsetX = 0;
 	let offsetY = 0;
-	
+
 	if (imgAspectRatio > boxAspectRatio) {
 		// Image is wider than box - fit to width
 		drawHeight = options.width / imgAspectRatio;
@@ -204,13 +205,7 @@ async function drawImage(
 	}
 	// If aspect ratios match, use full box size (no offset needed)
 
-	ctx.drawImage(
-		img, 
-		options.x + offsetX, 
-		options.y + offsetY, 
-		drawWidth, 
-		drawHeight
-	);
+	ctx.drawImage(img, options.x + offsetX, options.y + offsetY, drawWidth, drawHeight);
 }
 
 /**
@@ -231,7 +226,7 @@ async function drawQRCode(
 	if (isValidUrl(options.url) && shouldShortenUrl(options.url)) {
 		const cacheKey = `short:${options.url}`;
 		const cached = qrCache.get(cacheKey);
-		
+
 		if (cached) {
 			urlToEncode = cached;
 		} else {
@@ -272,7 +267,7 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 	return new Promise((resolve, reject) => {
 		const img = new Image();
 		img.onload = () => resolve(img);
-		img.onerror = (e) => reject(new Error(`Failed to load image: ${src}`));
+		img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
 		img.src = src;
 	});
 }

@@ -4,12 +4,12 @@ export default defineConfig({
 	webServer: {
 		// Use dev server instead of preview for testing
 		// This ensures hot reload and proper module loading
-		command: 'npm run dev',
+		command: 'pnpm dev',
 		port: 5173,
 		reuseExistingServer: !process.env.CI
 	},
 	testDir: 'e2e',
-	
+
 	// Set default viewport size for all tests
 	use: {
 		// Use Full HD viewport to ensure all UI elements are visible
@@ -19,12 +19,12 @@ export default defineConfig({
 		// Capture video on failure
 		video: 'retain-on-failure'
 	},
-	
+
 	// Configure projects for different browsers if needed
 	projects: [
 		{
 			name: 'chromium',
-			use: { 
+			use: {
 				...devices['Desktop Chrome'],
 				// Override viewport to Full HD
 				viewport: { width: 1920, height: 1080 },

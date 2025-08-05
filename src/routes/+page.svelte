@@ -139,8 +139,18 @@
 	// Canvas reference for export
 	let canvasRef: HTMLCanvasElement | undefined = $state();
 
+	// Check if we have any content to export
+	const hasContent = $derived(
+		labelPrimaryText?.trim() ||
+			labelSecondaryText?.trim() ||
+			optionalNote?.trim() ||
+			(showStandard && selectedStandard) ||
+			(showQRCode && qrCodeUrl?.trim())
+	);
+
 	// Download label as PNG
 	async function downloadLabelAsPNG() {
+		if (!hasContent) return;
 		console.log('downloadLabelAsPNG called');
 
 		// Prepare full secondary text including optional note
@@ -432,7 +442,13 @@
 					bind:canvasRef
 				/>
 				<div class="mt-4 flex items-center justify-center gap-3">
-					<Button onclick={downloadLabelAsPNG} variant="outline" class="gap-2">
+					<Button
+						onclick={downloadLabelAsPNG}
+						variant="outline"
+						class="gap-2"
+						disabled={!hasContent}
+						title={!hasContent ? 'Add some text to enable export' : 'Export label as PNG'}
+					>
 						<DownloadIcon class="h-4 w-4" />
 						Download PNG
 					</Button>

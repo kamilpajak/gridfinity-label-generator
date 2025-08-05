@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import type { ISODINStandard } from '$lib/data/standards';
 	import { AspectRatio } from '$lib/components/ui/aspect-ratio';
+	import TagIcon from '@lucide/svelte/icons/tag';
 	import {
 		solveLabelLayout,
 		type LabelDimensions,
@@ -41,6 +42,15 @@
 
 	let container: HTMLDivElement;
 	let scale = $state(1);
+
+	// Check if we have any content to display
+	const hasContent = $derived(
+		primaryText?.trim() ||
+			secondaryText?.trim() ||
+			optionalNote?.trim() ||
+			(showStandard && standard) ||
+			(showQRCode && qrCodeUrl?.trim())
+	);
 
 	// Label dimensions
 	// Physical label has margins: 2mm left/right, 1mm top/bottom
@@ -129,15 +139,35 @@
 
 <div class="label-preview-container w-full" bind:this={container}>
 	<AspectRatio ratio={labelWidth / labelHeight}>
-		<canvas
-			bind:this={canvasRef}
-			class="h-full w-full bg-white shadow-sm"
-			style="image-rendering: crisp-edges;"
-		></canvas>
+		{#if hasContent}
+			<canvas
+				bind:this={canvasRef}
+				class="h-full w-full bg-white shadow-sm"
+				style="image-rendering: crisp-edges;"
+			></canvas>
+		{:else}
+			<div
+				class="flex h-full w-full flex-col items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/25 bg-muted/50"
+			>
+				<TagIcon class="mb-3 h-12 w-12 text-muted-foreground/40" />
+				<p class="text-sm font-medium text-muted-foreground">Enter text to preview your label</p>
+				<p class="mt-1 text-xs text-muted-foreground/70">Start typing in the form above</p>
+				<!-- Alternative: Show sample label with watermark
+				<div class="mt-3 rounded border border-dashed border-muted-foreground/20 bg-muted/30 px-3 py-1">
+					<p class="text-xs font-medium text-muted-foreground/50">Example: M8</p>
+					<p class="text-xs text-muted-foreground/40">ISO 4762</p>
+				</div>
+				-->
+			</div>
+		{/if}
 	</AspectRatio>
 
 	<div class="mt-2 text-center text-xs text-muted-foreground">
-		Preview: {labelWidth}mm × {labelHeight}mm (Printable: {dimensions.printableWidth}mm × {dimensions.printableHeight}mm)
+		{#if hasContent}
+			Preview: {labelWidth}mm × {labelHeight}mm (Printable: {dimensions.printableWidth}mm × {dimensions.printableHeight}mm)
+		{:else}
+			Label size: {labelWidth}mm × {labelHeight}mm
+		{/if}
 	</div>
 </div>
 

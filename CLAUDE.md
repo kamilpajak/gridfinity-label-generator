@@ -17,6 +17,13 @@ This project uses **pnpm** as the package manager. All commands should use `pnpm
   - Imports: Different import paths and structures
   - Syntax: Svelte-specific patterns vs React patterns
 
+### Icons
+
+- **ALWAYS use Lucide icons** from `@lucide/svelte/icons/[icon-name]`
+- **DO NOT draw icons manually** as inline SVG
+- Import pattern: `import IconName from '@lucide/svelte/icons/icon-name'`
+- Use consistent naming: `IconName` (PascalCase) for imported icons
+
 ### Testing Guidelines
 
 - Nie uzywaj zahardcodowanych waitForTimeout

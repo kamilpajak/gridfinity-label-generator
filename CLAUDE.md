@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Package Manager
+
+This project uses **pnpm** as the package manager. All commands should use `pnpm` instead of `npm`.
+
 ## Important Notes
 
 ### UI Components Documentation
@@ -13,28 +17,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - Imports: Different import paths and structures
   - Syntax: Svelte-specific patterns vs React patterns
 
+### Testing Guidelines
+
+- Nie uzywaj zahardcodowanych waitForTimeout
+
 ## Commands
 
 ### Development
 
-- `npm run dev` - Start development server with hot reload
-- `npm run dev -- --open` - Start dev server and open in browser
-- `npm run build` - Build production version
-- `npm run preview` - Preview production build
+- `pnpm dev` - Start development server with hot reload
+- `pnpm dev --open` - Start dev server and open in browser
+- `pnpm build` - Build production version
+- `pnpm preview` - Preview production build
 
 ### Testing
 
-- `npm run test` - Run all tests (unit and e2e)
-- `npm run test:unit` - Run Vitest unit tests in watch mode
-- `npm run test:unit -- --run` - Run unit tests once
-- `npm run test:e2e` - Run Playwright e2e tests
-- Run a single test file: `npm run test:unit -- path/to/test.ts`
+- `pnpm test` - Run all tests (unit and e2e)
+- `pnpm test:unit` - Run Vitest unit tests in watch mode
+- `pnpm test:unit --run` - Run unit tests once
+- `pnpm test:e2e` - Run Playwright e2e tests
+- Run a single test file: `pnpm test:unit path/to/test.ts`
 
 ### Code Quality
 
-- `npm run check` - Run svelte-check for TypeScript errors
-- `npm run lint` - Check code formatting and ESLint rules
-- `npm run format` - Auto-format code with Prettier
+- `pnpm check` - Run svelte-check for TypeScript errors
+- `pnpm lint` - Check code formatting and ESLint rules
+- `pnpm format` - Auto-format code with Prettier
 
 ## Architecture
 

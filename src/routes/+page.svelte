@@ -10,9 +10,12 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { Button } from '$lib/components/ui/button';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
+	import DownloadIcon from '@lucide/svelte/icons/download';
+	import MessageSquareIcon from '@lucide/svelte/icons/message-square';
 	import { standards, formatDesignations } from '$lib/data/standards';
 	import LabelPreview from '$lib/components/label/label-preview.svelte';
 	import { formatPrimaryText, formatSecondaryText } from '$lib/utils/label-formatter';
+	import { exportCanvasLabelAsPNG } from '$lib/utils/label-exporter';
 
 	let showStandard = $state(true);
 	let showHardwareImage = $state(true);
@@ -130,6 +133,49 @@
 			}
 		}
 	});
+
+	// Canvas reference for export
+	let canvasRef: HTMLCanvasElement | undefined = $state();
+
+	// Download label as PNG
+	async function downloadLabelAsPNG() {
+		console.log('downloadLabelAsPNG called');
+		
+		// Prepare full secondary text including optional note
+		const fullSecondaryText = (labelSecondaryText ||
+			(showStandard && selectedStandard
+				? selectedStandard.designations.map((d) => `${d.system} ${d.code}`).join(' / ')
+				: '')) + (optionalNote ? ` ${optionalNote}` : '');
+		
+		console.log('Calling exportCanvasLabelAsPNG with:', {
+			labelWidth: Number(labelWidth),
+			labelHeight: Number(labelHeight),
+			primaryText: labelPrimaryText,
+			secondaryText: fullSecondaryText
+		});
+		
+		try {
+			await exportCanvasLabelAsPNG({
+				labelWidth: Number(labelWidth),
+				labelHeight: Number(labelHeight),
+				primaryText: labelPrimaryText,
+				secondaryText: fullSecondaryText,
+				standard: selectedStandard,
+				showStandard,
+				showHardwareImage,
+				showQRCode,
+				qrCodeUrl
+			});
+			console.log('Export completed successfully');
+		} catch (error) {
+			console.error('Failed to export label:', error);
+		}
+	}
+
+	// Provide feedback function
+	function provideFeedback() {
+		window.open('https://docs.google.com/forms/d/e/1FAIpQLSegG3P2FED1dOJ1P5Pjv68R4bAq1IFFoc-2U-5_Gt-7IoSDvQ/viewform?usp=dialog', '_blank');
+	}
 </script>
 
 <svelte:head>
@@ -275,7 +321,11 @@
 							{/if}
 
 							<div class="mt-4">
-								<Input bind:value={optionalNote} placeholder="Optional note" class="w-full" />
+								<Input 
+									bind:value={optionalNote}
+									placeholder="Optional note" 
+									class="w-full" 
+								/>
 							</div>
 
 							<div class="mt-4">
@@ -379,7 +429,25 @@
 					{qrCodeUrl}
 					labelHeight={parseInt(labelHeight)}
 					{labelWidth}
+					bind:canvasRef
 				/>
+				<div class="mt-4 flex justify-center items-center gap-3">
+					<Button onclick={downloadLabelAsPNG} variant="outline" class="gap-2">
+						<DownloadIcon class="h-4 w-4" />
+						Download PNG
+					</Button>
+					<a href="https://www.buymeacoffee.com/kamilpajak" target="_blank" class="inline-flex">
+						<img 
+							src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
+							alt="Buy Me A Coffee" 
+							style="height: 36px !important;" 
+						/>
+					</a>
+					<Button onclick={provideFeedback} variant="outline" size="sm" class="gap-1">
+						<MessageSquareIcon class="h-3 w-3" />
+						Feedback
+					</Button>
+				</div>
 			</section>
 		</Tabs.Content>
 
@@ -397,3 +465,4 @@
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
+

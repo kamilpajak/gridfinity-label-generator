@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '@fontsource/noto-sans/900.css'; // Import Noto Sans Black 900
 	import '@fontsource/oswald/300.css'; // Import Oswald Light 300
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import type { ISODINStandard } from '$lib/data/standards';
 	import { AspectRatio } from '$lib/components/ui/aspect-ratio';
 	import TagIcon from '@lucide/svelte/icons/tag';
@@ -72,13 +72,30 @@
 	// Calculate layout using constraint solver
 	let layout = $state<SolverOutput | null>(null);
 	let isCalculatingLayout = $state(false);
+	let layoutController: AbortController | null = null;
+	let renderController: AbortController | null = null;
 
 	// Calculate layout when dependencies change
 	$effect(() => {
 		const calculateLayout = async () => {
+			// Cancel any previous layout calculation
+			if (layoutController) {
+				layoutController.abort();
+			}
+
+			// Create new controller for this calculation
+			layoutController = new AbortController();
+			const signal = layoutController.signal;
+
+
 			isCalculatingLayout = true;
 			try {
-				layout = await solveLabelLayout({
+				// Check if aborted before starting expensive calculation
+				if (signal.aborted) {
+					return;
+				}
+
+				const newLayout = await solveLabelLayout({
 					dimensions,
 					showQRCode,
 					showHardwareImage,
@@ -86,6 +103,18 @@
 					primaryText: primaryText || '',
 					secondaryText: fullSecondaryText
 				});
+
+				// Check if aborted after calculation but before setting layout
+				if (signal.aborted) {
+					return;
+				}
+
+				layout = newLayout;
+			} catch (error) {
+				if (error instanceof Error && error.message.includes('aborted')) {
+					return;
+				}
+				console.error('[Layout] Layout calculation failed:', error);
 			} finally {
 				isCalculatingLayout = false;
 			}
@@ -97,6 +126,15 @@
 	// Render to canvas whenever dependencies change
 	$effect(() => {
 		if (!canvasRef || !container || !layout) return;
+
+		// Cancel any previous render
+		if (renderController) {
+			renderController.abort();
+		}
+
+		// Create new controller for this render
+		renderController = new AbortController();
+		const signal = renderController.signal;
 
 		// Set canvas size based on container and device pixel ratio
 		const dpr = window.devicePixelRatio || 1;
@@ -115,23 +153,65 @@
 			canvasRef.style.height = `${labelHeight * scale}px`;
 
 			// Render label
-			renderLabelToCanvas({
-				canvas: canvasRef,
-				dimensions,
-				layout,
-				content: {
-					primaryText: primaryText || '',
-					secondaryText: fullSecondaryText,
-					standard,
-					showStandard,
-					showHardwareImage,
-					showQRCode,
-					qrCodeUrl
-				},
-				scale: scale * dpr,
-				showMargins: true
-			}).catch((error) => {
-				console.error('Failed to render label:', error);
+			const render = async () => {
+				// Additional check for TypeScript
+				if (!canvasRef || !layout) return;
+				
+
+				// Clear canvas immediately to prevent artifacts from aborted renders
+				const ctx = canvasRef.getContext('2d');
+				if (ctx) {
+					ctx.setTransform(1, 0, 0, 1, 0, 0);
+					ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+					ctx.fillStyle = 'white';
+					ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
+				}
+				
+				try {
+					// Check if aborted before starting render
+					if (signal?.aborted) {
+						return;
+					}
+
+					await renderLabelToCanvas({
+						canvas: canvasRef,
+						dimensions,
+						layout,
+						content: {
+							primaryText: primaryText || '',
+							secondaryText: fullSecondaryText,
+							standard,
+							showStandard,
+							showHardwareImage,
+							showQRCode,
+							qrCodeUrl
+						},
+						scale: scale * dpr,
+						showMargins: true,
+						signal
+					});
+
+				} catch (error) {
+					// Handle abort and other errors
+					if (error instanceof Error && error.message === 'Render aborted') {
+						// Clear canvas when aborted to remove partial renders
+						if (ctx) {
+							ctx.setTransform(1, 0, 0, 1, 0, 0);
+							ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+							ctx.fillStyle = 'white';
+							ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
+						}
+						return;
+					}
+					console.error('Failed to render label:', error);
+				}
+			};
+
+			// Add small delay to ensure DOM is ready and prevent rapid fire renders
+			requestAnimationFrame(() => {
+				if (!signal?.aborted) {
+					render();
+				}
 			});
 		}
 	});
@@ -147,6 +227,16 @@
 
 		window.addEventListener('resize', handleResize);
 		return () => window.removeEventListener('resize', handleResize);
+	});
+
+	onDestroy(() => {
+		// Cancel any pending operations
+		if (layoutController) {
+			layoutController.abort();
+		}
+		if (renderController) {
+			renderController.abort();
+		}
 	});
 </script>
 

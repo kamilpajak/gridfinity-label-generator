@@ -30,6 +30,7 @@ export interface RenderOptions {
 	};
 	scale?: number;
 	showMargins?: boolean;
+	signal?: AbortSignal;
 }
 
 // Cache for loaded images with LRU eviction
@@ -42,22 +43,31 @@ const qrCache = new LRUCache<string, string>(50);
  * Renders a label to canvas
  */
 export async function renderLabelToCanvas(options: RenderOptions): Promise<void> {
-	const { canvas, dimensions, layout, content, scale = 1, showMargins = true } = options;
+	const { canvas, dimensions, layout, content, scale = 1, showMargins = true, signal } = options;
 	const ctx = canvas.getContext('2d');
 
 	if (!ctx) {
 		throw new Error('Failed to get canvas context');
 	}
 
-	// Reset transform to ensure we're starting fresh
+	// Check if aborted before starting
+	if (signal?.aborted) {
+		throw new Error('Render aborted');
+	}
+
+
+	// Atomic canvas clearing - reset everything at once
+	ctx.save();
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-	// Clear canvas
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	// Set white background
 	ctx.fillStyle = 'white';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.restore();
+
+	// Check again after clearing - render might have been aborted during clear
+	if (signal?.aborted) {
+		throw new Error('Render aborted');
+	}
 
 	// Draw margins guide if enabled
 	if (showMargins) {
@@ -107,6 +117,10 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 
 	// Draw hardware image
 	if (content.showHardwareImage && content.standard?.image && layout.hardwareImage) {
+		// Check if aborted before async operation
+		if (signal?.aborted) throw new Error('Render aborted');
+		
+		
 		await drawImage(ctx, {
 			src: content.standard.image,
 			x: layout.hardwareImage.x * scale,
@@ -118,6 +132,9 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 
 	// Draw QR code
 	if (content.showQRCode && content.qrCodeUrl && layout.qrCode) {
+		// Check if aborted before async operation
+		if (signal?.aborted) throw new Error('Render aborted');
+		
 		await drawQRCode(ctx, {
 			url: content.qrCodeUrl,
 			x: layout.qrCode.x * scale,
@@ -128,6 +145,7 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 
 	// Restore context
 	ctx.restore();
+
 }
 
 /**

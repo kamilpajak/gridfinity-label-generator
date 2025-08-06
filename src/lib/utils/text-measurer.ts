@@ -13,13 +13,20 @@
  * @param fontWeight - Font weight (e.g., '300', '900', 'normal', 'bold')
  * @returns Width of the text in pixels
  */
-export function measureText(
+export async function measureText(
 	text: string,
 	fontFamily: string,
 	fontSize: number,
 	fontWeight: string = 'normal'
-): number {
+): Promise<number> {
 	if (!text) return 0;
+
+	// Ensure font is loaded before measuring
+	try {
+		await document.fonts.load(`${fontWeight} ${fontSize}px "${fontFamily}"`);
+	} catch (e) {
+		console.warn('Font loading failed:', e);
+	}
 
 	// Create off-screen canvas for measurement
 	const canvas = document.createElement('canvas');
@@ -32,7 +39,7 @@ export function measureText(
 	}
 
 	// Set font properties
-	ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+	ctx.font = `${fontWeight} ${fontSize}px "${fontFamily}"`;
 
 	// Measure and return text width
 	return ctx.measureText(text).width;
@@ -60,14 +67,14 @@ export function estimateTextHeight(fontSize: number): number {
  * @param maxSize - Maximum allowed font size
  * @returns Optimal font size that fits within constraints
  */
-export function calculateOptimalFontSize(
+export async function calculateOptimalFontSize(
 	text: string,
 	fontFamily: string,
 	fontWeight: string,
 	maxWidth: number,
 	minSize: number,
 	maxSize: number
-): number {
+): Promise<number> {
 	if (!text) return maxSize;
 
 	// Binary search for optimal font size
@@ -80,7 +87,7 @@ export function calculateOptimalFontSize(
 
 	while (high - low > 0.1) {
 		const mid = (low + high) / 2;
-		const width = measureText(text, fontFamily, mid, fontWeight);
+		const width = await measureText(text, fontFamily, mid, fontWeight);
 
 		if (width <= targetWidth) {
 			optimal = mid;

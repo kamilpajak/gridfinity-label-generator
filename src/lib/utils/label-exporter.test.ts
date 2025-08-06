@@ -375,7 +375,7 @@ describe('label-exporter', () => {
 				image: '/images/hex.svg',
 				description: 'Hex nut',
 				designations: [],
-				primarySystem: 'ISO'
+				primarySystem: 'ISO' as const
 			};
 
 			await exportCanvasLabelAsPNG({

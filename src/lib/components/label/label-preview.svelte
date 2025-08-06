@@ -70,20 +70,33 @@
 	);
 
 	// Calculate layout using constraint solver
-	const layout = $derived<SolverOutput>(
-		solveLabelLayout({
-			dimensions,
-			showQRCode,
-			showHardwareImage,
-			showStandard,
-			primaryText: primaryText || '',
-			secondaryText: fullSecondaryText
-		})
-	);
+	let layout = $state<SolverOutput | null>(null);
+	let isCalculatingLayout = $state(false);
+
+	// Calculate layout when dependencies change
+	$effect(() => {
+		const calculateLayout = async () => {
+			isCalculatingLayout = true;
+			try {
+				layout = await solveLabelLayout({
+					dimensions,
+					showQRCode,
+					showHardwareImage,
+					showStandard,
+					primaryText: primaryText || '',
+					secondaryText: fullSecondaryText
+				});
+			} finally {
+				isCalculatingLayout = false;
+			}
+		};
+
+		calculateLayout();
+	});
 
 	// Render to canvas whenever dependencies change
 	$effect(() => {
-		if (!canvasRef || !container) return;
+		if (!canvasRef || !container || !layout) return;
 
 		// Set canvas size based on container and device pixel ratio
 		const dpr = window.devicePixelRatio || 1;
@@ -144,6 +157,7 @@
 				bind:this={canvasRef}
 				class="h-full w-full bg-white shadow-sm"
 				style="image-rendering: crisp-edges;"
+				data-layout-ready={!isCalculatingLayout && layout !== null}
 			></canvas>
 		{:else}
 			<div

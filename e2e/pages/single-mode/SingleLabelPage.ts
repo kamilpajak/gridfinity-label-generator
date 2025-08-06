@@ -43,6 +43,10 @@ export class SingleLabelPage extends BasePage {
 	// Thread size
 	readonly threadSizeButton: Locator;
 
+	// Mode selection (Fastener vs General Item)
+	readonly fastenerModeButton: Locator;
+	readonly generalItemModeButton: Locator;
+
 	constructor(page: Page) {
 		super(page);
 
@@ -54,16 +58,18 @@ export class SingleLabelPage extends BasePage {
 		// Initialize locators
 		this.title = page.locator('h1');
 
-		// Label size buttons
-		this.labelSize9mm = page.getByRole('button', { name: '9mm', exact: true });
-		this.labelSize12mm = page.getByRole('button', { name: '12mm', exact: true });
+		// Label size radio buttons
+		this.labelSize9mm = page.getByRole('radio', { name: '9mm', exact: true });
+		this.labelSize12mm = page.getByRole('radio', { name: '12mm', exact: true });
 
-		// Text inputs
-		this.primaryTextInput = page.getByPlaceholder('Primary text (e.g., M8)');
-		this.secondaryTextInput = page.getByPlaceholder('Description (e.g., ISO 4762)');
+		// Text inputs - different placeholders for standard vs custom mode
+		// For standard mode (fastener), inputs are filled via thread size and length
+		// For custom mode, these placeholders are used:
+		this.primaryTextInput = page.getByPlaceholder('Primary text (e.g., Resistors 10kΩ)');
+		this.secondaryTextInput = page.getByPlaceholder('Secondary text (e.g., 1/4W ±5%)');
 
-		// Hardware selection
-		this.hardwareSelectButton = page.getByRole('button', { name: 'Select hardware' });
+		// Hardware selection - this is a combobox
+		this.hardwareSelectButton = page.getByRole('combobox');
 		this.hardwareSearchInput = page.getByPlaceholder('Search standards...');
 
 		// Switches
@@ -71,14 +77,18 @@ export class SingleLabelPage extends BasePage {
 		this.qrCodeSwitch = page.getByRole('switch', { name: 'QR Code' });
 
 		// QR URL input
-		this.qrCodeUrlInput = page.getByPlaceholder('URL for QR code');
+		this.qrCodeUrlInput = page.getByPlaceholder('QR code (URL, part number, etc.)');
 
-		// Unit selection
-		this.metricButton = page.getByRole('button', { name: 'Metric', exact: true });
-		this.imperialButton = page.getByRole('button', { name: 'Imperial', exact: true });
+		// Unit selection radio buttons
+		this.metricButton = page.getByRole('radio', { name: 'Metric', exact: true });
+		this.imperialButton = page.getByRole('radio', { name: 'Imperial', exact: true });
 
 		// Thread size
 		this.threadSizeButton = page.locator('#thread-size').locator('..');
+
+		// Mode selection - these are radio buttons, not regular buttons
+		this.fastenerModeButton = page.getByRole('radio', { name: 'Fastener', exact: true });
+		this.generalItemModeButton = page.getByRole('radio', { name: 'General Item', exact: true });
 	}
 
 	// Label size methods
@@ -93,9 +103,8 @@ export class SingleLabelPage extends BasePage {
 	}
 
 	async isLabelSizeSelected(size: '9mm' | '12mm'): Promise<boolean> {
-		const button = size === '9mm' ? this.labelSize9mm : this.labelSize12mm;
-		const state = await button.getAttribute('data-state');
-		return state === 'on';
+		const radio = size === '9mm' ? this.labelSize9mm : this.labelSize12mm;
+		return await radio.isChecked();
 	}
 
 	async getSelectedLabelSize(): Promise<'9mm' | '12mm' | null> {
@@ -181,15 +190,38 @@ export class SingleLabelPage extends BasePage {
 	}
 
 	async isUnitSelected(unit: 'metric' | 'imperial'): Promise<boolean> {
-		const button = unit === 'metric' ? this.metricButton : this.imperialButton;
-		const state = await button.getAttribute('data-state');
-		return state === 'on';
+		const radio = unit === 'metric' ? this.metricButton : this.imperialButton;
+		return await radio.isChecked();
 	}
 
 	async getSelectedUnit(): Promise<'metric' | 'imperial' | null> {
 		if (await this.isUnitSelected('metric')) return 'metric';
 		if (await this.isUnitSelected('imperial')) return 'imperial';
 		return null;
+	}
+
+	// Mode selection methods
+	async selectMode(mode: 'fastener' | 'general') {
+		if (mode === 'fastener') {
+			await this.fastenerModeButton.click();
+		} else {
+			await this.generalItemModeButton.click();
+		}
+		await this.preview.waitForReady();
+	}
+
+	async isMode(mode: 'fastener' | 'general'): Promise<boolean> {
+		const radio = mode === 'fastener' ? this.fastenerModeButton : this.generalItemModeButton;
+		return await radio.isChecked();
+	}
+
+	// Alias for selectMode to match test expectations
+	async selectLabelMode(mode: 'Fastener' | 'General Item') {
+		if (mode === 'Fastener') {
+			await this.selectMode('fastener');
+		} else {
+			await this.selectMode('general');
+		}
 	}
 
 	// Complete label creation helper
@@ -200,7 +232,11 @@ export class SingleLabelPage extends BasePage {
 		hardware?: string;
 		qrUrl?: string;
 		unit?: 'metric' | 'imperial';
+		mode?: 'fastener' | 'general';
 	}) {
+		// Set mode (default to general for direct text input)
+		await this.selectMode(options.mode || 'general');
+
 		// Set label size
 		await this.selectLabelSize(options.size);
 
@@ -209,8 +245,10 @@ export class SingleLabelPage extends BasePage {
 			await this.selectUnits(options.unit);
 		}
 
-		// Fill text fields
-		await this.fillLabelData(options.primaryText, options.secondaryText);
+		// Fill text fields (only works in general mode)
+		if (options.mode !== 'fastener') {
+			await this.fillLabelData(options.primaryText, options.secondaryText);
+		}
 
 		// Select hardware if specified
 		if (options.hardware) {

@@ -71,7 +71,7 @@ export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Prom
 	};
 
 	// Solve layout
-	const layout = solveLabelLayout({
+	const layout = await solveLabelLayout({
 		dimensions,
 		showQRCode,
 		showHardwareImage,

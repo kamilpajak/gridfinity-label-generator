@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderLabelToCanvas, clearRenderCaches } from './label-renderer';
 import type { SolverOutput } from './label-constraint-solver';
+import type { ISODINStandard } from '$lib/data/standards';
 
 // Mock canvas context
 const mockContext = {
@@ -104,8 +105,8 @@ describe('label-renderer', () => {
 					image: '/images/hex.svg',
 					description: 'Hex nut',
 					designations: [],
-					primarySystem: 'ISO'
-				} as ISODINStandard,
+					primarySystem: 'ISO' as const
+				},
 				showStandard: true,
 				showHardwareImage: true,
 				showQRCode: false

@@ -15,8 +15,22 @@ export class SingleLabelPreview extends BaseCanvas {
 	 */
 	async waitForLabelRender() {
 		await this.waitForReady();
-		// Additional wait for font loading and image rendering
-		await this.page.waitForTimeout(200);
+		// Wait for layout calculation to complete
+		await this.canvas.waitFor({
+			state: 'attached',
+			timeout: 5000
+		});
+		// Wait for data-layout-ready attribute to be true
+		await this.page.waitForFunction(
+			(selector) => {
+				const canvas = document.querySelector(selector);
+				return canvas?.getAttribute('data-layout-ready') === 'true';
+			},
+			'canvas',
+			{ timeout: 5000 }
+		);
+		// Small additional wait for render to complete
+		await this.page.waitForTimeout(50);
 	}
 
 	/**

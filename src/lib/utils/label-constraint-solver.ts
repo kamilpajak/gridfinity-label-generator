@@ -49,7 +49,7 @@ const MIN_IMAGE_SIZE = 6; // Minimum hardware image size (6mm)
 const MAX_IMAGE_HEIGHT_RATIO = 0.8; // Maximum image height as ratio of printable height
 const MIN_TEXT_WIDTH = 15; // Minimum width reserved for text (15mm)
 
-export function solveLabelLayout(input: SolverInput): SolverOutput {
+export async function solveLabelLayout(input: SolverInput): Promise<SolverOutput> {
 	const { dimensions, primaryText, secondaryText } = input;
 	const hasSecondaryText = !!secondaryText;
 
@@ -71,7 +71,7 @@ export function solveLabelLayout(input: SolverInput): SolverOutput {
 	const availableWidth = layoutSolution.textClipWidth;
 
 	// Start with font sizes that fit horizontally
-	let primaryFontSize = calculateOptimalFontSize(
+	let primaryFontSize = await calculateOptimalFontSize(
 		primaryText,
 		'Noto Sans',
 		'900',
@@ -81,7 +81,7 @@ export function solveLabelLayout(input: SolverInput): SolverOutput {
 	);
 
 	let secondaryFontSize = hasSecondaryText
-		? calculateOptimalFontSize(
+		? await calculateOptimalFontSize(
 				secondaryText,
 				'Oswald',
 				'300',
@@ -151,7 +151,7 @@ export function solveLabelLayout(input: SolverInput): SolverOutput {
 		const maxSecondarySize = Math.min(maxSecondaryHeight, fontBounds.secondary.max);
 
 		// Also check horizontal constraint for secondary
-		secondaryFontSize = calculateOptimalFontSize(
+		secondaryFontSize = await calculateOptimalFontSize(
 			secondaryText,
 			'Oswald',
 			'300',
@@ -162,14 +162,14 @@ export function solveLabelLayout(input: SolverInput): SolverOutput {
 	}
 
 	// Double-check horizontal fit with final font sizes and adjust independently
-	const primaryWidth = measureText(primaryText, 'Noto Sans', primaryFontSize, '900');
+	const primaryWidth = await measureText(primaryText, 'Noto Sans', primaryFontSize, '900');
 	if (primaryWidth > availableWidth) {
 		const horizontalScale = availableWidth / primaryWidth;
 		primaryFontSize = Math.max(primaryFontSize * horizontalScale, 0.5);
 	}
 
 	if (hasSecondaryText) {
-		const secondaryWidth = measureText(secondaryText, 'Oswald', secondaryFontSize, '300');
+		const secondaryWidth = await measureText(secondaryText, 'Oswald', secondaryFontSize, '300');
 		if (secondaryWidth > availableWidth) {
 			const horizontalScale = availableWidth / secondaryWidth;
 			secondaryFontSize = Math.max(secondaryFontSize * horizontalScale, 0.5);

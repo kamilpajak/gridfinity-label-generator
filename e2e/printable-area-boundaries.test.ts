@@ -207,12 +207,11 @@ test.describe('Printable Area Boundaries', () => {
 		// Switch to General Item mode
 		await labelPage.selectLabelMode('General Item');
 
-		// Create a label with all features
+		// Create a label with all features (no hardware since we're in general mode)
 		await labelPage.createCompleteLabel({
 			size: '12mm',
 			primaryText: 'M8x25',
 			secondaryText: 'ISO 4762',
-			hardware: 'ISO 4762',
 			qrUrl: 'https://example.com'
 		});
 

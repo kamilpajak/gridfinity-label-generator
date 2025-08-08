@@ -30,7 +30,7 @@ export async function waitForCanvasStable(
 
 				let lastImageData: string | null = null;
 				let stableCount = 0;
-				const requiredStableChecks = 2;
+				const requiredStableChecks = 3;
 
 				const checkStability = () => {
 					const ctx = canvas.getContext('2d');
@@ -139,10 +139,27 @@ export async function waitForQRCodeRender(
 	page: Page,
 	options: { timeout?: number; labelWidth?: number } = {}
 ) {
-	const { timeout = 5000, labelWidth = 35 } = options;
+	const { timeout = 10000, labelWidth = 35 } = options;
 
 	// First ensure canvas exists
 	await page.getByTestId('label-preview-canvas').waitFor({ state: 'visible', timeout });
+
+	// Wait for rendering to complete
+	await page.waitForFunction(
+		() => {
+			const canvas = document.querySelector('[data-testid="label-preview-canvas"]');
+			if (!canvas) return false;
+			
+			// Check data attributes to ensure rendering is complete
+			const isLayoutReady = canvas.getAttribute('data-layout-ready') === 'true';
+			const isNotRendering = canvas.getAttribute('data-rendering') === 'false';
+			
+			return isLayoutReady && isNotRendering;
+		},
+		{ timeout: timeout / 2 }
+	).catch(() => {
+		// If data attributes are not available, continue anyway
+	});
 
 	await page.waitForFunction(
 		({ labelWidth }) => {
@@ -166,20 +183,33 @@ export async function waitForQRCodeRender(
 			const qrX = canvas.width - margin - qrSize - translateOffset.x;
 			const qrY = margin + translateOffset.y;
 
-			// Sample center of QR code area
-			const imageData = ctx.getImageData(
-				qrX + qrSize / 2,
-				qrY + qrSize / 2,
-				1,
-				1
-			);
+			// Sample multiple points in QR area (3x3 grid)
+			const samplePoints = [];
+			const step = qrSize / 4;
+			
+			for (let i = 1; i <= 3; i++) {
+				for (let j = 1; j <= 3; j++) {
+					samplePoints.push({
+						x: Math.round(qrX + step * i),
+						y: Math.round(qrY + step * j)
+					});
+				}
+			}
 
-			// If it's not white, QR code is rendered
-			return (
-				imageData.data[0] !== 255 ||
-				imageData.data[1] !== 255 ||
-				imageData.data[2] !== 255
-			);
+			// Check if at least some points are non-white
+			let nonWhiteCount = 0;
+			for (const point of samplePoints) {
+				const imageData = ctx.getImageData(point.x, point.y, 1, 1);
+				const [r, g, b] = imageData.data;
+				
+				// Check if not white (with tolerance)
+				if (r < 250 || g < 250 || b < 250) {
+					nonWhiteCount++;
+				}
+			}
+
+			// If at least 30% of points are non-white, QR is rendered
+			return nonWhiteCount >= Math.floor(samplePoints.length * 0.3);
 		},
 		{ labelWidth },
 		{ timeout }

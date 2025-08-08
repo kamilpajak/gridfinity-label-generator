@@ -21,7 +21,7 @@
 	let showHardwareImage = $state(true);
 	let showQRCode = $state(false);
 
-	let labelMode = $state('standard');
+	let labelMode = $state('fastener');
 	let measurementSystem = $state('metric');
 	let threadSize = $state('');
 	let length = $state('');
@@ -30,7 +30,7 @@
 	let optionalNote = $state('');
 	let qrCodeUrl = $state('');
 
-	let measurementSystemDisabled = $derived(labelMode !== 'standard');
+	let measurementSystemDisabled = $derived(labelMode !== 'fastener');
 
 	// Thread size options
 	const metricThreadSizes = [
@@ -56,7 +56,7 @@
 	);
 
 	// Store previous values
-	let previousLabelMode = 'standard';
+	let previousLabelMode = 'fastener';
 	let previousMeasurementSystem = 'metric';
 	let previousLabelHeight = '12';
 
@@ -230,8 +230,8 @@
 									class="w-full"
 									data-testid="label-mode-toggle"
 								>
-									<ToggleGroupItem value="standard" class="flex-1">Fastener</ToggleGroupItem>
-									<ToggleGroupItem value="custom" class="flex-1">General Item</ToggleGroupItem>
+									<ToggleGroupItem value="fastener" class="flex-1">Fastener</ToggleGroupItem>
+									<ToggleGroupItem value="general" class="flex-1">General Item</ToggleGroupItem>
 								</ToggleGroup>
 
 								<ToggleGroup
@@ -241,16 +241,16 @@
 									size="default"
 									class="w-full {measurementSystemDisabled ? 'pointer-events-none opacity-50' : ''}"
 								>
-									<ToggleGroupItem value="metric" class="flex-1">Metric</ToggleGroupItem>
-									<ToggleGroupItem value="imperial" class="flex-1">Imperial</ToggleGroupItem>
+									<ToggleGroupItem value="metric" class="flex-1" data-testid="metric-button">Metric</ToggleGroupItem>
+									<ToggleGroupItem value="imperial" class="flex-1" data-testid="imperial-button">Imperial</ToggleGroupItem>
 								</ToggleGroup>
 							</div>
 
-							{#if labelMode === 'standard'}
+							{#if labelMode === 'fastener'}
 								<div class="mt-4 flex flex-col gap-4 sm:grid sm:grid-cols-2">
 									<div>
 										<Select bind:value={threadSize} type="single">
-											<SelectTrigger id="thread-size" class="w-full">
+											<SelectTrigger id="thread-size" class="w-full" data-testid="thread-size-select">
 												{threadSize || threadSizePlaceholder}
 											</SelectTrigger>
 											<SelectContent>
@@ -266,6 +266,7 @@
 											bind:value={length}
 											placeholder={lengthPlaceholder}
 											class="w-full"
+											data-testid="length-input"
 										/>
 									</div>
 								</div>
@@ -286,7 +287,7 @@
 								</div>
 							{/if}
 
-							{#if labelMode === 'standard'}
+							{#if labelMode === 'fastener'}
 								<div class="mt-4 space-y-4">
 									<Popover.Root bind:open={standardsOpen}>
 										<Popover.Trigger>
@@ -297,6 +298,7 @@
 													role="combobox"
 													aria-expanded={standardsOpen}
 													class="w-full justify-between font-normal"
+													data-testid="hardware-select"
 												>
 													{selectedStandard
 														? formatDesignations(selectedStandard)
@@ -340,7 +342,7 @@
 							{/if}
 
 							<div class="mt-4">
-								<Input bind:value={optionalNote} placeholder="Optional note" class="w-full" />
+								<Input bind:value={optionalNote} placeholder="Optional note" class="w-full" data-testid="optional-note-input" />
 							</div>
 
 							<div class="mt-4">
@@ -453,6 +455,7 @@
 						class="gap-2"
 						disabled={!hasContent}
 						title={!hasContent ? 'Add some text to enable export' : 'Export label as PNG'}
+						data-testid="export-button"
 					>
 						<DownloadIcon class="h-4 w-4" />
 						Download PNG

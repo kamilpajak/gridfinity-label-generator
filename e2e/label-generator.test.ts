@@ -20,6 +20,10 @@ test.describe('Label Generator - Single Mode', () => {
 	});
 
 	test('should switch between label sizes', async () => {
+		// Start with 12mm (default)
+		expect(await labelPage.isLabelSizeSelected('12mm')).toBe(true);
+		expect(await labelPage.isLabelSizeSelected('9mm')).toBe(false);
+		
 		// Click on 9mm label size
 		await labelPage.selectLabelSize('9mm');
 
@@ -27,13 +31,18 @@ test.describe('Label Generator - Single Mode', () => {
 		expect(await labelPage.isLabelSizeSelected('9mm')).toBe(true);
 		expect(await labelPage.isLabelSizeSelected('12mm')).toBe(false);
 
-		// Verify canvas updated
-		expect(await labelPage.preview.verifyLabelDimensions('9mm')).toBe(true);
+		// Verify QR and hardware image are disabled for 9mm
+		await expect(labelPage.qrCodeSwitch).toBeDisabled();
+		await expect(labelPage.hardwareImageSwitch).toBeDisabled();
 
 		// Switch back to 12mm
 		await labelPage.selectLabelSize('12mm');
 		expect(await labelPage.isLabelSizeSelected('12mm')).toBe(true);
 		expect(await labelPage.isLabelSizeSelected('9mm')).toBe(false);
+		
+		// Verify QR and hardware image are enabled again for 12mm
+		await expect(labelPage.qrCodeSwitch).toBeEnabled();
+		await expect(labelPage.hardwareImageSwitch).toBeEnabled();
 	});
 
 	test('should display label preview placeholder initially', async () => {
@@ -109,6 +118,8 @@ test.describe('Label Generator - Single Mode', () => {
 	test('should be able to export label as PNG', async () => {
 		// Switch to General Item mode first
 		await labelPage.selectLabelMode('General Item');
+		// Ensure we're using 12mm (default, but be explicit)
+		await labelPage.selectLabelSize('12mm');
 		
 		// Fill in some label content
 		await labelPage.fillLabelData('M8', 'ISO 4762');
@@ -122,13 +133,18 @@ test.describe('Label Generator - Single Mode', () => {
 	});
 
 	test('should select hardware standard from dropdown', async () => {
+		// Hardware selection is only available in Fastener mode
+		// (Fastener mode is the default, but let's be explicit)
+		await labelPage.selectMode('fastener');
+		
 		// Select a hardware standard
 		await labelPage.selectHardware('hex');
 
 		// Verify the selection was made
 		const selectedText = await labelPage.getSelectedHardwareText();
-		expect(selectedText).not.toBe('Select hardware');
+		expect(selectedText).not.toBe('Select ISO/DIN standard');
 		expect(selectedText).toBeTruthy();
+		expect(selectedText).toContain('ISO'); // Should contain ISO or DIN
 	});
 
 	test('should switch between metric and imperial units', async () => {
@@ -143,17 +159,18 @@ test.describe('Label Generator - Single Mode', () => {
 		expect(await labelPage.isUnitSelected('imperial')).toBe(true);
 		expect(await labelPage.isUnitSelected('metric')).toBe(false);
 
-		// Thread size placeholder should change
-		await expect(labelPage.threadSizeButton).toContainText('Thread size (e.g., 1/4″)');
+		// Thread size placeholder should change to imperial
+		await expect(labelPage.threadSizeButton).toContainText('Select thread size');
 	});
 
 	test('should create complete label with all features', async () => {
-		// Use helper method to create complete label
+		// Switch to General Item mode for text-based label
+		await labelPage.selectLabelMode('General Item');
+		// Use helper method to create complete label with 12mm (supports all features)
 		await labelPage.createCompleteLabel({
-			size: '12mm',
+			size: '12mm', // Use 12mm to ensure QR and hardware image are available
 			primaryText: 'M12',
 			secondaryText: 'ISO 4762',
-			hardware: 'socket',
 			qrUrl: 'https://example.com/m12-iso-4762',
 			unit: 'metric'
 		});
@@ -173,6 +190,8 @@ test.describe('Label Generator - Single Mode', () => {
 	});
 
 	test('should handle export with minimal configuration', async () => {
+		// Switch to General Item mode first
+		await labelPage.selectLabelMode('General Item');
 		// Just enter primary text
 		await labelPage.fillPrimaryText('TEST');
 

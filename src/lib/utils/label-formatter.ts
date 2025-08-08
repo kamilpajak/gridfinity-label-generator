@@ -6,10 +6,10 @@
 
 /**
  * Formats the primary text for the label
- * @param labelMode - 'standard' or 'custom' mode
+ * @param labelMode - 'fastener' or 'general' mode
  * @param threadSize - Thread size (e.g., M5, M3)
  * @param length - Length value
- * @param primaryText - Custom primary text (for custom mode)
+ * @param primaryText - Custom primary text (for general mode)
  * @returns Formatted primary text
  */
 export function formatPrimaryText(
@@ -18,9 +18,9 @@ export function formatPrimaryText(
 	length: string,
 	primaryText: string
 ): string {
-	if (labelMode === 'standard' && threadSize && length) {
+	if (labelMode === 'fastener' && threadSize && length) {
 		return `${threadSize} × ${length}`;
-	} else if (labelMode === 'custom' && primaryText) {
+	} else if (labelMode === 'general' && primaryText) {
 		return primaryText;
 	}
 	return '';
@@ -28,20 +28,20 @@ export function formatPrimaryText(
 
 /**
  * Formats the secondary text for the label
- * @param labelMode - 'standard' or 'custom' mode
- * @param secondaryText - Custom secondary text (for custom mode)
+ * @param labelMode - 'fastener' or 'general' mode
+ * @param secondaryText - Custom secondary text (for general mode)
  * @returns Formatted secondary text
  */
 export function formatSecondaryText(labelMode: string, secondaryText: string): string {
-	return labelMode === 'custom' && secondaryText ? secondaryText : '';
+	return labelMode === 'general' && secondaryText ? secondaryText : '';
 }
 
 /**
  * Determines if a label configuration is valid for preview
- * @param labelMode - 'standard' or 'custom' mode
- * @param threadSize - Thread size (for standard mode)
- * @param length - Length value (for standard mode)
- * @param primaryText - Primary text (for custom mode)
+ * @param labelMode - 'fastener' or 'general' mode
+ * @param threadSize - Thread size (for fastener mode)
+ * @param length - Length value (for fastener mode)
+ * @param primaryText - Primary text (for general mode)
  * @returns Boolean indicating if label is ready for preview
  */
 export function isLabelValid(
@@ -50,9 +50,9 @@ export function isLabelValid(
 	length: string,
 	primaryText: string
 ): boolean {
-	if (labelMode === 'standard') {
+	if (labelMode === 'fastener') {
 		return !!(threadSize && length);
-	} else if (labelMode === 'custom') {
+	} else if (labelMode === 'general') {
 		return !!primaryText;
 	}
 	return false;

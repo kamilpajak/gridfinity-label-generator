@@ -85,7 +85,12 @@ export class BaseCanvas {
 	 * This is a basic check - can be extended for more specific validation
 	 */
 	async hasContent(): Promise<boolean> {
-		const dimensions = await this.getDimensions();
+		// First check if canvas is visible
+		const isVisible = await this.isVisible().catch(() => false);
+		if (!isVisible) return false;
+		
+		// Then check dimensions
+		const dimensions = await this.getDimensions().catch(() => ({ width: 0, height: 0 }));
 		return dimensions.width > 0 && dimensions.height > 0;
 	}
 
@@ -357,11 +362,33 @@ export class BaseCanvas {
 			const qrX = canvas.width - margin - qrSize - translateOffset.x;
 			const qrY = margin + translateOffset.y;
 
-			// Sample a few points in QR area
-			const imageData = ctx.getImageData(qrX + qrSize/2, qrY + qrSize/2, 1, 1);
+			// Sample multiple points in a 3x3 grid within QR area
+			const samplePoints = [];
+			const step = qrSize / 4; // Sample at 25%, 50%, 75% positions
 			
-			// If it's not white (255,255,255), there's likely a QR code
-			return imageData.data[0] !== 255 || imageData.data[1] !== 255 || imageData.data[2] !== 255;
+			for (let i = 1; i <= 3; i++) {
+				for (let j = 1; j <= 3; j++) {
+					const x = Math.round(qrX + step * i);
+					const y = Math.round(qrY + step * j);
+					samplePoints.push({ x, y });
+				}
+			}
+
+			// Check each sample point
+			let nonWhiteCount = 0;
+			for (const point of samplePoints) {
+				const imageData = ctx.getImageData(point.x, point.y, 1, 1);
+				const [r, g, b] = imageData.data;
+				
+				// Consider it non-white if any channel is not 255 (with tolerance)
+				const tolerance = 250; // Allow slight variations
+				if (r < tolerance || g < tolerance || b < tolerance) {
+					nonWhiteCount++;
+				}
+			}
+			
+			// If at least 30% of sampled points are non-white, QR code is likely present
+			return nonWhiteCount >= Math.floor(samplePoints.length * 0.3);
 		}, labelWidth);
 	}
 }

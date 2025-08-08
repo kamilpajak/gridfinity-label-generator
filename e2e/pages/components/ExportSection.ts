@@ -13,7 +13,8 @@ export class ExportSection {
 	constructor(page: Page) {
 		this.page = page;
 
-		this.exportButton = page.getByRole('button', { name: 'Export as PNG' });
+		// Use data-testid for reliable selection
+		this.exportButton = page.getByTestId('export-button');
 		// Progress indicator for future implementation
 		this.downloadProgress = page.locator('[data-testid="download-progress"]');
 	}

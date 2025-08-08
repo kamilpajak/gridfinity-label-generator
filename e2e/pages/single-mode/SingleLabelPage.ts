@@ -40,8 +40,9 @@ export class SingleLabelPage extends BasePage {
 	readonly metricButton: Locator;
 	readonly imperialButton: Locator;
 
-	// Thread size
+	// Thread size and length
 	readonly threadSizeButton: Locator;
+	readonly lengthInput: Locator;
 
 	// Mode selection (Fastener vs General Item)
 	readonly fastenerModeButton: Locator;
@@ -66,8 +67,8 @@ export class SingleLabelPage extends BasePage {
 		this.primaryTextInput = page.getByTestId('primary-text-input');
 		this.secondaryTextInput = page.getByTestId('secondary-text-input');
 
-		// Hardware selection - this is a combobox
-		this.hardwareSelectButton = page.getByRole('combobox');
+		// Hardware selection - use data-testid for stability
+		this.hardwareSelectButton = page.getByTestId('hardware-select');
 		this.hardwareSearchInput = page.getByPlaceholder('Search standards...');
 
 		// Switches - use data-testid for reliability
@@ -77,12 +78,13 @@ export class SingleLabelPage extends BasePage {
 		// QR URL input - use data-testid for stability
 		this.qrCodeUrlInput = page.getByTestId('qr-code-url-input');
 
-		// Unit selection radio buttons
-		this.metricButton = page.getByRole('radio', { name: 'Metric', exact: true });
-		this.imperialButton = page.getByRole('radio', { name: 'Imperial', exact: true });
+		// Unit selection - use data-testid for stability
+		this.metricButton = page.getByTestId('metric-button');
+		this.imperialButton = page.getByTestId('imperial-button');
 
-		// Thread size
-		this.threadSizeButton = page.locator('#thread-size').locator('..');
+		// Thread size and length - use data-testid for stability
+		this.threadSizeButton = page.getByTestId('thread-size-select');
+		this.lengthInput = page.getByTestId('length-input');
 
 		// Mode selection - use data-testid and target the toggle items
 		this.fastenerModeButton = page.getByTestId('label-mode-toggle').getByText('Fastener');
@@ -91,20 +93,31 @@ export class SingleLabelPage extends BasePage {
 
 	// Label size methods
 	async selectLabelSize(size: '9mm' | '12mm') {
-		if (size === '9mm') {
-			await this.labelSize9mm.click();
-		} else {
-			await this.labelSize12mm.click();
-		}
-		// Give a moment for state to update
-		await this.page.waitForTimeout(100);
-		// Wait for preview to update (handles both canvas and placeholder)
-		await this.preview.waitForLabelRender();
+		const button = size === '9mm' ? this.labelSize9mm : this.labelSize12mm;
+		await button.click();
+		
+		// Wait for the button to be selected (ToggleGroupItem uses data-state)
+		await this.page.waitForFunction(
+			({ buttonText }) => {
+				const button = Array.from(document.querySelectorAll('[data-testid="label-height-toggle"] button'))
+					.find(el => el.textContent?.includes(buttonText));
+				return button?.getAttribute('data-state') === 'on';
+			},
+			{ buttonText: size },
+			{ timeout: 2000 }
+		).catch(() => {
+			// Fallback if data-state is not available
+		});
+		
+		// Give UI time to update
+		await this.page.evaluate(() => new Promise(resolve => requestAnimationFrame(resolve)));
 	}
 
 	async isLabelSizeSelected(size: '9mm' | '12mm'): Promise<boolean> {
-		const radio = size === '9mm' ? this.labelSize9mm : this.labelSize12mm;
-		return await radio.isChecked();
+		const button = size === '9mm' ? this.labelSize9mm : this.labelSize12mm;
+		// ToggleGroupItem uses data-state="on" when selected
+		const state = await button.getAttribute('data-state');
+		return state === 'on';
 	}
 
 	async getSelectedLabelSize(): Promise<'9mm' | '12mm' | null> {
@@ -147,7 +160,11 @@ export class SingleLabelPage extends BasePage {
 	async selectHardware(searchTerm: string) {
 		await this.hardwareSelectButton.click();
 		await this.hardwareSearchInput.fill(searchTerm);
-		await this.page.getByRole('option').first().click();
+		// Command component items use a different selector
+		// Wait for search results to appear
+		await this.page.waitForTimeout(500); // Give time for search to filter
+		// Click on the first matching item in the Command dropdown
+		await this.page.locator('[cmdk-item]').first().click();
 		await this.preview.waitForLabelRender();
 	}
 
@@ -205,8 +222,10 @@ export class SingleLabelPage extends BasePage {
 	}
 
 	async isUnitSelected(unit: 'metric' | 'imperial'): Promise<boolean> {
-		const radio = unit === 'metric' ? this.metricButton : this.imperialButton;
-		return await radio.isChecked();
+		const button = unit === 'metric' ? this.metricButton : this.imperialButton;
+		// ToggleGroupItem uses data-state="on" when selected
+		const state = await button.getAttribute('data-state');
+		return state === 'on';
 	}
 
 	async getSelectedUnit(): Promise<'metric' | 'imperial' | null> {
@@ -226,8 +245,10 @@ export class SingleLabelPage extends BasePage {
 	}
 
 	async isMode(mode: 'fastener' | 'general'): Promise<boolean> {
-		const radio = mode === 'fastener' ? this.fastenerModeButton : this.generalItemModeButton;
-		return await radio.isChecked();
+		const button = mode === 'fastener' ? this.fastenerModeButton : this.generalItemModeButton;
+		// ToggleGroupItem uses data-state="on" when selected
+		const state = await button.getAttribute('data-state');
+		return state === 'on';
 	}
 
 	// Alias for selectMode to match test expectations
@@ -265,8 +286,8 @@ export class SingleLabelPage extends BasePage {
 			await this.fillLabelData(options.primaryText, options.secondaryText);
 		}
 
-		// Select hardware if specified
-		if (options.hardware) {
+		// Select hardware if specified (only works in fastener mode)
+		if (options.hardware && options.mode === 'fastener') {
 			await this.selectHardware(options.hardware);
 		}
 

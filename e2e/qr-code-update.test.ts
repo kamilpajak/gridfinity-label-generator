@@ -9,7 +9,6 @@ test.describe('QR Code Updates', () => {
 
 		// Switch to General Item mode
 		await labelPage.selectLabelMode('General Item');
-		await labelPage.selectMode('general');
 
 		// Add some text to show label
 		await labelPage.fillPrimaryText('Test Label');
@@ -66,7 +65,6 @@ test.describe('QR Code Updates', () => {
 
 		// Switch to General Item mode
 		await labelPage.selectLabelMode('General Item');
-		await labelPage.selectMode('general');
 
 		// Add some text to show label
 		await labelPage.fillPrimaryText('Test Label');
@@ -102,37 +100,35 @@ test.describe('QR Code Updates', () => {
 
 		// Switch to General Item mode and enable QR
 		await labelPage.selectLabelMode('General Item');
-		await labelPage.selectMode('general');
 		await labelPage.fillPrimaryText('Test Label');
 		await labelPage.toggleQRCode();
 
-		// Type URL character by character
-		const testUrl = 'https://test.com';
-		await labelPage.qrCodeUrlInput.click();
-		await labelPage.qrCodeUrlInput.fill(''); // Clear any existing content
-
-		// Get initial state (empty QR)
+		// Start with a URL to ensure canvas exists
+		await labelPage.fillQRCodeUrl('https://initial.com');
 		await labelPage.preview.waitForLabelRender();
-		const emptyQr = await labelPage.preview.getQRCodePixels();
+		await waitForQRCodeRender(page);
+		const initialQr = await labelPage.preview.getQRCodePixels();
 
-		// Type first part of URL
-		await labelPage.qrCodeUrlInput.type('https://t', { delay: 50 });
+		// Clear and type first part of URL
+		await labelPage.qrCodeUrlInput.click();
+		await labelPage.qrCodeUrlInput.fill('https://t');
 		await labelPage.preview.waitForLabelRender();
 		await waitForQRCodeRender(page);
 		const partialQr = await labelPage.preview.getQRCodePixels();
 
 		// Type complete URL
+		const testUrl = 'https://test.com';
 		await labelPage.qrCodeUrlInput.fill(testUrl);
 		await labelPage.preview.waitForLabelRender();
 		await waitForQRCodeRender(page);
 		const completeQr = await labelPage.preview.getQRCodePixels();
 
 		// Each state should produce different QR codes
-		const diff1 = labelPage.preview.compareQRCodePixels(emptyQr.pixels, partialQr.pixels);
+		const diff1 = labelPage.preview.compareQRCodePixels(initialQr.pixels, partialQr.pixels);
 		const diff2 = labelPage.preview.compareQRCodePixels(partialQr.pixels, completeQr.pixels);
 
 		console.log(`Real-time QR update test:
-			- Empty vs Partial: ${diff1.toFixed(2)}% different
+			- Initial vs Partial: ${diff1.toFixed(2)}% different
 			- Partial vs Complete: ${diff2.toFixed(2)}% different
 		`);
 

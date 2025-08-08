@@ -137,8 +137,8 @@ test.describe('Label Generator - Single Mode', () => {
 		// (Fastener mode is the default, but let's be explicit)
 		await labelPage.selectMode('fastener');
 		
-		// Select a hardware standard
-		await labelPage.selectHardware('hex');
+		// Select a hardware standard - search for 'ISO' which exists in the standards
+		await labelPage.selectHardware('ISO');
 
 		// Verify the selection was made
 		const selectedText = await labelPage.getSelectedHardwareText();

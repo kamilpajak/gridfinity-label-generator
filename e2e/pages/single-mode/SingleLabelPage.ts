@@ -236,6 +236,20 @@ export class SingleLabelPage extends BasePage {
 
 	// Mode selection methods
 	async selectMode(mode: 'fastener' | 'general') {
+		// Check if already in the desired mode
+		const currentMode = await this.isMode(mode);
+		if (currentMode) {
+			// Already in the desired mode, just ensure UI is ready
+			if (mode === 'fastener') {
+				await this.threadSizeButton.waitFor({ state: 'visible', timeout: 5000 });
+			} else {
+				await this.primaryTextInput.waitFor({ state: 'visible', timeout: 5000 });
+			}
+			await this.preview.waitForReady();
+			return;
+		}
+		
+		// Switch to the desired mode
 		if (mode === 'fastener') {
 			await this.fastenerModeButton.click();
 			// In fastener mode, wait for thread size button to be visible

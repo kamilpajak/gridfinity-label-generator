@@ -1,4 +1,4 @@
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator, expect } from '@playwright/test';
 import { BasePage } from '../base/BasePage';
 import { NavigationTabs } from '../components/NavigationTabs';
 import { ExportSection } from '../components/ExportSection';
@@ -58,26 +58,24 @@ export class SingleLabelPage extends BasePage {
 		// Initialize locators
 		this.title = page.locator('h1');
 
-		// Label size radio buttons
-		this.labelSize9mm = page.getByRole('radio', { name: '9mm', exact: true });
-		this.labelSize12mm = page.getByRole('radio', { name: '12mm', exact: true });
+		// Label size selection - use data-testid for stability
+		this.labelSize9mm = page.getByTestId('label-height-toggle').getByText('9mm');
+		this.labelSize12mm = page.getByTestId('label-height-toggle').getByText('12mm');
 
-		// Text inputs - different placeholders for standard vs custom mode
-		// For standard mode (fastener), inputs are filled via thread size and length
-		// For custom mode, these placeholders are used:
-		this.primaryTextInput = page.getByPlaceholder('Primary text (e.g., Resistors 10kΩ)');
-		this.secondaryTextInput = page.getByPlaceholder('Secondary text (e.g., 1/4W ±5%)');
+		// Text inputs - use data-testid for stability
+		this.primaryTextInput = page.getByTestId('primary-text-input');
+		this.secondaryTextInput = page.getByTestId('secondary-text-input');
 
 		// Hardware selection - this is a combobox
 		this.hardwareSelectButton = page.getByRole('combobox');
 		this.hardwareSearchInput = page.getByPlaceholder('Search standards...');
 
-		// Switches
-		this.hardwareImageSwitch = page.getByRole('switch', { name: 'Hardware Image' });
-		this.qrCodeSwitch = page.getByRole('switch', { name: 'QR Code' });
+		// Switches - use data-testid for reliability
+		this.hardwareImageSwitch = page.getByTestId('hardware-image-switch');
+		this.qrCodeSwitch = page.getByTestId('qr-code-switch');
 
-		// QR URL input
-		this.qrCodeUrlInput = page.getByPlaceholder('QR code (URL, part number, etc.)');
+		// QR URL input - use data-testid for stability
+		this.qrCodeUrlInput = page.getByTestId('qr-code-url-input');
 
 		// Unit selection radio buttons
 		this.metricButton = page.getByRole('radio', { name: 'Metric', exact: true });
@@ -86,9 +84,9 @@ export class SingleLabelPage extends BasePage {
 		// Thread size
 		this.threadSizeButton = page.locator('#thread-size').locator('..');
 
-		// Mode selection - these are radio buttons, not regular buttons
-		this.fastenerModeButton = page.getByRole('radio', { name: 'Fastener', exact: true });
-		this.generalItemModeButton = page.getByRole('radio', { name: 'General Item', exact: true });
+		// Mode selection - use data-testid and target the toggle items
+		this.fastenerModeButton = page.getByTestId('label-mode-toggle').getByText('Fastener');
+		this.generalItemModeButton = page.getByTestId('label-mode-toggle').getByText('General Item');
 	}
 
 	// Label size methods
@@ -98,8 +96,10 @@ export class SingleLabelPage extends BasePage {
 		} else {
 			await this.labelSize12mm.click();
 		}
-		// Wait for canvas to update
-		await this.preview.waitForReady();
+		// Give a moment for state to update
+		await this.page.waitForTimeout(100);
+		// Wait for preview to update (handles both canvas and placeholder)
+		await this.preview.waitForLabelRender();
 	}
 
 	async isLabelSizeSelected(size: '9mm' | '12mm'): Promise<boolean> {
@@ -121,11 +121,17 @@ export class SingleLabelPage extends BasePage {
 
 	async fillPrimaryText(text: string) {
 		await this.primaryTextInput.fill(text);
+		// Give a moment for state to update
+		await this.page.waitForTimeout(100);
+		// Now wait for render (handles both canvas and placeholder states)
 		await this.preview.waitForLabelRender();
 	}
 
 	async fillSecondaryText(text: string) {
 		await this.secondaryTextInput.fill(text);
+		// Give a moment for state to update
+		await this.page.waitForTimeout(100);
+		// Now wait for render (handles both canvas and placeholder states)
 		await this.preview.waitForLabelRender();
 	}
 
@@ -160,10 +166,19 @@ export class SingleLabelPage extends BasePage {
 	}
 
 	async toggleQRCode() {
+		// Check the state before clicking
+		const wasEnabledBefore = await this.qrCodeUrlInput.isEnabled().catch(() => false);
+		
+		// Use data-testid for reliable selection
 		await this.qrCodeSwitch.click();
-		// Wait for QR input to appear/disappear
-		if (await this.qrCodeSwitch.isChecked()) {
-			await this.qrCodeUrlInput.waitFor({ state: 'visible' });
+		
+		// Wait for the opposite state
+		if (wasEnabledBefore) {
+			// When disabling, the input becomes disabled, not hidden
+			await expect(this.qrCodeUrlInput).toBeDisabled();
+		} else {
+			// When enabling, wait for it to be enabled
+			await expect(this.qrCodeUrlInput).toBeEnabled();
 		}
 	}
 

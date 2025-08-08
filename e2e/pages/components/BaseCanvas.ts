@@ -10,7 +10,7 @@ export class BaseCanvas {
 
 	constructor(page: Page) {
 		this.page = page;
-		this.canvas = page.locator('canvas');
+		this.canvas = page.getByTestId('label-preview-canvas');
 	}
 
 	/**
@@ -56,8 +56,10 @@ export class BaseCanvas {
 			// First check if canvas exists and is visible
 			const canvasVisible = await this.canvas.isVisible();
 			if (canvasVisible) {
-				// Give time for canvas to render content
-				await this.page.waitForTimeout(100);
+				// Wait for next animation frame to ensure canvas is ready
+				await this.page.evaluate(() => {
+					return new Promise((resolve) => requestAnimationFrame(resolve));
+				});
 				return;
 			}
 		} catch {
@@ -65,8 +67,10 @@ export class BaseCanvas {
 		}
 
 		// If canvas is not visible, that's OK - placeholder might be shown
-		// Just wait a bit for the page to stabilize
-		await this.page.waitForTimeout(200);
+		// Wait for DOM to stabilize
+		await this.page.evaluate(() => {
+			return new Promise((resolve) => requestAnimationFrame(resolve));
+		});
 	}
 
 	/**
@@ -248,5 +252,116 @@ export class BaseCanvas {
 			},
 			{ labelW: labelWidth, labelH: labelHeight }
 		);
+	}
+
+	/**
+	 * Get QR code area pixels for comparison
+	 * @param labelWidth - Physical label width in mm (default: 35)
+	 * @returns Object with pixel data and QR code position/size
+	 */
+	async getQRCodePixels(labelWidth: number = 35): Promise<{
+		pixels: number[];
+		qrX: number;
+		qrY: number;
+		qrSize: number;
+		canvasWidth: number;
+		canvasHeight: number;
+	}> {
+		return await this.page.evaluate((width) => {
+			const canvas = document.querySelector('canvas');
+			if (!canvas) throw new Error('Canvas not found');
+
+			const ctx = canvas.getContext('2d');
+			if (!ctx) throw new Error('Could not get canvas context');
+
+			// In preview mode, canvas is translated by (2mm, 1mm)
+			const scale = canvas.width / width;
+			const translateOffset = {
+				x: Math.round(2 * scale), // 2mm translate
+				y: Math.round(1 * scale)  // 1mm translate
+			};
+
+			// QR code is 10x10mm, positioned on the right side
+			const qrSize = Math.round(10 * scale);
+			const margin = Math.round(2 * scale); // 2mm margin
+			
+			// QR code should be at right edge minus margin, accounting for translate
+			const qrX = canvas.width - margin - qrSize - translateOffset.x;
+			const qrY = margin + translateOffset.y; // Top edge plus margin
+
+			// Get image data for QR code area
+			const imageData = ctx.getImageData(qrX, qrY, qrSize, qrSize);
+			
+			// Convert to simple array for comparison
+			// Sample every 10th pixel to reduce data size
+			const pixels: number[] = [];
+			for (let i = 0; i < imageData.data.length; i += 40) { // Every 10th pixel (4 bytes per pixel)
+				pixels.push(imageData.data[i]); // Red channel only
+			}
+			
+			return {
+				pixels,
+				qrX,
+				qrY,
+				qrSize,
+				canvasWidth: canvas.width,
+				canvasHeight: canvas.height
+			};
+		}, labelWidth);
+	}
+
+	/**
+	 * Compare two QR code pixel arrays and return percentage difference
+	 * @param pixels1 - First pixel array
+	 * @param pixels2 - Second pixel array
+	 * @returns Percentage of pixels that are different (0-100)
+	 */
+	compareQRCodePixels(pixels1: number[], pixels2: number[]): number {
+		if (pixels1.length !== pixels2.length) {
+			throw new Error('Pixel arrays must have the same length');
+		}
+
+		let differentPixels = 0;
+		for (let i = 0; i < pixels1.length; i++) {
+			if (pixels1[i] !== pixels2[i]) {
+				differentPixels++;
+			}
+		}
+
+		return (differentPixels / pixels1.length) * 100;
+	}
+
+	/**
+	 * Check if QR code area has content (not just white background)
+	 * @param labelWidth - Physical label width in mm (default: 35)
+	 * @returns true if QR code is present, false if area is empty
+	 */
+	async hasQRCodeContent(labelWidth: number = 35): Promise<boolean> {
+		return await this.page.evaluate((width) => {
+			const canvas = document.querySelector('canvas');
+			if (!canvas) return false;
+
+			const ctx = canvas.getContext('2d');
+			if (!ctx) return false;
+
+			// In preview mode, canvas is translated by (2mm, 1mm)
+			const scale = canvas.width / width;
+			const translateOffset = {
+				x: Math.round(2 * scale), // 2mm translate
+				y: Math.round(1 * scale)  // 1mm translate
+			};
+
+			// Check right edge area where QR code should be
+			const qrSize = Math.round(10 * scale);
+			const margin = Math.round(2 * scale);
+			const qrX = canvas.width - margin - qrSize - translateOffset.x;
+			const qrY = margin + translateOffset.y;
+
+			// Sample a few points in QR area
+			const imageData = ctx.getImageData(qrX + qrSize/2, qrY + qrSize/2, 1, 1);
+			
+			// If it's not white (255,255,255), there's likely a QR code
+			return imageData.data[0] !== 255 || imageData.data[1] !== 255 || imageData.data[2] !== 255;
+		}, labelWidth);
 	}
 }

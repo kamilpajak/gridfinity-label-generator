@@ -10,7 +10,7 @@ test.describe('Label Generator - Single Mode', () => {
 	});
 
 	test('should display label generator title', async () => {
-		await expect(labelPage.title).toHaveText('GridScribe');
+		await expect(labelPage.title).toHaveText('Gridfinity Label Generator');
 	});
 
 	test('should have default label size selected', async () => {
@@ -36,40 +36,48 @@ test.describe('Label Generator - Single Mode', () => {
 		expect(await labelPage.isLabelSizeSelected('9mm')).toBe(false);
 	});
 
-	test('should display label preview canvas', async () => {
-		// Check that canvas element exists and has content
-		expect(await labelPage.preview.isVisible()).toBe(true);
-		expect(await labelPage.preview.isShowingLabel()).toBe(true);
+	test('should display label preview placeholder initially', async () => {
+		// Check that placeholder is shown when there's no content
+		const placeholder = labelPage.page.getByTestId('label-preview-placeholder');
+		expect(await placeholder.isVisible()).toBe(true);
 
-		// Verify default size
-		const dimensions = await labelPage.preview.getDimensions();
-		expect(dimensions.width).toBeGreaterThan(0);
-		expect(dimensions.height).toBeGreaterThan(0);
+		// Canvas should not be visible initially
+		expect(await labelPage.preview.isVisible()).toBe(false);
 	});
 
 	test('should update preview when entering primary text', async () => {
+		// Switch to General Item mode to use text inputs
+		await labelPage.selectLabelMode('General Item');
+		
 		// Enter text in primary field
 		await labelPage.fillPrimaryText('M10');
 
 		// Verify input has the value
 		expect(await labelPage.getPrimaryText()).toBe('M10');
 
-		// Canvas should still be visible
+		// Canvas should now be visible
 		expect(await labelPage.preview.isShowingLabel()).toBe(true);
 	});
 
 	test('should update preview when entering secondary text', async () => {
+		// Switch to General Item mode to use text inputs
+		await labelPage.selectLabelMode('General Item');
+		
 		// Enter text in secondary field
 		await labelPage.fillSecondaryText('ISO 4762');
 
 		// Verify input has the value
 		expect(await labelPage.getSecondaryText()).toBe('ISO 4762');
 
-		// Canvas should still be visible
+		// Canvas should now be visible
 		expect(await labelPage.preview.isShowingLabel()).toBe(true);
 	});
 
 	test('should toggle hardware image visibility', async () => {
+		// Switch to General Item mode and add some content
+		await labelPage.selectLabelMode('General Item');
+		await labelPage.fillPrimaryText('Test');
+		
 		// Check initial state (should be checked)
 		expect(await labelPage.isHardwareImageEnabled()).toBe(true);
 
@@ -99,6 +107,9 @@ test.describe('Label Generator - Single Mode', () => {
 	});
 
 	test('should be able to export label as PNG', async () => {
+		// Switch to General Item mode first
+		await labelPage.selectLabelMode('General Item');
+		
 		// Fill in some label content
 		await labelPage.fillLabelData('M8', 'ISO 4762');
 

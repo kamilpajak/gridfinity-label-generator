@@ -1,5 +1,6 @@
 import { type Page } from '@playwright/test';
 import { BaseCanvas } from '../components/BaseCanvas';
+import { waitForDataAttribute, waitForCanvasStable } from '../../utils/wait-helpers';
 
 /**
  * Single label preview component
@@ -14,23 +15,34 @@ export class SingleLabelPreview extends BaseCanvas {
 	 * Wait for label to be rendered after data change
 	 */
 	async waitForLabelRender() {
+		// First check if canvas is visible or if we're showing placeholder
+		const canvasCount = await this.canvas.count();
+		
+		if (canvasCount === 0) {
+			// No canvas, wait for placeholder to be visible
+			// Use data-testid for stable selection
+			await this.page.getByTestId('label-preview-placeholder').waitFor({
+				state: 'visible',
+				timeout: 5000
+			});
+			return;
+		}
+
+		// Canvas exists, wait for it to be ready
 		await this.waitForReady();
+		
 		// Wait for layout calculation to complete
 		await this.canvas.waitFor({
 			state: 'attached',
 			timeout: 5000
 		});
-		// Wait for data-layout-ready attribute to be true
-		await this.page.waitForFunction(
-			(selector) => {
-				const canvas = document.querySelector(selector);
-				return canvas?.getAttribute('data-layout-ready') === 'true';
-			},
-			'canvas',
-			{ timeout: 5000 }
-		);
-		// Small additional wait for render to complete
-		await this.page.waitForTimeout(50);
+		
+		// Wait for data attributes with optional flag
+		await waitForDataAttribute(this.page, '[data-testid="label-preview-canvas"]', 'layout-ready', 'true', { optional: true });
+		await waitForDataAttribute(this.page, '[data-testid="label-preview-canvas"]', 'rendering', 'false', { optional: true });
+		
+		// Wait for canvas content to stabilize (using default selector with data-testid)
+		await waitForCanvasStable(this.page, undefined, { optional: true });
 	}
 
 	/**

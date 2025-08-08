@@ -11,8 +11,8 @@ test.describe('Printable Area Boundaries', () => {
 
 		// Helper function to verify boundaries after each action
 		const verifyAfterAction = async (actionName: string, labelSize?: '9mm' | '12mm') => {
-			// Give canvas time to re-render
-			await labelPage.preview.waitForReady();
+			// Wait for label to be fully rendered
+			await labelPage.preview.waitForLabelRender();
 
 			// Determine label dimensions based on current size
 			const currentSize = labelSize || (await labelPage.getSelectedLabelSize());
@@ -27,8 +27,9 @@ test.describe('Printable Area Boundaries', () => {
 			expect(isWithinBounds, `Content exceeded printable area after: ${actionName}`).toBe(true);
 		};
 
-		// 1. Initial state - should be clean (empty canvas)
-		await verifyAfterAction('initial load', '12mm');
+		// 1. First add some content so canvas is visible
+		await labelPage.fillPrimaryText('Test');
+		await verifyAfterAction('adding initial text', '12mm');
 
 		// 2. Test label size changes
 		await labelPage.selectLabelSize('9mm');
@@ -174,7 +175,7 @@ test.describe('Printable Area Boundaries', () => {
 		await labelPage.selectMode('general');
 
 		const verifyBounds = async (description: string) => {
-			await labelPage.preview.waitForReady();
+			await labelPage.preview.waitForLabelRender();
 			const isWithinBounds = await labelPage.preview.verifyContentWithinPrintableArea();
 			expect(isWithinBounds, `Failed for: ${description}`).toBe(true);
 		};

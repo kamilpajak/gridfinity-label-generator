@@ -123,9 +123,14 @@
 		calculateLayout();
 	});
 
+	let isRendering = $state(false);
+
 	// Render to canvas whenever dependencies change
 	$effect(() => {
 		if (!canvasRef || !container || !layout) return;
+		
+		// Explicitly track qrCodeUrl to trigger re-render when QR URL changes
+		qrCodeUrl;
 
 		// Cancel any previous render
 		if (renderController) {
@@ -157,6 +162,7 @@
 				// Additional check for TypeScript
 				if (!canvasRef || !layout) return;
 				
+				isRendering = true;
 
 				// Clear canvas immediately to prevent artifacts from aborted renders
 				const ctx = canvasRef.getContext('2d');
@@ -204,6 +210,8 @@
 						return;
 					}
 					console.error('Failed to render label:', error);
+				} finally {
+					isRendering = false;
 				}
 			};
 
@@ -248,10 +256,13 @@
 				class="h-full w-full bg-white shadow-sm"
 				style="image-rendering: crisp-edges;"
 				data-layout-ready={!isCalculatingLayout && layout !== null}
+				data-rendering={isRendering}
+				data-testid="label-preview-canvas"
 			></canvas>
 		{:else}
 			<div
 				class="flex h-full w-full flex-col items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/25 bg-muted/50"
+				data-testid="label-preview-placeholder"
 			>
 				<TagIcon class="mb-3 h-12 w-12 text-muted-foreground/40" />
 				<p class="text-sm font-medium text-muted-foreground">Enter text to preview your label</p>

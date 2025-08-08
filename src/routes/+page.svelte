@@ -228,6 +228,7 @@
 									type="single"
 									size="default"
 									class="w-full"
+									data-testid="label-mode-toggle"
 								>
 									<ToggleGroupItem value="standard" class="flex-1">Fastener</ToggleGroupItem>
 									<ToggleGroupItem value="custom" class="flex-1">General Item</ToggleGroupItem>
@@ -274,11 +275,13 @@
 										bind:value={primaryText}
 										placeholder="Primary text (e.g., Resistors 10kΩ)"
 										class="w-full"
+										data-testid="primary-text-input"
 									/>
 									<Input
 										bind:value={secondaryText}
 										placeholder="Secondary text (e.g., 1/4W ±5%)"
 										class="w-full"
+										data-testid="secondary-text-input"
 									/>
 								</div>
 							{/if}
@@ -346,6 +349,7 @@
 									placeholder="QR code (URL, part number, etc.)"
 									class="w-full"
 									disabled={!showQRCode}
+									data-testid="qr-code-url-input"
 								/>
 							</div>
 						</Card.Content>
@@ -363,7 +367,7 @@
 									<div class="font-medium">Standard Reference</div>
 									<div class="text-sm text-muted-foreground">Display standard designation</div>
 								</div>
-								<Switch bind:checked={showStandard} />
+								<Switch bind:checked={showStandard} data-testid="standard-reference-switch" />
 							</div>
 
 							<div class="flex items-center justify-between space-x-2">
@@ -375,7 +379,7 @@
 											: 'Show fastener type icon'}
 									</div>
 								</div>
-								<Switch bind:checked={showHardwareImage} disabled={hardwareImageDisabled} />
+								<Switch bind:checked={showHardwareImage} disabled={hardwareImageDisabled} data-testid="hardware-image-switch" />
 							</div>
 
 							<div class="flex items-center justify-between space-x-2">
@@ -385,7 +389,7 @@
 										{qrCodeDisabled ? 'Not available for 9mm labels' : 'Add scannable code'}
 									</div>
 								</div>
-								<Switch bind:checked={showQRCode} disabled={qrCodeDisabled} />
+								<Switch bind:checked={showQRCode} disabled={qrCodeDisabled} data-testid="qr-code-switch" />
 							</div>
 
 							<div class="mt-4 border-t pt-4">
@@ -399,6 +403,7 @@
 											variant="outline"
 											type="single"
 											class="w-full"
+											data-testid="label-height-toggle"
 										>
 											<ToggleGroupItem value="9" class="flex-1">9mm</ToggleGroupItem>
 											<ToggleGroupItem value="12" class="flex-1">12mm</ToggleGroupItem>

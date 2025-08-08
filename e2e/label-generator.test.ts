@@ -167,12 +167,13 @@ test.describe('Label Generator - Single Mode', () => {
 		// Switch to General Item mode for text-based label
 		await labelPage.selectLabelMode('General Item');
 		// Use helper method to create complete label with 12mm (supports all features)
+		// Note: unit selection is disabled in General Item mode, so we don't set it
 		await labelPage.createCompleteLabel({
 			size: '12mm', // Use 12mm to ensure QR and hardware image are available
 			primaryText: 'M12',
 			secondaryText: 'ISO 4762',
 			qrUrl: 'https://example.com/m12-iso-4762',
-			unit: 'metric'
+			mode: 'general' // Explicitly set general mode (unit is not applicable here)
 		});
 
 		// Verify all elements are set correctly
@@ -181,7 +182,7 @@ test.describe('Label Generator - Single Mode', () => {
 		expect(await labelPage.isHardwareImageEnabled()).toBe(true);
 		expect(await labelPage.isQRCodeEnabled()).toBe(true);
 		expect(await labelPage.getQRCodeUrl()).toBe('https://example.com/m12-iso-4762');
-		expect(await labelPage.getSelectedUnit()).toBe('metric');
+		// Unit selection is disabled in General Item mode, so we don't check it
 		expect(await labelPage.getSelectedLabelSize()).toBe('12mm');
 
 		// Export the label

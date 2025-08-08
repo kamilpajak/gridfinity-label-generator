@@ -160,11 +160,11 @@ export class SingleLabelPage extends BasePage {
 	async selectHardware(searchTerm: string) {
 		await this.hardwareSelectButton.click();
 		await this.hardwareSearchInput.fill(searchTerm);
-		// Command component items use a different selector
+		// Command component items use data-slot attribute in shadcn-svelte
 		// Wait for search results to appear
 		await this.page.waitForTimeout(500); // Give time for search to filter
 		// Click on the first matching item in the Command dropdown
-		await this.page.locator('[cmdk-item]').first().click();
+		await this.page.locator('[data-slot="command-item"]').first().click();
 		await this.preview.waitForLabelRender();
 	}
 
@@ -238,8 +238,12 @@ export class SingleLabelPage extends BasePage {
 	async selectMode(mode: 'fastener' | 'general') {
 		if (mode === 'fastener') {
 			await this.fastenerModeButton.click();
+			// In fastener mode, wait for thread size button to be visible
+			await this.threadSizeButton.waitFor({ state: 'visible', timeout: 5000 });
 		} else {
 			await this.generalItemModeButton.click();
+			// In general mode, wait for primary text input to be visible
+			await this.primaryTextInput.waitFor({ state: 'visible', timeout: 5000 });
 		}
 		await this.preview.waitForReady();
 	}

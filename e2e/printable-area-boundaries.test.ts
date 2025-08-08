@@ -38,9 +38,9 @@ test.describe('Printable Area Boundaries', () => {
 		await labelPage.selectLabelSize('12mm');
 		await verifyAfterAction('selecting 12mm label size', '12mm');
 
-		// 3. Switch to general mode to test direct text input
-		await labelPage.selectMode('general');
-		await verifyAfterAction('switching to general item mode');
+		// 3. Already in General Item mode from line 10, no need to switch again
+		// Just verify the current state
+		await verifyAfterAction('already in general item mode');
 
 		// 4. Test primary text input
 		await labelPage.fillPrimaryText('M8');
@@ -168,11 +168,8 @@ test.describe('Printable Area Boundaries', () => {
 		const labelPage = new SingleLabelPage(page);
 		await labelPage.goto();
 
-		// Switch to General Item mode
+		// Switch to General Item mode for direct text input
 		await labelPage.selectLabelMode('General Item');
-
-		// Switch to general mode for direct text input
-		await labelPage.selectMode('general');
 
 		const verifyBounds = async (description: string) => {
 			await labelPage.preview.waitForLabelRender();

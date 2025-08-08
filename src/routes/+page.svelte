@@ -230,8 +230,8 @@
 									class="w-full"
 									data-testid="label-mode-toggle"
 								>
-									<ToggleGroupItem value="fastener" class="flex-1">Fastener</ToggleGroupItem>
-									<ToggleGroupItem value="general" class="flex-1">General Item</ToggleGroupItem>
+									<ToggleGroupItem value="fastener" class="flex-1" data-testid="mode-fastener">Fastener</ToggleGroupItem>
+									<ToggleGroupItem value="general" class="flex-1" data-testid="mode-general">General Item</ToggleGroupItem>
 								</ToggleGroup>
 
 								<ToggleGroup

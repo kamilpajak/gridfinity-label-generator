@@ -86,9 +86,9 @@ export class SingleLabelPage extends BasePage {
 		this.threadSizeButton = page.getByTestId('thread-size-select');
 		this.lengthInput = page.getByTestId('length-input');
 
-		// Mode selection - use data-testid and target the toggle items
-		this.fastenerModeButton = page.getByTestId('label-mode-toggle').getByText('Fastener');
-		this.generalItemModeButton = page.getByTestId('label-mode-toggle').getByText('General Item');
+		// Mode selection - use data-testid for direct and reliable selection
+		this.fastenerModeButton = page.getByTestId('mode-fastener');
+		this.generalItemModeButton = page.getByTestId('mode-general');
 	}
 
 	// Label size methods
@@ -236,29 +236,18 @@ export class SingleLabelPage extends BasePage {
 
 	// Mode selection methods
 	async selectMode(mode: 'fastener' | 'general') {
-		// Check if already in the desired mode
-		const currentMode = await this.isMode(mode);
-		if (currentMode) {
-			// Already in the desired mode, just ensure UI is ready
-			if (mode === 'fastener') {
-				await this.threadSizeButton.waitFor({ state: 'visible', timeout: 5000 });
-			} else {
-				await this.primaryTextInput.waitFor({ state: 'visible', timeout: 5000 });
-			}
-			await this.preview.waitForReady();
-			return;
-		}
-		
-		// Switch to the desired mode
+		// Simplified - always click the mode button to ensure we're in the right state
 		if (mode === 'fastener') {
 			await this.fastenerModeButton.click();
 			// In fastener mode, wait for thread size button to be visible
-			await this.threadSizeButton.waitFor({ state: 'visible', timeout: 5000 });
+			await this.threadSizeButton.waitFor({ state: 'visible', timeout: 10000 });
 		} else {
 			await this.generalItemModeButton.click();
 			// In general mode, wait for primary text input to be visible
-			await this.primaryTextInput.waitFor({ state: 'visible', timeout: 5000 });
+			await this.primaryTextInput.waitFor({ state: 'visible', timeout: 10000 });
 		}
+		// Give UI time to update
+		await this.page.waitForTimeout(200);
 		await this.preview.waitForReady();
 	}
 

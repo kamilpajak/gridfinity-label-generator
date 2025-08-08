@@ -134,6 +134,8 @@ test.describe('Printable Area Boundaries', () => {
 		// 16. Test extreme combinations
 		// Small label with all features enabled
 		await labelPage.selectLabelSize('9mm');
+		// Ensure we're in General Item mode to use text inputs
+		await labelPage.selectMode('general');
 		await labelPage.fillPrimaryText('VERYLONGTEXT');
 		await labelPage.fillSecondaryText('VERYLONGSECONDARYTEXT');
 		await verifyAfterAction('9mm label with long text');

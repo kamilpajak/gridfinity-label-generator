@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { SingleLabelPage } from './pages/single-mode/SingleLabelPage';
-import { waitForCanvasChange, getCanvasSample, waitForQRCodeRender } from './utils/wait-helpers';
+import { waitForQRCodeRender } from './utils/wait-helpers';
 
 test.describe('QR Code Updates', () => {
 	test('QR code visual should update when URL changes', async ({ page }) => {

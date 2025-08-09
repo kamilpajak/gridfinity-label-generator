@@ -82,12 +82,12 @@ test.describe('Label Generator - Single Mode', () => {
 		expect(await labelPage.preview.isShowingLabel()).toBe(true);
 	});
 
-	test('should toggle hardware image visibility', async () => {
-		// Switch to General Item mode and add some content
-		await labelPage.selectLabelMode('General Item');
-		await labelPage.fillPrimaryText('Test');
-		
-		// Check initial state (should be checked)
+	test('should toggle hardware image visibility in Fastener mode', async () => {
+		// Ensure we are in Fastener mode where the switch should be enabled
+		await labelPage.selectLabelMode('Fastener');
+
+		// Check initial state (should be checked and enabled)
+		await expect(labelPage.hardwareImageSwitch).toBeEnabled();
 		expect(await labelPage.isHardwareImageEnabled()).toBe(true);
 
 		// Toggle off
@@ -201,5 +201,18 @@ test.describe('Label Generator - Single Mode', () => {
 
 		const download = await labelPage.exportSection.exportLabels();
 		expect(labelPage.exportSection.verifyDownloadFilename(download, 'single')).toBe(true);
+	});
+
+	test('should disable hardware-related switches in General Item mode', async () => {
+		// Initially in Fastener mode, switches should be enabled
+		await expect(labelPage.hardwareImageSwitch).toBeEnabled();
+		await expect(labelPage.standardReferenceSwitch).toBeEnabled();
+
+		// Switch to General Item mode
+		await labelPage.selectLabelMode('General Item');
+
+		// In General Item mode, hardware-related switches should be disabled
+		await expect(labelPage.hardwareImageSwitch).toBeDisabled();
+		await expect(labelPage.standardReferenceSwitch).toBeDisabled();
 	});
 });

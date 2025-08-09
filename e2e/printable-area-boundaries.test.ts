@@ -145,6 +145,8 @@ test.describe('Printable Area Boundaries', () => {
 
 		// Large label with all features
 		await labelPage.selectLabelSize('12mm');
+		// Switch back to fastener mode to enable hardware-related options
+		await labelPage.selectMode('fastener');
 		if (!(await labelPage.isHardwareImageEnabled())) {
 			await labelPage.toggleHardwareImage();
 		}
@@ -228,7 +230,6 @@ test.describe('Printable Area Boundaries', () => {
 		// Rapidly change multiple settings
 		for (let i = 0; i < 5; i++) {
 			await labelPage.fillPrimaryText(`M${i * 2}x${i * 10}`);
-			await labelPage.toggleHardwareImage();
 			await labelPage.toggleQRCode();
 
 			isWithinBounds = await labelPage.preview.verifyContentWithinPrintableArea();

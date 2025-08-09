@@ -1,6 +1,6 @@
 import { type Page } from '@playwright/test';
 import { BaseCanvas } from '../components/BaseCanvas';
-import { waitForDataAttribute, waitForCanvasStable } from '../../utils/wait-helpers';
+import { waitForCanvasStable } from '../../utils/wait-helpers';
 
 /**
  * Single label preview component

@@ -32,6 +32,7 @@ export class SingleLabelPage extends BasePage {
 	// Toggle switches
 	readonly hardwareImageSwitch: Locator;
 	readonly qrCodeSwitch: Locator;
+	readonly standardReferenceSwitch: Locator;
 
 	// QR Code input
 	readonly qrCodeUrlInput: Locator;
@@ -74,6 +75,7 @@ export class SingleLabelPage extends BasePage {
 		// Switches - use data-testid for reliability
 		this.hardwareImageSwitch = page.getByTestId('hardware-image-switch');
 		this.qrCodeSwitch = page.getByTestId('qr-code-switch');
+		this.standardReferenceSwitch = page.getByTestId('standard-reference-switch');
 
 		// QR URL input - use data-testid for stability
 		this.qrCodeUrlInput = page.getByTestId('qr-code-url-input');
@@ -99,8 +101,8 @@ export class SingleLabelPage extends BasePage {
 		await this.page.waitForLoadState('networkidle');
 		// Wait for critical elements to be visible and ready
 		await this.page.waitForSelector('[data-testid="label-mode-toggle"]', { state: 'visible' });
-		// Small delay to ensure event handlers are attached after hydration
-		await this.page.waitForTimeout(200);
+		// Wait for the main toggle to be enabled, ensuring hydration is complete
+		await expect(this.fastenerModeButton).toBeEnabled();
 	}
 
 	// Label size methods
@@ -146,16 +148,12 @@ export class SingleLabelPage extends BasePage {
 
 	async fillPrimaryText(text: string) {
 		await this.primaryTextInput.fill(text);
-		// Give a moment for state to update
-		await this.page.waitForTimeout(100);
 		// Now wait for render (handles both canvas and placeholder states)
 		await this.preview.waitForLabelRender();
 	}
 
 	async fillSecondaryText(text: string) {
 		await this.secondaryTextInput.fill(text);
-		// Give a moment for state to update
-		await this.page.waitForTimeout(100);
 		// Now wait for render (handles both canvas and placeholder states)
 		await this.preview.waitForLabelRender();
 	}
@@ -172,9 +170,8 @@ export class SingleLabelPage extends BasePage {
 	async selectHardware(searchTerm: string) {
 		await this.hardwareSelectButton.click();
 		await this.hardwareSearchInput.fill(searchTerm);
-		// Command component items use data-slot attribute in shadcn-svelte
 		// Wait for search results to appear
-		await this.page.waitForTimeout(500); // Give time for search to filter
+		await this.page.locator('[data-slot="command-item"]').first().waitFor({ state: 'visible' });
 		// Click on the first matching item in the Command dropdown
 		await this.page.locator('[data-slot="command-item"]').first().click();
 		await this.preview.waitForLabelRender();
@@ -258,8 +255,7 @@ export class SingleLabelPage extends BasePage {
 			// In general mode, wait for primary text input to be visible
 			await this.primaryTextInput.waitFor({ state: 'visible', timeout: 10000 });
 		}
-		// Give UI time to update
-		await this.page.waitForTimeout(200);
+		// Give UI time to update by waiting for the preview to be ready
 		await this.preview.waitForReady();
 	}
 

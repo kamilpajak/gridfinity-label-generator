@@ -113,7 +113,7 @@ export class BaseCanvas {
 		}
 
 		return await this.page.evaluate(
-			({ labelW, labelH }) => {
+			({ labelW }) => {
 				const canvas = document.querySelector('canvas');
 				if (!canvas) return true; // No canvas = no content outside boundaries
 
@@ -174,24 +174,20 @@ export class BaseCanvas {
 
 				const { width, height } = canvas;
 
-				// Scan the canvas to find content bounds
-				let contentFound = false;
-
 				// Check areas outside the content bounds
 				// Left area (before content starts)
 				if (contentBounds.left > 0) {
 					const leftAreaData = ctx.getImageData(0, 0, contentBounds.left, height);
 					const data = leftAreaData.data;
 					for (let i = 0; i < data.length; i += 4) {
-						if (hasContent(data[i], data[i + 1], data[i + 2], data[i + 3])) {
-							// Skip pixels that are part of the gray guideline
-							const x = (i / 4) % contentBounds.left;
-							const y = Math.floor(i / 4 / contentBounds.left);
-							// Check if this is near the boundary line (within 1 pixel)
-							if (Math.abs(x - (contentBounds.left - 1)) > 1) {
-								return false; // Found content in left margin
+													if (hasContent(data[i], data[i + 1], data[i + 2], data[i + 3])) {
+								// Skip pixels that are part of the gray guideline
+								const x = (i / 4) % contentBounds.left;
+								// Check if this is near the boundary line (within 1 pixel)
+								if (Math.abs(x - (contentBounds.left - 1)) > 1) {
+									return false; // Found content in left margin
+								}
 							}
-						}
 					}
 				}
 

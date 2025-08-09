@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderLabelToCanvas, clearRenderCaches } from './label-renderer';
 import type { SolverOutput } from './label-constraint-solver';
-import type { ISODINStandard } from '$lib/data/standards';
 
 // Mock canvas context
 const mockContext = {

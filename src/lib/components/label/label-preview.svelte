@@ -128,9 +128,6 @@
 	// Render to canvas whenever dependencies change
 	$effect(() => {
 		if (!canvasRef || !container || !layout) return;
-		
-		// Explicitly track qrCodeUrl to trigger re-render when QR URL changes
-		qrCodeUrl;
 
 		// Cancel any previous render
 		if (renderController) {

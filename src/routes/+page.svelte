@@ -122,7 +122,10 @@
 
 	// Disable QR Code for 9mm labels
 	const qrCodeDisabled = $derived(labelHeight === '9');
-	const hardwareImageDisabled = $derived(labelHeight === '9');
+
+	// Disable hardware-related options for 9mm labels or in general item mode
+	const hardwareImageDisabled = $derived(labelHeight === '9' || labelMode === 'general');
+	const standardReferenceDisabled = $derived(labelMode === 'general');
 
 	// Reset QR Code and Hardware Image when switching to 9mm
 	$effect(() => {
@@ -367,9 +370,17 @@
 							<div class="flex items-center justify-between space-x-2">
 								<div class="space-y-0.5">
 									<div class="font-medium">Standard Reference</div>
-									<div class="text-sm text-muted-foreground">Display standard designation</div>
+									<div class="text-sm text-muted-foreground">
+										{standardReferenceDisabled
+											? 'Not available for General items'
+											: 'Display standard designation'}
+									</div>
 								</div>
-								<Switch bind:checked={showStandard} data-testid="standard-reference-switch" />
+								<Switch
+									bind:checked={showStandard}
+									disabled={standardReferenceDisabled}
+									data-testid="standard-reference-switch"
+								/>
 							</div>
 
 							<div class="flex items-center justify-between space-x-2">
@@ -377,7 +388,9 @@
 									<div class="font-medium">Hardware Image</div>
 									<div class="text-sm text-muted-foreground">
 										{hardwareImageDisabled
-											? 'Not available for 9mm labels'
+											? labelHeight === '9'
+												? 'Not available for 9mm labels'
+												: 'Not available for General items'
 											: 'Show fastener type icon'}
 									</div>
 								</div>

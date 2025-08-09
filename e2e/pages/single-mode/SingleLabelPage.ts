@@ -91,6 +91,18 @@ export class SingleLabelPage extends BasePage {
 		this.generalItemModeButton = page.getByTestId('mode-general');
 	}
 
+	// Override goto to ensure page is fully ready
+	async goto() {
+		await this.page.goto('/');
+		// Wait for page to be fully loaded
+		await this.page.waitForLoadState('domcontentloaded');
+		await this.page.waitForLoadState('networkidle');
+		// Wait for critical elements to be visible and ready
+		await this.page.waitForSelector('[data-testid="label-mode-toggle"]', { state: 'visible' });
+		// Small delay to ensure event handlers are attached after hydration
+		await this.page.waitForTimeout(200);
+	}
+
 	// Label size methods
 	async selectLabelSize(size: '9mm' | '12mm') {
 		const button = size === '9mm' ? this.labelSize9mm : this.labelSize12mm;

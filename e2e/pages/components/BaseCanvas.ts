@@ -115,141 +115,62 @@ export class BaseCanvas {
 		return await this.page.evaluate(
 			({ labelW }) => {
 				const canvas = document.querySelector('canvas');
-				if (!canvas) return true; // No canvas = no content outside boundaries
+				if (!canvas) return true;
 
 				const ctx = canvas.getContext('2d');
 				if (!ctx) return false;
 
-				// Calculate scale based on canvas size
+				// Define the printable area boundaries
 				const scale = canvas.width / labelW;
-
-				// Check if this is preview mode (with visual margins)
-				// In preview mode, the coordinate system is translated by (2mm, 1mm)
-				const isPreviewMode = true; // Preview always has showMargins: true
-				const translateOffset = isPreviewMode
-					? {
-							x: Math.round(2 * scale), // 2mm translate
-							y: Math.round(1 * scale) // 1mm translate
-						}
-					: { x: 0, y: 0 };
-
-				// Define actual content boundaries (accounting for translate)
-				const contentBounds = {
-					left: translateOffset.x,
-					right: canvas.width - translateOffset.x,
-					top: translateOffset.y,
-					bottom: canvas.height - translateOffset.y
+				const printableArea = {
+					left: Math.round(2 * scale),
+					top: Math.round(1 * scale),
+					right: canvas.width - Math.round(2 * scale),
+					bottom: canvas.height - Math.round(1 * scale)
 				};
 
-				// Helper function to check if a pixel is white or gray guideline
-				function isPixelAllowed(r: number, g: number, b: number, a: number): boolean {
-					// White background
-					if (r === 255 && g === 255 && b === 255) return true;
-
-					// Gray guideline (#f3f4f6)
-					if (r === 243 && g === 244 && b === 246) return true;
-
-					// Transparent
-					if (a === 0) return true;
-
-					// Allow slight variations due to anti-aliasing (tolerance of 5)
-					const tolerance = 5;
-					const isNearWhite =
-						Math.abs(r - 255) <= tolerance &&
-						Math.abs(g - 255) <= tolerance &&
-						Math.abs(b - 255) <= tolerance;
-
-					const isNearGray =
-						Math.abs(r - 243) <= tolerance &&
-						Math.abs(g - 244) <= tolerance &&
-						Math.abs(b - 246) <= tolerance;
-
-					return isNearWhite || isNearGray;
+				// Helper to check if a pixel has content (is not white or a guideline)
+				function hasContent(r, g, b, a) {
+					if (a < 50) return false; // Mostly transparent is not content
+					if (r > 250 && g > 250 && b > 250) return false; // White background
+					if (r === 243 && g === 244 && b === 246) return false; // Gray guideline
+					return true;
 				}
 
-				// Check if a pixel contains content (not background/guideline)
-				function hasContent(r: number, g: number, b: number, a: number): boolean {
-					return !isPixelAllowed(r, g, b, a);
-				}
+				const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+				const data = imageData.data;
+				let minX = canvas.width,
+					minY = canvas.height,
+					maxX = -1,
+					maxY = -1;
 
-				const { width, height } = canvas;
-
-				// Check areas outside the content bounds
-				// Left area (before content starts)
-				if (contentBounds.left > 0) {
-					const leftAreaData = ctx.getImageData(0, 0, contentBounds.left, height);
-					const data = leftAreaData.data;
-					for (let i = 0; i < data.length; i += 4) {
-													if (hasContent(data[i], data[i + 1], data[i + 2], data[i + 3])) {
-								// Skip pixels that are part of the gray guideline
-								const x = (i / 4) % contentBounds.left;
-								// Check if this is near the boundary line (within 1 pixel)
-								if (Math.abs(x - (contentBounds.left - 1)) > 1) {
-									return false; // Found content in left margin
-								}
-							}
-					}
-				}
-
-				// Right area (after content ends)
-				if (contentBounds.right < width) {
-					const rightAreaData = ctx.getImageData(
-						contentBounds.right,
-						0,
-						width - contentBounds.right,
-						height
-					);
-					const data = rightAreaData.data;
-					for (let i = 0; i < data.length; i += 4) {
+				// Find the bounding box of the content
+				for (let y = 0; y < canvas.height; y++) {
+					for (let x = 0; x < canvas.width; x++) {
+						const i = (y * canvas.width + x) * 4;
 						if (hasContent(data[i], data[i + 1], data[i + 2], data[i + 3])) {
-							// Skip pixels that are part of the gray guideline
-							const x = (i / 4) % (width - contentBounds.right);
-							// Check if this is near the boundary line (within 1 pixel)
-							if (x > 1) {
-								return false; // Found content in right margin
-							}
+							if (x < minX) minX = x;
+							if (x > maxX) maxX = x;
+							if (y < minY) minY = y;
+							if (y > maxY) maxY = y;
 						}
 					}
 				}
 
-				// Top area (before content starts)
-				if (contentBounds.top > 0) {
-					const topAreaData = ctx.getImageData(0, 0, width, contentBounds.top);
-					const data = topAreaData.data;
-					for (let i = 0; i < data.length; i += 4) {
-						if (hasContent(data[i], data[i + 1], data[i + 2], data[i + 3])) {
-							// Skip pixels that are part of the gray guideline
-							const y = Math.floor(i / 4 / width);
-							// Check if this is near the boundary line (within 1 pixel)
-							if (Math.abs(y - (contentBounds.top - 1)) > 1) {
-								return false; // Found content in top margin
-							}
-						}
-					}
+				// If no content is found, the boundaries are not violated
+				if (maxX === -1) {
+					return true;
 				}
 
-				// Bottom area (after content ends)
-				if (contentBounds.bottom < height) {
-					const bottomAreaData = ctx.getImageData(
-						0,
-						contentBounds.bottom,
-						width,
-						height - contentBounds.bottom
-					);
-					const data = bottomAreaData.data;
-					for (let i = 0; i < data.length; i += 4) {
-						if (hasContent(data[i], data[i + 1], data[i + 2], data[i + 3])) {
-							// Skip pixels that are part of the gray guideline
-							const y = Math.floor(i / 4 / width);
-							// Check if this is near the boundary line (within 1 pixel)
-							if (y > 1) {
-								return false; // Found content in bottom margin
-							}
-						}
-					}
-				}
-
-				return true; // All margins are clean
+				// Check if the content's bounding box is within the printable area
+				// Add a small tolerance (e.g., 1 pixel) for anti-aliasing
+				const tolerance = 1;
+				return (
+					minX >= printableArea.left - tolerance &&
+					maxX <= printableArea.right + tolerance &&
+					minY >= printableArea.top - tolerance &&
+					maxY <= printableArea.bottom + tolerance
+				);
 			},
 			{ labelW: labelWidth, labelH: labelHeight }
 		);

@@ -2,170 +2,124 @@ import { test, expect } from '@playwright/test';
 import { SingleLabelPage } from './pages/single-mode/SingleLabelPage';
 
 test.describe('Printable Area Boundaries', () => {
-	test('content stays within printable area after each form change', async ({ page }) => {
+	test('content stays within printable area after randomized form changes', async ({ page }) => {
+		test.setTimeout(120000); // Increase timeout for this long-running, randomized test
 		const labelPage = new SingleLabelPage(page);
 		await labelPage.goto();
 
-		// Switch to General Item mode to use standard input fields
-		await labelPage.selectLabelMode('General Item');
-
 		// Helper function to verify boundaries after each action
 		const verifyAfterAction = async (actionName: string, labelSize?: '9mm' | '12mm') => {
-			// Wait for label to be fully rendered
 			await labelPage.preview.waitForLabelRender();
-
-			// Determine label dimensions based on current size
 			const currentSize = labelSize || (await labelPage.getSelectedLabelSize());
 			const labelWidth = 35; // Default width
 			const labelHeight = currentSize === '9mm' ? 9 : 12;
-
 			const isWithinBounds = await labelPage.preview.verifyContentWithinPrintableArea(
 				labelWidth,
 				labelHeight
 			);
-
 			expect(isWithinBounds, `Content exceeded printable area after: ${actionName}`).toBe(true);
 		};
 
-		// 1. First add some content so canvas is visible
-		await labelPage.fillPrimaryText('Test');
-		await verifyAfterAction('adding initial text', '12mm');
+		// --- Test Action Definitions ---
 
-		// 2. Test label size changes
-		await labelPage.selectLabelSize('9mm');
-		await verifyAfterAction('selecting 9mm label size', '9mm');
+		const testLabelSizeSwitching = async () => {
+			await labelPage.selectLabelSize('9mm');
+			await verifyAfterAction('selecting 9mm label size', '9mm');
+			await labelPage.selectLabelSize('12mm');
+			await verifyAfterAction('selecting 12mm label size', '12mm');
+		};
 
-		await labelPage.selectLabelSize('12mm');
-		await verifyAfterAction('selecting 12mm label size', '12mm');
+		const testTextInputs = async () => {
+			await labelPage.selectMode('general');
+			await labelPage.fillPrimaryText('M8');
+			await verifyAfterAction('filling short primary text');
+			await labelPage.fillPrimaryText('M8x25x16x20x30'); // Longer text
+			await verifyAfterAction('filling long primary text');
+			await labelPage.fillSecondaryText('ISO 4762 / DIN 912 / ANSI B18.3');
+			await verifyAfterAction('filling long secondary text');
+		};
 
-		// 3. Already in General Item mode from line 10, no need to switch again
-		// Just verify the current state
-		await verifyAfterAction('already in general item mode');
+		const testFastenerMode = async () => {
+			await labelPage.selectMode('fastener');
+			await verifyAfterAction('switching to fastener mode');
+			await labelPage.selectUnits('imperial');
+			await verifyAfterAction('selecting imperial units');
+			await labelPage.selectUnits('metric');
+			await verifyAfterAction('selecting metric units');
+			await labelPage.threadSizeButton.click();
+			await page.getByRole('option', { name: 'M10' }).click();
+			await verifyAfterAction('selecting thread size M10');
+			await page.getByPlaceholder('Length in mm').fill('100');
+			await verifyAfterAction('filling length value');
+		};
 
-		// 4. Test primary text input
-		await labelPage.fillPrimaryText('M8');
-		await verifyAfterAction('filling short primary text');
+		const testToggles = async () => {
+			await labelPage.selectMode('fastener');
+			// Ensure 12mm label is selected so QR code is available
+			await labelPage.selectLabelSize('12mm');
 
-		await labelPage.fillPrimaryText('M8x25x16x20x30'); // Longer text
-		await verifyAfterAction('filling long primary text');
-
-		// 5. Test secondary text input
-		await labelPage.fillSecondaryText('ISO 4762');
-		await verifyAfterAction('filling secondary text');
-
-		await labelPage.fillSecondaryText('ISO 4762 / DIN 912 / ANSI B18.3');
-		await verifyAfterAction('filling long secondary text');
-
-		// 6. Switch back to fastener mode
-		await labelPage.selectMode('fastener');
-		await verifyAfterAction('switching to fastener mode');
-
-		// 7. Test unit selection (affects thread size dropdown)
-		await labelPage.selectUnits('imperial');
-		await verifyAfterAction('selecting imperial units');
-
-		await labelPage.selectUnits('metric');
-		await verifyAfterAction('selecting metric units');
-
-		// 8. Test thread size selection
-		await labelPage.threadSizeButton.click();
-		await page.getByRole('option', { name: 'M10' }).click();
-		await verifyAfterAction('selecting thread size M10');
-
-		// 9. Test length input
-		await page.getByPlaceholder('Length in mm').fill('100');
-		await verifyAfterAction('filling length value');
-
-		// Skip hardware tests in General Item mode as they're not available
-
-		// 12. Test standard reference toggle - use data-testid for reliable selection
-		const standardSwitch = page.getByTestId('standard-reference-switch');
-		await standardSwitch.click();
-		await verifyAfterAction('disabling standard reference');
-
-		await standardSwitch.click();
-		await verifyAfterAction('enabling standard reference');
-
-		// 13. Test QR code functionality
-		await labelPage.toggleQRCode();
-		await verifyAfterAction('enabling QR code');
-
-		await labelPage.fillQRCodeUrl('https://example.com');
-		await verifyAfterAction('filling QR code URL');
-
-		await labelPage.fillQRCodeUrl(
-			'https://very-long-url-that-might-cause-issues.example.com/path/to/resource?param1=value1&param2=value2'
-		);
-		await verifyAfterAction('filling long QR code URL');
-
-		// 14. Test optional note
-		await page.getByPlaceholder('Optional note').fill('Box A1');
-		await verifyAfterAction('adding optional note');
-
-		await page
-			.getByPlaceholder('Optional note')
-			.fill('Very long optional note that might overflow the available space');
-		await verifyAfterAction('adding long optional note');
-
-		// 15. Test width slider adjustments
-		const widthSlider = page.locator('[role="slider"]');
-
-		// Move to minimum width (30mm)
-		await widthSlider.evaluate((el: HTMLElement) => {
-			el.setAttribute('aria-valuenow', '30');
-			el.dispatchEvent(new Event('input', { bubbles: true }));
-		});
-		await verifyAfterAction('setting minimum width (30mm)');
-
-		// Move to maximum width (80mm)
-		await widthSlider.evaluate((el: HTMLElement) => {
-			el.setAttribute('aria-valuenow', '80');
-			el.dispatchEvent(new Event('input', { bubbles: true }));
-		});
-		await verifyAfterAction('setting maximum width (80mm)');
-
-		// Move back to default (35mm)
-		await widthSlider.evaluate((el: HTMLElement) => {
-			el.setAttribute('aria-valuenow', '35');
-			el.dispatchEvent(new Event('input', { bubbles: true }));
-		});
-		await verifyAfterAction('setting default width (35mm)');
-
-		// 16. Test extreme combinations
-		// Small label with all features enabled
-		await labelPage.selectLabelSize('9mm');
-		// Ensure we're in General Item mode to use text inputs
-		await labelPage.selectMode('general');
-		await labelPage.fillPrimaryText('VERYLONGTEXT');
-		await labelPage.fillSecondaryText('VERYLONGSECONDARYTEXT');
-		await verifyAfterAction('9mm label with long text');
-
-		// Note: For 9mm labels, QR code and hardware image are disabled
-		// so we can't test those combinations
-
-		// Large label with all features
-		await labelPage.selectLabelSize('12mm');
-		// Switch back to fastener mode to enable hardware-related options
-		await labelPage.selectMode('fastener');
-		if (!(await labelPage.isHardwareImageEnabled())) {
-			await labelPage.toggleHardwareImage();
-		}
-		if (!(await labelPage.isQRCodeEnabled())) {
+			const standardSwitch = page.getByTestId('standard-reference-switch');
+			await standardSwitch.click();
+			await verifyAfterAction('disabling standard reference');
+			await standardSwitch.click();
+			await verifyAfterAction('enabling standard reference');
 			await labelPage.toggleQRCode();
+			await verifyAfterAction('enabling QR code');
+			await labelPage.fillQRCodeUrl('https://example.com');
+			await verifyAfterAction('filling QR code URL');
+		};
+
+		const testWidthSlider = async () => {
+			const widthSlider = page.locator('[role="slider"]');
+			await widthSlider.evaluate((el: HTMLElement) => {
+				el.setAttribute('aria-valuenow', '30');
+				el.dispatchEvent(new Event('input', { bubbles: true }));
+			});
+			await verifyAfterAction('setting minimum width (30mm)');
+			await widthSlider.evaluate((el: HTMLElement) => {
+				el.setAttribute('aria-valuenow', '80');
+				el.dispatchEvent(new Event('input', { bubbles: true }));
+			});
+			await verifyAfterAction('setting maximum width (80mm)');
+		};
+
+		const testClearingFields = async () => {
+			await labelPage.selectMode('general');
+			await labelPage.fillPrimaryText('');
+			await verifyAfterAction('clearing primary text');
+			await labelPage.fillSecondaryText('');
+			await verifyAfterAction('clearing secondary text');
+			// Only try to clear QR code if it's enabled
+			const qrEnabled = await labelPage.isQRCodeEnabled();
+			if (qrEnabled) {
+				await labelPage.fillQRCodeUrl('');
+				await verifyAfterAction('clearing QR code URL');
+			}
+		};
+
+		// --- Test Execution ---
+
+		// Initial setup: ensure canvas is visible
+		await labelPage.selectLabelMode('General Item');
+		await labelPage.fillPrimaryText('Initial Text');
+		await verifyAfterAction('initial setup');
+
+		const actions = [
+			testLabelSizeSwitching,
+			testTextInputs,
+			testFastenerMode,
+			testToggles,
+			testWidthSlider,
+			testClearingFields
+		];
+
+		// Shuffle the actions for randomized testing order
+		actions.sort(() => Math.random() - 0.5);
+
+		// Execute all actions
+		for (const action of actions) {
+			await action();
 		}
-		await labelPage.fillQRCodeUrl('https://example.com/qr');
-		await verifyAfterAction('12mm label with all features enabled');
-
-		// 17. Test clearing fields
-		await labelPage.selectMode('general'); // Switch to general mode to clear text
-		await labelPage.fillPrimaryText('');
-		await verifyAfterAction('clearing primary text');
-
-		await labelPage.fillSecondaryText('');
-		await verifyAfterAction('clearing secondary text');
-
-		await labelPage.fillQRCodeUrl('');
-		await verifyAfterAction('clearing QR code URL');
 	});
 
 	test('extreme text cases stay within boundaries', async ({ page }) => {

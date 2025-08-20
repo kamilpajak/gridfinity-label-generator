@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatDesignations, formatPrimaryDesignation, type ISODINStandard } from './standards';
+import { formatDesignations, formatPrimaryDesignation, type ISODINStandard, standards } from './standards';
 
 describe('Standards formatting functions', () => {
 	describe('formatDesignations', () => {
@@ -45,7 +45,7 @@ describe('Standards formatting functions', () => {
 		it('should return only the primary system designation', () => {
 			const standard: ISODINStandard = {
 				id: 'test1',
-				primarySystem: 'ISO',
+				primarySystem: 'DIN',
 				description: 'Test standard',
 				designations: [
 					{ system: 'ISO', code: '4762' },
@@ -54,7 +54,7 @@ describe('Standards formatting functions', () => {
 				]
 			};
 
-			expect(formatPrimaryDesignation(standard)).toBe('ISO 4762');
+			expect(formatPrimaryDesignation(standard)).toBe('DIN 912');
 		});
 
 		it('should return DIN when primarySystem is DIN', () => {
@@ -120,6 +120,31 @@ describe('Standards formatting functions', () => {
 
 			// Should fallback to first available
 			expect(formatPrimaryDesignation(standard)).toBe('ANSI B18.3');
+		});
+	});
+
+	describe('Real data verification', () => {
+		it('should prefer DIN for ISO 4762 standard', () => {
+			const iso4762 = standards.find(s => s.id === 'iso4762');
+			expect(iso4762).toBeDefined();
+			expect(iso4762?.primarySystem).toBe('DIN');
+			expect(formatPrimaryDesignation(iso4762!)).toBe('DIN 912');
+		});
+
+		it('should show DIN as primary for standards with DIN cross-reference', () => {
+			// Check a few standards that should have DIN as primary
+			const standardsWithDIN = standards.filter(s => 
+				s.designations.some(d => d.system === 'DIN') && 
+				s.designations.some(d => d.system === 'ISO')
+			);
+			
+			// All standards with both ISO and DIN should prefer DIN as primary
+			standardsWithDIN.forEach(std => {
+				expect(std.primarySystem).toBe('DIN');
+			});
+			
+			// Should have at least some standards with DIN cross-references
+			expect(standardsWithDIN.length).toBeGreaterThan(0);
 		});
 	});
 });

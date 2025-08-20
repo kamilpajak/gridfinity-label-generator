@@ -150,9 +150,11 @@ async function buildStandards() {
 		}
 
 		// Build standard object
+		// Prefer DIN as primarySystem if DIN designation exists
+		const hasDIN = designations.some(d => d.system === 'DIN');
 		const standard = {
 			id: std.id,
-			primarySystem: 'ISO',
+			primarySystem: hasDIN ? 'DIN' : 'ISO',
 			description: std.title,
 			designations
 		};

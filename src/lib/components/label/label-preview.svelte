@@ -65,7 +65,19 @@
 	const fullSecondaryText = $derived(
 		(secondaryText ||
 			(showStandard && standard
-				? standard.designations.map((d) => `${d.system} ${d.code}`).join(' / ')
+				? (() => {
+						// Use only the primary designation for the label
+						const primaryDesignation = standard.designations.find(
+							(d) => d.system === standard.primarySystem
+						);
+						if (primaryDesignation) {
+							return `${primaryDesignation.system} ${primaryDesignation.code}`;
+						}
+						// Fallback to first designation if primary not found
+						return standard.designations.length > 0
+							? `${standard.designations[0].system} ${standard.designations[0].code}`
+							: '';
+				  })()
 				: '')) + (optionalNote ? ` ${optionalNote}` : '')
 	);
 

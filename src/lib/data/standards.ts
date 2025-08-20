@@ -96,3 +96,26 @@ export function searchStandards(query: string): ISODINStandard[] {
 export function formatDesignations(standard: ISODINStandard): string {
 	return standard.designations.map((d) => `${d.system} ${d.code}`).join(' / ');
 }
+
+/**
+ * Get a formatted string of only the primary designation for a standard
+ * @param standard - The standard to format
+ * @returns Formatted string like "ISO 4762" or "DIN 912" based on primarySystem
+ */
+export function formatPrimaryDesignation(standard: ISODINStandard): string {
+	// Find the designation matching the primary system
+	const primaryDesignation = standard.designations.find(
+		(d) => d.system === standard.primarySystem
+	);
+
+	if (primaryDesignation) {
+		return `${primaryDesignation.system} ${primaryDesignation.code}`;
+	}
+
+	// Fallback to first designation if primary not found
+	if (standard.designations.length > 0) {
+		return `${standard.designations[0].system} ${standard.designations[0].code}`;
+	}
+
+	return '';
+}

@@ -160,7 +160,19 @@
 		const fullSecondaryText =
 			(labelSecondaryText ||
 				(showStandard && selectedStandard
-					? selectedStandard.designations.map((d) => `${d.system} ${d.code}`).join(' / ')
+					? (() => {
+							// Use only the primary designation for the label
+							const primaryDesignation = selectedStandard.designations.find(
+								(d) => d.system === selectedStandard.primarySystem
+							);
+							if (primaryDesignation) {
+								return `${primaryDesignation.system} ${primaryDesignation.code}`;
+							}
+							// Fallback to first designation if primary not found
+							return selectedStandard.designations.length > 0
+								? `${selectedStandard.designations[0].system} ${selectedStandard.designations[0].code}`
+								: '';
+					  })()
 					: '')) + (optionalNote ? ` ${optionalNote}` : '');
 
 		console.log('Calling exportCanvasLabelAsPNG with:', {

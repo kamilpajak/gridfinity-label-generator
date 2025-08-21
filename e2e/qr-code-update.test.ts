@@ -28,10 +28,10 @@ test.describe('QR Code Updates', () => {
 
 		// Change to a different URL
 		const secondUrl = 'https://example.com/second/different/url';
-		
+
 		await labelPage.fillQRCodeUrl(secondUrl);
 		await labelPage.preview.waitForLabelRender();
-		
+
 		// Wait for QR code to render with new content
 		await waitForQRCodeRender(page);
 
@@ -68,14 +68,14 @@ test.describe('QR Code Updates', () => {
 
 		// Add some text to show label
 		await labelPage.fillPrimaryText('Test Label');
-		
+
 		// Initially QR code should be disabled
 		await expect(labelPage.qrCodeUrlInput).toBeDisabled();
 
 		// Enable QR code
 		await labelPage.toggleQRCode();
 		await expect(labelPage.qrCodeUrlInput).toBeEnabled();
-		
+
 		// Now fill the URL
 		await labelPage.fillQRCodeUrl('https://example.com');
 		await labelPage.preview.waitForReady();

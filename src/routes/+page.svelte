@@ -12,7 +12,7 @@
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 	import MessageSquareIcon from '@lucide/svelte/icons/message-square';
-	import { standards, formatDesignations } from '$lib/data/standards';
+	import { standards, formatDesignations, HardwareType } from '$lib/data/standards';
 	import LabelPreview from '$lib/components/label/label-preview.svelte';
 	import { formatPrimaryText, formatSecondaryText } from '$lib/utils/label-formatter';
 	import { exportCanvasLabelAsPNG } from '$lib/utils/label-exporter';
@@ -93,12 +93,6 @@
 		}
 	});
 
-	let lengthPlaceholder = $derived(
-		measurementSystem === 'metric'
-			? 'Length in mm (e.g., 10, 25)'
-			: 'Length in inches (e.g., 1/4, 3/8)'
-	);
-
 	const threadSizePlaceholder = 'Select thread size';
 
 	let labelHeight = $state('12');
@@ -110,6 +104,21 @@
 	const standardsWithImages = $derived(standards.filter((s) => s.image));
 
 	const selectedStandard = $derived(standards.find((s) => s.id === selectedStandardId));
+
+	// Disable length input for nuts and washers (they don't have length specification)
+	const lengthDisabled = $derived(
+		selectedStandard?.hardwareType === HardwareType.NUT ||
+			selectedStandard?.hardwareType === HardwareType.WASHER
+	);
+
+	// Dynamic placeholder based on hardware type and measurement system
+	let lengthPlaceholder = $derived(
+		lengthDisabled
+			? 'N/A for this hardware type'
+			: measurementSystem === 'metric'
+				? 'Length in mm (e.g., 10, 25)'
+				: 'Length in inches (e.g., 1/4, 3/8)'
+	);
 
 	function closeStandardsAndFocusTrigger() {
 		standardsOpen = false;
@@ -172,7 +181,7 @@
 							return selectedStandard.designations.length > 0
 								? `${selectedStandard.designations[0].system} ${selectedStandard.designations[0].code}`
 								: '';
-					  })()
+						})()
 					: '')) + (optionalNote ? ` ${optionalNote}` : '');
 
 		console.log('Calling exportCanvasLabelAsPNG with:', {
@@ -245,8 +254,12 @@
 									class="w-full"
 									data-testid="label-mode-toggle"
 								>
-									<ToggleGroupItem value="fastener" class="flex-1" data-testid="mode-fastener">Fastener</ToggleGroupItem>
-									<ToggleGroupItem value="general" class="flex-1" data-testid="mode-general">General Item</ToggleGroupItem>
+									<ToggleGroupItem value="fastener" class="flex-1" data-testid="mode-fastener"
+										>Fastener</ToggleGroupItem
+									>
+									<ToggleGroupItem value="general" class="flex-1" data-testid="mode-general"
+										>General Item</ToggleGroupItem
+									>
 								</ToggleGroup>
 
 								<ToggleGroup
@@ -256,8 +269,12 @@
 									size="default"
 									class="w-full {measurementSystemDisabled ? 'pointer-events-none opacity-50' : ''}"
 								>
-									<ToggleGroupItem value="metric" class="flex-1" data-testid="metric-button">Metric</ToggleGroupItem>
-									<ToggleGroupItem value="imperial" class="flex-1" data-testid="imperial-button">Imperial</ToggleGroupItem>
+									<ToggleGroupItem value="metric" class="flex-1" data-testid="metric-button"
+										>Metric</ToggleGroupItem
+									>
+									<ToggleGroupItem value="imperial" class="flex-1" data-testid="imperial-button"
+										>Imperial</ToggleGroupItem
+									>
 								</ToggleGroup>
 							</div>
 
@@ -265,7 +282,11 @@
 								<div class="mt-4 flex flex-col gap-4 sm:grid sm:grid-cols-2">
 									<div>
 										<Select bind:value={threadSize} type="single">
-											<SelectTrigger id="thread-size" class="w-full" data-testid="thread-size-select">
+											<SelectTrigger
+												id="thread-size"
+												class="w-full"
+												data-testid="thread-size-select"
+											>
 												{threadSize || threadSizePlaceholder}
 											</SelectTrigger>
 											<SelectContent>
@@ -281,6 +302,7 @@
 											bind:value={length}
 											placeholder={lengthPlaceholder}
 											class="w-full"
+											disabled={lengthDisabled}
 											data-testid="length-input"
 										/>
 									</div>
@@ -324,7 +346,10 @@
 										</Popover.Trigger>
 										<Popover.Content class="w-[400px] p-0">
 											<Command.Root>
-												<Command.Input placeholder="Search standards..." />
+												<Command.Input
+													placeholder="Search standards..."
+													data-testid="hardware-search-input"
+												/>
 												<Command.Empty>No standard with image found.</Command.Empty>
 												<Command.Group class="max-h-[300px] overflow-y-auto">
 													{#each standardsWithImages as standard (standard.id)}
@@ -357,7 +382,12 @@
 							{/if}
 
 							<div class="mt-4">
-								<Input bind:value={optionalNote} placeholder="Optional note" class="w-full" data-testid="optional-note-input" />
+								<Input
+									bind:value={optionalNote}
+									placeholder="Optional note"
+									class="w-full"
+									data-testid="optional-note-input"
+								/>
 							</div>
 
 							<div class="mt-4">
@@ -406,7 +436,11 @@
 											: 'Show fastener type icon'}
 									</div>
 								</div>
-								<Switch bind:checked={showHardwareImage} disabled={hardwareImageDisabled} data-testid="hardware-image-switch" />
+								<Switch
+									bind:checked={showHardwareImage}
+									disabled={hardwareImageDisabled}
+									data-testid="hardware-image-switch"
+								/>
 							</div>
 
 							<div class="flex items-center justify-between space-x-2">
@@ -416,7 +450,11 @@
 										{qrCodeDisabled ? 'Not available for 9mm labels' : 'Add scannable code'}
 									</div>
 								</div>
-								<Switch bind:checked={showQRCode} disabled={qrCodeDisabled} data-testid="qr-code-switch" />
+								<Switch
+									bind:checked={showQRCode}
+									disabled={qrCodeDisabled}
+									data-testid="qr-code-switch"
+								/>
 							</div>
 
 							<div class="mt-4 border-t pt-4">

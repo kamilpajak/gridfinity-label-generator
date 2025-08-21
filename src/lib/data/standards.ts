@@ -16,6 +16,19 @@
  */
 
 /**
+ * Hardware type categorization - simplified like McMaster-Carr
+ */
+export enum HardwareType {
+	SCREW = 'screw', // Socket head, countersunk, pan head, etc. - requires length
+	BOLT = 'bolt', // Hex head, carriage, etc. - requires length
+	NUT = 'nut', // Hex, lock, wing, etc. - NO length
+	WASHER = 'washer', // Flat, spring, lock, etc. - NO length
+	PIN = 'pin', // Dowel, cotter, spring, etc. - requires length
+	RIVET = 'rivet', // Blind, solid, etc. - requires length
+	OTHER = 'other' // Everything else - requires length by default
+}
+
+/**
  * Interface defining the structure of an ISO/DIN standard
  */
 export interface ISODINStandard {
@@ -33,6 +46,9 @@ export interface ISODINStandard {
 		system: 'ISO' | 'DIN' | 'ANSI' | 'ASME' | 'PN' | 'GB' | 'JIS';
 		code: string;
 	}>;
+
+	/** Hardware type for categorization */
+	hardwareType?: HardwareType;
 
 	/** Path to visual representation (relative to /static/) */
 	image?: string;
@@ -104,9 +120,7 @@ export function formatDesignations(standard: ISODINStandard): string {
  */
 export function formatPrimaryDesignation(standard: ISODINStandard): string {
 	// Find the designation matching the primary system
-	const primaryDesignation = standard.designations.find(
-		(d) => d.system === standard.primarySystem
-	);
+	const primaryDesignation = standard.designations.find((d) => d.system === standard.primarySystem);
 
 	if (primaryDesignation) {
 		return `${primaryDesignation.system} ${primaryDesignation.code}`;

@@ -55,7 +55,6 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 		throw new Error('Render aborted');
 	}
 
-
 	// Atomic canvas clearing - reset everything at once
 	ctx.save();
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -119,8 +118,7 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 	if (content.showHardwareImage && content.standard?.image && layout.hardwareImage) {
 		// Check if aborted before async operation
 		if (signal?.aborted) throw new Error('Render aborted');
-		
-		
+
 		await drawImage(ctx, {
 			src: content.standard.image,
 			x: layout.hardwareImage.x * scale,
@@ -134,7 +132,7 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 	if (content.showQRCode && content.qrCodeUrl && layout.qrCode) {
 		// Check if aborted before async operation
 		if (signal?.aborted) throw new Error('Render aborted');
-		
+
 		await drawQRCode(ctx, {
 			url: content.qrCodeUrl,
 			x: layout.qrCode.x * scale,
@@ -145,7 +143,6 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 
 	// Restore context
 	ctx.restore();
-
 }
 
 /**

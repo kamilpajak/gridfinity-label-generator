@@ -14,7 +14,7 @@ export async function waitForCanvasStable(
 	const { timeout = 5000, pollInterval = 100, optional = false } = options;
 
 	// First check if canvas exists
-	const canvasExists = await page.locator(selector).count() > 0;
+	const canvasExists = (await page.locator(selector).count()) > 0;
 	if (!canvasExists && optional) {
 		return; // Canvas doesn't exist and that's OK
 	}
@@ -70,10 +70,7 @@ export async function waitForCanvasStable(
  * @param page - Playwright page object
  * @param options - Wait options
  */
-export async function waitForImagesLoaded(
-	page: Page,
-	options: { timeout?: number } = {}
-) {
+export async function waitForImagesLoaded(page: Page, options: { timeout?: number } = {}) {
 	const { timeout = 5000 } = options;
 
 	await page.waitForFunction(
@@ -90,10 +87,7 @@ export async function waitForImagesLoaded(
  * @param page - Playwright page object
  * @param options - Wait options
  */
-export async function waitForNetworkIdle(
-	page: Page,
-	options: { timeout?: number } = {}
-) {
+export async function waitForNetworkIdle(page: Page, options: { timeout?: number } = {}) {
 	await page.waitForLoadState('networkidle', options);
 }
 
@@ -115,7 +109,7 @@ export async function waitForDataAttribute(
 	const { timeout = 5000, optional = false } = options;
 
 	// First check if element exists
-	const elementExists = await page.locator(selector).count() > 0;
+	const elementExists = (await page.locator(selector).count()) > 0;
 	if (!elementExists && optional) {
 		return; // Element doesn't exist and that's OK
 	}
@@ -145,21 +139,23 @@ export async function waitForQRCodeRender(
 	await page.getByTestId('label-preview-canvas').waitFor({ state: 'visible', timeout });
 
 	// Wait for rendering to complete
-	await page.waitForFunction(
-		() => {
-			const canvas = document.querySelector('[data-testid="label-preview-canvas"]');
-			if (!canvas) return false;
-			
-			// Check data attributes to ensure rendering is complete
-			const isLayoutReady = canvas.getAttribute('data-layout-ready') === 'true';
-			const isNotRendering = canvas.getAttribute('data-rendering') === 'false';
-			
-			return isLayoutReady && isNotRendering;
-		},
-		{ timeout: timeout / 2 }
-	).catch(() => {
-		// If data attributes are not available, continue anyway
-	});
+	await page
+		.waitForFunction(
+			() => {
+				const canvas = document.querySelector('[data-testid="label-preview-canvas"]');
+				if (!canvas) return false;
+
+				// Check data attributes to ensure rendering is complete
+				const isLayoutReady = canvas.getAttribute('data-layout-ready') === 'true';
+				const isNotRendering = canvas.getAttribute('data-rendering') === 'false';
+
+				return isLayoutReady && isNotRendering;
+			},
+			{ timeout: timeout / 2 }
+		)
+		.catch(() => {
+			// If data attributes are not available, continue anyway
+		});
 
 	await page.waitForFunction(
 		({ labelWidth }) => {
@@ -173,7 +169,7 @@ export async function waitForQRCodeRender(
 			const scale = canvas.width / labelWidth;
 			const translateOffset = {
 				x: Math.round(2 * scale), // 2mm translate
-				y: Math.round(1 * scale)  // 1mm translate
+				y: Math.round(1 * scale) // 1mm translate
 			};
 
 			// Check QR code area for non-white pixels
@@ -186,7 +182,7 @@ export async function waitForQRCodeRender(
 			// Sample multiple points in QR area (3x3 grid)
 			const samplePoints = [];
 			const step = qrSize / 4;
-			
+
 			for (let i = 1; i <= 3; i++) {
 				for (let j = 1; j <= 3; j++) {
 					samplePoints.push({
@@ -201,7 +197,7 @@ export async function waitForQRCodeRender(
 			for (const point of samplePoints) {
 				const imageData = ctx.getImageData(point.x, point.y, 1, 1);
 				const [r, g, b] = imageData.data;
-				
+
 				// Check if not white (with tolerance)
 				if (r < 250 || g < 250 || b < 250) {
 					nonWhiteCount++;

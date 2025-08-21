@@ -23,7 +23,7 @@ test.describe('Label Generator - Single Mode', () => {
 		// Start with 12mm (default)
 		expect(await labelPage.isLabelSizeSelected('12mm')).toBe(true);
 		expect(await labelPage.isLabelSizeSelected('9mm')).toBe(false);
-		
+
 		// Click on 9mm label size
 		await labelPage.selectLabelSize('9mm');
 
@@ -39,7 +39,7 @@ test.describe('Label Generator - Single Mode', () => {
 		await labelPage.selectLabelSize('12mm');
 		expect(await labelPage.isLabelSizeSelected('12mm')).toBe(true);
 		expect(await labelPage.isLabelSizeSelected('9mm')).toBe(false);
-		
+
 		// Verify QR and hardware image are enabled again for 12mm
 		await expect(labelPage.qrCodeSwitch).toBeEnabled();
 		await expect(labelPage.hardwareImageSwitch).toBeEnabled();
@@ -57,7 +57,7 @@ test.describe('Label Generator - Single Mode', () => {
 	test('should update preview when entering primary text', async () => {
 		// Switch to General Item mode to use text inputs
 		await labelPage.selectLabelMode('General Item');
-		
+
 		// Enter text in primary field
 		await labelPage.fillPrimaryText('M10');
 
@@ -71,7 +71,7 @@ test.describe('Label Generator - Single Mode', () => {
 	test('should update preview when entering secondary text', async () => {
 		// Switch to General Item mode to use text inputs
 		await labelPage.selectLabelMode('General Item');
-		
+
 		// Enter text in secondary field
 		await labelPage.fillSecondaryText('ISO 4762');
 
@@ -120,7 +120,7 @@ test.describe('Label Generator - Single Mode', () => {
 		await labelPage.selectLabelMode('General Item');
 		// Ensure we're using 12mm (default, but be explicit)
 		await labelPage.selectLabelSize('12mm');
-		
+
 		// Fill in some label content
 		await labelPage.fillLabelData('M8', 'ISO 4762');
 
@@ -136,7 +136,7 @@ test.describe('Label Generator - Single Mode', () => {
 		// Hardware selection is only available in Fastener mode
 		// (Fastener mode is the default, but let's be explicit)
 		await labelPage.selectMode('fastener');
-		
+
 		// Select a hardware standard - search for 'ISO' which exists in the standards
 		await labelPage.selectHardware('ISO');
 

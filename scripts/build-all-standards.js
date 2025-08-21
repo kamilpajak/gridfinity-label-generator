@@ -31,6 +31,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import readline from 'readline';
+import { getHardwareType } from './hardware-type-mappings.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -151,12 +152,14 @@ async function buildStandards() {
 
 		// Build standard object
 		// Prefer DIN as primarySystem if DIN designation exists
-		const hasDIN = designations.some(d => d.system === 'DIN');
+		const hasDIN = designations.some((d) => d.system === 'DIN');
 		const standard = {
 			id: std.id,
 			primarySystem: hasDIN ? 'DIN' : 'ISO',
 			description: std.title,
-			designations
+			designations,
+			// Determine hardware type based on designations and description
+			hardwareType: getHardwareType(designations, std.title)
 		};
 
 		// Add optional fields
@@ -176,12 +179,14 @@ async function buildStandards() {
 	// Process DIN-only standards
 	const dinStandards = Object.entries(config.dinOnly).map(([id, dinConfig]) => {
 		const dinNumber = id.replace('din', '');
+		const designations = [{ system: 'DIN', code: dinNumber }];
 
 		return {
 			id,
 			primarySystem: 'DIN',
 			description: dinConfig.description,
-			designations: [{ system: 'DIN', code: dinNumber }],
+			designations,
+			hardwareType: getHardwareType(designations, dinConfig.description),
 			image: `/images/standards/din_${dinNumber}.jpg`
 		};
 	});
@@ -223,7 +228,7 @@ async function buildStandards() {
  * Standards with images: ${standardsWithImages}
  */
 
-import type { ISODINStandard } from './standards';
+import type { ISODINStandard, HardwareType } from './standards';
 
 /**
  * Generated list of fastener standards with cross-references
@@ -235,11 +240,13 @@ export const generatedStandards: ISODINStandard[] = ${JSON.stringify(sortedStand
 		.replace(/"primarySystem":/g, 'primarySystem:')
 		.replace(/"description":/g, 'description:')
 		.replace(/"designations":/g, 'designations:')
+		.replace(/"hardwareType":/g, 'hardwareType:')
 		.replace(/"icsCode":/g, 'icsCode:')
 		.replace(/"reference":/g, 'reference:')
 		.replace(/"scope":/g, 'scope:')
 		.replace(/"image":/g, 'image:')
-		.replace(/"(ISO|DIN|ANSI|PN)":/g, '$1:')} as const;
+		.replace(/"(ISO|DIN|ANSI|PN)":/g, '$1:')
+		.replace(/hardwareType: "(\w+)"/g, 'hardwareType: "$1" as HardwareType')} as const;
 `;
 
 	// Write output file

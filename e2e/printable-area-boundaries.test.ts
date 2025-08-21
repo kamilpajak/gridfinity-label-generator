@@ -3,7 +3,7 @@ import { SingleLabelPage } from './pages/single-mode/SingleLabelPage';
 
 test.describe('Printable Area Boundaries', () => {
 	test('content stays within printable area after randomized form changes', async ({ page }) => {
-		test.setTimeout(120000); // Increase timeout for this long-running, randomized test
+		test.setTimeout(30000); // 30 seconds should be more than enough for this test
 		const labelPage = new SingleLabelPage(page);
 		await labelPage.goto();
 
@@ -142,7 +142,7 @@ test.describe('Printable Area Boundaries', () => {
 			'M8x999999999999999999999999', // Very long number
 			'!@#$%^&*()_+-=[]{}|;\':",./<>?', // Special characters
 			'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ', // Cyrillic
-			'🔩📏📐🔧🔨⚙️🛠️', // Emojis
+			'🔩📏📐🔧🔨⚙️🛠️' // Emojis
 			// Note: Zalgo text removed as it's expected to exceed boundaries due to combining diacritics
 		];
 
@@ -153,7 +153,7 @@ test.describe('Printable Area Boundaries', () => {
 			await labelPage.fillSecondaryText(text);
 			await verifyBounds(`extreme secondary text: ${text.substring(0, 20)}...`);
 		}
-		
+
 		// Test zalgo text separately - it's expected to potentially exceed bounds
 		// due to combining diacritics which extend beyond normal text boundaries
 		const zalgoText = 'M̸̧̺̪̜̮͇̈́̈́8̷̛̣̦͎̈́͋̄̎͘x̴̧̛̰̲̹̮̊̈́̓2̶̢̬̦̮̈́͊̈́5̸̦̈́';

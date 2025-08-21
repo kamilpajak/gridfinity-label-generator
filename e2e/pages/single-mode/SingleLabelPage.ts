@@ -107,24 +107,32 @@ export class SingleLabelPage extends BasePage {
 
 	// Label size methods
 	async selectLabelSize(size: '9mm' | '12mm') {
+		// Check if already selected to avoid unnecessary clicks
+		if (await this.isLabelSizeSelected(size)) {
+			return;
+		}
+		
 		const button = size === '9mm' ? this.labelSize9mm : this.labelSize12mm;
 		await button.click();
-		
+
 		// Wait for the button to be selected (ToggleGroupItem uses data-state)
-		await this.page.waitForFunction(
-			({ buttonText }) => {
-				const button = Array.from(document.querySelectorAll('[data-testid="label-height-toggle"] button'))
-					.find(el => el.textContent?.includes(buttonText));
-				return button?.getAttribute('data-state') === 'on';
-			},
-			{ buttonText: size },
-			{ timeout: 2000 }
-		).catch(() => {
-			// Fallback if data-state is not available
-		});
-		
+		await this.page
+			.waitForFunction(
+				({ buttonText }) => {
+					const button = Array.from(
+						document.querySelectorAll('[data-testid="label-height-toggle"] button')
+					).find((el) => el.textContent?.includes(buttonText));
+					return button?.getAttribute('data-state') === 'on';
+				},
+				{ buttonText: size },
+				{ timeout: 2000 }
+			)
+			.catch(() => {
+				// Fallback if data-state is not available
+			});
+
 		// Give UI time to update
-		await this.page.evaluate(() => new Promise(resolve => requestAnimationFrame(resolve)));
+		await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
 	}
 
 	async isLabelSizeSelected(size: '9mm' | '12mm'): Promise<boolean> {
@@ -169,11 +177,23 @@ export class SingleLabelPage extends BasePage {
 	// Hardware selection methods
 	async selectHardware(searchTerm: string) {
 		await this.hardwareSelectButton.click();
+		await this.hardwareSearchInput.waitFor({ state: 'visible' });
 		await this.hardwareSearchInput.fill(searchTerm);
 		// Wait for search results to appear
 		await this.page.locator('[data-slot="command-item"]').first().waitFor({ state: 'visible' });
 		// Click on the first matching item in the Command dropdown
 		await this.page.locator('[data-slot="command-item"]').first().click();
+		await this.preview.waitForLabelRender();
+	}
+
+	async selectHardwareByName(searchTerm: string, namePattern: RegExp) {
+		await this.hardwareSelectButton.click();
+		await this.hardwareSearchInput.waitFor({ state: 'visible' });
+		await this.hardwareSearchInput.fill(searchTerm);
+		// Wait for search results to appear
+		await this.page.locator('[data-slot="command-item"]').first().waitFor({ state: 'visible' });
+		// Click on the matching item by name pattern
+		await this.page.getByRole('option', { name: namePattern }).first().click();
 		await this.preview.waitForLabelRender();
 	}
 
@@ -194,10 +214,10 @@ export class SingleLabelPage extends BasePage {
 	async toggleQRCode() {
 		// Check the state before clicking
 		const wasEnabledBefore = await this.qrCodeUrlInput.isEnabled().catch(() => false);
-		
+
 		// Use data-testid for reliable selection
 		await this.qrCodeSwitch.click();
-		
+
 		// Wait for the opposite state
 		if (wasEnabledBefore) {
 			// When disabling, the input becomes disabled, not hidden
@@ -241,6 +261,28 @@ export class SingleLabelPage extends BasePage {
 		if (await this.isUnitSelected('metric')) return 'metric';
 		if (await this.isUnitSelected('imperial')) return 'imperial';
 		return null;
+	}
+
+	// Thread size and length methods
+	async selectThreadSize(size: string) {
+		await this.threadSizeButton.click();
+		await this.page.getByRole('option', { name: size }).click();
+	}
+
+	async fillLength(length: string) {
+		await this.lengthInput.fill(length);
+	}
+
+	async getLengthValue(): Promise<string> {
+		return await this.lengthInput.inputValue();
+	}
+
+	async isLengthFieldEnabled(): Promise<boolean> {
+		return await this.lengthInput.isEnabled();
+	}
+
+	async getLengthPlaceholder(): Promise<string | null> {
+		return await this.lengthInput.getAttribute('placeholder');
 	}
 
 	// Mode selection methods

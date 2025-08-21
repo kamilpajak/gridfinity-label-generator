@@ -77,7 +77,7 @@
 						return standard.designations.length > 0
 							? `${standard.designations[0].system} ${standard.designations[0].code}`
 							: '';
-				  })()
+					})()
 				: '')) + (optionalNote ? ` ${optionalNote}` : '')
 	);
 
@@ -98,7 +98,6 @@
 			// Create new controller for this calculation
 			layoutController = new AbortController();
 			const signal = layoutController.signal;
-
 
 			isCalculatingLayout = true;
 			try {
@@ -142,7 +141,8 @@
 		if (!canvasRef || !container || !layout) return;
 
 		// Explicitly track qrCodeUrl to trigger re-render when QR URL changes
-		const _ = qrCodeUrl;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		qrCodeUrl;
 
 		// Cancel any previous render
 		if (renderController) {
@@ -173,7 +173,7 @@
 			const render = async () => {
 				// Additional check for TypeScript
 				if (!canvasRef || !layout) return;
-				
+
 				isRendering = true;
 
 				// Clear canvas immediately to prevent artifacts from aborted renders
@@ -184,7 +184,7 @@
 					ctx.fillStyle = 'white';
 					ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
 				}
-				
+
 				try {
 					// Check if aborted before starting render
 					if (signal?.aborted) {
@@ -208,7 +208,6 @@
 						showMargins: true,
 						signal
 					});
-
 				} catch (error) {
 					// Handle abort and other errors
 					if (error instanceof Error && error.message === 'Render aborted') {

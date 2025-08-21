@@ -88,7 +88,7 @@ export class BaseCanvas {
 		// First check if canvas is visible
 		const isVisible = await this.isVisible().catch(() => false);
 		if (!isVisible) return false;
-		
+
 		// Then check dimensions
 		const dimensions = await this.getDimensions().catch(() => ({ width: 0, height: 0 }));
 		return dimensions.width > 0 && dimensions.height > 0;
@@ -200,27 +200,28 @@ export class BaseCanvas {
 			const scale = canvas.width / width;
 			const translateOffset = {
 				x: Math.round(2 * scale), // 2mm translate
-				y: Math.round(1 * scale)  // 1mm translate
+				y: Math.round(1 * scale) // 1mm translate
 			};
 
 			// QR code is 10x10mm, positioned on the right side
 			const qrSize = Math.round(10 * scale);
 			const margin = Math.round(2 * scale); // 2mm margin
-			
+
 			// QR code should be at right edge minus margin, accounting for translate
 			const qrX = canvas.width - margin - qrSize - translateOffset.x;
 			const qrY = margin + translateOffset.y; // Top edge plus margin
 
 			// Get image data for QR code area
 			const imageData = ctx.getImageData(qrX, qrY, qrSize, qrSize);
-			
+
 			// Convert to simple array for comparison
 			// Sample every 10th pixel to reduce data size
 			const pixels: number[] = [];
-			for (let i = 0; i < imageData.data.length; i += 40) { // Every 10th pixel (4 bytes per pixel)
+			for (let i = 0; i < imageData.data.length; i += 40) {
+				// Every 10th pixel (4 bytes per pixel)
 				pixels.push(imageData.data[i]); // Red channel only
 			}
-			
+
 			return {
 				pixels,
 				qrX,
@@ -270,7 +271,7 @@ export class BaseCanvas {
 			const scale = canvas.width / width;
 			const translateOffset = {
 				x: Math.round(2 * scale), // 2mm translate
-				y: Math.round(1 * scale)  // 1mm translate
+				y: Math.round(1 * scale) // 1mm translate
 			};
 
 			// Check right edge area where QR code should be
@@ -282,7 +283,7 @@ export class BaseCanvas {
 			// Sample multiple points in a 3x3 grid within QR area
 			const samplePoints = [];
 			const step = qrSize / 4; // Sample at 25%, 50%, 75% positions
-			
+
 			for (let i = 1; i <= 3; i++) {
 				for (let j = 1; j <= 3; j++) {
 					const x = Math.round(qrX + step * i);
@@ -296,14 +297,14 @@ export class BaseCanvas {
 			for (const point of samplePoints) {
 				const imageData = ctx.getImageData(point.x, point.y, 1, 1);
 				const [r, g, b] = imageData.data;
-				
+
 				// Consider it non-white if any channel is not 255 (with tolerance)
 				const tolerance = 250; // Allow slight variations
 				if (r < tolerance || g < tolerance || b < tolerance) {
 					nonWhiteCount++;
 				}
 			}
-			
+
 			// If at least 30% of sampled points are non-white, QR code is likely present
 			return nonWhiteCount >= Math.floor(samplePoints.length * 0.3);
 		}, labelWidth);

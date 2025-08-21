@@ -17,7 +17,7 @@ export class SingleLabelPreview extends BaseCanvas {
 	async waitForLabelRender() {
 		// First check if canvas is visible or if we're showing placeholder
 		const canvasCount = await this.canvas.count();
-		
+
 		if (canvasCount === 0) {
 			// No canvas, wait for placeholder to be visible
 			// Use data-testid for stable selection
@@ -30,30 +30,32 @@ export class SingleLabelPreview extends BaseCanvas {
 
 		// Canvas exists, wait for it to be ready
 		await this.waitForReady();
-		
+
 		// Wait for layout calculation to complete
 		await this.canvas.waitFor({
 			state: 'attached',
 			timeout: 5000
 		});
-		
+
 		// Wait for rendering to complete using data attributes
-		await this.page.waitForFunction(
-			() => {
-				const canvas = document.querySelector('[data-testid="label-preview-canvas"]');
-				if (!canvas) return false;
-				
-				// Check if layout is ready and not currently rendering
-				const layoutReady = canvas.getAttribute('data-layout-ready') === 'true';
-				const notRendering = canvas.getAttribute('data-rendering') === 'false';
-				
-				return layoutReady && notRendering;
-			},
-			{ timeout: 5000 }
-		).catch(() => {
-			// If data attributes are not working, fall back to canvas stability check
-		});
-		
+		await this.page
+			.waitForFunction(
+				() => {
+					const canvas = document.querySelector('[data-testid="label-preview-canvas"]');
+					if (!canvas) return false;
+
+					// Check if layout is ready and not currently rendering
+					const layoutReady = canvas.getAttribute('data-layout-ready') === 'true';
+					const notRendering = canvas.getAttribute('data-rendering') === 'false';
+
+					return layoutReady && notRendering;
+				},
+				{ timeout: 5000 }
+			)
+			.catch(() => {
+				// If data attributes are not working, fall back to canvas stability check
+			});
+
 		// Wait for canvas content to stabilize (using default selector with data-testid)
 		await waitForCanvasStable(this.page, undefined, { optional: true, timeout: 8000 });
 	}
@@ -70,7 +72,7 @@ export class SingleLabelPreview extends BaseCanvas {
 			// We can't verify dimensions but the label size is set correctly
 			return true;
 		}
-		
+
 		const dimensions = await this.getDimensions();
 
 		// Expected canvas sizes (these would match your actual implementation)

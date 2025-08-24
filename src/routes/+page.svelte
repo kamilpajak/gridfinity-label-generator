@@ -125,7 +125,9 @@
 	}
 
 	// Derived values for label preview
-	const labelPrimaryText = $derived(formatPrimaryText(labelMode, threadSize, length, primaryText));
+	const labelPrimaryText = $derived(
+		formatPrimaryText(labelMode, threadSize, lengthDisabled ? '' : length, primaryText)
+	);
 
 	const labelSecondaryText = $derived(formatSecondaryText(labelMode, secondaryText));
 

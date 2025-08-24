@@ -18,8 +18,14 @@ export function formatPrimaryText(
 	length: string,
 	primaryText: string
 ): string {
-	if (labelMode === 'fastener' && threadSize && length) {
-		return `${threadSize} × ${length}`;
+	if (labelMode === 'fastener') {
+		if (threadSize && length) {
+			// Show both thread size and length
+			return `${threadSize} × ${length}`;
+		} else if (threadSize) {
+			// Show only thread size (for nuts/washers or when no length specified)
+			return threadSize;
+		}
 	} else if (labelMode === 'general' && primaryText) {
 		return primaryText;
 	}

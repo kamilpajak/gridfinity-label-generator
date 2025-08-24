@@ -269,6 +269,8 @@
 				data-layout-ready={!isCalculatingLayout && layout !== null}
 				data-rendering={isRendering}
 				data-testid="label-preview-canvas"
+				data-primary-text={primaryText || ''}
+				data-secondary-text={fullSecondaryText || ''}
 			></canvas>
 		{:else}
 			<div

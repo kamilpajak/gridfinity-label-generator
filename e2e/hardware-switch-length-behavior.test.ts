@@ -35,6 +35,8 @@ test.describe('Hardware Type Switch - Length Field Behavior', () => {
 		await labelPage.preview.waitForLabelRender();
 		const canvas = labelPage.preview.canvas;
 		await expect(canvas).toBeVisible();
+		// Verify the preview shows M8x25 (with length)
+		await expect(canvas).toHaveAttribute('data-primary-text', 'M8 × 25');
 
 		// ===== STEP 4: Switch to DIN 934 (ISO 4032) - Hex Nut =====
 		await labelPage.selectHardwareByName('4032', /ISO 4032.*DIN 934/);
@@ -55,6 +57,10 @@ test.describe('Hardware Type Switch - Length Field Behavior', () => {
 
 		// ===== STEP 8: Check label preview shows only M8 (no length) =====
 		await expect(canvas).toBeVisible();
+		// Wait for preview to update
+		await labelPage.preview.waitForLabelRender();
+		// Verify the preview shows only M8 (WITHOUT length)
+		await expect(canvas).toHaveAttribute('data-primary-text', 'M8');
 
 		// ===== STEP 9: Switch back to screw and verify length is re-enabled =====
 		await labelPage.selectHardwareByName('4762', /ISO 4762.*DIN 912/);
@@ -88,23 +94,28 @@ test.describe('Hardware Type Switch - Length Field Behavior', () => {
 		);
 	});
 
-	test('should clear length when switching from screw to washer and back', async () => {
-		// Select a screw and enter data
+	test('should NOT show length in preview for washer even when length value exists', async () => {
+		// Select a screw and enter thread size and length
 		await labelPage.selectHardwareByName('4762', /ISO 4762/);
-
+		await labelPage.selectThreadSize('M10');
 		await labelPage.fillLength('30');
 		await expect(labelPage.lengthInput).toHaveValue('30');
+
+		// Wait for preview and verify it shows M10x30
+		await labelPage.preview.waitForLabelRender();
+		const canvas = labelPage.preview.canvas;
+		await expect(canvas).toHaveAttribute('data-primary-text', 'M10 × 30');
 
 		// Switch to washer (ISO 7089 / DIN 125)
 		await labelPage.selectHardwareByName('7089', /ISO 7089.*DIN 125/);
 
-		// Length should be disabled but value preserved
+		// Length should be disabled but value preserved in input
 		await expect(labelPage.lengthInput).toBeDisabled();
 		await expect(labelPage.lengthInput).toHaveValue('30');
 
-		// Verify we cannot interact with disabled field
-		// The value should remain unchanged as field is disabled
-		await expect(labelPage.lengthInput).toHaveValue('30');
+		// CRITICAL: Preview should NOT show length for washer
+		await labelPage.preview.waitForLabelRender();
+		await expect(canvas).toHaveAttribute('data-primary-text', 'M10');
 
 		// Switch back to screw
 		await labelPage.selectHardwareByName('4762', /ISO 4762/);
@@ -113,9 +124,15 @@ test.describe('Hardware Type Switch - Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeEnabled();
 		await expect(labelPage.lengthInput).toHaveValue('30');
 
+		// Preview should show length again
+		await labelPage.preview.waitForLabelRender();
+		await expect(canvas).toHaveAttribute('data-primary-text', 'M10 × 30');
+
 		// Now we can clear it
 		await labelPage.fillLength('');
 		await expect(labelPage.lengthInput).toHaveValue('');
+		await labelPage.preview.waitForLabelRender();
+		await expect(canvas).toHaveAttribute('data-primary-text', 'M10');
 	});
 
 	test('should handle rapid switching between different hardware types', async () => {
@@ -161,6 +178,17 @@ test.describe('Hardware Type Switch - Length Field Behavior', () => {
 
 			// Length value should be preserved
 			await expect(labelPage.lengthInput).toHaveValue('20');
+
+			// Verify preview shows correct text based on hardware type
+			await labelPage.preview.waitForLabelRender();
+			const canvas = labelPage.preview.canvas;
+			if (hardware.lengthEnabled) {
+				// Should show M6x20 for screws and bolts
+				await expect(canvas).toHaveAttribute('data-primary-text', 'M6 × 20');
+			} else {
+				// Should show only M6 for nuts and washers (no length)
+				await expect(canvas).toHaveAttribute('data-primary-text', 'M6');
+			}
 		}
 	});
 });

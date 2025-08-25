@@ -241,7 +241,7 @@
 
 		<Tabs.Content value="single" class="mt-6">
 			<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-				<div class="lg:col-span-2">
+				<div class="lg:col-span-2 space-y-6">
 					<Card.Root>
 						<Card.Header>
 							<Card.Title>Label Content</Card.Title>
@@ -403,6 +403,41 @@
 							</div>
 						</Card.Content>
 					</Card.Root>
+					
+					<!-- Label Preview Card -->
+					<Card.Root>
+						<Card.Header>
+							<Card.Title>Label Preview</Card.Title>
+						</Card.Header>
+						<Card.Content>
+							<LabelPreview
+								primaryText={labelPrimaryText}
+								secondaryText={labelSecondaryText}
+								{optionalNote}
+								standard={selectedStandard}
+								{showStandard}
+								{showHardwareImage}
+								{showQRCode}
+								{qrCodeUrl}
+								labelHeight={parseInt(labelHeight)}
+								{labelWidth}
+								bind:canvasRef
+							/>
+							<div class="mt-4 flex justify-center">
+								<Button
+									onclick={downloadLabelAsPNG}
+									variant="default"
+									class="gap-2"
+									disabled={!hasContent}
+									title={!hasContent ? 'Add some text to enable export' : 'Export label as PNG'}
+									data-testid="export-button"
+								>
+									<DownloadIcon class="h-4 w-4" />
+									Download PNG
+								</Button>
+							</div>
+						</Card.Content>
+					</Card.Root>
 				</div>
 
 				<div>
@@ -495,49 +530,32 @@
 							</div>
 						</Card.Content>
 					</Card.Root>
+					
+					<!-- Support Card -->
+					<Card.Root class="mt-6">
+						<Card.Header>
+							<Card.Title>Support</Card.Title>
+						</Card.Header>
+						<Card.Content class="space-y-3">
+							<a 
+								href="https://www.buymeacoffee.com/kamilpajak" 
+								target="_blank" 
+								class="flex items-center justify-center gap-2 w-full py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+							>
+								☕ Buy me a coffee
+							</a>
+							<Button 
+								onclick={provideFeedback} 
+								variant="outline" 
+								class="w-full gap-2"
+							>
+								<MessageSquareIcon class="h-4 w-4" />
+								Feedback
+							</Button>
+						</Card.Content>
+					</Card.Root>
 				</div>
 			</div>
-
-			<section class="mt-4">
-				<h3 class="mb-3 text-lg font-medium">Label Preview</h3>
-				<LabelPreview
-					primaryText={labelPrimaryText}
-					secondaryText={labelSecondaryText}
-					{optionalNote}
-					standard={selectedStandard}
-					{showStandard}
-					{showHardwareImage}
-					{showQRCode}
-					{qrCodeUrl}
-					labelHeight={parseInt(labelHeight)}
-					{labelWidth}
-					bind:canvasRef
-				/>
-				<div class="mt-4 flex items-center justify-center gap-3">
-					<Button
-						onclick={downloadLabelAsPNG}
-						variant="outline"
-						class="gap-2"
-						disabled={!hasContent}
-						title={!hasContent ? 'Add some text to enable export' : 'Export label as PNG'}
-						data-testid="export-button"
-					>
-						<DownloadIcon class="h-4 w-4" />
-						Download PNG
-					</Button>
-					<a href="https://www.buymeacoffee.com/kamilpajak" target="_blank" class="inline-flex">
-						<img
-							src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
-							alt="Buy Me A Coffee"
-							style="height: 36px !important;"
-						/>
-					</a>
-					<Button onclick={provideFeedback} variant="outline" size="sm" class="gap-1">
-						<MessageSquareIcon class="h-3 w-3" />
-						Feedback
-					</Button>
-				</div>
-			</section>
 		</Tabs.Content>
 
 		<Tabs.Content value="batch" class="mt-6">

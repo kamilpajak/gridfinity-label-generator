@@ -111,7 +111,7 @@ export class SingleLabelPage extends BasePage {
 		if (await this.isLabelSizeSelected(size)) {
 			return;
 		}
-		
+
 		const button = size === '9mm' ? this.labelSize9mm : this.labelSize12mm;
 		await button.click();
 

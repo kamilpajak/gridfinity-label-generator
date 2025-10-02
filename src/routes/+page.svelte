@@ -16,13 +16,17 @@
 	import LabelPreview from '$lib/components/label/label-preview.svelte';
 	import { formatPrimaryText, formatSecondaryText } from '$lib/utils/label-formatter';
 	import { exportCanvasLabelAsPNG } from '$lib/utils/label-exporter';
+	import { validateLength, validateText, type ValidationResult } from '$lib/utils/input-validator';
+
+	const DEBOUNCE_DELAY_MS = 300;
+	import { debounce } from '$lib/utils/debounce';
 
 	let showStandard = $state(true);
 	let showHardwareImage = $state(true);
 	let showQRCode = $state(false);
 
 	let labelMode = $state('fastener');
-	let measurementSystem = $state('metric');
+	let measurementSystem: 'metric' | 'imperial' = $state('metric');
 	let threadSize = $state('');
 	let length = $state('');
 	let primaryText = $state('');
@@ -31,6 +35,30 @@
 	let qrCodeUrl = $state('');
 
 	let measurementSystemDisabled = $derived(labelMode !== 'fastener');
+
+	// Validation state
+	let lengthTouched = $state(false);
+	let lengthValidationResult: ValidationResult = $state({ isValid: true });
+
+	// Debounced validation functions
+	const debouncedValidateLength = debounce((value: string, system: 'metric' | 'imperial') => {
+		lengthValidationResult = validateLength(value, system);
+	}, DEBOUNCE_DELAY_MS);
+
+	// Validation effects
+	$effect(() => {
+		if (labelMode === 'fastener' && !lengthDisabled && length) {
+			debouncedValidateLength(length, measurementSystem);
+		} else {
+			lengthValidationResult = { isValid: true };
+		}
+	});
+
+	// Derived states for error visibility
+	const showLengthError = $derived(lengthTouched && !lengthValidationResult.isValid);
+
+	// Form validity
+	const isFormValid = $derived(lengthValidationResult.isValid);
 
 	// Thread size options
 	const metricThreadSizes = [
@@ -57,7 +85,7 @@
 
 	// Store previous values
 	let previousLabelMode = 'fastener';
-	let previousMeasurementSystem = 'metric';
+	let previousMeasurementSystem: 'metric' | 'imperial' = 'metric';
 	let previousLabelHeight = '12';
 
 	// Ensure exactly one value is always selected
@@ -126,7 +154,13 @@
 
 	// Derived values for label preview
 	const labelPrimaryText = $derived(
-		formatPrimaryText(labelMode, threadSize, lengthDisabled ? '' : length, primaryText)
+		formatPrimaryText(
+			labelMode,
+			threadSize,
+			// Only use length if it's not disabled AND it's valid
+			lengthDisabled || !lengthValidationResult.isValid ? '' : length,
+			primaryText
+		)
 	);
 
 	const labelSecondaryText = $derived(formatSecondaryText(labelMode, secondaryText));
@@ -241,7 +275,7 @@
 
 		<Tabs.Content value="single" class="mt-6">
 			<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-				<div class="lg:col-span-2 space-y-6">
+				<div class="space-y-6 lg:col-span-2">
 					<Card.Root>
 						<Card.Header>
 							<Card.Title>Label Content</Card.Title>
@@ -303,10 +337,17 @@
 											id="length"
 											bind:value={length}
 											placeholder={lengthPlaceholder}
-											class="w-full"
+											class="w-full {showLengthError ? 'border-destructive' : ''}"
 											disabled={lengthDisabled}
 											data-testid="length-input"
+											onblur={() => (lengthTouched = true)}
+											aria-invalid={showLengthError}
 										/>
+										{#if showLengthError}
+											<p class="mt-1 text-sm text-destructive">
+												{lengthValidationResult.message}
+											</p>
+										{/if}
 									</div>
 								</div>
 							{:else}
@@ -395,7 +436,7 @@
 							<div class="mt-4">
 								<Input
 									bind:value={qrCodeUrl}
-									placeholder="QR code (URL, part number, etc.)"
+									placeholder="Text or URL for QR code"
 									class="w-full"
 									disabled={!showQRCode}
 									data-testid="qr-code-url-input"
@@ -403,7 +444,7 @@
 							</div>
 						</Card.Content>
 					</Card.Root>
-					
+
 					<!-- Label Preview Card -->
 					<Card.Root>
 						<Card.Header>
@@ -428,8 +469,12 @@
 									onclick={downloadLabelAsPNG}
 									variant="default"
 									class="gap-2"
-									disabled={!hasContent}
-									title={!hasContent ? 'Add some text to enable export' : 'Export label as PNG'}
+									disabled={!hasContent || !isFormValid}
+									title={!hasContent
+										? 'Add some text to enable export'
+										: !isFormValid
+											? 'Fix validation errors to enable export'
+											: 'Export label as PNG'}
 									data-testid="export-button"
 								>
 									<DownloadIcon class="h-4 w-4" />
@@ -530,25 +575,21 @@
 							</div>
 						</Card.Content>
 					</Card.Root>
-					
+
 					<!-- Support Card -->
 					<Card.Root class="mt-6">
 						<Card.Header>
 							<Card.Title>Support</Card.Title>
 						</Card.Header>
 						<Card.Content class="space-y-3">
-							<a 
-								href="https://www.buymeacoffee.com/kamilpajak" 
-								target="_blank" 
-								class="flex items-center justify-center gap-2 w-full py-2 px-4 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
+							<a
+								href="https://www.buymeacoffee.com/kamilpajak"
+								target="_blank"
+								class="flex w-full items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 transition-colors hover:bg-accent hover:text-accent-foreground"
 							>
 								☕ Buy me a coffee
 							</a>
-							<Button 
-								onclick={provideFeedback} 
-								variant="outline" 
-								class="w-full gap-2"
-							>
+							<Button onclick={provideFeedback} variant="outline" class="w-full gap-2">
 								<MessageSquareIcon class="h-4 w-4" />
 								Feedback
 							</Button>

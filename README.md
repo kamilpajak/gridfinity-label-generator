@@ -15,7 +15,7 @@ This repository has been completely rewritten from Qwik to SvelteKit for better 
 ## ✨ Features
 
 - **Fastener Labels**: Generate labels for screws, bolts, nuts, and washers with automatic hardware type detection
-- **General Item Labels**: Create custom labels for any storage needs  
+- **General Item Labels**: Create custom labels for any storage needs
 - **Smart Formatting**: Automatically formats thread sizes and lengths based on metric/imperial selection
 - **Hardware Standards**: Comprehensive ISO/DIN standard library with visual icons
 - **Real-time Preview**: See your label as you design it

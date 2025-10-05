@@ -2,6 +2,10 @@
 
 @import 'tw-animate-css';
 
+/* Import fonts globally for canvas rendering */
+@import '@fontsource/noto-sans/900.css'; /* Noto Sans Black 900 */
+@import '@fontsource/oswald/300.css'; /* Oswald Light 300 */
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

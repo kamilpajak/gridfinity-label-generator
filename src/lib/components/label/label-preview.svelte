@@ -1,6 +1,5 @@
 <script lang="ts">
-	import '@fontsource/noto-sans/900.css'; // Import Noto Sans Black 900
-	import '@fontsource/oswald/300.css'; // Import Oswald Light 300
+	// Fonts are now imported globally in app.css
 	import { onMount, onDestroy } from 'svelte';
 	import type { ISODINStandard } from '$lib/data/standards';
 	import { AspectRatio } from '$lib/components/ui/aspect-ratio';

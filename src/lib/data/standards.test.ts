@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
 	formatDesignations,
 	formatPrimaryDesignation,
+	getStandardById,
 	type ISODINStandard,
 	standards
 } from './standards';
@@ -151,6 +152,52 @@ describe('Standards formatting functions', () => {
 
 			// Should have at least some standards with DIN cross-references
 			expect(standardsWithDIN.length).toBeGreaterThan(0);
+		});
+	});
+
+	describe('getStandardById', () => {
+		it('should return standard when ID exists', () => {
+			const result = getStandardById('iso4762');
+			expect(result).toBeDefined();
+			expect(result?.id).toBe('iso4762');
+			expect(result?.description).toBe('Hexagon socket head cap screws');
+		});
+
+		it('should return undefined when ID does not exist', () => {
+			const result = getStandardById('nonexistent');
+			expect(result).toBeUndefined();
+		});
+
+		it('should be case-insensitive', () => {
+			const result = getStandardById('ISO4762');
+			expect(result).toBeDefined();
+			expect(result?.id).toBe('iso4762');
+		});
+
+		it('should handle lowercase IDs', () => {
+			const result = getStandardById('iso4032');
+			expect(result).toBeDefined();
+			expect(result?.id).toBe('iso4032');
+		});
+
+		it('should return undefined for empty string', () => {
+			const result = getStandardById('');
+			expect(result).toBeUndefined();
+		});
+
+		it('should handle whitespace in ID', () => {
+			const result = getStandardById('  iso4762  ');
+			expect(result).toBeDefined();
+			expect(result?.id).toBe('iso4762');
+		});
+
+		it('should return full standard object with all properties', () => {
+			const result = getStandardById('iso4762');
+			expect(result).toBeDefined();
+			expect(result?.designations).toBeDefined();
+			expect(result?.designations.length).toBeGreaterThan(0);
+			expect(result?.primarySystem).toBeDefined();
+			expect(result?.image).toBeDefined();
 		});
 	});
 });

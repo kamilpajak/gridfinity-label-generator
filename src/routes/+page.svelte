@@ -12,11 +12,18 @@
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 	import MessageSquareIcon from '@lucide/svelte/icons/message-square';
-	import { standards, formatDesignations, HardwareType } from '$lib/data/standards';
+	import {
+		standards,
+		formatDesignations,
+		getStandardById,
+		HardwareType
+	} from '$lib/data/standards';
+	import { getPitchOptions } from '$lib/data/thread-pitch';
 	import LabelPreview from '$lib/components/label/label-preview.svelte';
 	import { formatPrimaryText, formatSecondaryText } from '$lib/utils/label-formatter';
 	import { exportCanvasLabelAsPNG } from '$lib/utils/label-exporter';
-	import { validateLength, validateText, type ValidationResult } from '$lib/utils/input-validator';
+	import { validateLength, type ValidationResult } from '$lib/utils/input-validator';
+	import BatchModePanel from '$lib/components/batch/batch-mode-panel.svelte';
 
 	const DEBOUNCE_DELAY_MS = 300;
 	import { debounce } from '$lib/utils/debounce';
@@ -28,6 +35,7 @@
 	let labelMode = $state('fastener');
 	let measurementSystem: 'metric' | 'imperial' = $state('metric');
 	let threadSize = $state('');
+	let pitch = $state('');
 	let length = $state('');
 	let primaryText = $state('');
 	let secondaryText = $state('');
@@ -98,7 +106,7 @@
 	});
 
 	$effect(() => {
-		if (!measurementSystem || measurementSystem === '') {
+		if (!measurementSystem) {
 			measurementSystem = previousMeasurementSystem;
 		} else {
 			previousMeasurementSystem = measurementSystem;
@@ -113,13 +121,28 @@
 		}
 	});
 
-	// Reset thread size when measurement system changes
+	// Reset thread size and pitch when measurement system changes
 	$effect(() => {
 		// Track measurementSystem dependency to reset threadSize when it changes
 		if (measurementSystem || !measurementSystem) {
 			threadSize = '';
+			pitch = '';
 		}
 	});
+
+	// Reset pitch when thread size changes
+	$effect(() => {
+		if (threadSize) {
+			pitch = '';
+		}
+	});
+
+	// Derived state for pitch selector visibility
+	const showPitchSelector = $derived(labelMode === 'fastener');
+
+	const availablePitchOptions = $derived(
+		threadSize ? getPitchOptions(threadSize, measurementSystem) : []
+	);
 
 	const threadSizePlaceholder = 'Select thread size';
 
@@ -131,7 +154,7 @@
 
 	const standardsWithImages = $derived(standards.filter((s) => s.image));
 
-	const selectedStandard = $derived(standards.find((s) => s.id === selectedStandardId));
+	const selectedStandard = $derived(getStandardById(selectedStandardId ?? ''));
 
 	// Disable length input for nuts and washers (they don't have length specification)
 	const lengthDisabled = $derived(
@@ -159,7 +182,8 @@
 			threadSize,
 			// Only use length if it's not disabled AND it's valid
 			lengthDisabled || !lengthValidationResult.isValid ? '' : length,
-			primaryText
+			primaryText,
+			pitch || undefined
 		)
 	);
 
@@ -350,6 +374,36 @@
 										{/if}
 									</div>
 								</div>
+
+								{#if showPitchSelector}
+									<div class="mt-4">
+										<label for="pitch" class="mb-2 block text-sm font-medium"
+											>Thread Pitch (Optional)</label
+										>
+										<Select bind:value={pitch} type="single">
+											<SelectTrigger id="pitch" class="w-full" data-testid="pitch-select">
+												{pitch
+													? availablePitchOptions.find((p) => p.value === pitch)?.label
+													: measurementSystem === 'imperial'
+														? 'Standard/Coarse'
+														: 'Standard pitch'}
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value=""
+													>{measurementSystem === 'imperial'
+														? 'Standard/Coarse'
+														: 'Standard pitch'}</SelectItem
+												>
+												{#each availablePitchOptions as pitchOption (pitchOption.value)}
+													<SelectItem value={pitchOption.value}>{pitchOption.label}</SelectItem>
+												{/each}
+											</SelectContent>
+										</Select>
+										<p class="mt-1.5 text-xs text-muted-foreground">
+											Leave empty for standard thread pitch
+										</p>
+									</div>
+								{/if}
 							{:else}
 								<div class="mt-4 space-y-4">
 									<Input
@@ -600,16 +654,7 @@
 		</Tabs.Content>
 
 		<Tabs.Content value="batch" class="mt-6">
-			<Card.Root>
-				<Card.Header>
-					<Card.Title>Batch Mode</Card.Title>
-					<Card.Description>Create multiple labels at once</Card.Description>
-				</Card.Header>
-				<Card.Content>
-					<!-- Placeholder for Batch Mode content -->
-					<p class="text-muted-foreground">Batch Mode configuration will go here</p>
-				</Card.Content>
-			</Card.Root>
+			<BatchModePanel />
 		</Tabs.Content>
 	</Tabs.Root>
 </div>

@@ -102,6 +102,7 @@
 		};
 	}}
 >
+	<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 	<a class="how-to-play" href="/sverdle/how-to-play">How to play</a>
 
 	<div class="grid" class:playing={!won} class:bad-guess={form?.badGuess}>

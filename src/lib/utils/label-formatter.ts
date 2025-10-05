@@ -7,24 +7,29 @@
 /**
  * Formats the primary text for the label
  * @param labelMode - 'fastener' or 'general' mode
- * @param threadSize - Thread size (e.g., M5, M3)
+ * @param threadSize - Thread size (e.g., M5, M3, #10)
  * @param length - Length value
  * @param primaryText - Custom primary text (for general mode)
+ * @param pitch - Optional thread pitch (e.g., '24', '32' for imperial UNC/UNF)
  * @returns Formatted primary text
  */
 export function formatPrimaryText(
 	labelMode: string,
 	threadSize: string,
 	length: string,
-	primaryText: string
+	primaryText: string,
+	pitch?: string
 ): string {
 	if (labelMode === 'fastener') {
-		if (threadSize && length) {
-			// Show both thread size and length
-			return `${threadSize} × ${length}`;
-		} else if (threadSize) {
-			// Show only thread size (for nuts/washers or when no length specified)
-			return threadSize;
+		// Format thread size with pitch if provided
+		const formattedThreadSize = threadSize && pitch ? `${threadSize}-${pitch}` : threadSize;
+
+		if (formattedThreadSize && length) {
+			// Show both thread size (with pitch) and length
+			return `${formattedThreadSize} × ${length}`;
+		} else if (formattedThreadSize) {
+			// Show only thread size with pitch (for nuts/washers or when no length specified)
+			return formattedThreadSize;
 		}
 	} else if (labelMode === 'general' && primaryText) {
 		return primaryText;

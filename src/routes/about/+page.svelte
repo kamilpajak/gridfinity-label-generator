@@ -20,6 +20,7 @@
 	</p>
 
 	<p>
+		<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 		The <a href="/sverdle">Sverdle</a> page illustrates SvelteKit's data loading and form handling. Try
 		using it with JavaScript disabled!
 	</p>

@@ -79,6 +79,19 @@ export const standards = generatedStandards;
 export const DEFAULT_STANDARD_ID = 'iso4762';
 
 /**
+ * Get a standard by its unique ID
+ * @param id - The standard ID (e.g., "iso4762")
+ * @returns The standard or undefined if not found
+ */
+export function getStandardById(id: string): ISODINStandard | undefined {
+	const normalizedId = id.toLowerCase().trim();
+	if (!normalizedId) {
+		return undefined;
+	}
+	return standards.find((s) => s.id.toLowerCase() === normalizedId);
+}
+
+/**
  * Search for standards by any designation code or description
  * @param query - The search query (can be ISO, DIN, ANSI, PN code or description)
  * @returns Array of matching standards

@@ -24,15 +24,19 @@ describe('label-exporter', () => {
 	let mockCanvas: Partial<HTMLCanvasElement> & { toBlob: ReturnType<typeof vi.fn> };
 	let mockContext: Partial<CanvasRenderingContext2D>;
 	let mockBlob: Blob;
-	let createObjectURLSpy: ReturnType<typeof vi.spyOn>;
-	let revokeObjectURLSpy: ReturnType<typeof vi.spyOn>;
-	let requestAnimationFrameSpy: ReturnType<typeof vi.spyOn> | undefined;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let createObjectURLSpy: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let revokeObjectURLSpy: any;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let requestAnimationFrameSpy: any;
 	let mockAnchor: Partial<HTMLAnchorElement> & { click: ReturnType<typeof vi.fn> };
 
 	beforeEach(() => {
 		// Mock global document if not available
 		if (typeof document === 'undefined') {
-			const globalAny = global as typeof global & { document: Partial<Document> };
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const globalAny = global as any;
 			globalAny.document = {
 				createElement: vi.fn(),
 				body: {
@@ -76,7 +80,8 @@ describe('label-exporter', () => {
 		mockCanvas = {
 			width: 0,
 			height: 0,
-			getContext: vi.fn(() => mockContext),
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			getContext: vi.fn(() => mockContext) as any,
 			toBlob: vi.fn((callback) => {
 				mockBlob = new Blob(['mock-png-data'], { type: 'image/png' });
 				callback(mockBlob);
@@ -87,7 +92,8 @@ describe('label-exporter', () => {
 		mockAnchor = {
 			href: '',
 			download: '',
-			style: { display: '' },
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			style: { display: '' } as any,
 			click: vi.fn()
 		};
 
@@ -114,8 +120,10 @@ describe('label-exporter', () => {
 		revokeObjectURLSpy = vi.spyOn(urlObj, 'revokeObjectURL');
 
 		// Mock requestAnimationFrame
-		const raf = globalAny.requestAnimationFrame || window?.requestAnimationFrame;
-		if (raf) {
+		if (
+			typeof globalAny.requestAnimationFrame !== 'undefined' ||
+			typeof window?.requestAnimationFrame !== 'undefined'
+		) {
 			requestAnimationFrameSpy = vi
 				.spyOn(globalAny, 'requestAnimationFrame')
 				.mockImplementation((callback) => {
@@ -288,7 +296,7 @@ describe('label-exporter', () => {
 			// Check anchor element was configured
 			expect(mockAnchor.href).toBe('blob:mock-url');
 			expect(mockAnchor.download).toBe('label_31x10mm.png');
-			expect(mockAnchor.style.display).toBe('none');
+			expect(mockAnchor.style?.display).toBe('none');
 
 			// Check anchor was added to DOM, clicked, and removed
 			const globalAny = global as typeof global & { document?: Document };

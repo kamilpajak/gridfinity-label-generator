@@ -20,14 +20,6 @@
 				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 				<a href="/">Home</a>
 			</li>
-			<li aria-current={page.url.pathname === '/about' ? 'page' : undefined}>
-				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-				<a href="/about">About</a>
-			</li>
-			<li aria-current={page.url.pathname.startsWith('/sverdle') ? 'page' : undefined}>
-				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-				<a href="/sverdle">Sverdle</a>
-			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />

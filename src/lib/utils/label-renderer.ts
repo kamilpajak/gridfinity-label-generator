@@ -90,7 +90,7 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 		ctx.translate(2 * scale, 1 * scale); // Move to printable area origin
 	}
 
-	// Draw primary text
+	// Draw text (positioning already determined by layout solver)
 	if (content.primaryText) {
 		await drawText(ctx, {
 			text: content.primaryText,
@@ -102,7 +102,6 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 		});
 	}
 
-	// Draw secondary text
 	if (content.secondaryText) {
 		await drawText(ctx, {
 			text: content.secondaryText,
@@ -133,12 +132,16 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 		// Check if aborted before async operation
 		if (signal?.aborted) throw new Error('Render aborted');
 
-		await drawQRCode(ctx, {
-			url: content.qrCodeUrl,
-			x: layout.qrCode.x * scale,
-			y: layout.qrCode.y * scale,
-			size: (layout.qrCode.width ?? 10) * scale
-		});
+		await drawQRCode(
+			ctx,
+			{
+				url: content.qrCodeUrl,
+				x: layout.qrCode.x * scale,
+				y: layout.qrCode.y * scale,
+				size: (layout.qrCode.width ?? 10) * scale
+			},
+			signal
+		);
 	}
 
 	// Restore context
@@ -161,11 +164,13 @@ async function drawText(
 ): Promise<void> {
 	ctx.save();
 
-	// Ensure font is loaded
+	// Ensure font is loaded with sample text to trigger unicode-range subsets
+	// @fontsource packages use unicode-range subsetting, which requires
+	// sample text to determine which subset to load
 	try {
-		await document.fonts.load(
-			`${options.fontWeight} ${options.fontSize}px "${options.fontFamily}"`
-		);
+		const fontSpec = `${options.fontWeight} ${options.fontSize}px "${options.fontFamily}"`;
+		// Load subsets by providing sample text from the actual text to render
+		await document.fonts.load(fontSpec, options.text);
 	} catch (e) {
 		console.warn('Font loading failed:', e);
 	}
@@ -180,7 +185,8 @@ async function drawText(
 }
 
 /**
- * Draws an image on canvas
+ * Draws an image on canvas using exact dimensions from constraint solver
+ * The constraint solver has already calculated aspect-ratio-aware dimensions
  */
 async function drawImage(
 	ctx: CanvasRenderingContext2D,
@@ -200,27 +206,9 @@ async function drawImage(
 		imageCache.set(options.src, img);
 	}
 
-	// Calculate aspect ratio preserving dimensions
-	const imgAspectRatio = img.width / img.height;
-	const boxAspectRatio = options.width / options.height;
-
-	let drawWidth = options.width;
-	let drawHeight = options.height;
-	let offsetX = 0;
-	let offsetY = 0;
-
-	if (imgAspectRatio > boxAspectRatio) {
-		// Image is wider than box - fit to width
-		drawHeight = options.width / imgAspectRatio;
-		offsetY = (options.height - drawHeight) / 2;
-	} else if (imgAspectRatio < boxAspectRatio) {
-		// Image is taller than box - fit to height
-		drawWidth = options.height * imgAspectRatio;
-		offsetX = (options.width - drawWidth) / 2;
-	}
-	// If aspect ratios match, use full box size (no offset needed)
-
-	ctx.drawImage(img, options.x + offsetX, options.y + offsetY, drawWidth, drawHeight);
+	// Draw image at exact position and size calculated by constraint solver
+	// The solver has already handled aspect ratio fitting
+	ctx.drawImage(img, options.x, options.y, options.width, options.height);
 }
 
 /**
@@ -233,7 +221,8 @@ async function drawQRCode(
 		x: number;
 		y: number;
 		size: number;
-	}
+	},
+	signal?: AbortSignal
 ): Promise<void> {
 	let urlToEncode = options.url;
 
@@ -270,8 +259,19 @@ async function drawQRCode(
 		qrCache.set(qrCacheKey, qrDataUrl);
 	}
 
+	// Check if aborted before drawing
+	if (signal?.aborted) {
+		throw new Error('Render aborted');
+	}
+
 	// Draw QR code
 	const img = await loadImage(qrDataUrl);
+
+	// Check again after async image load
+	if (signal?.aborted) {
+		throw new Error('Render aborted');
+	}
+
 	ctx.drawImage(img, options.x, options.y, options.size, options.size);
 }
 

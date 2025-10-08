@@ -119,6 +119,22 @@ async function renderSingleLabel(
 			? (labelData.config.showReference ?? true) && !!labelData.standard
 			: false;
 
+	// Calculate hardware image aspect ratio if needed
+	let hardwareImageAspectRatio: number | undefined;
+	if (showHardwareImage && labelData.standard?.image) {
+		try {
+			const img = new Image();
+			await new Promise<void>((resolve, reject) => {
+				img.onload = () => resolve();
+				img.onerror = reject;
+				img.src = labelData.standard!.image!;
+			});
+			hardwareImageAspectRatio = img.naturalWidth / img.naturalHeight;
+		} catch (e) {
+			console.warn('Failed to load image for aspect ratio calculation:', e);
+		}
+	}
+
 	// Solve layout for this label
 	const layout = await solveLabelLayout({
 		dimensions: {
@@ -131,7 +147,8 @@ async function renderSingleLabel(
 		showHardwareImage,
 		showStandard,
 		primaryText: labelData.primaryText,
-		secondaryText: labelData.secondaryText
+		secondaryText: labelData.secondaryText,
+		hardwareImageAspectRatio
 	});
 
 	// Render label to temporary canvas

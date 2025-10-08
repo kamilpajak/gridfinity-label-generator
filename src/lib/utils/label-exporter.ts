@@ -6,6 +6,7 @@
 
 import { renderLabelToCanvas } from './label-renderer';
 import { solveLabelLayout } from './label-constraint-solver';
+import { enrichWithCoverageMetrics } from './layout-metrics';
 import type { ISODINStandard } from '$lib/data/standards';
 
 export interface CanvasExportOptions {
@@ -70,14 +71,39 @@ export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Prom
 		printableHeight
 	};
 
+	// Calculate hardware image aspect ratio if needed
+	let hardwareImageAspectRatio: number | undefined;
+	if (showHardwareImage && standard?.image) {
+		try {
+			const img = new Image();
+			await new Promise<void>((resolve, reject) => {
+				img.onload = () => resolve();
+				img.onerror = reject;
+				img.src = standard.image!;
+			});
+			hardwareImageAspectRatio = img.naturalWidth / img.naturalHeight;
+		} catch (e) {
+			console.warn('Failed to load image for aspect ratio calculation:', e);
+		}
+	}
+
 	// Solve layout
-	const layout = await solveLabelLayout({
+	const baseLayout = await solveLabelLayout({
 		dimensions,
 		showQRCode,
 		showHardwareImage,
 		showStandard,
 		primaryText,
-		secondaryText
+		secondaryText,
+		hardwareImageAspectRatio
+	});
+
+	// Enrich with coverage metrics
+	const layout = await enrichWithCoverageMetrics(baseLayout, dimensions, {
+		primaryText,
+		secondaryText,
+		showHardwareImage,
+		showQRCode
 	});
 
 	console.log('About to render to canvas');

@@ -20,6 +20,40 @@ vi.mock('./label-constraint-solver', () => ({
 	}))
 }));
 
+// Mock layout-metrics conditionally:
+// - In browser environment (jsdom): use real implementation for full integration testing
+// - In server environment: use mock to avoid canvas API dependencies
+vi.mock('./layout-metrics', async () => {
+	// Check if we're in a browser-like environment
+	const hasCanvasAPI = typeof document !== 'undefined' && typeof HTMLCanvasElement !== 'undefined';
+
+	if (hasCanvasAPI) {
+		// Use real implementation in browser environment
+		return await vi.importActual('./layout-metrics');
+	}
+
+	// Use mock in server environment (no canvas API available)
+	return {
+		enrichWithCoverageMetrics: vi.fn((layout) =>
+			Promise.resolve({
+				...layout,
+				metadata: {
+					coveragePercentage: 50,
+					breakdown: {
+						primaryText: 20,
+						secondaryText: 15,
+						image: 10,
+						qrCode: 5
+					},
+					printableArea: 100,
+					occupiedArea: 50,
+					whitespace: 50
+				}
+			})
+		)
+	};
+});
+
 describe('label-exporter', () => {
 	let mockCanvas: Partial<HTMLCanvasElement> & { toBlob: ReturnType<typeof vi.fn> };
 	let mockContext: Partial<CanvasRenderingContext2D>;
@@ -411,6 +445,50 @@ describe('label-exporter', () => {
 					}
 				})
 			);
+		});
+	});
+
+	describe('layout-metrics integration', () => {
+		it('should enrich layout with coverage metrics', async () => {
+			// This test verifies that enrichWithCoverageMetrics is called
+			// In server environment: uses mock (returns predefined metadata)
+			// In browser environment: uses real implementation (calculates actual coverage)
+
+			await exportCanvasLabelAsPNG({
+				labelWidth: 35,
+				labelHeight: 12,
+				primaryText: 'M6',
+				secondaryText: 'ISO 4032',
+				showStandard: true,
+				showHardwareImage: true,
+				showQRCode: false
+			});
+
+			// Verify that renderLabelToCanvas was called with layout that has metadata
+			expect(labelRenderer.renderLabelToCanvas).toHaveBeenCalledWith(
+				expect.objectContaining({
+					layout: expect.objectContaining({
+						metadata: expect.objectContaining({
+							coveragePercentage: expect.any(Number),
+							breakdown: expect.objectContaining({
+								primaryText: expect.any(Number),
+								secondaryText: expect.any(Number),
+								image: expect.any(Number),
+								qrCode: expect.any(Number)
+							}),
+							printableArea: expect.any(Number),
+							occupiedArea: expect.any(Number),
+							whitespace: expect.any(Number)
+						})
+					})
+				})
+			);
+
+			// In server environment, mock returns specific values
+			// In browser environment, real calculation may differ
+			const call = (labelRenderer.renderLabelToCanvas as ReturnType<typeof vi.fn>).mock.calls[0][0];
+			expect(call.layout.metadata.coveragePercentage).toBeGreaterThanOrEqual(0);
+			expect(call.layout.metadata.coveragePercentage).toBeLessThanOrEqual(100);
 		});
 	});
 });

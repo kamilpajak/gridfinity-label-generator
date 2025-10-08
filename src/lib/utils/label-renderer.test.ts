@@ -78,7 +78,7 @@ describe('label-renderer', () => {
 		clearRenderCaches(); // Clear caches after each test
 	});
 
-	describe('image aspect ratio preservation', () => {
+	describe('image rendering', () => {
 		const baseOptions = {
 			canvas: mockCanvas as unknown as HTMLCanvasElement,
 			dimensions: {
@@ -112,13 +112,7 @@ describe('label-renderer', () => {
 			}
 		};
 
-		it('should maintain aspect ratio when image is taller than wide', async () => {
-			// Set up image that is taller than wide (aspect ratio 1:2)
-			const mockImg = new MockImage();
-			mockImg.width = 100;
-			mockImg.height = 200;
-
-			// Override Image constructor for this test
+		it('should draw image at exact dimensions from constraint solver', async () => {
 			global.Image = class extends MockImage {
 				constructor() {
 					super();
@@ -132,77 +126,18 @@ describe('label-renderer', () => {
 
 			await renderLabelToCanvas(baseOptions);
 
-			// Image should be scaled to fit height, maintaining aspect ratio
-			// Available space: 6x6
-			// Image aspect ratio: 1:2 (width:height)
-			// To fit in 6x6 box while maintaining aspect ratio:
-			// Height = 6, Width = 6 * (100/200) = 3
-			// Image should be centered: x offset = (6-3)/2 = 1.5
+			// Renderer should use exact dimensions from constraint solver
+			// No aspect ratio recalculation happens in renderer
 			expect(mockContext.drawImage).toHaveBeenCalledWith(
 				expect.any(MockImage),
-				1 + 1.5, // x position + centering offset
-				2, // y position
-				3, // width (maintains aspect ratio)
-				6 // height (full available height)
+				1, // x position from layout
+				2, // y position from layout
+				6, // width from layout
+				6 // height from layout
 			);
 		});
 
-		it('should maintain aspect ratio when image is wider than tall', async () => {
-			// Set up image that is wider than tall (aspect ratio 2:1)
-			global.Image = class extends MockImage {
-				constructor() {
-					super();
-					this.width = 200;
-					this.height = 100;
-					setTimeout(() => {
-						if (this.onload) this.onload();
-					}, 0);
-				}
-			} as unknown as typeof Image;
-
-			await renderLabelToCanvas(baseOptions);
-
-			// Image should be scaled to fit width, maintaining aspect ratio
-			// Available space: 6x6
-			// Image aspect ratio: 2:1 (width:height)
-			// To fit in 6x6 box while maintaining aspect ratio:
-			// Width = 6, Height = 6 * (100/200) = 3
-			// Image should be centered: y offset = (6-3)/2 = 1.5
-			expect(mockContext.drawImage).toHaveBeenCalledWith(
-				expect.any(MockImage),
-				1, // x position
-				2 + 1.5, // y position + centering offset
-				6, // width (full available width)
-				3 // height (maintains aspect ratio)
-			);
-		});
-
-		it('should handle square images correctly', async () => {
-			// Set up square image
-			global.Image = class extends MockImage {
-				constructor() {
-					super();
-					this.width = 150;
-					this.height = 150;
-					setTimeout(() => {
-						if (this.onload) this.onload();
-					}, 0);
-				}
-			} as unknown as typeof Image;
-
-			await renderLabelToCanvas(baseOptions);
-
-			// Square image should fill the square space exactly
-			expect(mockContext.drawImage).toHaveBeenCalledWith(
-				expect.any(MockImage),
-				1, // x position
-				2, // y position
-				6, // width
-				6 // height
-			);
-		});
-
-		it('should apply scale factor to image dimensions and position', async () => {
+		it('should apply scale factor to all dimensions', async () => {
 			const scaledOptions = {
 				...baseOptions,
 				scale: 2
@@ -221,20 +156,19 @@ describe('label-renderer', () => {
 
 			await renderLabelToCanvas(scaledOptions);
 
-			// With scale = 2, all dimensions should be doubled
-			// Aspect ratio preservation: width = 3, height = 6
-			// Centering offset: (6-3)/2 = 1.5
+			// Scale factor multiplies all layout dimensions
 			expect(mockContext.drawImage).toHaveBeenCalledWith(
 				expect.any(MockImage),
-				(1 + 1.5) * 2, // (x + center offset) * scale
+				1 * 2, // x * scale
 				2 * 2, // y * scale
-				3 * 2, // width * scale
+				6 * 2, // width * scale
 				6 * 2 // height * scale
 			);
 		});
 
-		it('should not exceed the specified bounds', async () => {
-			// Test with various aspect ratios
+		it('should draw images with varying aspect ratios at provided dimensions', async () => {
+			// The renderer doesn't care about source image aspect ratio
+			// It just draws at the dimensions provided by the constraint solver
 			const testCases = [
 				{ width: 50, height: 300 }, // Very tall
 				{ width: 300, height: 50 }, // Very wide
@@ -258,16 +192,8 @@ describe('label-renderer', () => {
 
 				await renderLabelToCanvas(baseOptions);
 
-				const call = mockContext.drawImage.mock.calls[0];
-				const [, x, y, width, height] = call;
-
-				// Check that image stays within bounds
-				expect(x).toBeGreaterThanOrEqual(1);
-				expect(y).toBeGreaterThanOrEqual(2);
-				expect(x + width).toBeLessThanOrEqual(7); // 1 + 6
-				expect(y + height).toBeLessThanOrEqual(8); // 2 + 6
-				expect(width).toBeLessThanOrEqual(6);
-				expect(height).toBeLessThanOrEqual(6);
+				// All images drawn at same dimensions regardless of source aspect ratio
+				expect(mockContext.drawImage).toHaveBeenCalledWith(expect.any(MockImage), 1, 2, 6, 6);
 			}
 		});
 	});

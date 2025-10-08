@@ -10,6 +10,7 @@
 		type SolverOutput
 	} from '$lib/utils/label-constraint-solver';
 	import { renderLabelToCanvas } from '$lib/utils/label-renderer';
+	import { enrichWithCoverageMetrics } from '$lib/utils/layout-metrics';
 
 	interface Props {
 		primaryText: string;
@@ -88,6 +89,14 @@
 
 	// Calculate layout when dependencies change
 	$effect(() => {
+		// Explicitly track dependencies to ensure re-calculation when they change
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		showQRCode;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		showHardwareImage;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		showStandard;
+
 		const calculateLayout = async () => {
 			// Cancel any previous layout calculation
 			if (layoutController) {
@@ -105,13 +114,38 @@
 					return;
 				}
 
-				const newLayout = await solveLabelLayout({
+				// Calculate hardware image aspect ratio if needed
+				let hardwareImageAspectRatio: number | undefined;
+				if (showHardwareImage && standard?.image) {
+					try {
+						const img = new Image();
+						await new Promise<void>((resolve, reject) => {
+							img.onload = () => resolve();
+							img.onerror = reject;
+							img.src = standard.image!;
+						});
+						hardwareImageAspectRatio = img.naturalWidth / img.naturalHeight;
+					} catch (e) {
+						console.warn('Failed to load image for aspect ratio calculation:', e);
+					}
+				}
+
+				const baseLayout = await solveLabelLayout({
 					dimensions,
 					showQRCode,
 					showHardwareImage,
 					showStandard,
 					primaryText: primaryText || '',
-					secondaryText: fullSecondaryText
+					secondaryText: fullSecondaryText,
+					hardwareImageAspectRatio
+				});
+
+				// Enrich with coverage metrics
+				const newLayout = await enrichWithCoverageMetrics(baseLayout, dimensions, {
+					primaryText: primaryText || '',
+					secondaryText: fullSecondaryText,
+					showHardwareImage,
+					showQRCode
 				});
 
 				// Check if aborted after calculation but before setting layout
@@ -137,11 +171,15 @@
 
 	// Render to canvas whenever dependencies change
 	$effect(() => {
-		if (!canvasRef || !container || !layout) return;
-
-		// Explicitly track qrCodeUrl to trigger re-render when QR URL changes
+		// Explicitly track dependencies to ensure re-render when they change
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		layout;
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		qrCodeUrl;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		showQRCode;
+
+		if (!canvasRef || !container || !layout) return;
 
 		// Cancel any previous render
 		if (renderController) {

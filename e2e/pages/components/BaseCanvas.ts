@@ -298,15 +298,18 @@ export class BaseCanvas {
 				const imageData = ctx.getImageData(point.x, point.y, 1, 1);
 				const [r, g, b] = imageData.data;
 
-				// Consider it non-white if any channel is not 255 (with tolerance)
-				const tolerance = 250; // Allow slight variations
-				if (r < tolerance || g < tolerance || b < tolerance) {
+				// Consider it QR content if it's darker than the margin guides
+				// Margin guides are #f3f4f6 (RGB 243, 244, 246)
+				// QR codes have black pixels, so check for significantly darker content
+				const threshold = 200; // Below this is likely actual content, not just margin guides
+				if (r < threshold || g < threshold || b < threshold) {
 					nonWhiteCount++;
 				}
 			}
 
-			// If at least 30% of sampled points are non-white, QR code is likely present
-			return nonWhiteCount >= Math.floor(samplePoints.length * 0.3);
+			// If at least 40% of sampled points are dark content, QR code is likely present
+			// This is more strict to avoid false positives from text that might overlap the QR area
+			return nonWhiteCount >= Math.ceil(samplePoints.length * 0.4);
 		}, labelWidth);
 	}
 }

@@ -1,0 +1,56 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+
+# Build outputs
+.svelte-kit
+build
+dist
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Git
+.git
+.gitignore
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Testing
+coverage
+.nyc_output
+test-results
+.playwright
+playwright-report
+
+# Logs
+*.log
+logs
+npm-debug.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation (except deployment plan)
+*.md
+!DOCKER_DEPLOYMENT_PLAN.md
+
+# Development files
+.eslintrc*
+.prettierrc*
+vitest.config.ts
+playwright.config.ts
+
+# Misc
+.cache
+tmp
+temp

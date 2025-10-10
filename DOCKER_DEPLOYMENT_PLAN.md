@@ -182,23 +182,32 @@ curl http://localhost:8081
 # Lub otwórz w przeglądarce: http://localhost:8081
 ```
 
-### Deployment do GitHub Container Registry:
+### Deployment do GitHub Container Registry (AUTOMATED):
 
-```bash
-# 1. Login do ghcr.io
-echo $GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
+**GitHub Actions automatycznie buduje i pushuje obrazy:**
 
-# 2. Build z tagiem
-docker build -t ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:latest .
-docker build -t ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:v1.0.0 .
+```yaml
+# Workflow: .github/workflows/docker-build.yml
 
-# 3. Push do registry
-docker push ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:latest
-docker push ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:v1.0.0
+Push do master → Tagi:
+  - ghcr.io/USER/gridfinity-label-generator:latest
+  - ghcr.io/USER/gridfinity-label-generator:sha-{short_sha}
 
-# 4. Weryfikacja
-# Sprawdź na: https://github.com/YOUR_GITHUB_USERNAME?tab=packages
+Pull Request → Tagi:
+  - ghcr.io/USER/gridfinity-label-generator:pr-{number}
 ```
+
+**Strategia wersjonowania:**
+- **`:latest`** - Zawsze najnowsza wersja z mastera (wygoda)
+- **`:sha-abc1234`** - Immutable tag dla każdego commita (rollback capability)
+- **`:pr-123`** - Tymczasowe obrazy do testowania PR
+
+**Zalety tego podejścia:**
+1. ✅ Zero manual intervention - automatyczne buildy
+2. ✅ Rollback możliwy przez SHA tags
+3. ✅ Deployment history śledzona przez SHA
+4. ✅ PR preview images dla testowania przed mergem
+5. ✅ Zgodny z istniejącym workflow (używa `:latest`)
 
 ### Deployment na VPS:
 

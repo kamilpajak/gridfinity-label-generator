@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { SingleLabelPage } from './pages/single-mode/SingleLabelPage';
+import { SingleModePage } from './pages/single-mode/SingleModePage';
+import { UI_TEXT } from '../src/lib/constants/ui-text';
 
 test.describe('Hardware Type Length Field Behavior', () => {
-	let labelPage: SingleLabelPage;
+	let labelPage: SingleModePage;
 
 	test.beforeEach(async ({ page }) => {
-		labelPage = new SingleLabelPage(page);
+		labelPage = new SingleModePage(page);
 		await labelPage.goto();
 		// Select fastener mode
 		await labelPage.selectMode('fastener');
@@ -19,7 +20,7 @@ test.describe('Hardware Type Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeDisabled();
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'N/A for this hardware type'
+			UI_TEXT.placeholders.lengthNA
 		);
 	});
 
@@ -31,7 +32,7 @@ test.describe('Hardware Type Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeDisabled();
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'N/A for this hardware type'
+			UI_TEXT.placeholders.lengthNA
 		);
 	});
 
@@ -43,7 +44,7 @@ test.describe('Hardware Type Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeEnabled();
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'Length in mm (e.g., 10, 25)'
+			UI_TEXT.placeholders.lengthMetric
 		);
 	});
 
@@ -55,7 +56,7 @@ test.describe('Hardware Type Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeEnabled();
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'Length in mm (e.g., 10, 25)'
+			UI_TEXT.placeholders.lengthMetric
 		);
 	});
 
@@ -76,7 +77,7 @@ test.describe('Hardware Type Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeEnabled();
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'Length in mm (e.g., 10, 25)'
+			UI_TEXT.placeholders.lengthMetric
 		);
 	});
 
@@ -91,7 +92,7 @@ test.describe('Hardware Type Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeEnabled();
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'Length in inches (e.g., 1/4, 3/8)'
+			UI_TEXT.placeholders.lengthImperial
 		);
 	});
 });

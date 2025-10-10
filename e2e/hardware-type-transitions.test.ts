@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { SingleLabelPage } from './pages/single-mode/SingleLabelPage';
+import { SingleModePage } from './pages/single-mode/SingleModePage';
+import { UI_TEXT } from '../src/lib/constants/ui-text';
 
-test.describe('Hardware Type Switch - Length Field Behavior', () => {
-	let labelPage: SingleLabelPage;
+test.describe('Hardware Type Transitions - Length Field Behavior', () => {
+	let labelPage: SingleModePage;
 
 	test.beforeEach(async ({ page }) => {
-		labelPage = new SingleLabelPage(page);
+		labelPage = new SingleModePage(page);
 		await labelPage.goto();
 		// Select fastener mode
 		await labelPage.selectMode('fastener');
@@ -19,7 +20,7 @@ test.describe('Hardware Type Switch - Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeEnabled();
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'Length in mm (e.g., 10, 25)'
+			UI_TEXT.placeholders.lengthMetric
 		);
 
 		// ===== STEP 2: Enter thread size and length =====
@@ -45,7 +46,7 @@ test.describe('Hardware Type Switch - Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeDisabled();
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'N/A for this hardware type'
+			UI_TEXT.placeholders.lengthNA
 		);
 
 		// ===== STEP 6: Verify thread size is still M8 =====
@@ -69,7 +70,7 @@ test.describe('Hardware Type Switch - Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeEnabled();
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'Length in mm (e.g., 10, 25)'
+			UI_TEXT.placeholders.lengthMetric
 		);
 		// Value should still be preserved
 		await expect(labelPage.lengthInput).toHaveValue('25');
@@ -78,7 +79,7 @@ test.describe('Hardware Type Switch - Length Field Behavior', () => {
 		await labelPage.selectUnits('imperial');
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'Length in inches (e.g., 1/4, 3/8)'
+			UI_TEXT.placeholders.lengthImperial
 		);
 		// Field should still be enabled for screw
 		await expect(labelPage.lengthInput).toBeEnabled();
@@ -90,7 +91,7 @@ test.describe('Hardware Type Switch - Length Field Behavior', () => {
 		await expect(labelPage.lengthInput).toBeDisabled();
 		await expect(labelPage.lengthInput).toHaveAttribute(
 			'placeholder',
-			'N/A for this hardware type'
+			UI_TEXT.placeholders.lengthNA
 		);
 	});
 

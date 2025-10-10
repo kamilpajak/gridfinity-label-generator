@@ -1,0 +1,624 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script>
+			window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+		</script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			::-webkit-scrollbar {
+				display: none;
+			}
+		</style>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						fontFamily: {
+							sans: ['Inter', 'system-ui', 'sans-serif']
+						},
+						colors: {
+							'brand-blue': {
+								100: '#e0f2fe',
+								300: '#7dd3fc',
+								500: '#0ea5e9',
+								600: '#0284c7',
+								800: '#075985'
+							}
+						}
+					}
+				}
+			};
+		</script>
+	</head>
+	<body class="bg-slate-50 font-sans">
+		<div id="label-creator-page" class="min-h-screen">
+			<section
+				id="hero-section"
+				class="from-brand-blue-600 via-brand-blue-700 to-brand-blue-800 relative h-[280px] overflow-hidden bg-gradient-to-br"
+			>
+				<div class="absolute inset-0 bg-black/10"></div>
+				<div
+					class="absolute top-0 right-0 h-64 w-64 translate-x-32 -translate-y-32 rounded-full bg-white/5"
+				></div>
+				<div
+					class="absolute bottom-0 left-0 h-48 w-48 -translate-x-24 translate-y-24 rounded-full bg-white/5"
+				></div>
+
+				<div class="relative z-10 mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+					<div class="grid w-full grid-cols-1 items-center gap-8 lg:grid-cols-3">
+						<div class="lg:col-span-2">
+							<h1 class="mb-4 text-4xl font-bold tracking-tight text-white lg:text-5xl">
+								Gridfinity Label Generator
+							</h1>
+							<p class="text-brand-blue-100 mb-6 text-lg leading-relaxed font-light lg:text-xl">
+								Print-Ready Labels for Your Gridfinity System
+							</p>
+							<div class="text-brand-blue-100 flex flex-wrap items-center gap-4">
+								<div class="flex items-center gap-2">
+									<i class="fa-solid fa-check-circle text-green-400"></i>
+									<span class="text-sm font-medium">Easy Configuration</span>
+								</div>
+								<div class="flex items-center gap-2">
+									<i class="fa-solid fa-check-circle text-green-400"></i>
+									<span class="text-sm font-medium">Batch Processing</span>
+								</div>
+								<div class="flex items-center gap-2">
+									<i class="fa-solid fa-check-circle text-green-400"></i>
+									<span class="text-sm font-medium">Print Ready</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="flex flex-col gap-3">
+							<span
+								class="inline-flex transform cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-500 px-6 py-3 font-medium text-white shadow-lg transition-all transition-colors duration-200 hover:-translate-y-0.5 hover:bg-amber-600 hover:shadow-xl"
+								id="buy-coffee-btn"
+							>
+								<i class="fa-solid fa-coffee"></i>
+								Buy me a coffee
+							</span>
+							<button
+								id="feedback-btn"
+								class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 font-medium text-white backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/20"
+							>
+								<i class="fa-solid fa-comment"></i>
+								Feedback
+							</button>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<main id="main-content" class="relative z-20 mx-auto -mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
+				<div class="mb-8 rounded-2xl border border-slate-200/50 bg-white p-8 shadow-xl">
+					<div class="flex items-center justify-between">
+						<div>
+							<h2 class="text-2xl font-bold text-slate-800">Label Creator</h2>
+							<p class="mt-1 text-slate-500">Configure and generate your hardware labels.</p>
+						</div>
+						<div id="mode-selector" class="flex rounded-lg bg-slate-100 p-1">
+							<button
+								type="button"
+								id="single-mode-btn"
+								class="rounded-md px-4 py-2 text-sm font-medium text-slate-500 transition-all"
+							>
+								Single Label
+							</button>
+							<button
+								type="button"
+								id="batch-mode-btn"
+								class="rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition-all"
+							>
+								Batch Mode
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<div id="batch-mode-layout" class="grid grid-cols-1 items-start gap-8 lg:grid-cols-3">
+					<form
+						id="batch-label-form"
+						class="space-y-6 rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm lg:col-span-2"
+					>
+						<div class="flex items-center justify-between">
+							<div>
+								<h3 class="text-xl font-semibold text-slate-800">Add Label to Batch</h3>
+								<p class="mt-1 text-sm text-slate-500">Configure individual label details</p>
+							</div>
+							<button
+								type="button"
+								id="clear-form-btn"
+								class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100"
+							>
+								<i class="fa-solid fa-eraser text-slate-500"></i>
+								Clear
+							</button>
+						</div>
+
+						<section id="item-type-section">
+							<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+								<div id="item-type-selector">
+									<label class="mb-2 block text-sm font-medium text-slate-700">Product Type</label>
+									<div class="flex rounded-lg bg-slate-100 p-1">
+										<button
+											type="button"
+											class="flex-1 rounded-md bg-white py-2 text-sm font-semibold text-slate-900 shadow-sm"
+										>
+											Fastener
+										</button>
+										<button type="button" class="flex-1 py-2 text-sm font-medium text-slate-500">
+											General Hardware
+										</button>
+									</div>
+								</div>
+								<div id="unit-system-selector">
+									<label class="mb-2 block text-sm font-medium text-slate-700"
+										>Measurement System</label
+									>
+									<div class="flex rounded-lg bg-slate-100 p-1">
+										<button
+											type="button"
+											class="flex-1 rounded-md bg-white py-2 text-sm font-semibold text-slate-900 shadow-sm"
+										>
+											Metric
+										</button>
+										<button type="button" class="flex-1 py-2 text-sm font-medium text-slate-500">
+											Imperial
+										</button>
+									</div>
+								</div>
+							</div>
+						</section>
+
+						<hr class="border-slate-200" />
+
+						<section id="fastener-details-section">
+							<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+								<div id="standard-selector">
+									<label for="standard" class="mb-2 block text-sm font-medium text-slate-700"
+										>ISO/DIN Standard</label
+									>
+									<select
+										id="standard"
+										class="focus:ring-brand-blue-500 focus:border-brand-blue-500 w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 transition-all outline-none focus:ring-2"
+									>
+										<option>Choose standard (e.g. ISO 4014, DIN 931)</option>
+										<option>ISO 4014 - Hex head cap screws</option>
+										<option>DIN 931 - Hex head bolts</option>
+										<option>ISO 4762 - Socket head cap screws</option>
+										<option>DIN 912 - Socket head cap screws</option>
+									</select>
+								</div>
+								<div id="note-input">
+									<label
+										for="note"
+										class="mb-2 block flex items-center gap-1 text-sm font-medium text-slate-700"
+									>
+										Material / Grade <span class="font-normal text-slate-400">(Optional)</span>
+										<div class="group relative">
+											<i class="fa-solid fa-circle-info cursor-help text-xs text-slate-400"></i>
+											<div
+												class="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform rounded-lg bg-slate-800 px-3 py-2 text-xs whitespace-nowrap text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+											>
+												Material designation or strength class (max 10 chars)
+												<div
+													class="absolute top-full left-1/2 h-0 w-0 -translate-x-1/2 transform border-t-4 border-r-4 border-l-4 border-transparent border-t-slate-800"
+												></div>
+											</div>
+										</div>
+									</label>
+									<input
+										type="text"
+										id="note"
+										placeholder="A2, A4, INOX, 8.8, 10.9..."
+										class="focus:ring-brand-blue-500 focus:border-brand-blue-500 w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:ring-2"
+										maxlength="10"
+									/>
+								</div>
+							</div>
+
+							<div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3" id="dimensions-section">
+								<div id="thread-size-input">
+									<label for="thread-size" class="mb-2 block text-sm font-medium text-slate-700"
+										>Thread Size</label
+									>
+									<select
+										id="thread-size"
+										class="focus:ring-brand-blue-500 focus:border-brand-blue-500 w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 transition-all outline-none focus:ring-2"
+									>
+										<option>Select size (M3, M4, M5...)</option>
+										<option>M2</option>
+										<option>M3</option>
+										<option>M4</option>
+										<option>M5</option>
+										<option>M6</option>
+										<option>M8</option>
+										<option>M10</option>
+										<option>M12</option>
+									</select>
+								</div>
+								<div id="thread-pitch-input">
+									<label
+										for="thread-pitch"
+										class="mb-2 block flex items-center gap-1 text-sm font-medium text-slate-700"
+									>
+										Thread Pitch <span class="font-normal text-slate-400">(Optional)</span>
+										<div class="group relative">
+											<i class="fa-solid fa-circle-info cursor-help text-xs text-slate-400"></i>
+											<div
+												class="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 transform rounded-lg bg-slate-800 px-3 py-2 text-xs whitespace-nowrap text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+											>
+												Leave empty to use standard pitch
+												<div
+													class="absolute top-full left-1/2 h-0 w-0 -translate-x-1/2 transform border-t-4 border-r-4 border-l-4 border-transparent border-t-slate-800"
+												></div>
+											</div>
+										</div>
+									</label>
+									<select
+										id="thread-pitch"
+										class="focus:ring-brand-blue-500 focus:border-brand-blue-500 w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 transition-all outline-none focus:ring-2"
+									>
+										<option>Standard (coarse)</option>
+										<option>0.5mm - Fine</option>
+										<option>0.75mm - Fine</option>
+										<option>1.0mm - Standard</option>
+										<option>1.25mm - Standard</option>
+										<option>1.5mm - Standard</option>
+									</select>
+								</div>
+								<div id="length-input">
+									<label for="length" class="mb-2 block text-sm font-medium text-slate-700"
+										>Length (mm)</label
+									>
+									<input
+										type="text"
+										placeholder="20, 30, 50..."
+										class="focus:ring-brand-blue-500 focus:border-brand-blue-500 w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:ring-2"
+									/>
+								</div>
+							</div>
+						</section>
+
+						<hr class="border-slate-200" />
+
+						<section id="label-options-section">
+							<h4 class="mb-4 text-base font-semibold text-slate-800">Label Options</h4>
+							<div class="space-y-4">
+								<div class="flex items-center justify-between">
+									<div>
+										<h5 class="font-medium text-slate-800">Show Standard Code</h5>
+										<p class="text-sm text-slate-500">Include ISO/DIN reference</p>
+									</div>
+									<label class="relative inline-flex cursor-pointer items-center">
+										<input type="checkbox" checked="" class="peer sr-only" />
+										<div
+											class="peer-focus:ring-brand-blue-300 peer peer-checked:bg-brand-blue-600 relative h-6 w-11 rounded-full bg-slate-200 peer-focus:ring-4 peer-focus:outline-none after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white"
+										></div>
+									</label>
+								</div>
+								<div class="flex items-center justify-between">
+									<div>
+										<h5 class="font-medium text-slate-800">Product Icon</h5>
+										<p class="text-sm text-slate-500">Visual fastener representation</p>
+									</div>
+									<label class="relative inline-flex cursor-pointer items-center">
+										<input
+											type="checkbox"
+											id="product-icon-toggle"
+											checked=""
+											class="peer sr-only"
+										/>
+										<div
+											class="peer-focus:ring-brand-blue-300 peer peer-checked:bg-brand-blue-600 relative h-6 w-11 rounded-full bg-slate-200 peer-focus:ring-4 peer-focus:outline-none after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white"
+										></div>
+									</label>
+								</div>
+								<div class="flex items-center justify-between">
+									<div>
+										<h5 class="font-medium text-slate-800">QR Code</h5>
+										<p class="text-sm text-slate-500">Scannable information code</p>
+									</div>
+									<label class="relative inline-flex cursor-pointer items-center">
+										<input type="checkbox" id="qr-toggle" class="peer sr-only" />
+										<div
+											class="peer-focus:ring-brand-blue-300 peer peer-checked:bg-brand-blue-600 relative h-6 w-11 rounded-full bg-slate-200 peer-focus:ring-4 peer-focus:outline-none after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white"
+										></div>
+									</label>
+								</div>
+
+								<div
+									id="qr-code-input-section"
+									class="hidden transition-all duration-300 ease-in-out"
+								>
+									<label for="qr-code-data" class="mb-2 block text-sm font-medium text-slate-700"
+										>QR Code Content</label
+									>
+									<input
+										type="text"
+										id="qr-code-data"
+										placeholder="URL, part number, or custom text..."
+										class="focus:ring-brand-blue-500 focus:border-brand-blue-500 w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-800 transition-all outline-none placeholder:text-slate-400 focus:ring-2"
+									/>
+								</div>
+
+								<div class="flex items-center justify-between">
+									<label for="label-width" class="text-sm font-medium text-slate-700"
+										>Label Width</label
+									>
+									<span
+										id="width-value"
+										class="text-brand-blue-800 bg-brand-blue-100 rounded-md px-2 py-0.5 text-sm font-medium"
+										>35mm</span
+									>
+								</div>
+								<input
+									id="width-slider"
+									type="range"
+									min="10"
+									max="100"
+									value="35"
+									class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200"
+								/>
+
+								<div
+									id="width-warning"
+									class="hidden rounded-lg border border-amber-200 bg-amber-50 p-3"
+								>
+									<div class="flex items-start gap-2">
+										<i class="fa-solid fa-triangle-exclamation mt-0.5 text-sm text-amber-500"></i>
+										<p class="text-sm text-amber-700">
+											For labels under 50mm width, enable either Product Icon or QR Code, not both.
+										</p>
+									</div>
+								</div>
+							</div>
+						</section>
+
+						<div class="flex justify-end pt-4">
+							<button
+								type="button"
+								id="add-to-batch-btn"
+								class="bg-brand-blue-600 hover:bg-brand-blue-700 flex items-center gap-2 rounded-lg px-6 py-3 font-medium text-white transition-colors"
+							>
+								<i class="fa-solid fa-plus"></i>
+								Add to Batch
+							</button>
+						</div>
+					</form>
+
+					<aside
+						id="batch-settings-sidebar"
+						class="sticky top-8 space-y-6 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm"
+					>
+						<h3 class="text-lg font-semibold text-slate-800">Batch Settings</h3>
+
+						<div id="batch-tape-height" class="">
+							<label class="mb-2 block text-sm font-medium text-slate-700"
+								>Tape Height (All Labels)</label
+							>
+							<div class="flex rounded-lg bg-slate-100 p-1">
+								<button type="button" class="flex-1 py-2 text-sm font-semibold text-slate-500">
+									9mm
+								</button>
+								<button
+									type="button"
+									class="flex-1 rounded-md bg-white py-2 text-sm font-semibold text-slate-900 shadow-sm"
+								>
+									12mm
+								</button>
+							</div>
+						</div>
+
+						<hr class="border-slate-200" />
+
+						<div id="batch-actions">
+							<div class="space-y-3">
+								<button
+									type="button"
+									id="clear-batch-btn"
+									class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
+								>
+									<i class="fa-solid fa-trash-can"></i>
+									Clear Batch
+								</button>
+								<button
+									type="button"
+									id="generate-batch-btn"
+									class="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-3 font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+									disabled=""
+								>
+									<i class="fa-solid fa-download"></i>
+									Generate Labels
+								</button>
+							</div>
+						</div>
+					</aside>
+				</div>
+			</main>
+		</div>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				let batchItems = [];
+				let currentZoom = 1;
+
+				const widthSlider = document.getElementById('width-slider');
+				const widthValue = document.getElementById('width-value');
+				const productIconToggle = document.getElementById('product-icon-toggle');
+				const qrToggle = document.getElementById('qr-toggle');
+				const widthWarning = document.getElementById('width-warning');
+				const qrInputSection = document.getElementById('qr-code-input-section');
+				const addToBatchBtn = document.getElementById('add-to-batch-btn');
+				const clearFormBtn = document.getElementById('clear-form-btn');
+				const clearBatchBtn = document.getElementById('clear-batch-btn');
+				const generateBatchBtn = document.getElementById('generate-batch-btn');
+				const batchItemsList = document.getElementById('batch-items-list');
+				const batchCount = document.getElementById('batch-count');
+				const zoomInBtn = document.getElementById('zoom-in-btn');
+				const zoomOutBtn = document.getElementById('zoom-out-btn');
+
+				function toggleQrInput() {
+					if (qrToggle.checked) {
+						qrInputSection.classList.remove('hidden');
+					} else {
+						qrInputSection.classList.add('hidden');
+					}
+				}
+
+				function checkWidthConstraints() {
+					const width = parseInt(widthSlider.value);
+					const isProductIconOn = productIconToggle.checked;
+					const isQrOn = qrToggle.checked;
+
+					if (width < 50 && isProductIconOn && isQrOn) {
+						widthWarning.classList.remove('hidden');
+						if (event && event.target === qrToggle) {
+							productIconToggle.checked = false;
+						} else if (event && event.target === productIconToggle) {
+							qrToggle.checked = false;
+						}
+					} else {
+						widthWarning.classList.add('hidden');
+					}
+					toggleQrInput();
+				}
+
+				function updateBatchDisplay() {
+					batchCount.textContent = `${batchItems.length} labels`;
+
+					if (batchItems.length === 0) {
+						batchItemsList.innerHTML = `
+                <div class="text-center py-8 text-slate-400">
+                    <i class="fa-solid fa-layer-group text-2xl mb-2"></i>
+                    <p class="text-sm">No labels in batch yet</p>
+                    <p class="text-xs mt-1">Add labels using the form</p>
+                </div>
+            `;
+						generateBatchBtn.disabled = true;
+						updateLabelPreview();
+					} else {
+						batchItemsList.innerHTML = batchItems
+							.map(
+								(item, index) => `
+                <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <div class="flex-1">
+                        <div class="font-medium text-slate-800 text-sm">${item.standard} ${item.threadSize}x${item.length}mm</div>
+                        <div class="text-xs text-slate-500 mt-1">${item.material || 'No material'} • Width: ${item.width}mm</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="editBatchItem(${index})" class="text-brand-blue-600 hover:text-brand-blue-700 p-1" title="Edit">
+                            <i class="fa-solid fa-edit"></i>
+                        </button>
+                        <button type="button" onclick="removeBatchItem(${index})" class="text-red-500 hover:text-red-700 p-1" title="Remove">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `
+							)
+							.join('');
+						generateBatchBtn.disabled = false;
+						updateLabelPreview();
+					}
+				}
+
+				function updateLabelPreview() {
+					const previewContent = document.getElementById('label-preview-content');
+
+					if (batchItems.length === 0) {
+						previewContent.innerHTML = `
+                <div class="bg-white border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center text-slate-400 min-h-[80px]" style="width: 3000px; height: 80px;">
+                    <div class="text-center">
+                        <i class="fa-solid fa-tag text-2xl mb-2"></i>
+                        <p class="text-sm">Label preview will appear here</p>
+                        <p class="text-xs mt-1">Add labels to batch to see preview</p>
+                    </div>
+                </div>
+            `;
+					} else {
+						const firstItem = batchItems[0];
+						const standardCode = firstItem.standard;
+						const threadSize = firstItem.threadSize;
+						const length = firstItem.length;
+						const material = firstItem.material || 'No material';
+						const width = firstItem.width;
+
+						previewContent.innerHTML = `
+                <div class="bg-white border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center text-slate-400 min-h-[80px]" style="width: 3000px; height: 80px;">
+                    <div class="text-center">
+                        <i class="fa-solid fa-tag text-2xl mb-2"></i>
+                        <p class="text-sm">Label preview will appear here</p>
+                        <p class="text-xs mt-1">Add labels to batch to see preview</p>
+                    </div>
+                </div>
+            `;
+					}
+				}
+
+				// Event Listeners
+				widthSlider.addEventListener('input', function () {
+					widthValue.textContent = `${widthSlider.value}mm`;
+					checkWidthConstraints();
+				});
+
+				productIconToggle.addEventListener('change', function () {
+					checkWidthConstraints();
+				});
+
+				qrToggle.addEventListener('change', function () {
+					checkWidthConstraints();
+				});
+
+				addToBatchBtn.addEventListener('click', function () {
+					// Add logic to add item to batch
+				});
+
+				clearFormBtn.addEventListener('click', function () {
+					// Clear form logic
+				});
+
+				clearBatchBtn.addEventListener('click', function () {
+					batchItems = [];
+					updateBatchDisplay();
+				});
+
+				generateBatchBtn.addEventListener('click', function () {
+					// Generate batch logic
+				});
+
+				// Zoom controls
+				zoomInBtn.addEventListener('click', function () {
+					currentZoom *= 1.1;
+					updateZoom();
+				});
+
+				zoomOutBtn.addEventListener('click', function () {
+					currentZoom *= 0.9;
+					updateZoom();
+				});
+
+				function updateZoom() {
+					const zoomLevel = document.getElementById('zoom-level');
+					zoomLevel.textContent = `${Math.round(currentZoom * 100)}%`;
+				}
+
+				// Initialize
+				updateBatchDisplay();
+				updateZoom();
+			});
+		</script>
+	</body>
+</html>

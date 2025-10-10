@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test';
+import { CANVAS_TRANSLATE_MM, QR_CODE_SIZE_MM, CANVAS_MARGIN_MM } from './canvas-geometry';
 
 /**
  * Wait for canvas to be stable (no ongoing renders)
@@ -158,24 +159,21 @@ export async function waitForQRCodeRender(
 		});
 
 	await page.waitForFunction(
-		({ labelWidth }) => {
+		({ labelWidth, translateMM, qrSizeMM, marginMM }) => {
 			const canvas = document.querySelector('canvas') as HTMLCanvasElement;
 			if (!canvas) return false;
 
 			const ctx = canvas.getContext('2d');
 			if (!ctx) return false;
 
-			// In preview mode, canvas is translated by (2mm, 1mm)
+			// Calculate QR code bounds from shared constants
 			const scale = canvas.width / labelWidth;
 			const translateOffset = {
-				x: Math.round(2 * scale), // 2mm translate
-				y: Math.round(1 * scale) // 1mm translate
+				x: Math.round(translateMM.x * scale),
+				y: Math.round(translateMM.y * scale)
 			};
-
-			// Check QR code area for non-white pixels
-			const qrSize = Math.round(10 * scale);
-			const margin = Math.round(2 * scale);
-			// QR code position accounting for translate
+			const qrSize = Math.round(qrSizeMM * scale);
+			const margin = Math.round(marginMM * scale);
 			const qrX = canvas.width - margin - qrSize - translateOffset.x;
 			const qrY = margin + translateOffset.y;
 
@@ -207,7 +205,12 @@ export async function waitForQRCodeRender(
 			// If at least 30% of points are non-white, QR is rendered
 			return nonWhiteCount >= Math.floor(samplePoints.length * 0.3);
 		},
-		{ labelWidth },
+		{
+			labelWidth,
+			translateMM: CANVAS_TRANSLATE_MM,
+			qrSizeMM: QR_CODE_SIZE_MM,
+			marginMM: CANVAS_MARGIN_MM
+		},
 		{ timeout }
 	);
 }

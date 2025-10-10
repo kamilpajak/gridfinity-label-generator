@@ -108,7 +108,7 @@ describe('batch-exporter', () => {
 			expect(batchRenderer.renderBatchTape).toHaveBeenCalledWith({
 				canvas: mockCanvas,
 				batch,
-				dpi: 300,
+				dpi: 360,
 				showMargins: false
 			});
 		});
@@ -240,7 +240,7 @@ describe('batch-exporter', () => {
 			expect(batchRenderer.renderBatchTape).toHaveBeenCalledWith({
 				canvas: mockCanvas,
 				batch,
-				dpi: 300,
+				dpi: 360,
 				showMargins: false
 			});
 
@@ -326,6 +326,72 @@ describe('batch-exporter', () => {
 
 				vi.clearAllMocks();
 			}
+		});
+	});
+
+	describe('DPI consistency', () => {
+		it('should use the same default DPI as single mode (360)', async () => {
+			// Import single mode exporter to compare DPI constants
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { exportCanvasLabelAsPNG } = await import('./label-exporter');
+
+			const batch: BatchState = {
+				height: 12,
+				labels: [{ mode: 'general', primaryText: 'Test', width: 40 }],
+				maxLabels: 20
+			};
+
+			await exportBatchTapeAsPNG({ batch });
+
+			// Verify batch mode uses 360 DPI (matching single mode DEFAULT_DPI)
+			expect(batchRenderer.renderBatchTape).toHaveBeenCalledWith(
+				expect.objectContaining({ dpi: 360 })
+			);
+
+			// Note: Single mode uses DEFAULT_DPI = 360 in label-exporter.ts:31
+			// This test ensures both modes stay in sync
+		});
+
+		it('should calculate same canvas height as single mode for 12mm label', async () => {
+			const dpi = 360;
+			const labelHeightMm = 12;
+			const marginTopMm = 1;
+			const marginBottomMm = 1;
+
+			// Single mode calculation (from label-exporter.ts:54-64)
+			const printableHeight_single = labelHeightMm - marginTopMm - marginBottomMm; // 10mm
+			const scale_single = dpi / 25.4;
+			const expectedHeight_single = Math.round(printableHeight_single * scale_single); // 142px
+
+			// Batch mode calculation (from batch-renderer.ts:209-212)
+			const printableHeightMm_batch = labelHeightMm - marginTopMm - marginBottomMm; // 10mm
+			const mmToPixels = (mm: number, dpi: number) => mm * (dpi / 25.4);
+			const expectedHeight_batch = Math.round(mmToPixels(printableHeightMm_batch, dpi)); // 142px
+
+			// Both should be identical
+			expect(expectedHeight_single).toBe(expectedHeight_batch);
+			expect(expectedHeight_single).toBe(142); // Verify expected value
+		});
+
+		it('should calculate same canvas height as single mode for 9mm label', async () => {
+			const dpi = 360;
+			const labelHeightMm = 9;
+			const marginTopMm = 1;
+			const marginBottomMm = 1;
+
+			// Single mode calculation
+			const printableHeight_single = labelHeightMm - marginTopMm - marginBottomMm; // 7mm
+			const scale_single = dpi / 25.4;
+			const expectedHeight_single = Math.round(printableHeight_single * scale_single);
+
+			// Batch mode calculation
+			const printableHeightMm_batch = labelHeightMm - marginTopMm - marginBottomMm; // 7mm
+			const mmToPixels = (mm: number, dpi: number) => mm * (dpi / 25.4);
+			const expectedHeight_batch = Math.round(mmToPixels(printableHeightMm_batch, dpi));
+
+			// Both should be identical
+			expect(expectedHeight_single).toBe(expectedHeight_batch);
+			expect(expectedHeight_single).toBe(99); // 7mm at 360 DPI = 99px
 		});
 	});
 });

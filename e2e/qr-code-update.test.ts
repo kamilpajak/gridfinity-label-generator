@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { SingleLabelPage } from './pages/single-mode/SingleLabelPage';
+import { SingleModePage } from './pages/single-mode/SingleModePage';
 import { waitForQRCodeRender } from './utils/wait-helpers';
 
 test.describe('QR Code Updates', () => {
 	test('QR code visual should update when URL changes', async ({ page }) => {
-		const labelPage = new SingleLabelPage(page);
+		const labelPage = new SingleModePage(page);
 		await labelPage.goto();
 
 		// Switch to General Item mode
@@ -60,7 +60,7 @@ test.describe('QR Code Updates', () => {
 	});
 
 	test('QR code should appear/disappear when toggled', async ({ page }) => {
-		const labelPage = new SingleLabelPage(page);
+		const labelPage = new SingleModePage(page);
 		await labelPage.goto();
 
 		// Switch to General Item mode
@@ -80,22 +80,32 @@ test.describe('QR Code Updates', () => {
 		await labelPage.fillQRCodeUrl('https://example.com');
 		await labelPage.preview.waitForReady();
 
-		// Check if QR code is visible on canvas
-		const hasQrCodeEnabled = await labelPage.preview.hasQRCodeContent();
-		expect(hasQrCodeEnabled).toBe(true);
+		// Get QR area pixels BEFORE disabling
+		const qrPixelsBefore = await labelPage.preview.getQRCodePixels();
 
 		// Disable QR code
 		await labelPage.toggleQRCode();
 		await expect(labelPage.qrCodeUrlInput).toBeDisabled();
-		await labelPage.preview.waitForLabelRender();
 
-		// Check if QR code is gone
-		const hasQrCodeDisabled = await labelPage.preview.hasQRCodeContent();
-		expect(hasQrCodeDisabled).toBe(false);
+		// Wait for canvas to re-render without QR code
+		await labelPage.preview.waitForLabelRender();
+		await page.waitForTimeout(500);
+
+		// Get QR area pixels AFTER disabling
+		const qrPixelsAfter = await labelPage.preview.getQRCodePixels();
+
+		// Compare - if significantly different, QR disappeared
+		const percentDiff = labelPage.preview.compareQRCodePixels(
+			qrPixelsBefore.pixels,
+			qrPixelsAfter.pixels
+		);
+
+		// QR disappearing should cause significant pixel difference (>20%)
+		expect(percentDiff).toBeGreaterThan(20);
 	});
 
 	test('QR code should update in real-time as URL is typed', async ({ page }) => {
-		const labelPage = new SingleLabelPage(page);
+		const labelPage = new SingleModePage(page);
 		await labelPage.goto();
 
 		// Switch to General Item mode and enable QR

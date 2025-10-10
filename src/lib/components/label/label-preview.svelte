@@ -63,22 +63,24 @@
 
 	// Prepare full secondary text including optional note
 	const fullSecondaryText = $derived(
-		(secondaryText ||
-			(showStandard && standard
-				? (() => {
-						// Use only the primary designation for the label
-						const primaryDesignation = standard.designations.find(
-							(d) => d.system === standard.primarySystem
-						);
-						if (primaryDesignation) {
-							return `${primaryDesignation.system} ${primaryDesignation.code}`;
-						}
-						// Fallback to first designation if primary not found
-						return standard.designations.length > 0
-							? `${standard.designations[0].system} ${standard.designations[0].code}`
-							: '';
-					})()
-				: '')) + (optionalNote ? ` ${optionalNote}` : '')
+		(
+			(secondaryText ||
+				(showStandard && standard
+					? (() => {
+							// Use only the primary designation for the label
+							const primaryDesignation = standard.designations.find(
+								(d) => d.system === standard.primarySystem
+							);
+							if (primaryDesignation) {
+								return `${primaryDesignation.system} ${primaryDesignation.code}`;
+							}
+							// Fallback to first designation if primary not found
+							return standard.designations.length > 0
+								? `${standard.designations[0].system} ${standard.designations[0].code}`
+								: '';
+						})()
+					: '')) + (optionalNote ? ` ${optionalNote}` : '')
+		).trim()
 	);
 
 	// Calculate layout using constraint solver
@@ -91,11 +93,19 @@
 	$effect(() => {
 		// Explicitly track dependencies to ensure re-calculation when they change
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		primaryText;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		fullSecondaryText;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		showQRCode;
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		showHardwareImage;
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		showStandard;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		standard;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		dimensions;
 
 		const calculateLayout = async () => {
 			// Cancel any previous layout calculation
@@ -130,11 +140,17 @@
 					}
 				}
 
+				// In General Item mode (no standard), hardware-related features should not affect layout
+				// even if their UI switches are still enabled (they get disabled in UI but state persists)
+				const isGeneralItemMode = !standard;
+				const effectiveShowHardwareImage = isGeneralItemMode ? false : showHardwareImage;
+				const effectiveShowStandard = isGeneralItemMode ? false : showStandard;
+
 				const baseLayout = await solveLabelLayout({
 					dimensions,
 					showQRCode,
-					showHardwareImage,
-					showStandard,
+					showHardwareImage: effectiveShowHardwareImage,
+					showStandard: effectiveShowStandard,
 					primaryText: primaryText || '',
 					secondaryText: fullSecondaryText,
 					hardwareImageAspectRatio
@@ -301,13 +317,15 @@
 		{#if hasContent}
 			<canvas
 				bind:this={canvasRef}
-				class="h-full w-full bg-white shadow-sm"
+				class="h-full w-full bg-white shadow-lg"
 				style="image-rendering: crisp-edges;"
 				data-layout-ready={!isCalculatingLayout && layout !== null}
 				data-rendering={isRendering}
 				data-testid="label-preview-canvas"
 				data-primary-text={primaryText || ''}
 				data-secondary-text={fullSecondaryText || ''}
+				data-primary-font-size={layout?.primaryFontSize.toFixed(2) || ''}
+				data-secondary-font-size={layout?.secondaryFontSize.toFixed(2) || ''}
 			></canvas>
 		{:else}
 			<div

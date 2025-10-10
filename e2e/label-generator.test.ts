@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { SingleLabelPage } from './pages/single-mode/SingleLabelPage';
+import { SingleModePage } from './pages/single-mode/SingleModePage';
+import { UI_TEXT } from '../src/lib/constants/ui-text';
 
 test.describe('Label Generator - Single Mode', () => {
-	let labelPage: SingleLabelPage;
+	let labelPage: SingleModePage;
 
 	test.beforeEach(async ({ page }) => {
-		labelPage = new SingleLabelPage(page);
+		labelPage = new SingleModePage(page);
 		await labelPage.goto();
 	});
 
@@ -159,8 +160,8 @@ test.describe('Label Generator - Single Mode', () => {
 		expect(await labelPage.isUnitSelected('imperial')).toBe(true);
 		expect(await labelPage.isUnitSelected('metric')).toBe(false);
 
-		// Thread size placeholder should change to imperial
-		await expect(labelPage.threadSizeButton).toContainText('Select thread size');
+		// Thread size placeholder should still show
+		await expect(labelPage.threadSizeButton).toContainText(UI_TEXT.placeholders.selectSize);
 	});
 
 	test('should create complete label with all features', async () => {
@@ -214,5 +215,36 @@ test.describe('Label Generator - Single Mode', () => {
 		// In General Item mode, hardware-related switches should be disabled
 		await expect(labelPage.hardwareImageSwitch).toBeDisabled();
 		await expect(labelPage.standardReferenceSwitch).toBeDisabled();
+	});
+
+	test('should render General Item labels with correct font sizes (not constrained by disabled features)', async () => {
+		// Switch to General Item mode
+		await labelPage.selectLabelMode('General Item');
+
+		// Fill in simple text
+		await labelPage.fillPrimaryText('PRIMARY');
+		await labelPage.fillSecondaryText('SECONDARY');
+
+		// Wait for preview to render
+		await labelPage.preview.waitForLabelRender();
+
+		// Get canvas element
+		const canvas = labelPage.preview.canvas;
+
+		// Read font sizes from data attributes
+		const primaryFontSize = parseFloat(
+			(await canvas.getAttribute('data-primary-font-size')) || '0'
+		);
+		const secondaryFontSize = parseFloat(
+			(await canvas.getAttribute('data-secondary-font-size')) || '0'
+		);
+
+		// In General Item mode with no hardware constraints, font sizes should be large
+		// Expected (from test page): primary ~6.47mm, secondary ~5.74mm
+		// Current buggy behavior: primary ~4.18mm, secondary ~3.71mm (constrained by disabled features)
+
+		// This test will FAIL until we fix the bug where disabled switches still affect layout
+		expect(primaryFontSize).toBeGreaterThanOrEqual(6.0);
+		expect(secondaryFontSize).toBeGreaterThanOrEqual(5.5);
 	});
 });

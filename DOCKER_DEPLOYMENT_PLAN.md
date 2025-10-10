@@ -40,22 +40,26 @@ Przygotowanie aplikacji GridScribe do deploymentu jako kontener Docker na serwer
 ⚠️ **KRYTYCZNE**: Zmiana adaptera z `adapter-auto` na `adapter-node`
 
 **Obecna konfiguracja (svelte.config.js):**
+
 ```javascript
 import adapter from '@sveltejs/adapter-auto';
 ```
 
 **Wymagana konfiguracja:**
+
 ```javascript
 import adapter from '@sveltejs/adapter-node';
 ```
 
 **Instalacja:**
+
 ```bash
 pnpm add -D @sveltejs/adapter-node
 pnpm remove @sveltejs/adapter-auto
 ```
 
 **Dlaczego?**
+
 - `adapter-auto` nie działa w środowisku Docker
 - `adapter-node` generuje standalone Node.js server
 - Wymagane do produkcyjnego deploymentu
@@ -63,6 +67,7 @@ pnpm remove @sveltejs/adapter-auto
 ### 2. **Dockerfile - Multi-stage Build**
 
 **Stage 1: Builder**
+
 - Base image: `node:20-alpine` (lub nowszy)
 - Instalacja pnpm globalnie
 - Kopiowanie package.json + pnpm-lock.yaml
@@ -71,6 +76,7 @@ pnpm remove @sveltejs/adapter-auto
 - Uruchomienie `pnpm build`
 
 **Stage 2: Production**
+
 - Base image: `node:20-alpine`
 - Instalacja tylko pnpm
 - Kopiowanie built artifacts z stage 1
@@ -82,6 +88,7 @@ pnpm remove @sveltejs/adapter-auto
 ### 3. **.dockerignore**
 
 Wykluczyć z context:
+
 ```
 node_modules
 .git
@@ -103,6 +110,7 @@ README.md
 ### 4. **GitHub Container Registry (ghcr.io)**
 
 **Konfiguracja registry:**
+
 ```bash
 # Login do GitHub Container Registry
 echo $GITHUB_TOKEN | docker login ghcr.io -u USERNAME --password-stdin
@@ -117,6 +125,7 @@ docker push ghcr.io/USERNAME/gridscribe:v1.0.0
 ```
 
 **Deployment command (VPS):**
+
 ```bash
 # Stop i usuń stary kontener
 docker stop storage-label-maker
@@ -137,11 +146,13 @@ docker run -d \
 ### 5. **Zmienne środowiskowe**
 
 **Wymagane:**
+
 - `NODE_ENV=production`
 - `PORT=80` (wewnętrzny port kontenera)
 - `ORIGIN=https://gridfinitylabels.com` - adres URL aplikacji przez Cloudflare Tunnel (ważne dla CORS i SvelteKit)
 
 **Opcjonalne:**
+
 - `BODY_SIZE_LIMIT` - limit rozmiaru requestów
 - `HOST=0.0.0.0` - binding do wszystkich interfejsów (domyślnie ustawione w Dockerfile)
 
@@ -154,6 +165,7 @@ docker run -d \
 ### 7. **Build Scripts**
 
 Kolejność wykonania w Dockerfile:
+
 1. `pnpm install --frozen-lockfile`
 2. `pnpm build-standards` (jeśli potrzebne przed głównym buildem)
 3. `pnpm build`
@@ -198,11 +210,13 @@ Pull Request → Tagi:
 ```
 
 **Strategia wersjonowania:**
+
 - **`:latest`** - Zawsze najnowsza wersja z mastera (wygoda)
 - **`:sha-abc1234`** - Immutable tag dla każdego commita (rollback capability)
 - **`:pr-123`** - Tymczasowe obrazy do testowania PR
 
 **Zalety tego podejścia:**
+
 1. ✅ Zero manual intervention - automatyczne buildy
 2. ✅ Rollback możliwy przez SHA tags
 3. ✅ Deployment history śledzona przez SHA
@@ -284,25 +298,30 @@ docker run -d --name gridscribe -p 8081:80 \
 ## ⚠️ Krytyczne punkty uwagi
 
 ### 1. **Adapter MUSI być zmieniony**
+
 - Bez adapter-node aplikacja nie będzie działać
 - adapter-auto nie rozpoznaje środowiska Docker jako znanej platformy
 
 ### 2. **pnpm w Dockerze**
+
 - Standardowy obraz Node nie ma pnpm
 - Trzeba zainstalować: `npm install -g pnpm`
 - Lub użyć obrazu z pnpm (np. `pnpm/node:20-alpine` jeśli dostępny)
 
 ### 3. **ORIGIN environment variable**
+
 - SvelteKit wymaga `ORIGIN` w produkcji
 - Ustawić na właściwy adres URL aplikacji
 - Błędna wartość = problemy z CORS/routing
 
 ### 4. **Port binding**
+
 - Aplikacja nasłuchuje na porcie z ENV (`PORT=80`)
 - Docker mapping: `-p 8081:80` (host 8081 → container 80)
 - **Zgodne z istniejącą infrastrukturą** (port 8081 na hoście)
 
 ### 5. **Health checks**
+
 - Docker może sprawdzać `/` endpoint
 - SvelteKit automatycznie odpowiada na główny route
 - Nie trzeba tworzyć custom health endpoint
@@ -316,12 +335,14 @@ docker run -d --name gridscribe -p 8081:80 \
 **W tej konfiguracji: NIE POTRZEBNE** ✅
 
 **Powody:**
+
 - ✅ Cloudflare Tunnel obsługuje SSL/TLS termination
 - ✅ Cloudflare Tunnel obsługuje routing i proxy
 - ✅ Uproszczona infrastruktura
 - ✅ Zgodne z obecnym setupem (stara aplikacja też nie używa nginx)
 
 **Kiedy BYŁOBY potrzebne:**
+
 - Hosting wielu aplikacji bez Cloudflare Tunnel
 - Load balancing (przyszłość)
 - Zaawansowane caching strategie
@@ -329,14 +350,16 @@ docker run -d --name gridscribe -p 8081:80 \
 ### 2. **Volume dla persistence**
 
 Obecna aplikacja nie wymaga wolumenów (stateless), ale można dodać:
+
 ```yaml
 volumes:
-  - ./logs:/app/logs  # Jeśli aplikacja pisze logi do pliku
+  - ./logs:/app/logs # Jeśli aplikacja pisze logi do pliku
 ```
 
 ### 3. **Deployment automation**
 
 Skrypt `deploy.sh`:
+
 ```bash
 #!/bin/bash
 git pull origin docker-deployment
@@ -371,33 +394,39 @@ Deployment będzie uznany za udany, gdy:
 ## 📝 Kolejność implementacji
 
 ### Krok 1: Adapter Configuration ⚠️ NAJPIERW
+
 - [ ] Instalacja `@sveltejs/adapter-node`
 - [ ] Usunięcie `@sveltejs/adapter-auto`
 - [ ] Zmiana w `svelte.config.js`
 - [ ] Test lokalny: `pnpm build && node build/index.js`
 
 ### Krok 2: Docker Files
+
 - [ ] Utworzenie `Dockerfile` z multi-stage build
 - [ ] Utworzenie `.dockerignore`
 - [ ] Test: `docker build -t gridscribe .`
 
 ### Krok 3: Docker Compose
+
 - [ ] Utworzenie `docker-compose.yml`
 - [ ] Utworzenie `.env.example`
 - [ ] Test: `docker compose up`
 
 ### Krok 4: Dokumentacja
+
 - [ ] Instrukcje deployment w README (lub osobny plik)
 - [ ] Troubleshooting guide
 - [ ] Environment variables documentation
 
 ### Krok 5: VPS Deployment
+
 - [ ] Transfer plików na VPS
 - [ ] Konfiguracja środowiska
 - [ ] Uruchomienie kontenera
 - [ ] Weryfikacja działania
 
 ### Krok 6: Finalizacja
+
 - [ ] Monitoring setup (opcjonalnie)
 - [ ] Backup strategy (opcjonalnie)
 - [ ] Nginx setup (jeśli potrzebne)
@@ -408,6 +437,7 @@ Deployment będzie uznany za udany, gdy:
 ## 🎓 Wnioski z analizy
 
 **Błędy w początkowym planie:**
+
 1. ❌ Brak informacji o zmianie adaptera (KRYTYCZNE)
 2. ❌ Brak uwzględnienia pnpm w Dockerze
 3. ❌ Przecenianie roli nginx (opcjonalne, nie wymagane)
@@ -415,6 +445,7 @@ Deployment będzie uznany za udany, gdy:
 5. ❌ Brak uwagi na skrypty pre-build (`build-standards`)
 
 **Poprawki:**
+
 1. ✅ Adapter-node jako pierwszy priorytet
 2. ✅ Explicit pnpm installation w Dockerfile
 3. ✅ Nginx jako opcja, nie requirement

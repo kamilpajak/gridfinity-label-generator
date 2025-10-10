@@ -45,10 +45,12 @@ open http://localhost:8081
 ### Automated builds via GitHub Actions
 
 Docker images are automatically built and pushed when:
+
 - **Push to `master`** → Builds `latest` and `sha-{short_sha}` tags
 - **Pull Request** → Builds `pr-{number}` tag for testing
 
 **Image tags created:**
+
 - `ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest` (only from master)
 - `ghcr.io/YOUR_USERNAME/gridfinity-label-generator:sha-abc1234` (every commit)
 - `ghcr.io/YOUR_USERNAME/gridfinity-label-generator:pr-123` (pull requests)
@@ -58,6 +60,7 @@ Docker images are automatically built and pushed when:
 ### Make package public
 
 After first build, make the package public:
+
 1. Go to https://github.com/YOUR_USERNAME?tab=packages
 2. Click on `gridfinity-label-generator` package
 3. Package settings → Change visibility → Public
@@ -302,18 +305,18 @@ systemctl status cloudflared
 
 Required environment variables for the container:
 
-| Variable | Value | Description |
-|----------|-------|-------------|
-| `NODE_ENV` | `production` | Node environment |
-| `PORT` | `80` | Internal container port |
-| `ORIGIN` | `https://gridfinitylabels.com` | Public URL (for CORS/SvelteKit) |
+| Variable   | Value                          | Description                     |
+| ---------- | ------------------------------ | ------------------------------- |
+| `NODE_ENV` | `production`                   | Node environment                |
+| `PORT`     | `80`                           | Internal container port         |
+| `ORIGIN`   | `https://gridfinitylabels.com` | Public URL (for CORS/SvelteKit) |
 
 Optional:
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `HOST` | `0.0.0.0` | Bind address (already set in Dockerfile) |
-| `BODY_SIZE_LIMIT` | - | Request body size limit |
+| Variable          | Default   | Description                              |
+| ----------------- | --------- | ---------------------------------------- |
+| `HOST`            | `0.0.0.0` | Bind address (already set in Dockerfile) |
+| `BODY_SIZE_LIMIT` | -         | Request body size limit                  |
 
 ---
 

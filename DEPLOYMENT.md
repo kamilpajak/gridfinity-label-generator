@@ -40,38 +40,29 @@ open http://localhost:8081
 
 ---
 
-## 📦 Push to GitHub Container Registry
+## 📦 GitHub Container Registry (Automated)
 
-### 1. Login to ghcr.io
+### Automated builds via GitHub Actions
 
-```bash
-# Create GitHub Personal Access Token with write:packages permission
-# Then login:
-echo $GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
-```
+Docker images are automatically built and pushed when:
+- **Push to `master`** → Builds `latest` and `sha-{short_sha}` tags
+- **Pull Request** → Builds `pr-{number}` tag for testing
 
-### 2. Build and tag image
+**Image tags created:**
+- `ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest` (only from master)
+- `ghcr.io/YOUR_USERNAME/gridfinity-label-generator:sha-abc1234` (every commit)
+- `ghcr.io/YOUR_USERNAME/gridfinity-label-generator:pr-123` (pull requests)
 
-```bash
-# Build with tags
-docker build -t ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:latest .
-docker build -t ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:v1.0.0 .
-```
+**Verify builds:** Check [Actions tab](../../actions) after pushing to master.
 
-### 3. Push to registry
+### Make package public
 
-```bash
-docker push ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:latest
-docker push ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:v1.0.0
-```
+After first build, make the package public:
+1. Go to https://github.com/YOUR_USERNAME?tab=packages
+2. Click on `gridfinity-label-generator` package
+3. Package settings → Change visibility → Public
 
-### 4. Verify
-
-Visit: `https://github.com/YOUR_GITHUB_USERNAME?tab=packages`
-
-**Important:** Make package public if you want to pull without authentication on VPS:
-- Go to package settings
-- Change visibility to "Public"
+This allows pulling images without authentication on VPS.
 
 ---
 
@@ -83,15 +74,18 @@ Visit: `https://github.com/YOUR_GITHUB_USERNAME?tab=packages`
 # 1. SSH to VPS
 ssh user@your-vps.com
 
-# 2. Login to ghcr.io (if package is private)
-echo $GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-stdin
-
-# 3. Stop old container
+# 2. Stop old container
 docker stop storage-label-maker
 docker rm storage-label-maker
 
-# 4. Pull new image
-docker pull ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:latest
+# 3. Pull new image (using latest)
+docker pull ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
+
+# 4. Record the SHA for rollback capability
+DEPLOYED_SHA=$(docker inspect ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest \
+  --format='{{index .RepoDigests 0}}' | cut -d'@' -f2 | cut -c1-12)
+echo "Deployed SHA: $DEPLOYED_SHA" >> ~/gridscribe-deployments.log
+echo "Deployed at: $(date)" >> ~/gridscribe-deployments.log
 
 # 5. Run container
 docker run -d \
@@ -101,45 +95,42 @@ docker run -d \
   -e PORT=80 \
   -e ORIGIN=https://gridfinitylabels.com \
   --restart unless-stopped \
-  ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:latest
+  ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
 
-# 6. Check logs
-docker logs -f gridscribe
+# 6. Health check
+sleep 5
+if curl -f http://localhost:8081 > /dev/null 2>&1; then
+  echo "✅ Deployment successful"
+else
+  echo "❌ Deployment failed - check logs"
+  docker logs gridscribe
+fi
 
-# 7. Test endpoint
-curl http://localhost:8081
-
-# 8. Cloudflare Tunnel will route traffic from gridfinitylabels.com
+# 7. Cloudflare Tunnel will route traffic from gridfinitylabels.com
 ```
 
 ---
 
 ## 🔄 Update Deployment
 
-When deploying new versions:
-
-### On local machine
-
-```bash
-# Build with new version tag
-docker build -t ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:v1.1.0 .
-docker push ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:v1.1.0
-
-# Update latest tag
-docker tag ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:v1.1.0 ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:latest
-docker push ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:latest
-```
+Updates are automatic via GitHub Actions. Just merge to `master` and the image will be built.
 
 ### On VPS
 
 ```bash
-# Pull latest
-docker pull ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:latest
+# 1. Pull latest image
+docker pull ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
 
-# Restart container
+# 2. Record SHA before updating (for potential rollback)
+DEPLOYED_SHA=$(docker inspect ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest \
+  --format='{{index .RepoDigests 0}}' | cut -d'@' -f2 | cut -c1-12)
+echo "Updating to SHA: $DEPLOYED_SHA at $(date)" >> ~/gridscribe-deployments.log
+
+# 3. Stop and remove old container
 docker stop gridscribe
 docker rm gridscribe
 
+# 4. Run new version
 docker run -d \
   --name gridscribe \
   -p 8081:80 \
@@ -147,7 +138,74 @@ docker run -d \
   -e PORT=80 \
   -e ORIGIN=https://gridfinitylabels.com \
   --restart unless-stopped \
-  ghcr.io/YOUR_GITHUB_USERNAME/gridscribe:latest
+  ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
+
+# 5. Verify deployment
+sleep 5
+curl -f http://localhost:8081 && echo "✅ Update successful" || echo "❌ Update failed"
+```
+
+---
+
+## ⏪ Rollback
+
+If a deployment fails, you can rollback to a previous version using SHA tags.
+
+### Find available versions
+
+```bash
+# View deployment history
+cat ~/gridscribe-deployments.log
+
+# Or check GitHub Container Registry
+# Visit: https://github.com/YOUR_USERNAME/gridfinity-label-generator/pkgs/container/gridfinity-label-generator
+```
+
+### Rollback to specific SHA
+
+```bash
+# Use SHA from deployment log (e.g., sha-abc1234)
+TARGET_SHA="sha-abc1234"
+
+# Pull the specific version
+docker pull ghcr.io/YOUR_USERNAME/gridfinity-label-generator:$TARGET_SHA
+
+# Stop current container
+docker stop gridscribe
+docker rm gridscribe
+
+# Run the previous version
+docker run -d \
+  --name gridscribe \
+  -p 8081:80 \
+  -e NODE_ENV=production \
+  -e PORT=80 \
+  -e ORIGIN=https://gridfinitylabels.com \
+  --restart unless-stopped \
+  ghcr.io/YOUR_USERNAME/gridfinity-label-generator:$TARGET_SHA
+
+# Verify
+curl -f http://localhost:8081 && echo "✅ Rollback successful"
+
+# Log the rollback
+echo "Rolled back to $TARGET_SHA at $(date)" >> ~/gridscribe-deployments.log
+```
+
+### Emergency rollback (last working version)
+
+```bash
+# Get the second-to-last SHA from logs
+PREVIOUS_SHA=$(grep "Deployed SHA" ~/gridscribe-deployments.log | tail -2 | head -1 | awk '{print $3}')
+
+echo "Rolling back to: $PREVIOUS_SHA"
+
+docker pull ghcr.io/YOUR_USERNAME/gridfinity-label-generator:sha-$PREVIOUS_SHA
+docker stop gridscribe && docker rm gridscribe
+docker run -d --name gridscribe -p 8081:80 \
+  -e NODE_ENV=production -e PORT=80 \
+  -e ORIGIN=https://gridfinitylabels.com \
+  --restart unless-stopped \
+  ghcr.io/YOUR_USERNAME/gridfinity-label-generator:sha-$PREVIOUS_SHA
 ```
 
 ---

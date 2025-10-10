@@ -72,6 +72,38 @@
 			}
 		},
 
+		// 2. Simple Text Test
+		{
+			narrow: {
+				name: 'General Item - Simple Text',
+				labelMode: 'general',
+				labelWidth: 35,
+				labelHeight: 12,
+				showImage: false,
+				showQR: false,
+				showStandard: false,
+				threadSize: '',
+				length: '',
+				primaryText: 'PRIMARY',
+				secondaryText: 'SECONDARY',
+				standardName: ''
+			},
+			wide: {
+				name: 'General Item - Simple Text',
+				labelMode: 'general',
+				labelWidth: 55,
+				labelHeight: 12,
+				showImage: false,
+				showQR: false,
+				showStandard: false,
+				threadSize: '',
+				length: '',
+				primaryText: 'PRIMARY',
+				secondaryText: 'SECONDARY',
+				standardName: ''
+			}
+		},
+
 		// 3. Threshold Boundary Testing
 		{
 			narrow: {

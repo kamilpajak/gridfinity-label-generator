@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
@@ -19,6 +20,7 @@
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import XIcon from '@lucide/svelte/icons/x';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
+	import { UI_TEXT } from '$lib/constants/ui-text';
 
 	interface Props {
 		label: BatchLabelConfig;
@@ -64,7 +66,10 @@
 	);
 	let threadSize = $state(isFastenerMode ? (label as FastenerLabelConfig).threadSize : '');
 	let pitch = $state(isFastenerMode ? (label as FastenerLabelConfig).pitch || '' : '');
-	let length = $state(isFastenerMode ? (label as FastenerLabelConfig).length.toString() : '');
+	let threadType = $state(isFastenerMode ? (label as FastenerLabelConfig).threadType || '' : '');
+	let length = $state(
+		isFastenerMode ? ((label as FastenerLabelConfig).length?.toString() ?? '') : ''
+	);
 	let primaryText = $state(!isFastenerMode ? (label as GeneralLabelConfig).primaryText : '');
 	let secondaryText = $state(
 		!isFastenerMode ? (label as GeneralLabelConfig).secondaryText || '' : ''
@@ -83,7 +88,70 @@
 
 	let standardsOpen = $state(false);
 
+	// Sync local state with prop changes
+	$effect(() => {
+		labelMode = label.mode;
+		measurementSystem = isFastenerMode
+			? (label as FastenerLabelConfig).measurementSystem
+			: 'metric';
+		threadSize = isFastenerMode ? (label as FastenerLabelConfig).threadSize : '';
+		pitch = isFastenerMode ? (label as FastenerLabelConfig).pitch || '' : '';
+		threadType = isFastenerMode ? (label as FastenerLabelConfig).threadType || '' : '';
+		length = isFastenerMode ? ((label as FastenerLabelConfig).length?.toString() ?? '') : '';
+		primaryText = !isFastenerMode ? (label as GeneralLabelConfig).primaryText : '';
+		secondaryText = !isFastenerMode ? (label as GeneralLabelConfig).secondaryText || '' : '';
+		width = label.width;
+		standardId = isFastenerMode ? (label as FastenerLabelConfig).standard || '' : '';
+		note = label.note || '';
+		qrCode = label.qrCode || '';
+		showImage = isFastenerMode ? ((label as FastenerLabelConfig).showImage ?? true) : false;
+		showReference = isFastenerMode ? ((label as FastenerLabelConfig).showReference ?? true) : false;
+		showQRCode = label.showQRCode ?? true;
+	});
+
 	const selectedStandard = $derived(getStandardById(standardId));
+
+	// Disable hardware image for standards without images
+	const hardwareImageDisabled = $derived(!selectedStandard?.image);
+
+	// Disable QR code for 9mm tape
+	const qrCodeDisabled = $derived(qrDisabled);
+
+	// Mutual exclusion for Hardware Icon and QR Code on narrow labels (<50mm)
+	// Track previous values to detect which one changed
+	let prevShowImage = $state(showImage);
+	let prevShowQRCode = $state(showQRCode);
+	let prevWidth = $state(width);
+
+	$effect(() => {
+		// Only apply mutual exclusion when width < 50mm and both are not disabled
+		if (width < 50 && !hardwareImageDisabled && !qrCodeDisabled) {
+			// Check if Hardware Icon was just enabled
+			if (showImage && !prevShowImage && showQRCode) {
+				untrack(() => {
+					showQRCode = false;
+				});
+			}
+			// Check if QR Code was just enabled
+			else if (showQRCode && !prevShowQRCode && showImage) {
+				untrack(() => {
+					showImage = false;
+				});
+			}
+			// Check if width was just reduced below 50mm while both were enabled
+			else if (prevWidth >= 50 && width < 50 && showImage && showQRCode) {
+				// Prefer keeping Hardware Icon, disable QR Code
+				untrack(() => {
+					showQRCode = false;
+				});
+			}
+		}
+
+		// Update previous values for next change detection
+		prevShowImage = showImage;
+		prevShowQRCode = showQRCode;
+		prevWidth = width;
+	});
 
 	// Disable length input for nuts and washers (they don't have length specification)
 	const lengthDisabled = $derived(
@@ -91,25 +159,27 @@
 			selectedStandard?.hardwareType === HardwareType.WASHER
 	);
 
-	// Dynamic placeholder based on hardware type and measurement system
-	const lengthPlaceholder = $derived(
-		lengthDisabled
-			? 'N/A for this hardware type'
-			: measurementSystem === 'metric'
-				? 'Length in mm (e.g., 10, 25)'
-				: 'Length in inches (e.g., 1/4, 3/8)'
-	);
-
 	function closeStandards() {
 		standardsOpen = false;
 	}
 
 	// Derived state for pitch selector visibility
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const showPitchSelector = $derived(labelMode === 'fastener');
 
 	const availablePitchOptions = $derived(
 		threadSize ? getPitchOptions(threadSize, measurementSystem) : []
 	);
+
+	// Update threadType when pitch changes
+	$effect(() => {
+		if (pitch) {
+			const selectedPitchOption = availablePitchOptions.find((p) => p.value === pitch);
+			threadType = selectedPitchOption?.type || '';
+		} else {
+			threadType = '';
+		}
+	});
 
 	// Update store when any field changes
 	function updateLabel() {
@@ -121,7 +191,8 @@
 				measurementSystem,
 				threadSize,
 				pitch: pitch || undefined,
-				length: parseFloat(length) || 0,
+				threadType: threadType || undefined,
+				length: parseFloat(length) || undefined,
 				width,
 				standard: standardId || undefined,
 				note: note || undefined,
@@ -204,10 +275,10 @@
 	}
 </script>
 
-<div class="space-y-3 rounded-lg border p-4">
+<div class="space-y-6 rounded-lg border p-4" data-testid="batch-label-row-{index}">
 	<!-- Header Row -->
 	<div class="flex items-center justify-between">
-		<h4 class="font-medium">Label #{labelNumber}</h4>
+		<h4 class="font-medium" data-testid="batch-label-number">Label #{labelNumber}</h4>
 		<div class="flex gap-1">
 			<Button
 				onclick={handleDuplicate}
@@ -215,53 +286,142 @@
 				size="icon"
 				class="h-8 w-8"
 				title="Duplicate"
+				data-testid="duplicate-label-button-{index}"
 			>
 				<CopyIcon class="h-4 w-4" />
 			</Button>
-			<Button onclick={handleDelete} variant="ghost" size="icon" class="h-8 w-8" title="Delete">
+			<Button
+				onclick={handleDelete}
+				variant="ghost"
+				size="icon"
+				class="h-8 w-8"
+				title="Delete"
+				data-testid="delete-label-button-{index}"
+			>
 				<XIcon class="h-4 w-4" />
 			</Button>
 		</div>
 	</div>
 
-	<!-- Mode Selector -->
-	<div class="flex items-center gap-4">
-		<span class="text-sm font-medium">Mode:</span>
-		<Select bind:value={labelMode} type="single">
-			<SelectTrigger class="w-[180px]">
-				{labelMode === 'fastener' ? 'Fastener' : 'General Item'}
-			</SelectTrigger>
-			<SelectContent>
-				<SelectItem value="fastener">Fastener</SelectItem>
-				<SelectItem value="general">General Item</SelectItem>
-			</SelectContent>
-		</Select>
-	</div>
-
 	{#if isFastenerMode}
 		<!-- Fastener Mode Fields -->
-		<div class="space-y-3">
-			<!-- Measurement System -->
-			<div class="flex items-center gap-4">
-				<span class="text-sm font-medium">System:</span>
-				<ToggleGroup
-					bind:value={measurementSystem}
-					variant="outline"
-					type="single"
-					class="w-[200px]"
-				>
-					<ToggleGroupItem value="metric" class="flex-1">Metric</ToggleGroupItem>
-					<ToggleGroupItem value="imperial" class="flex-1">Imperial</ToggleGroupItem>
-				</ToggleGroup>
+		<div class="space-y-6">
+			<!-- Product Type and Measurement System in one row -->
+			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+				<div class="space-y-2">
+					<label class="text-sm font-medium">{UI_TEXT.productType.label}</label>
+					<ToggleGroup
+						bind:value={labelMode}
+						variant="outline"
+						type="single"
+						size="default"
+						class="w-full"
+					>
+						<ToggleGroupItem value="fastener" class="flex-1"
+							>{UI_TEXT.productType.fastener}</ToggleGroupItem
+						>
+						<ToggleGroupItem value="general" class="flex-1"
+							>{UI_TEXT.productType.generalItem}</ToggleGroupItem
+						>
+					</ToggleGroup>
+				</div>
+
+				<div class="space-y-2">
+					<label class="text-sm font-medium">{UI_TEXT.measurementSystem.label}</label>
+					<ToggleGroup
+						bind:value={measurementSystem}
+						variant="outline"
+						type="single"
+						size="default"
+						class="w-full"
+					>
+						<ToggleGroupItem value="metric" class="flex-1"
+							>{UI_TEXT.measurementSystem.metric}</ToggleGroupItem
+						>
+						<ToggleGroupItem value="imperial" class="flex-1"
+							>{UI_TEXT.measurementSystem.imperial}</ToggleGroupItem
+						>
+					</ToggleGroup>
+				</div>
 			</div>
 
-			<!-- Thread, Length, Width -->
-			<div class="grid grid-cols-3 gap-3">
-				<div>
-					<label class="mb-1.5 block text-sm font-medium">Thread</label>
+			<!-- ISO/DIN Standard and Note in one row -->
+			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+				<div class="space-y-2">
+					<label class="text-sm font-medium">{UI_TEXT.fields.standard}</label>
+					<Popover.Root bind:open={standardsOpen}>
+						<Popover.Trigger>
+							{#snippet child({ props })}
+								<Button
+									{...props}
+									variant="outline"
+									role="combobox"
+									aria-expanded={standardsOpen}
+									class="w-full justify-between font-normal"
+								>
+									{selectedStandard
+										? formatDesignations(selectedStandard)
+										: UI_TEXT.placeholders.selectStandard}
+									<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+								</Button>
+							{/snippet}
+						</Popover.Trigger>
+						<Popover.Content class="w-[400px] p-0">
+							<Command.Root>
+								<Command.Input placeholder={UI_TEXT.placeholders.searchStandards} />
+								<Command.Empty>{UI_TEXT.errors.noStandard}</Command.Empty>
+								<Command.Group class="max-h-[300px] overflow-y-auto">
+									{#each standardsWithImages as standard (standard.id)}
+										<Command.Item
+											value={standard.id}
+											onSelect={() => {
+												standardId = standard.id;
+												updateLabel();
+												closeStandards();
+											}}
+											class="flex items-center justify-between"
+										>
+											<div class="flex flex-1 flex-col">
+												<span>{formatDesignations(standard)}</span>
+												<span class="text-xs text-muted-foreground">{standard.description}</span>
+											</div>
+											<img
+												src={standard.image}
+												alt={formatDesignations(standard)}
+												class="ml-3 h-10 w-10 flex-shrink-0 object-contain"
+											/>
+										</Command.Item>
+									{/each}
+								</Command.Group>
+							</Command.Root>
+						</Popover.Content>
+					</Popover.Root>
+				</div>
+
+				<div class="space-y-2">
+					<label for="note-{index}" class="text-sm font-medium"
+						>{UI_TEXT.fields.note}
+						<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+					>
+					<Input
+						id="note-{index}"
+						bind:value={note}
+						placeholder={UI_TEXT.placeholders.note}
+						class="w-full"
+						onblur={updateLabel}
+					/>
+				</div>
+			</div>
+
+			<!-- Thread Size, Thread Pitch, Length in one row -->
+			<div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
+				<div class="space-y-2">
+					<label for="thread-size-{index}" class="text-sm font-medium"
+						>{UI_TEXT.fields.threadSize}</label
+					>
 					<Select bind:value={threadSize} type="single">
-						<SelectTrigger class="w-full">
-							{threadSize || 'Select'}
+						<SelectTrigger id="thread-size-{index}" class="w-full">
+							{threadSize || UI_TEXT.placeholders.selectSize}
 						</SelectTrigger>
 						<SelectContent>
 							{#each availableThreadSizes as size (size)}
@@ -271,182 +431,214 @@
 					</Select>
 				</div>
 
-				<div>
-					<label class="mb-1.5 block text-sm font-medium">Length</label>
-					<Input
-						bind:value={length}
-						placeholder={lengthPlaceholder}
-						type="number"
-						disabled={lengthDisabled}
-						onblur={updateLabel}
-					/>
-				</div>
-
-				<div>
-					<label class="mb-1.5 block text-sm font-medium">Width: {width}mm</label>
-					<Slider bind:value={width} type="single" min={30} max={80} step={1} class="w-full" />
-				</div>
-			</div>
-
-			<!-- Thread Pitch (Optional - Imperial only) -->
-			{#if showPitchSelector}
-				<div>
-					<label class="mb-1.5 block text-sm font-medium">Thread Pitch (Optional)</label>
+				<div class="space-y-2">
+					<label for="pitch-{index}" class="text-sm font-medium"
+						>{UI_TEXT.fields.threadPitch}
+						<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+					>
 					<Select bind:value={pitch} type="single">
-						<SelectTrigger class="w-full">
+						<SelectTrigger id="pitch-{index}" class="w-full">
 							{pitch
 								? availablePitchOptions.find((p) => p.value === pitch)?.label
-								: measurementSystem === 'imperial'
-									? 'Standard/Coarse'
-									: 'Standard pitch'}
+								: UI_TEXT.placeholders.selectPitch}
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value=""
 								>{measurementSystem === 'imperial'
-									? 'Standard/Coarse'
-									: 'Standard pitch'}</SelectItem
+									? UI_TEXT.placeholders.standardPitchImperial
+									: UI_TEXT.placeholders.standardPitchMetric}</SelectItem
 							>
 							{#each availablePitchOptions as pitchOption (pitchOption.value)}
 								<SelectItem value={pitchOption.value}>{pitchOption.label}</SelectItem>
 							{/each}
 						</SelectContent>
 					</Select>
-					<p class="mt-1 text-xs text-muted-foreground">Leave empty for standard thread pitch</p>
 				</div>
-			{/if}
 
-			<!-- Standard -->
-			<div>
-				<label class="mb-1.5 block text-sm font-medium">ISO/DIN Standard</label>
-				<Popover.Root bind:open={standardsOpen}>
-					<Popover.Trigger>
-						{#snippet child({ props })}
-							<Button
-								{...props}
-								variant="outline"
-								role="combobox"
-								aria-expanded={standardsOpen}
-								class="w-full justify-between font-normal"
-							>
-								{selectedStandard ? formatDesignations(selectedStandard) : 'Select standard'}
-								<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-							</Button>
-						{/snippet}
-					</Popover.Trigger>
-					<Popover.Content class="w-[400px] p-0">
-						<Command.Root>
-							<Command.Input placeholder="Search standards..." />
-							<Command.Empty>No standard found.</Command.Empty>
-							<Command.Group class="max-h-[300px] overflow-y-auto">
-								{#each standardsWithImages as standard (standard.id)}
-									<Command.Item
-										value={standard.id}
-										onSelect={() => {
-											standardId = standard.id;
-											updateLabel();
-											closeStandards();
-										}}
-										class="flex items-center justify-between"
-									>
-										<div class="flex flex-1 flex-col">
-											<span>{formatDesignations(standard)}</span>
-											<span class="text-xs text-muted-foreground">{standard.description}</span>
-										</div>
-										<img
-											src={standard.image}
-											alt={formatDesignations(standard)}
-											class="ml-3 h-10 w-10 flex-shrink-0 object-contain"
-										/>
-									</Command.Item>
-								{/each}
-							</Command.Group>
-						</Command.Root>
-					</Popover.Content>
-				</Popover.Root>
+				<div class="space-y-2">
+					<label for="length-{index}" class="text-sm font-medium"
+						>{UI_TEXT.fields.length} ({measurementSystem === 'metric' ? 'mm' : 'in'})</label
+					>
+					<Input
+						id="length-{index}"
+						bind:value={length}
+						placeholder={measurementSystem === 'metric'
+							? UI_TEXT.placeholders.lengthMetric
+							: UI_TEXT.placeholders.lengthImperial}
+						disabled={lengthDisabled}
+						onblur={updateLabel}
+					/>
+				</div>
 			</div>
 		</div>
 	{:else}
 		<!-- General Mode Fields -->
-		<div class="space-y-3">
-			<!-- Primary, Secondary, Width -->
-			<div class="grid grid-cols-2 gap-3">
-				<div class="col-span-2">
-					<label class="mb-1.5 block text-sm font-medium">Primary Text</label>
-					<Input bind:value={primaryText} placeholder="e.g., Resistors 10kΩ" onblur={updateLabel} />
+		<div class="space-y-6">
+			<!-- Product Type and Measurement System (disabled in general mode) -->
+			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+				<div class="space-y-2">
+					<label class="text-sm font-medium">{UI_TEXT.productType.label}</label>
+					<ToggleGroup
+						bind:value={labelMode}
+						variant="outline"
+						type="single"
+						size="default"
+						class="w-full"
+					>
+						<ToggleGroupItem value="fastener" class="flex-1"
+							>{UI_TEXT.productType.fastener}</ToggleGroupItem
+						>
+						<ToggleGroupItem value="general" class="flex-1"
+							>{UI_TEXT.productType.generalItem}</ToggleGroupItem
+						>
+					</ToggleGroup>
 				</div>
 
-				<div>
-					<label class="mb-1.5 block text-sm font-medium">Secondary Text</label>
-					<Input bind:value={secondaryText} placeholder="e.g., 1/4W ±5%" onblur={updateLabel} />
+				<div class="space-y-2">
+					<label class="text-sm font-medium">{UI_TEXT.measurementSystem.label}</label>
+					<ToggleGroup
+						bind:value={measurementSystem}
+						variant="outline"
+						type="single"
+						size="default"
+						class="pointer-events-none w-full opacity-50"
+					>
+						<ToggleGroupItem value="metric" class="flex-1"
+							>{UI_TEXT.measurementSystem.metric}</ToggleGroupItem
+						>
+						<ToggleGroupItem value="imperial" class="flex-1"
+							>{UI_TEXT.measurementSystem.imperial}</ToggleGroupItem
+						>
+					</ToggleGroup>
+				</div>
+			</div>
+
+			<!-- Primary and Secondary Text in one row -->
+			<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+				<div class="space-y-2">
+					<label for="primary-{index}" class="text-sm font-medium"
+						>{UI_TEXT.fields.primaryText}</label
+					>
+					<Input
+						id="primary-{index}"
+						bind:value={primaryText}
+						placeholder={UI_TEXT.placeholders.primaryText}
+						onblur={updateLabel}
+					/>
 				</div>
 
-				<div>
-					<label class="mb-1.5 block text-sm font-medium">Width: {width}mm</label>
-					<Slider bind:value={width} type="single" min={30} max={80} step={1} class="w-full" />
+				<div class="space-y-2">
+					<label for="secondary-{index}" class="text-sm font-medium"
+						>{UI_TEXT.fields.secondaryText}
+						<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+					>
+					<Input
+						id="secondary-{index}"
+						bind:value={secondaryText}
+						placeholder={UI_TEXT.placeholders.secondaryText}
+						onblur={updateLabel}
+					/>
 				</div>
+			</div>
+
+			<!-- Optional Note -->
+			<div class="space-y-2">
+				<label for="note-general-{index}" class="text-sm font-medium"
+					>{UI_TEXT.fields.note}
+					<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+				>
+				<Input
+					id="note-general-{index}"
+					bind:value={note}
+					placeholder={UI_TEXT.placeholders.additionalInfo}
+					class="w-full"
+					onblur={updateLabel}
+				/>
 			</div>
 		</div>
 	{/if}
 
-	<!-- Common Fields (Note + QR Code) -->
-	<div class="grid grid-cols-2 gap-3">
-		<div>
-			<label class="mb-1.5 block text-sm font-medium">Optional Note</label>
-			<Input bind:value={note} placeholder="Additional info" onblur={updateLabel} />
-		</div>
-
-		<div>
-			<label class="mb-1.5 block text-sm font-medium">QR Code</label>
-			<Input
-				bind:value={qrCode}
-				placeholder="URL or text"
-				disabled={qrDisabled}
-				onblur={updateLabel}
-			/>
-			{#if qrDisabled}
-				<p class="mt-1 text-xs text-muted-foreground">Not available for 9mm tape</p>
-			{/if}
-		</div>
+	<!-- QR Code URL (common for both modes) -->
+	<div class="space-y-2">
+		<label for="qr-code-url-{index}" class="text-sm font-medium"
+			>{UI_TEXT.fields.qrCode}
+			<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+		>
+		<Input
+			id="qr-code-url-{index}"
+			bind:value={qrCode}
+			placeholder={UI_TEXT.placeholders.qrCode}
+			class="w-full"
+			disabled={qrDisabled}
+			onblur={updateLabel}
+		/>
 	</div>
 
-	<!-- Toggle Switches -->
-	<div class="border-t pt-3">
-		<h5 class="mb-3 text-sm font-medium">Display Options</h5>
-		<div class="space-y-3">
+	<!-- Label Options Section -->
+	<div class="space-y-4 border-t pt-4">
+		<h4 class="font-medium">{UI_TEXT.cards.labelOptions}</h4>
+
+		<!-- Toggle Switches in One Row -->
+		<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 			{#if isFastenerMode}
-				<!-- Hardware Image Toggle -->
-				<div class="flex items-center justify-between">
-					<div class="space-y-0.5">
-						<div class="text-sm font-medium">Hardware Image</div>
-						<div class="text-xs text-muted-foreground">
-							{!standardId ? 'Select a standard to enable' : 'Show fastener type icon'}
-						</div>
+				<!-- Show Standard Code -->
+				<div class="flex flex-col space-y-2">
+					<div class="flex items-center justify-between">
+						<div class="text-sm font-medium">{UI_TEXT.settings.standardReference.title}</div>
+						<Switch bind:checked={showReference} disabled={!standardId} />
 					</div>
-					<Switch bind:checked={showImage} disabled={!standardId} />
+					<div class="text-xs text-muted-foreground">
+						{UI_TEXT.settings.standardReference.description}
+					</div>
 				</div>
 
-				<!-- Standard Reference Toggle -->
-				<div class="flex items-center justify-between">
-					<div class="space-y-0.5">
-						<div class="text-sm font-medium">Standard Reference</div>
-						<div class="text-xs text-muted-foreground">
-							{!standardId ? 'Select a standard to enable' : 'Display standard designation'}
-						</div>
+				<!-- Product Icon -->
+				<div class="flex flex-col space-y-2">
+					<div class="flex items-center justify-between">
+						<div class="text-sm font-medium">{UI_TEXT.settings.hardwareIcon.title}</div>
+						<Switch
+							bind:checked={showImage}
+							disabled={!standardId}
+							data-testid="hardware-image-switch-{index}"
+						/>
 					</div>
-					<Switch bind:checked={showReference} disabled={!standardId} />
+					<div class="text-xs text-muted-foreground">
+						{UI_TEXT.settings.hardwareIcon.description}
+					</div>
 				</div>
 			{/if}
 
-			<!-- QR Code Toggle (both modes) -->
-			<div class="flex items-center justify-between">
-				<div class="space-y-0.5">
-					<div class="text-sm font-medium">QR Code</div>
-					<div class="text-xs text-muted-foreground">
-						{qrDisabled ? 'Not available for 9mm labels' : 'Add scannable code'}
-					</div>
+			<!-- QR Code -->
+			<div class="flex flex-col space-y-2">
+				<div class="flex items-center justify-between">
+					<div class="text-sm font-medium">{UI_TEXT.settings.qrCode.title}</div>
+					<Switch
+						bind:checked={showQRCode}
+						disabled={qrDisabled}
+						data-testid="qr-code-switch-{index}"
+					/>
 				</div>
-				<Switch bind:checked={showQRCode} disabled={qrDisabled} />
+				<div class="text-xs text-muted-foreground">
+					{qrDisabled ? UI_TEXT.settings.qrCode.disabled9mm : UI_TEXT.settings.qrCode.description}
+				</div>
 			</div>
+		</div>
+
+		<!-- Label Width -->
+		<div>
+			<div class="mb-2 flex items-center justify-between">
+				<span class="font-medium">{UI_TEXT.settings.dimensions.labelWidth}</span>
+				<span class="text-sm font-medium">{width}mm</span>
+			</div>
+			<Slider
+				bind:value={width}
+				type="single"
+				min={35}
+				max={100}
+				step={1}
+				class="w-full"
+				data-testid="width-slider-{index}"
+			/>
 		</div>
 	</div>
 </div>

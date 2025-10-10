@@ -883,15 +883,28 @@ function applySharedLineConstraints(
 	);
 
 	// Secondary text starts after primary text with spacing
-	const primaryWidth = primaryTextWidth ?? MIN_SPACING;
-	solver.addConstraint(
-		new Constraint(
-			new Expression(secondaryTextX),
-			Operator.Eq,
-			new Expression(primaryTextX).plus(primaryWidth).plus(MIN_SPACING),
-			Strength.required
-		)
-	);
+	// If primary text doesn't exist (width undefined or 0), place secondary text at primary position
+	// Otherwise, add primary width + spacing
+	if (primaryTextWidth && primaryTextWidth > 0) {
+		solver.addConstraint(
+			new Constraint(
+				new Expression(secondaryTextX),
+				Operator.Eq,
+				new Expression(primaryTextX).plus(primaryTextWidth).plus(MIN_SPACING),
+				Strength.required
+			)
+		);
+	} else {
+		// No primary text - secondary text starts at primary text position
+		solver.addConstraint(
+			new Constraint(
+				new Expression(secondaryTextX),
+				Operator.Eq,
+				new Expression(primaryTextX),
+				Strength.required
+			)
+		);
+	}
 }
 
 /**
@@ -1078,6 +1091,7 @@ function applySplitHalfConstraints(
 function applyTwoLineConstraints(
 	solver: Solver,
 	variables: ReturnType<typeof createLayoutVariables>,
+	primaryText: string,
 	primaryTextHeight: number,
 	secondaryTextHeight: number,
 	dimensions: LabelDimensions,
@@ -1130,7 +1144,15 @@ function applyTwoLineConstraints(
 	const SECONDARY_ASCENT_RATIO = fontMetricsData.secondary.ascent;
 	const secondaryTextHeight_visual =
 		secondaryTextHeight * (SECONDARY_ASCENT_RATIO + fontMetricsData.secondary.descent);
-	const totalContentHeight = primaryTextHeight_visual + FIXED_SPACING + secondaryTextHeight_visual;
+
+	// Check if primary text actually exists (not just height > 0, but actual text content)
+	const hasPrimaryText = primaryText && primaryText.trim().length > 0;
+
+	// If primary text is empty, center only secondary text
+	// Otherwise, center both texts with spacing
+	const totalContentHeight = hasPrimaryText
+		? primaryTextHeight_visual + FIXED_SPACING + secondaryTextHeight_visual
+		: secondaryTextHeight_visual;
 
 	// Center the entire content block vertically
 	const centerY = dimensions.printableHeight / 2;
@@ -1141,12 +1163,16 @@ function applyTwoLineConstraints(
 		new Constraint(new Expression(primaryTextTop), Operator.Eq, contentStartY, Strength.required)
 	);
 
-	// Secondary text starts after primary text + spacing
+	// Secondary text starts after primary text + spacing (or at contentStartY if no primary text)
+	const secondaryTextStartY = hasPrimaryText
+		? contentStartY + primaryTextHeight_visual + FIXED_SPACING
+		: contentStartY;
+
 	solver.addConstraint(
 		new Constraint(
 			new Expression(secondaryTextTop),
 			Operator.Eq,
-			contentStartY + primaryTextHeight_visual + FIXED_SPACING,
+			secondaryTextStartY,
 			Strength.required
 		)
 	);
@@ -1311,6 +1337,7 @@ function solveWithFontSizes(
 		applyTwoLineConstraints(
 			solver,
 			variables,
+			input.primaryText,
 			primaryTextHeight,
 			secondaryTextHeight,
 			dimensions,

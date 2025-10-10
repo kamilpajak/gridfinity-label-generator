@@ -6,7 +6,8 @@ export interface FastenerLabelConfig {
 	measurementSystem: 'metric' | 'imperial';
 	threadSize: string;
 	pitch?: string; // Thread pitch (e.g., '24', '32' for imperial UNC/UNF)
-	length: number;
+	threadType?: string; // Thread type (e.g., 'UNC', 'UNF' for imperial, 'standard', 'fine' for metric)
+	length?: number;
 	width: number; // Label width in mm (30-80)
 	standard?: string;
 	note?: string;

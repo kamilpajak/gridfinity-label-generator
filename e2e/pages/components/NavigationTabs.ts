@@ -34,8 +34,14 @@ export class NavigationTabs {
 	 */
 	async switchToBatchMode() {
 		await this.batchModeTab.click();
-		// Wait for tab panel to be visible
-		await this.page.waitForSelector('[role="tabpanel"]', { state: 'visible' });
+		// Wait for batch mode tab to be active
+		await this.page.waitForFunction(
+			() => {
+				const batchTab = document.querySelector('[role="tab"][aria-selected="true"]');
+				return batchTab?.textContent?.includes('Batch Mode');
+			},
+			{ timeout: 5000 }
+		);
 	}
 
 	/**

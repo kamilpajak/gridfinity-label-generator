@@ -2,13 +2,13 @@ import { type Page, type Locator, expect } from '@playwright/test';
 import { BasePage } from '../base/BasePage';
 import { NavigationTabs } from '../components/NavigationTabs';
 import { ExportSection } from '../components/ExportSection';
-import { SingleLabelPreview } from './SingleLabelPreview';
+import { SingleLabelPreview } from '../components/SingleLabelPreview';
 
 /**
  * Page object for Single Label mode
  * Handles all interactions specific to creating individual labels
  */
-export class SingleLabelPage extends BasePage {
+export class SingleModePage extends BasePage {
 	// Components
 	readonly navigation: NavigationTabs;
 	readonly exportSection: ExportSection;
@@ -41,13 +41,24 @@ export class SingleLabelPage extends BasePage {
 	readonly metricButton: Locator;
 	readonly imperialButton: Locator;
 
-	// Thread size and length
+	// Thread size, pitch, and length
 	readonly threadSizeButton: Locator;
+	readonly pitchSelect: Locator;
 	readonly lengthInput: Locator;
+
+	// Optional note input
+	readonly optionalNoteInput: Locator;
 
 	// Mode selection (Fastener vs General Item)
 	readonly fastenerModeButton: Locator;
 	readonly generalItemModeButton: Locator;
+
+	// Label dimensions
+	readonly labelWidthSlider: Locator;
+	readonly labelWidthValue: Locator;
+
+	// Clear button
+	readonly clearButton: Locator;
 
 	constructor(page: Page) {
 		super(page);
@@ -84,13 +95,27 @@ export class SingleLabelPage extends BasePage {
 		this.metricButton = page.getByTestId('metric-button');
 		this.imperialButton = page.getByTestId('imperial-button');
 
-		// Thread size and length - use data-testid for stability
+		// Thread size, pitch, and length - use data-testid for stability
 		this.threadSizeButton = page.getByTestId('thread-size-select');
+		this.pitchSelect = page.getByTestId('pitch-select');
 		this.lengthInput = page.getByTestId('length-input');
+
+		// Optional note input - use data-testid for stability
+		this.optionalNoteInput = page.getByTestId('optional-note-input');
 
 		// Mode selection - use data-testid for direct and reliable selection
 		this.fastenerModeButton = page.getByTestId('mode-fastener');
 		this.generalItemModeButton = page.getByTestId('mode-general');
+
+		// Label dimensions - use data-testid for slider
+		this.labelWidthSlider = page
+			.getByTestId('label-height-toggle')
+			.locator('..')
+			.getByRole('slider');
+		this.labelWidthValue = page.locator('text=/\\d+mm/').last();
+
+		// Clear button - use data-testid for stability
+		this.clearButton = page.getByTestId('clear-button');
 	}
 
 	// Override goto to ensure page is fully ready
@@ -263,10 +288,24 @@ export class SingleLabelPage extends BasePage {
 		return null;
 	}
 
-	// Thread size and length methods
+	// Thread size, pitch, and length methods
 	async selectThreadSize(size: string) {
 		await this.threadSizeButton.click();
 		await this.page.getByRole('option', { name: size }).click();
+	}
+
+	async selectPitch(pitch: string) {
+		await this.pitchSelect.click();
+		await this.page.getByRole('option', { name: pitch }).click();
+		await this.preview.waitForLabelRender();
+	}
+
+	async getPitchValue(): Promise<string> {
+		return (await this.pitchSelect.textContent()) || '';
+	}
+
+	async isPitchFieldEnabled(): Promise<boolean> {
+		return await this.pitchSelect.isEnabled();
 	}
 
 	async fillLength(length: string) {
@@ -283,6 +322,38 @@ export class SingleLabelPage extends BasePage {
 
 	async getLengthPlaceholder(): Promise<string | null> {
 		return await this.lengthInput.getAttribute('placeholder');
+	}
+
+	// Label width methods
+	async setLabelWidth(width: number) {
+		// Slider uses aria-valuenow attribute - need to set it via evaluate
+		await this.page.evaluate(
+			({ width }) => {
+				const slider = document.querySelector('[role="slider"]');
+				if (slider) {
+					slider.setAttribute('aria-valuenow', width.toString());
+					slider.dispatchEvent(new Event('input', { bubbles: true }));
+					slider.dispatchEvent(new Event('change', { bubbles: true }));
+				}
+			},
+			{ width }
+		);
+		await this.preview.waitForLabelRender();
+	}
+
+	async getLabelWidth(): Promise<number> {
+		const value = await this.labelWidthValue.textContent();
+		return parseInt(value?.replace('mm', '') || '35', 10);
+	}
+
+	// Optional note methods
+	async fillOptionalNote(note: string) {
+		await this.optionalNoteInput.fill(note);
+		await this.preview.waitForLabelRender();
+	}
+
+	async getOptionalNote(): Promise<string> {
+		return await this.optionalNoteInput.inputValue();
 	}
 
 	// Mode selection methods
@@ -315,6 +386,28 @@ export class SingleLabelPage extends BasePage {
 		} else {
 			await this.selectMode('general');
 		}
+	}
+
+	// Label width methods
+	async setLabelWidth(width: number) {
+		// Slider range is 35-100mm
+		await this.labelWidthSlider.fill(width.toString());
+		await this.preview.waitForLabelRender();
+	}
+
+	async getLabelWidth(): Promise<number> {
+		const value = await this.labelWidthSlider.inputValue();
+		return parseInt(value, 10);
+	}
+
+	async getLabelWidthDisplay(): Promise<string> {
+		return (await this.labelWidthValue.textContent()) || '';
+	}
+
+	// Clear form method
+	async clearForm() {
+		await this.clearButton.click();
+		await this.preview.waitForReady();
 	}
 
 	// Complete label creation helper

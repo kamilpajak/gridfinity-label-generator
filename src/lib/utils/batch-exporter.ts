@@ -12,7 +12,7 @@ export interface BatchExportOptions {
 	dpi?: number;
 }
 
-const DEFAULT_DPI = 300;
+const DEFAULT_DPI = 360;
 
 /**
  * Exports a batch tape to PNG format using canvas
@@ -37,7 +37,9 @@ export async function exportBatchTapeAsPNG(options: BatchExportOptions): Promise
 			showMargins: false // No margins in export
 		});
 	} catch (error) {
-		console.error('Failed to render batch tape:', error);
+		if (import.meta.env.DEV) {
+			console.error('Failed to render batch tape:', error);
+		}
 		throw error;
 	}
 
@@ -70,14 +72,18 @@ function generateBatchFilename(labelCount: number): string {
 function downloadCanvasAsPng(canvas: HTMLCanvasElement, filename: string): Promise<void> {
 	// Check if we're in a browser environment
 	if (typeof document === 'undefined' || !document.body) {
-		console.error('Download not available - not in browser environment');
+		if (import.meta.env.DEV) {
+			console.error('Download not available - not in browser environment');
+		}
 		return Promise.reject(new Error('Download not available in this environment'));
 	}
 
 	return new Promise((resolve, reject) => {
 		canvas.toBlob((blob) => {
 			if (!blob) {
-				console.error('Failed to create PNG blob');
+				if (import.meta.env.DEV) {
+					console.error('Failed to create PNG blob');
+				}
 				reject(new Error('Failed to create PNG blob'));
 				return;
 			}

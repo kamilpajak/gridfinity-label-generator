@@ -209,10 +209,10 @@ export async function renderBatchTape(options: BatchRenderOptions): Promise<void
 	const tapeHeightMm = batch.height;
 	const printableHeightMm = tapeHeightMm - MARGIN_TOP_MM - MARGIN_BOTTOM_MM;
 	const canvasHeightMm = showMargins ? tapeHeightMm : printableHeightMm;
-	const canvasHeightPx = mmToPixels(canvasHeightMm, dpi);
+	const canvasHeightPx = Math.round(mmToPixels(canvasHeightMm, dpi));
 
 	const totalWidthMm = calculateTotalWidth(labelsData, showMargins);
-	const totalWidthPx = mmToPixels(totalWidthMm, dpi);
+	const totalWidthPx = Math.round(mmToPixels(totalWidthMm, dpi));
 
 	// Set canvas dimensions
 	canvas.width = totalWidthPx;
@@ -291,7 +291,8 @@ async function calculateLabelData(
 			fastenerConfig.threadSize,
 			fastenerConfig.length?.toString() ?? '',
 			'',
-			fastenerConfig.pitch
+			fastenerConfig.pitch,
+			fastenerConfig.threadType
 		);
 
 		// Build secondary text from standard (only if showReference is enabled)

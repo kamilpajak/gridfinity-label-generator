@@ -33,7 +33,7 @@
 			mode: 'fastener',
 			measurementSystem: 'metric',
 			threadSize: '',
-			length: 0,
+			length: undefined,
 			width: 35,
 			note: '',
 			qrCode: ''
@@ -46,9 +46,17 @@
 	<!-- Tape Height Selector -->
 	<div>
 		<label class="mb-2 block text-sm font-medium">Tape Height</label>
-		<ToggleGroup bind:value={tapeHeight} variant="outline" type="single" class="w-full">
-			<ToggleGroupItem value="9" class="flex-1">9mm</ToggleGroupItem>
-			<ToggleGroupItem value="12" class="flex-1">12mm</ToggleGroupItem>
+		<ToggleGroup
+			bind:value={tapeHeight}
+			variant="outline"
+			type="single"
+			class="w-full"
+			data-testid="tape-height-toggle"
+		>
+			<ToggleGroupItem value="9" class="flex-1" data-testid="tape-height-9mm">9mm</ToggleGroupItem>
+			<ToggleGroupItem value="12" class="flex-1" data-testid="tape-height-12mm"
+				>12mm</ToggleGroupItem
+			>
 		</ToggleGroup>
 	</div>
 
@@ -56,7 +64,9 @@
 	<div>
 		<div class="mb-2 flex items-center justify-between text-sm">
 			<span class="font-medium">Progress</span>
-			<span class="text-muted-foreground">{labelCount} / {maxLabels} labels</span>
+			<span class="text-muted-foreground" data-testid="batch-progress-text"
+				>{labelCount} / {maxLabels} labels</span
+			>
 		</div>
 		<div class="h-2 w-full overflow-hidden rounded-full bg-secondary">
 			<div
@@ -67,7 +77,12 @@
 	</div>
 
 	<!-- Add Label Button -->
-	<Button onclick={handleAddLabel} disabled={!canAddLabel} class="w-full gap-2">
+	<Button
+		onclick={handleAddLabel}
+		disabled={!canAddLabel}
+		class="w-full gap-2"
+		data-testid="add-label-button"
+	>
 		<PlusIcon class="h-4 w-4" />
 		Add Label
 		{#if !canAddLabel}

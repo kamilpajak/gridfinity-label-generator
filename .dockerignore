@@ -14,6 +14,7 @@ dist
 # Git
 .git
 .gitignore
+.husky
 
 # IDE and editor files
 .vscode

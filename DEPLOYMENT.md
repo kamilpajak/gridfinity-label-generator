@@ -32,7 +32,11 @@ PORT=80 node build/index.js
 docker build -t gridscribe-test .
 
 # Run locally
-docker run -p 8081:80 -e ORIGIN=http://localhost:8081 gridscribe-test
+docker run -p 8081:80 \
+  -e ORIGIN=http://localhost:8081 \
+  -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
+  -e PUBLIC_MATOMO_SITE_ID=1 \
+  gridscribe-test
 
 # Test in browser
 open http://localhost:8081
@@ -97,6 +101,8 @@ docker run -d \
   -e NODE_ENV=production \
   -e PORT=80 \
   -e ORIGIN=https://gridfinitylabels.com \
+  -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
+  -e PUBLIC_MATOMO_SITE_ID=1 \
   --restart unless-stopped \
   ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
 
@@ -140,6 +146,8 @@ docker run -d \
   -e NODE_ENV=production \
   -e PORT=80 \
   -e ORIGIN=https://gridfinitylabels.com \
+  -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
+  -e PUBLIC_MATOMO_SITE_ID=1 \
   --restart unless-stopped \
   ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
 
@@ -184,6 +192,8 @@ docker run -d \
   -e NODE_ENV=production \
   -e PORT=80 \
   -e ORIGIN=https://gridfinitylabels.com \
+  -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
+  -e PUBLIC_MATOMO_SITE_ID=1 \
   --restart unless-stopped \
   ghcr.io/YOUR_USERNAME/gridfinity-label-generator:$TARGET_SHA
 
@@ -207,6 +217,8 @@ docker stop gridscribe && docker rm gridscribe
 docker run -d --name gridscribe -p 8081:80 \
   -e NODE_ENV=production -e PORT=80 \
   -e ORIGIN=https://gridfinitylabels.com \
+  -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
+  -e PUBLIC_MATOMO_SITE_ID=1 \
   --restart unless-stopped \
   ghcr.io/YOUR_USERNAME/gridfinity-label-generator:sha-$PREVIOUS_SHA
 ```
@@ -310,6 +322,13 @@ Required environment variables for the container:
 | `NODE_ENV` | `production`                   | Node environment                |
 | `PORT`     | `80`                           | Internal container port         |
 | `ORIGIN`   | `https://gridfinitylabels.com` | Public URL (for CORS/SvelteKit) |
+
+Analytics (optional but recommended):
+
+| Variable                | Value                                      | Description          |
+| ----------------------- | ------------------------------------------ | -------------------- |
+| `PUBLIC_MATOMO_URL`     | `https://statistics.gridfinitylabels.com/` | Matomo analytics URL |
+| `PUBLIC_MATOMO_SITE_ID` | `1`                                        | Matomo site ID       |
 
 Optional:
 

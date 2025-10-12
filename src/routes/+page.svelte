@@ -103,7 +103,9 @@
 	// Ensure exactly one value is always selected
 	$effect(() => {
 		if (!labelMode || labelMode === '') {
-			labelMode = previousLabelMode;
+			untrack(() => {
+				labelMode = previousLabelMode;
+			});
 		} else {
 			previousLabelMode = labelMode;
 		}
@@ -111,7 +113,9 @@
 
 	$effect(() => {
 		if (!measurementSystem) {
-			measurementSystem = previousMeasurementSystem;
+			untrack(() => {
+				measurementSystem = previousMeasurementSystem;
+			});
 		} else {
 			previousMeasurementSystem = measurementSystem;
 		}
@@ -119,7 +123,9 @@
 
 	$effect(() => {
 		if (!labelHeight || labelHeight === '') {
-			labelHeight = previousLabelHeight;
+			untrack(() => {
+				labelHeight = previousLabelHeight;
+			});
 		} else {
 			previousLabelHeight = labelHeight;
 		}
@@ -238,12 +244,14 @@
 	// Reset QR Code and Hardware Image when switching to 9mm
 	$effect(() => {
 		if (labelHeight === '9') {
-			if (showQRCode) {
-				showQRCode = false;
-			}
-			if (showHardwareImage) {
-				showHardwareImage = false;
-			}
+			untrack(() => {
+				if (showQRCode) {
+					showQRCode = false;
+				}
+				if (showHardwareImage) {
+					showHardwareImage = false;
+				}
+			});
 		}
 	});
 

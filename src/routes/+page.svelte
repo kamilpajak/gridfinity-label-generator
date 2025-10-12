@@ -95,41 +95,27 @@
 		measurementSystem === 'metric' ? metricThreadSizes : imperialThreadSizes
 	);
 
-	// Store previous values
-	let previousLabelMode = 'fastener';
-	let previousMeasurementSystem: 'metric' | 'imperial' = 'metric';
-	let previousLabelHeight = '12';
-
-	// Ensure exactly one value is always selected
-	$effect(() => {
-		if (!labelMode || labelMode === '') {
-			untrack(() => {
-				labelMode = previousLabelMode;
-			});
-		} else {
-			previousLabelMode = labelMode;
+	// Handlers to prevent deselection in ToggleGroup
+	function handleLabelModeChange(value: string | undefined) {
+		// Only update if value is truthy (prevents deselection)
+		if (value) {
+			labelMode = value;
 		}
-	});
+	}
 
-	$effect(() => {
-		if (!measurementSystem) {
-			untrack(() => {
-				measurementSystem = previousMeasurementSystem;
-			});
-		} else {
-			previousMeasurementSystem = measurementSystem;
+	function handleMeasurementSystemChange(value: string | undefined) {
+		// Only update if value is truthy (prevents deselection)
+		if (value) {
+			measurementSystem = value as 'metric' | 'imperial';
 		}
-	});
+	}
 
-	$effect(() => {
-		if (!labelHeight || labelHeight === '') {
-			untrack(() => {
-				labelHeight = previousLabelHeight;
-			});
-		} else {
-			previousLabelHeight = labelHeight;
+	function handleLabelHeightChange(value: string | undefined) {
+		// Only update if value is truthy (prevents deselection)
+		if (value) {
+			labelHeight = value;
 		}
-	});
+	}
 
 	// Reset thread size and pitch when measurement system changes
 	$effect(() => {
@@ -522,7 +508,8 @@
 								<div class="space-y-2">
 									<label class="text-sm font-medium">{UI_TEXT.productType.label}</label>
 									<ToggleGroup
-										bind:value={labelMode}
+										value={labelMode}
+										onValueChange={handleLabelModeChange}
 										variant="outline"
 										type="single"
 										size="default"
@@ -541,7 +528,8 @@
 								<div class="space-y-2">
 									<label class="text-sm font-medium">{UI_TEXT.measurementSystem.label}</label>
 									<ToggleGroup
-										bind:value={measurementSystem}
+										value={measurementSystem}
+										onValueChange={handleMeasurementSystemChange}
 										variant="outline"
 										type="single"
 										size="default"
@@ -916,7 +904,8 @@
 											{UI_TEXT.settings.dimensions.labelHeight}
 										</div>
 										<ToggleGroup
-											bind:value={labelHeight}
+											value={labelHeight}
+											onValueChange={handleLabelHeightChange}
 											variant="outline"
 											type="single"
 											class="w-full"

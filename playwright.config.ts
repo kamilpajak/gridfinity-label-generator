@@ -33,6 +33,20 @@ export default defineConfig({
 					args: ['--window-size=1920,1080', '--start-maximized']
 				}
 			}
+		},
+		{
+			name: 'firefox',
+			use: {
+				...devices['Desktop Firefox'],
+				viewport: { width: 1920, height: 1080 }
+			}
+		},
+		{
+			name: 'webkit',
+			use: {
+				...devices['Desktop Safari'],
+				viewport: { width: 1920, height: 1080 }
+			}
 		}
 	]
 });

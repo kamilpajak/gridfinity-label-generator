@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"prebuild": "pnpm build-standards",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "(svelte-kit sync || echo '') && (command -v husky >/dev/null 2>&1 && husky || echo 'Husky not found, skipping')",
@@ -16,7 +17,10 @@
 		"test:unit": "vitest",
 		"test": "pnpm test:unit --run && pnpm test:e2e",
 		"test:e2e": "playwright test",
-		"build-standards": "node scripts/build-all-standards.js"
+		"scrape-images": "node scripts/download-images.js",
+		"merge-mappings": "node scripts/merge-mappings.js",
+		"build-standards": "node scripts/build-all-standards.js",
+		"validate-images": "node scripts/validate-images.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
@@ -48,6 +52,7 @@
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.11",
+		"sharp": "^0.34.4",
 		"svelte": "^5.25.0",
 		"svelte-check": "^4.0.0",
 		"tailwind-merge": "^3.3.1",

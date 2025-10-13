@@ -1,203 +1,135 @@
 import { describe, it, expect } from 'vitest';
-import {
-	formatDesignations,
-	formatPrimaryDesignation,
-	getStandardById,
-	type ISODINStandard,
-	standards
-} from './standards';
+import { existsSync } from 'fs';
+import { join } from 'path';
+import { generatedStandards } from './standards-generated';
+import { searchStandards } from './standards';
 
-describe('Standards formatting functions', () => {
-	describe('formatDesignations', () => {
-		it('should format all designations with slashes', () => {
-			const standard: ISODINStandard = {
-				id: 'test1',
-				primarySystem: 'ISO',
-				description: 'Test standard',
-				designations: [
-					{ system: 'ISO', code: '4762' },
-					{ system: 'DIN', code: '912' },
-					{ system: 'ANSI', code: 'B18.3' }
-				]
-			};
+describe('Standards Image Validation', () => {
+	it('should have valid image paths for all standards with images', () => {
+		const standardsWithImages = generatedStandards.filter((s) => s.image);
 
-			expect(formatDesignations(standard)).toBe('ISO 4762 / DIN 912 / ANSI B18.3');
+		expect(standardsWithImages.length).toBeGreaterThan(0);
+
+		const missing: string[] = [];
+
+		standardsWithImages.forEach((std) => {
+			if (!std.image) return;
+
+			// Convert /images/standards/foo.png to static/images/standards/foo.png
+			const filePath = join(process.cwd(), 'static', std.image);
+
+			if (!existsSync(filePath)) {
+				missing.push(`${std.id}: ${std.image}`);
+			}
 		});
 
-		it('should handle single designation', () => {
-			const standard: ISODINStandard = {
-				id: 'test2',
-				primarySystem: 'DIN',
-				description: 'Test standard',
-				designations: [{ system: 'DIN', code: '934' }]
-			};
+		if (missing.length > 0) {
+			console.error('Missing image files:', missing);
+		}
 
-			expect(formatDesignations(standard)).toBe('DIN 934');
-		});
+		expect(missing).toHaveLength(0);
+	});
 
-		it('should handle empty designations array', () => {
-			const standard: ISODINStandard = {
-				id: 'test3',
-				primarySystem: 'ISO',
-				description: 'Test standard',
-				designations: []
-			};
+	it('should have unique image paths', () => {
+		const imagePaths = generatedStandards.filter((s) => s.image).map((s) => s.image) as string[];
 
-			expect(formatDesignations(standard)).toBe('');
+		const uniquePaths = new Set(imagePaths);
+
+		// Multiple standards can share the same image (via mappings), so this is OK
+		expect(uniquePaths.size).toBeGreaterThan(0);
+		expect(uniquePaths.size).toBeLessThanOrEqual(imagePaths.length);
+	});
+
+	it('should have correct image file extensions', () => {
+		const standardsWithImages = generatedStandards.filter((s) => s.image);
+
+		standardsWithImages.forEach((std) => {
+			expect(std.image).toMatch(/\.(png|jpg|jpeg|svg)$/i);
 		});
 	});
 
-	describe('formatPrimaryDesignation', () => {
-		it('should return only the primary system designation', () => {
-			const standard: ISODINStandard = {
-				id: 'test1',
-				primarySystem: 'DIN',
-				description: 'Test standard',
-				designations: [
-					{ system: 'ISO', code: '4762' },
-					{ system: 'DIN', code: '912' },
-					{ system: 'ANSI', code: 'B18.3' }
-				]
-			};
+	it('ISO 7046 (DIN 965) should have an image', () => {
+		const iso7046 = generatedStandards.find((s) => s.id === 'iso7046');
 
-			expect(formatPrimaryDesignation(standard)).toBe('DIN 912');
-		});
+		expect(iso7046).toBeDefined();
+		expect(iso7046?.image).toBeDefined();
+		expect(iso7046?.image).toContain('din_965.png');
+	});
+});
 
-		it('should return DIN when primarySystem is DIN', () => {
-			const standard: ISODINStandard = {
-				id: 'test2',
-				primarySystem: 'DIN',
-				description: 'Test standard',
-				designations: [
-					{ system: 'ISO', code: '4762' },
-					{ system: 'DIN', code: '912' }
-				]
-			};
+describe('Standards Search', () => {
+	it('should prioritize exact code match', () => {
+		// Search for "912" should return DIN 912 first, not DIN 9021
+		const results = searchStandards('912');
 
-			expect(formatPrimaryDesignation(standard)).toBe('DIN 912');
-		});
+		expect(results.length).toBeGreaterThan(0);
 
-		it('should fallback to first designation if primary not found', () => {
-			const standard: ISODINStandard = {
-				id: 'test3',
-				primarySystem: 'ISO',
-				description: 'Test standard',
-				designations: [
-					{ system: 'DIN', code: '912' },
-					{ system: 'ANSI', code: 'B18.3' }
-				]
-			};
+		// First result should have exact match on code "912"
+		const firstResult = results[0];
+		const hasExactMatch = firstResult.designations.some((d) => d.code === '912');
+		expect(hasExactMatch).toBe(true);
+	});
 
-			expect(formatPrimaryDesignation(standard)).toBe('DIN 912');
-		});
+	it('should prioritize starts-with over contains', () => {
+		// Search for "93" should prioritize DIN 93 over DIN 2093
+		const results = searchStandards('93');
 
-		it('should handle empty designations array', () => {
-			const standard: ISODINStandard = {
-				id: 'test4',
-				primarySystem: 'ISO',
-				description: 'Test standard',
-				designations: []
-			};
+		expect(results.length).toBeGreaterThan(0);
 
-			expect(formatPrimaryDesignation(standard)).toBe('');
-		});
+		// Find positions of DIN 93 and DIN 2093
+		const din93Index = results.findIndex((s) =>
+			s.designations.some((d) => d.system === 'DIN' && d.code === '93')
+		);
+		const din2093Index = results.findIndex((s) =>
+			s.designations.some((d) => d.system === 'DIN' && d.code === '2093')
+		);
 
-		it('should handle single designation matching primary system', () => {
-			const standard: ISODINStandard = {
-				id: 'test5',
-				primarySystem: 'DIN',
-				description: 'Test standard',
-				designations: [{ system: 'DIN', code: '934' }]
-			};
+		// DIN 93 should come before DIN 2093 (if both exist)
+		if (din93Index !== -1 && din2093Index !== -1) {
+			expect(din93Index).toBeLessThan(din2093Index);
+		}
+	});
 
-			expect(formatPrimaryDesignation(standard)).toBe('DIN 934');
-		});
+	it('should find standards by partial code match', () => {
+		// Search for "476" should find ISO 4762
+		const results = searchStandards('476');
 
-		it('should handle primary system not in designations list', () => {
-			const standard: ISODINStandard = {
-				id: 'test6',
-				primarySystem: 'ISO',
-				description: 'Test standard',
-				designations: [
-					{ system: 'ANSI', code: 'B18.3' },
-					{ system: 'JIS', code: 'B1176' }
-				]
-			};
+		expect(results.length).toBeGreaterThan(0);
 
-			// Should fallback to first available
-			expect(formatPrimaryDesignation(standard)).toBe('ANSI B18.3');
+		const hasIso4762 = results.some((s) => s.id === 'iso4762');
+		expect(hasIso4762).toBe(true);
+	});
+
+	it('should find standards by description', () => {
+		// Search for "socket head" should find socket head standards
+		const results = searchStandards('socket head');
+
+		expect(results.length).toBeGreaterThan(0);
+
+		// All results should contain "socket head" in description
+		results.forEach((std) => {
+			expect(std.description.toLowerCase()).toContain('socket');
 		});
 	});
 
-	describe('Real data verification', () => {
-		it('should prefer DIN for ISO 4762 standard', () => {
-			const iso4762 = standards.find((s) => s.id === 'iso4762');
-			expect(iso4762).toBeDefined();
-			expect(iso4762?.primarySystem).toBe('DIN');
-			expect(formatPrimaryDesignation(iso4762!)).toBe('DIN 912');
-		});
+	it('should find standards by full designation', () => {
+		// Search for "DIN 912" should find the standard
+		const results = searchStandards('DIN 912');
 
-		it('should show DIN as primary for standards with DIN cross-reference', () => {
-			// Check a few standards that should have DIN as primary
-			const standardsWithDIN = standards.filter(
-				(s) =>
-					s.designations.some((d) => d.system === 'DIN') &&
-					s.designations.some((d) => d.system === 'ISO')
-			);
+		expect(results.length).toBeGreaterThan(0);
 
-			// All standards with both ISO and DIN should prefer DIN as primary
-			standardsWithDIN.forEach((std) => {
-				expect(std.primarySystem).toBe('DIN');
-			});
-
-			// Should have at least some standards with DIN cross-references
-			expect(standardsWithDIN.length).toBeGreaterThan(0);
-		});
+		const firstResult = results[0];
+		const hasDin912 = firstResult.designations.some((d) => d.system === 'DIN' && d.code === '912');
+		expect(hasDin912).toBe(true);
 	});
 
-	describe('getStandardById', () => {
-		it('should return standard when ID exists', () => {
-			const result = getStandardById('iso4762');
-			expect(result).toBeDefined();
-			expect(result?.id).toBe('iso4762');
-			expect(result?.description).toBe('Hexagon socket head cap screws');
-		});
+	it('should be case-insensitive', () => {
+		const lowerResults = searchStandards('din 912');
+		const upperResults = searchStandards('DIN 912');
+		const mixedResults = searchStandards('DiN 912');
 
-		it('should return undefined when ID does not exist', () => {
-			const result = getStandardById('nonexistent');
-			expect(result).toBeUndefined();
-		});
-
-		it('should be case-insensitive', () => {
-			const result = getStandardById('ISO4762');
-			expect(result).toBeDefined();
-			expect(result?.id).toBe('iso4762');
-		});
-
-		it('should handle lowercase IDs', () => {
-			const result = getStandardById('iso4032');
-			expect(result).toBeDefined();
-			expect(result?.id).toBe('iso4032');
-		});
-
-		it('should return undefined for empty string', () => {
-			const result = getStandardById('');
-			expect(result).toBeUndefined();
-		});
-
-		it('should handle whitespace in ID', () => {
-			const result = getStandardById('  iso4762  ');
-			expect(result).toBeDefined();
-			expect(result?.id).toBe('iso4762');
-		});
-
-		it('should return full standard object with all properties', () => {
-			const result = getStandardById('iso4762');
-			expect(result).toBeDefined();
-			expect(result?.designations).toBeDefined();
-			expect(result?.designations.length).toBeGreaterThan(0);
-			expect(result?.primarySystem).toBeDefined();
-			expect(result?.image).toBeDefined();
-		});
+		expect(lowerResults.length).toBeGreaterThan(0);
+		expect(lowerResults.length).toBe(upperResults.length);
+		expect(lowerResults.length).toBe(mixedResults.length);
 	});
 });

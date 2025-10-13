@@ -92,14 +92,41 @@ export function getStandardById(id: string): ISODINStandard | undefined {
 }
 
 /**
+ * Helper functions for search relevance scoring
+ * These reduce cognitive complexity of the main sort function
+ */
+
+function hasExactCodeMatch(std: ISODINStandard, query: string): boolean {
+	return std.designations.some((d) => d.code.toLowerCase() === query);
+}
+
+function hasExactFullMatch(std: ISODINStandard, query: string): boolean {
+	return std.designations.some((d) => `${d.system} ${d.code}`.toLowerCase() === query);
+}
+
+function codeStartsWith(std: ISODINStandard, query: string): boolean {
+	return std.designations.some((d) => d.code.toLowerCase().startsWith(query));
+}
+
+function fullDesignationStartsWith(std: ISODINStandard, query: string): boolean {
+	return std.designations.some((d) => `${d.system} ${d.code}`.toLowerCase().startsWith(query));
+}
+
+function matchesPrimarySystem(std: ISODINStandard, query: string): boolean {
+	return std.designations.some(
+		(d) => d.system === std.primarySystem && d.code.toLowerCase().includes(query)
+	);
+}
+
+/**
  * Search for standards by any designation code or description
  * @param query - The search query (can be ISO, DIN, ANSI, PN code or description)
- * @returns Array of matching standards
+ * @returns Array of matching standards, sorted by relevance
  */
 export function searchStandards(query: string): ISODINStandard[] {
 	const normalizedQuery = query.toLowerCase().trim();
 
-	return standards.filter((std) => {
+	const results = standards.filter((std) => {
 		// Search in all designation codes
 		const matchesDesignation = std.designations.some((des) =>
 			des.code.toLowerCase().includes(normalizedQuery)
@@ -114,6 +141,42 @@ export function searchStandards(query: string): ISODINStandard[] {
 		);
 
 		return matchesDesignation || matchesDescription || matchesFullDesignation;
+	});
+
+	// Sort by relevance (most relevant first)
+	return results.sort((a, b) => {
+		// 1. Exact code match (highest priority)
+		const aExactCode = hasExactCodeMatch(a, normalizedQuery);
+		const bExactCode = hasExactCodeMatch(b, normalizedQuery);
+		if (aExactCode !== bExactCode) return aExactCode ? -1 : 1;
+
+		// 2. Exact full designation match (e.g., "din 912")
+		const aExactFull = hasExactFullMatch(a, normalizedQuery);
+		const bExactFull = hasExactFullMatch(b, normalizedQuery);
+		if (aExactFull !== bExactFull) return aExactFull ? -1 : 1;
+
+		// 3. Code starts with query
+		const aStartsWith = codeStartsWith(a, normalizedQuery);
+		const bStartsWith = codeStartsWith(b, normalizedQuery);
+		if (aStartsWith !== bStartsWith) return aStartsWith ? -1 : 1;
+
+		// 4. Full designation starts with query (e.g., "din" matches "DIN 912")
+		const aFullStartsWith = fullDesignationStartsWith(a, normalizedQuery);
+		const bFullStartsWith = fullDesignationStartsWith(b, normalizedQuery);
+		if (aFullStartsWith !== bFullStartsWith) return aFullStartsWith ? -1 : 1;
+
+		// 5. Primary system match (prefer matching primary system)
+		const aMatchesPrimary = matchesPrimarySystem(a, normalizedQuery);
+		const bMatchesPrimary = matchesPrimarySystem(b, normalizedQuery);
+		if (aMatchesPrimary !== bMatchesPrimary) return aMatchesPrimary ? -1 : 1;
+
+		// 6. Has image (prefer standards with images)
+		const aHasImage = !!a.image;
+		const bHasImage = !!b.image;
+		if (aHasImage !== bHasImage) return aHasImage ? -1 : 1;
+
+		// 7. Keep original order for equal relevance
+		return 0;
 	});
 }
 

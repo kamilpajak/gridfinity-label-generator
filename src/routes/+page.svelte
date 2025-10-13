@@ -7,10 +7,10 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
 	import { Slider } from '$lib/components/ui/slider';
-	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { Button } from '$lib/components/ui/button';
+	import StandardSearch from '$lib/components/shared/standard-search.svelte';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 	import RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw';
@@ -570,42 +570,13 @@
 												{/snippet}
 											</Popover.Trigger>
 											<Popover.Content class="w-[400px] p-0">
-												<Command.Root>
-													<Command.Input
-														placeholder={UI_TEXT.placeholders.searchStandards}
-														data-testid="hardware-search-input"
-													/>
-													<Command.Empty>{UI_TEXT.errors.noStandard}</Command.Empty>
-													<Command.Group class="max-h-[300px] overflow-y-auto">
-														{#each standardsWithImages as standard (standard.id)}
-															<Command.Item
-																value={standard.id}
-																keywords={[
-																	...standard.designations.map((d) => d.code),
-																	...standard.designations.map((d) => `${d.system} ${d.code}`),
-																	standard.description
-																]}
-																onSelect={() => {
-																	selectedStandardId = standard.id;
-																	closeStandardsAndFocusTrigger();
-																}}
-																class="flex items-center justify-between"
-															>
-																<div class="flex flex-1 flex-col">
-																	<span>{formatDesignations(standard)}</span>
-																	<span class="text-xs text-muted-foreground"
-																		>{standard.description}</span
-																	>
-																</div>
-																<img
-																	src={standard.image}
-																	alt={formatDesignations(standard)}
-																	class="ml-3 h-10 w-10 flex-shrink-0 object-contain"
-																/>
-															</Command.Item>
-														{/each}
-													</Command.Group>
-												</Command.Root>
+												<StandardSearch
+													standards={standardsWithImages}
+													onSelect={(id) => {
+														selectedStandardId = id;
+														closeStandardsAndFocusTrigger();
+													}}
+												/>
 											</Popover.Content>
 										</Popover.Root>
 									</div>

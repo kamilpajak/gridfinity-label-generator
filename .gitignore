@@ -74,5 +74,8 @@ lerna-debug.log*
 # Data files
 /data/raw/
 
+# Backups
+backups/
+
 # Gemini
 .gemini-clipboard/

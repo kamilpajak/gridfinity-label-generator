@@ -43,7 +43,13 @@ jobs:
       - name: Unit tests
         run: pnpm test:unit --run
 
-      - name: Build
+      - name: Build and validate standards
+        run: pnpm build-standards
+
+      - name: Validate images
+        run: pnpm validate-images
+
+      - name: Build application
         run: pnpm build
 
       # INFORMATIONAL: E2E tests

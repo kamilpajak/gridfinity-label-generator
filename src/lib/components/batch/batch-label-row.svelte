@@ -6,9 +6,9 @@
 	import { Slider } from '$lib/components/ui/slider';
 	import { Switch } from '$lib/components/ui/switch';
 	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
-	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 	import { batchStore } from '$lib/stores/batch-store';
+	import StandardSearch from '$lib/components/shared/standard-search.svelte';
 	import {
 		standards,
 		formatDesignations,
@@ -367,33 +367,14 @@
 							{/snippet}
 						</Popover.Trigger>
 						<Popover.Content class="w-[400px] p-0">
-							<Command.Root>
-								<Command.Input placeholder={UI_TEXT.placeholders.searchStandards} />
-								<Command.Empty>{UI_TEXT.errors.noStandard}</Command.Empty>
-								<Command.Group class="max-h-[300px] overflow-y-auto">
-									{#each standardsWithImages as standard (standard.id)}
-										<Command.Item
-											value={standard.id}
-											onSelect={() => {
-												standardId = standard.id;
-												updateLabel();
-												closeStandards();
-											}}
-											class="flex items-center justify-between"
-										>
-											<div class="flex flex-1 flex-col">
-												<span>{formatDesignations(standard)}</span>
-												<span class="text-xs text-muted-foreground">{standard.description}</span>
-											</div>
-											<img
-												src={standard.image}
-												alt={formatDesignations(standard)}
-												class="ml-3 h-10 w-10 flex-shrink-0 object-contain"
-											/>
-										</Command.Item>
-									{/each}
-								</Command.Group>
-							</Command.Root>
+							<StandardSearch
+								standards={standardsWithImages}
+								onSelect={(id) => {
+									standardId = id;
+									updateLabel();
+									closeStandards();
+								}}
+							/>
 						</Popover.Content>
 					</Popover.Root>
 				</div>

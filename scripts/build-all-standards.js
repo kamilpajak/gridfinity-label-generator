@@ -36,6 +36,76 @@ import { getHardwareType } from './hardware-type-mappings.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * Check if an image file exists in the static directory
+ * @param {string} imagePath - Path like "/images/standards/din_965.png"
+ * @returns {boolean} True if file exists
+ */
+function imageFileExists(imagePath) {
+	const filePath = path.join(__dirname, '..', 'static', imagePath);
+	return fs.existsSync(filePath);
+}
+
+/**
+ * Find an image file for a standard by checking all designation systems
+ * @param {Array} designations - Array of {system, code} objects
+ * @returns {string|null} Image path if found, null otherwise
+ */
+function findImageForStandard(designations) {
+	// Try each designation system in order
+	for (const designation of designations) {
+		const system = designation.system.toLowerCase();
+		const code = designation.code.toLowerCase();
+		const imagePath = `/images/standards/${system}_${code}.png`;
+
+		if (imageFileExists(imagePath)) {
+			return imagePath;
+		}
+	}
+
+	return null;
+}
+
+/**
+ * Load all ISO data from JSONL (unfiltered, for validation)
+ * @param {string} filePath - Path to JSONL file
+ * @returns {Map} Map of isoId -> full ISO data
+ */
+async function loadAllISOData(filePath) {
+	const isoDataMap = new Map();
+	const fileStream = fs.createReadStream(filePath);
+	const rl = readline.createInterface({
+		input: fileStream,
+		crlfDelay: Infinity
+	});
+
+	for await (const line of rl) {
+		if (!line.trim()) continue;
+
+		try {
+			const data = JSON.parse(line);
+
+			// Extract ISO number from reference
+			const match = data.reference?.match(/ISO (\d+)/);
+			if (!match) continue;
+
+			const isoNumber = match[1];
+			const id = `iso${isoNumber}`;
+
+			// Keep the most recent version (last one wins)
+			isoDataMap.set(id, data);
+		} catch (error) {
+			// Skip invalid JSONL lines (usually malformed JSON)
+			// This is expected for some lines in the raw data
+			if (process.env.DEBUG) {
+				console.warn(`Skipped invalid line in loadAllISOData: ${error.message}`);
+			}
+		}
+	}
+
+	return isoDataMap;
+}
+
 // Process ISO data from JSONL
 async function processISOData(filePath) {
 	const standards = [];
@@ -97,12 +167,131 @@ async function processISOData(filePath) {
 				icsCode: data.icsCode,
 				scope: data.abstract?.en || data.abstract?.fr || ''
 			});
-		} catch {
-			// Skip invalid lines
+		} catch (error) {
+			// Skip invalid JSONL lines (usually malformed JSON or missing fields)
+			// This is expected for some lines in the raw data
+			if (process.env.DEBUG) {
+				console.warn(`Skipped invalid line in processISOData: ${error.message}`);
+			}
 		}
 	}
 
 	return standards;
+}
+
+/**
+ * Validate standards configuration against ISO database
+ * @param {Object} config - Configuration object from standards-config.json
+ * @param {Map} isoDataMap - Map of isoId -> full ISO data
+ * @returns {boolean} True if validation passes, exits process on errors
+ */
+function validateConfig(config, isoDataMap) {
+	const errors = [];
+	const warnings = [];
+
+	console.log('\n🔍 Validating standards configuration...');
+
+	// Validate crossref entries
+	for (const [isoId] of Object.entries(config.crossref)) {
+		const isoData = isoDataMap.get(isoId);
+
+		// 1. Check ISO exists in database
+		if (!isoData) {
+			errors.push(`${isoId}: NOT FOUND in ISO database`);
+			continue;
+		}
+
+		// 2. Check ICS code (must be fastener)
+		if (!isoData.icsCode || !isoData.icsCode.some((code) => code.startsWith('21.060'))) {
+			const icsDisplay = isoData.icsCode ? isoData.icsCode.join(', ') : 'none';
+			errors.push(
+				`${isoId}: Wrong category (ICS ${icsDisplay}), not fasteners (21.060.xx required)`
+			);
+		}
+
+		// 3. Check committee (should be ISO/TC 2)
+		if (
+			isoData.ownerCommittee &&
+			!(isoData.ownerCommittee === 'ISO/TC 2' || isoData.ownerCommittee.startsWith('ISO/TC 2/'))
+		) {
+			warnings.push(
+				`${isoId}: Wrong committee (${isoData.ownerCommittee}), expected ISO/TC 2 (fasteners committee)`
+			);
+		}
+
+		// 4. Check stage (withdrawn standards)
+		if (isoData.currentStage >= 9599) {
+			warnings.push(
+				`${isoId}: WITHDRAWN (stage ${isoData.currentStage}), should be removed from config`
+			);
+		} else if (isoData.currentStage >= 9500) {
+			warnings.push(
+				`${isoId}: Under withdrawal review (stage ${isoData.currentStage}), will not appear in generated file`
+			);
+		}
+
+		// 5. Check replacedBy (will be hidden in generated file)
+		if (isoData.replacedBy && isoData.replacedBy.length > 0) {
+			warnings.push(
+				`${isoId}: Has replacement (${isoData.replacedBy.join(', ')}), will not appear in generated file`
+			);
+		}
+	}
+
+	// Report validation results
+	if (errors.length > 0) {
+		console.error(`\n❌ VALIDATION FAILED: ${errors.length} error(s) found\n`);
+		errors.forEach((error) => console.error(`   ❌ ${error}`));
+		console.error(
+			'\n💡 These errors must be fixed before building. Please update data/standards-config.json\n'
+		);
+		process.exit(1);
+	}
+
+	if (warnings.length > 0) {
+		console.warn(`\n⚠️  ${warnings.length} warning(s):\n`);
+		warnings.forEach((warning) => console.warn(`   ⚠️  ${warning}`));
+		console.warn('');
+	} else {
+		console.log('   ✅ All configuration entries are valid');
+	}
+
+	return true;
+}
+
+/**
+ * Add designation system codes to designations array
+ * @param {Array} designations - Array of designation objects to append to
+ * @param {Object} crossref - Cross-reference object from config
+ * @param {string} systemName - System name (e.g., 'DIN', 'ANSI', 'PN')
+ */
+function addDesignationSystem(designations, crossref, systemName) {
+	const systemKey = systemName.toLowerCase();
+	if (!crossref[systemKey]) return;
+
+	const codes = Array.isArray(crossref[systemKey]) ? crossref[systemKey] : [crossref[systemKey]];
+
+	codes.forEach((code) => {
+		designations.push({ system: systemName, code: String(code) });
+	});
+}
+
+/**
+ * Find and add image to standard object
+ * @param {Object} standard - Standard object to add image to
+ * @param {string} standardId - Standard ID for lookup in mappings
+ * @param {Object} imageMappings - image image mappings
+ * @param {Array} designations - Designations array for auto-detection
+ */
+function addImageToStandard(standard, standardId, imageMappings, designations) {
+	if (imageMappings[standardId]) {
+		standard.image = imageMappings[standardId];
+	} else {
+		const foundImage = findImageForStandard(designations);
+		if (foundImage) {
+			standard.image = foundImage;
+		}
+	}
 }
 
 // Main build function
@@ -110,14 +299,33 @@ async function buildStandards() {
 	// Input files
 	const isoDataFile = path.join(__dirname, '..', 'data', 'raw', 'iso_deliverables_metadata.jsonl');
 	const configFile = path.join(__dirname, '..', 'data', 'standards-config.json');
+	const imageMappingsFile = path.join(__dirname, '..', 'data', 'image-mappings.json');
 	const outputFile = path.join(__dirname, '..', 'src', 'lib', 'data', 'standards-generated.ts');
 
 	// Load configuration
 	const config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
 
-	console.log('📚 Processing ISO standards...');
+	// Load image image mappings (single source of truth for image mappings)
+	let imageMappings = {};
+	try {
+		imageMappings = JSON.parse(fs.readFileSync(imageMappingsFile, 'utf8'));
+		console.log(`📋 Loaded ${Object.keys(imageMappings).length} image mappings from image`);
+	} catch {
+		console.log('📋 No image mappings found, continuing without them');
+	}
+
+	// Load ALL ISO data for validation (before filtering)
+	console.log('📚 Loading ISO database for validation...');
+	const isoDataMap = await loadAllISOData(isoDataFile);
+	console.log(`   Loaded ${isoDataMap.size} ISO standards from database`);
+
+	// Validate configuration against ISO database
+	validateConfig(config, isoDataMap);
+
+	// Process ISO standards (with filtering)
+	console.log('\n📚 Processing ISO standards for output...');
 	const isoStandards = await processISOData(isoDataFile);
-	console.log(`   Found ${isoStandards.length} ISO standards`);
+	console.log(`   Found ${isoStandards.length} ISO standards that match fastener criteria`);
 
 	// Process ISO standards with configurations
 	const processedISO = isoStandards.map((std) => {
@@ -126,29 +334,10 @@ async function buildStandards() {
 		// Build designations array
 		const designations = [{ system: 'ISO', code: std.id.replace('iso', '') }];
 
-		// Add DIN designations
-		if (crossref.din) {
-			const dinCodes = Array.isArray(crossref.din) ? crossref.din : [crossref.din];
-			dinCodes.forEach((code) => {
-				designations.push({ system: 'DIN', code: String(code) });
-			});
-		}
-
-		// Add ANSI designations
-		if (crossref.ansi) {
-			const ansiCodes = Array.isArray(crossref.ansi) ? crossref.ansi : [crossref.ansi];
-			ansiCodes.forEach((code) => {
-				designations.push({ system: 'ANSI', code: String(code) });
-			});
-		}
-
-		// Add PN designations
-		if (crossref.pn) {
-			const pnCodes = Array.isArray(crossref.pn) ? crossref.pn : [crossref.pn];
-			pnCodes.forEach((code) => {
-				designations.push({ system: 'PN', code: String(code) });
-			});
-		}
+		// Add cross-referenced systems
+		addDesignationSystem(designations, crossref, 'DIN');
+		addDesignationSystem(designations, crossref, 'ANSI');
+		addDesignationSystem(designations, crossref, 'PN');
 
 		// Build standard object
 		// Prefer DIN as primarySystem if DIN designation exists
@@ -158,7 +347,6 @@ async function buildStandards() {
 			primarySystem: hasDIN ? 'DIN' : 'ISO',
 			description: std.title,
 			designations,
-			// Determine hardware type based on designations and description
 			hardwareType: getHardwareType(designations, std.title)
 		};
 
@@ -166,10 +354,8 @@ async function buildStandards() {
 		if (std.icsCode) standard.icsCode = std.icsCode;
 		if (std.reference) standard.reference = std.reference;
 
-		// Add image if mapping exists
-		if (config.imageMappings[std.id]) {
-			standard.image = config.imageMappings[std.id];
-		}
+		// Add image
+		addImageToStandard(standard, std.id, imageMappings, designations);
 
 		return standard;
 	});
@@ -181,14 +367,18 @@ async function buildStandards() {
 		const dinNumber = id.replace('din', '');
 		const designations = [{ system: 'DIN', code: dinNumber }];
 
-		return {
+		const standard = {
 			id,
 			primarySystem: 'DIN',
 			description: dinConfig.description,
 			designations,
-			hardwareType: getHardwareType(designations, dinConfig.description),
-			image: `/images/standards/din_${dinNumber}.jpg`
+			hardwareType: getHardwareType(designations, dinConfig.description)
 		};
+
+		// Add image
+		addImageToStandard(standard, id, imageMappings, designations);
+
+		return standard;
 	});
 
 	console.log(`   Found ${dinStandards.length} DIN-only standards`);

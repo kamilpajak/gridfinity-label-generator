@@ -9,9 +9,6 @@
 		"iso1234": {
 			"din": ["94"]
 		},
-		"iso1478": {
-			"din": ["7970"]
-		},
 		"iso1479": {
 			"din": ["7976"]
 		},
@@ -27,17 +24,14 @@
 		"iso1580": {
 			"din": ["85"]
 		},
-		"iso1581": {
-			"din": ["7972"]
-		},
 		"iso2009": {
-			"din": ["963", "964"]
+			"din": ["963"]
 		},
 		"iso2010": {
-			"din": ["965", "966"]
+			"din": ["964"]
 		},
 		"iso2338": {
-			"din": ["7", "6325"]
+			"din": ["7"]
 		},
 		"iso2339": {
 			"din": ["1"]
@@ -50,9 +44,6 @@
 		},
 		"iso2342": {
 			"din": ["551"]
-		},
-		"iso3266": {
-			"din": ["580"]
 		},
 		"iso3506": {
 			"din": ["267"]
@@ -118,22 +109,22 @@
 			"din": ["7985"]
 		},
 		"iso7046": {
-			"din": ["963", "965"]
+			"din": ["965"]
 		},
 		"iso7047": {
-			"din": ["964", "966"]
+			"din": ["966"]
 		},
 		"iso7048": {
 			"din": ["7971"]
 		},
 		"iso7049": {
-			"din": ["7981", "7983"]
+			"din": ["7981"]
 		},
 		"iso7050": {
 			"din": ["7982"]
 		},
 		"iso7051": {
-			"din": ["7973"]
+			"din": ["7983"]
 		},
 		"iso7053": {
 			"din": ["7967"]
@@ -176,9 +167,6 @@
 		},
 		"iso7720": {
 			"din": ["982"]
-		},
-		"iso7980": {
-			"din": ["127"]
 		},
 		"iso8673": {
 			"din": ["934"]
@@ -329,6 +317,9 @@
 		},
 		"iso23429": {
 			"din": ["911"]
+		},
+		"iso9999": {
+			"din": ["123"]
 		}
 	},
 	"dinOnly": {
@@ -638,33 +629,5 @@
 		"din80705": {
 			"description": "Wing screws with rounded wings"
 		}
-	},
-	"imageMappings": {
-		"iso7089": "/images/standards/din_125.jpg",
-		"iso8738": "/images/standards/din_1440.jpg",
-		"iso7092": "/images/standards/din_433.jpg",
-		"iso4035": "/images/standards/din_439.jpg",
-		"iso7094": "/images/standards/din_440.jpg",
-		"iso4018": "/images/standards/din_561.jpg",
-		"iso8678": "/images/standards/din_603.jpg",
-		"iso7379": "/images/standards/iso_7379.jpg",
-		"iso4162": "/images/standards/din_6921.jpg",
-		"iso10509": "/images/standards/din_6923.jpg",
-		"iso7053": "/images/standards/din_7967.jpg",
-		"iso14582": "/images/standards/din_7989.jpg",
-		"iso14585": "/images/standards/din_7995.jpg",
-		"iso14583": "/images/standards/din_7996.jpg",
-		"iso14584": "/images/standards/din_7997.jpg",
-		"iso7093": "/images/standards/din_9021.jpg",
-		"iso4762": "/images/standards/din_912.jpg",
-		"iso21670": "/images/standards/din_929.jpg",
-		"iso4014": "/images/standards/din_931.jpg",
-		"iso4017": "/images/standards/din_933.jpg",
-		"iso4032": "/images/standards/din_934.jpg",
-		"iso8765": "/images/standards/din_960.jpg",
-		"iso8676": "/images/standards/din_961.jpg",
-		"iso7042": "/images/standards/din_980.jpg",
-		"iso4033": "/images/standards/din_982.jpg",
-		"iso7040": "/images/standards/iso_7040.jpg"
 	}
 }

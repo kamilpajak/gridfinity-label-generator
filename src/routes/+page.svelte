@@ -562,9 +562,13 @@
 														class="w-full justify-between font-normal"
 														data-testid="hardware-select"
 													>
-														{selectedStandard
-															? formatDesignations(selectedStandard)
-															: UI_TEXT.placeholders.selectStandard}
+														{#if selectedStandard}
+															{formatDesignations(selectedStandard)}
+														{:else}
+															<span class="text-muted-foreground">
+																{UI_TEXT.placeholders.selectStandard}
+															</span>
+														{/if}
 														<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 													</Button>
 												{/snippet}
@@ -607,7 +611,13 @@
 												class="w-full"
 												data-testid="thread-size-select"
 											>
-												{threadSize || UI_TEXT.placeholders.selectSize}
+												{#if threadSize}
+													{threadSize}
+												{:else}
+													<span class="text-muted-foreground">
+														{UI_TEXT.placeholders.selectSize}
+													</span>
+												{/if}
 											</SelectTrigger>
 											<SelectContent>
 												{#each availableThreadSizes as size (size)}
@@ -628,9 +638,13 @@
 												data-testid="pitch-select"
 												disabled={pitchDisabled}
 											>
-												{pitch
-													? availablePitchOptions.find((p) => p.value === pitch)?.label
-													: UI_TEXT.placeholders.selectPitch}
+												{#if pitch}
+													{availablePitchOptions.find((p) => p.value === pitch)?.label}
+												{:else}
+													<span class="text-muted-foreground">
+														{UI_TEXT.placeholders.selectPitch}
+													</span>
+												{/if}
 											</SelectTrigger>
 											<SelectContent>
 												<SelectItem value=""

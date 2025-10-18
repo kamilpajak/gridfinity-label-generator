@@ -241,6 +241,20 @@
 		}
 	});
 
+	// Reset Standard Reference and Hardware Image when switching to General Item mode
+	$effect(() => {
+		if (labelMode === 'general') {
+			untrack(() => {
+				if (showStandard) {
+					showStandard = false;
+				}
+				if (showHardwareImage) {
+					showHardwareImage = false;
+				}
+			});
+		}
+	});
+
 	// Mutual exclusion for Hardware Icon and QR Code on narrow labels
 	// Track previous values to detect which one changed
 	let prevShowHardwareImage = $state(showHardwareImage);
@@ -735,7 +749,7 @@
 									bind:value={qrCodeUrl}
 									placeholder={UI_TEXT.placeholders.qrCode}
 									class="w-full"
-									disabled={qrCodeDisabled}
+									disabled={!showQRCode || qrCodeDisabled}
 									data-testid="qr-code-url-input"
 								/>
 							</div>

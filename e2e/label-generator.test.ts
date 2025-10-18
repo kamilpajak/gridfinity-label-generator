@@ -180,7 +180,8 @@ test.describe('Label Generator - Single Mode', () => {
 		// Verify all elements are set correctly
 		expect(await labelPage.getPrimaryText()).toBe('M12');
 		expect(await labelPage.getSecondaryText()).toBe('ISO 4762');
-		expect(await labelPage.isHardwareImageEnabled()).toBe(true);
+		// In General Item mode, hardware image switch is disabled and automatically turned off
+		expect(await labelPage.isHardwareImageEnabled()).toBe(false);
 		expect(await labelPage.isQRCodeEnabled()).toBe(true);
 		expect(await labelPage.getQRCodeUrl()).toBe('https://example.com/m12-iso-4762');
 		// Unit selection is disabled in General Item mode, so we don't check it

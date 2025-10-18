@@ -87,7 +87,7 @@
 	let showReference = $state(
 		isFastenerMode ? ((label as FastenerLabelConfig).showReference ?? true) : false
 	);
-	let showQRCode = $state(label.showQRCode ?? true);
+	let showQRCode = $state(label.showQRCode ?? false);
 
 	let standardsOpen = $state(false);
 
@@ -109,16 +109,45 @@
 		qrCode = label.qrCode || '';
 		showImage = isFastenerMode ? ((label as FastenerLabelConfig).showImage ?? true) : false;
 		showReference = isFastenerMode ? ((label as FastenerLabelConfig).showReference ?? true) : false;
-		showQRCode = label.showQRCode ?? true;
+		showQRCode = label.showQRCode ?? false;
 	});
 
 	const selectedStandard = $derived(getStandardById(standardId));
 
-	// Disable hardware image for standards without images
-	const hardwareImageDisabled = $derived(!selectedStandard?.image);
+	// Disable hardware-related options for 9mm labels or in general item mode
+	const hardwareImageDisabled = $derived(tapeHeight === 9 || labelMode === 'general');
+	const standardReferenceDisabled = $derived(labelMode === 'general');
 
 	// Disable QR code for 9mm tape
 	const qrCodeDisabled = $derived(qrDisabled);
+
+	// Reset QR Code when switching to 9mm
+	$effect(() => {
+		if (tapeHeight === 9) {
+			untrack(() => {
+				if (showQRCode) {
+					showQRCode = false;
+				}
+				if (showImage) {
+					showImage = false;
+				}
+			});
+		}
+	});
+
+	// Reset hardware-related switches when switching to General Item mode
+	$effect(() => {
+		if (labelMode === 'general') {
+			untrack(() => {
+				if (showReference) {
+					showReference = false;
+				}
+				if (showImage) {
+					showImage = false;
+				}
+			});
+		}
+	});
 
 	// Mutual exclusion for Hardware Icon and QR Code on narrow labels (<50mm)
 	// Track previous values to detect which one changed
@@ -370,6 +399,7 @@
 						type="single"
 						size="default"
 						class="w-full"
+						data-testid="label-mode-toggle-{index}"
 					>
 						<ToggleGroupItem value="fastener" class="flex-1"
 							>{UI_TEXT.productType.fastener}</ToggleGroupItem
@@ -542,6 +572,7 @@
 						type="single"
 						size="default"
 						class="w-full"
+						data-testid="label-mode-toggle-{index}"
 					>
 						<ToggleGroupItem value="fastener" class="flex-1"
 							>{UI_TEXT.productType.fastener}</ToggleGroupItem
@@ -627,7 +658,7 @@
 			bind:value={qrCode}
 			placeholder={UI_TEXT.placeholders.qrCode}
 			class="w-full"
-			disabled={qrDisabled}
+			disabled={!showQRCode || qrCodeDisabled}
 			onblur={updateLabel}
 		/>
 	</div>
@@ -643,10 +674,12 @@
 				<div class="flex flex-col space-y-2">
 					<div class="flex items-center justify-between">
 						<div class="text-sm font-medium">{UI_TEXT.settings.standardReference.title}</div>
-						<Switch bind:checked={showReference} />
+						<Switch bind:checked={showReference} disabled={standardReferenceDisabled} />
 					</div>
 					<div class="text-xs text-muted-foreground">
-						{UI_TEXT.settings.standardReference.description}
+						{standardReferenceDisabled
+							? UI_TEXT.settings.standardReference.disabledGeneral
+							: UI_TEXT.settings.standardReference.description}
 					</div>
 				</div>
 
@@ -654,10 +687,20 @@
 				<div class="flex flex-col space-y-2">
 					<div class="flex items-center justify-between">
 						<div class="text-sm font-medium">{UI_TEXT.settings.hardwareIcon.title}</div>
-						<Switch bind:checked={showImage} data-testid="hardware-image-switch-{index}" />
+						<Switch
+							bind:checked={showImage}
+							disabled={hardwareImageDisabled}
+							data-testid="hardware-image-switch-{index}"
+						/>
 					</div>
 					<div class="text-xs text-muted-foreground">
-						{UI_TEXT.settings.hardwareIcon.description}
+						{#if hardwareImageDisabled}
+							{tapeHeight === 9
+								? UI_TEXT.settings.hardwareIcon.disabled9mm
+								: UI_TEXT.settings.hardwareIcon.disabledGeneral}
+						{:else}
+							{UI_TEXT.settings.hardwareIcon.description}
+						{/if}
 					</div>
 				</div>
 			{/if}
@@ -666,7 +709,11 @@
 			<div class="flex flex-col space-y-2">
 				<div class="flex items-center justify-between">
 					<div class="text-sm font-medium">{UI_TEXT.settings.qrCode.title}</div>
-					<Switch bind:checked={showQRCode} data-testid="qr-code-switch-{index}" />
+					<Switch
+						bind:checked={showQRCode}
+						disabled={qrDisabled}
+						data-testid="qr-code-switch-{index}"
+					/>
 				</div>
 				<div class="text-xs text-muted-foreground">
 					{qrDisabled ? UI_TEXT.settings.qrCode.disabled9mm : UI_TEXT.settings.qrCode.description}

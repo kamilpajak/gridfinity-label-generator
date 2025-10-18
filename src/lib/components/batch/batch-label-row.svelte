@@ -87,7 +87,7 @@
 	let showReference = $state(
 		isFastenerMode ? ((label as FastenerLabelConfig).showReference ?? true) : false
 	);
-	let showQRCode = $state(label.showQRCode ?? true);
+	let showQRCode = $state(label.showQRCode ?? false);
 
 	let standardsOpen = $state(false);
 
@@ -109,16 +109,45 @@
 		qrCode = label.qrCode || '';
 		showImage = isFastenerMode ? ((label as FastenerLabelConfig).showImage ?? true) : false;
 		showReference = isFastenerMode ? ((label as FastenerLabelConfig).showReference ?? true) : false;
-		showQRCode = label.showQRCode ?? true;
+		showQRCode = label.showQRCode ?? false;
 	});
 
 	const selectedStandard = $derived(getStandardById(standardId));
 
-	// Disable hardware image for standards without images
-	const hardwareImageDisabled = $derived(!selectedStandard?.image);
+	// Disable hardware-related options for 9mm labels or in general item mode
+	const hardwareImageDisabled = $derived(tapeHeight === 9 || labelMode === 'general');
+	const standardReferenceDisabled = $derived(labelMode === 'general');
 
 	// Disable QR code for 9mm tape
 	const qrCodeDisabled = $derived(qrDisabled);
+
+	// Reset QR Code when switching to 9mm
+	$effect(() => {
+		if (tapeHeight === 9) {
+			untrack(() => {
+				if (showQRCode) {
+					showQRCode = false;
+				}
+				if (showImage) {
+					showImage = false;
+				}
+			});
+		}
+	});
+
+	// Reset hardware-related switches when switching to General Item mode
+	$effect(() => {
+		if (labelMode === 'general') {
+			untrack(() => {
+				if (showReference) {
+					showReference = false;
+				}
+				if (showImage) {
+					showImage = false;
+				}
+			});
+		}
+	});
 
 	// Mutual exclusion for Hardware Icon and QR Code on narrow labels (<50mm)
 	// Track previous values to detect which one changed
@@ -329,6 +358,10 @@
 	}
 </script>
 
+{#snippet mutedPlaceholder(text: string)}
+	<span class="text-muted-foreground">{text}</span>
+{/snippet}
+
 <div class="space-y-6 rounded-lg border p-4" data-testid="batch-label-row-{index}">
 	<!-- Header Row -->
 	<div class="flex items-center justify-between">
@@ -370,6 +403,7 @@
 						type="single"
 						size="default"
 						class="w-full"
+						data-testid="label-mode-toggle-{index}"
 					>
 						<ToggleGroupItem value="fastener" class="flex-1"
 							>{UI_TEXT.productType.fastener}</ToggleGroupItem
@@ -412,10 +446,13 @@
 									role="combobox"
 									aria-expanded={standardsOpen}
 									class="w-full justify-between font-normal"
+									data-testid="batch-hardware-select-{index}"
 								>
-									{selectedStandard
-										? formatDesignations(selectedStandard)
-										: UI_TEXT.placeholders.selectStandard}
+									{#if selectedStandard}
+										{formatDesignations(selectedStandard)}
+									{:else}
+										{@render mutedPlaceholder(UI_TEXT.placeholders.selectStandard)}
+									{/if}
 									<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 								</Button>
 							{/snippet}
@@ -455,8 +492,16 @@
 						>{UI_TEXT.fields.threadSize}</label
 					>
 					<Select bind:value={threadSize} type="single">
-						<SelectTrigger id="thread-size-{index}" class="w-full">
-							{threadSize || UI_TEXT.placeholders.selectSize}
+						<SelectTrigger
+							id="thread-size-{index}"
+							class="w-full"
+							data-testid="batch-thread-size-select-{index}"
+						>
+							{#if threadSize}
+								{threadSize}
+							{:else}
+								{@render mutedPlaceholder(UI_TEXT.placeholders.selectSize)}
+							{/if}
 						</SelectTrigger>
 						<SelectContent>
 							{#each availableThreadSizes as size (size)}
@@ -472,10 +517,16 @@
 						<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
 					>
 					<Select bind:value={pitch} type="single">
-						<SelectTrigger id="pitch-{index}" class="w-full">
-							{pitch
-								? availablePitchOptions.find((p) => p.value === pitch)?.label
-								: UI_TEXT.placeholders.selectPitch}
+						<SelectTrigger
+							id="pitch-{index}"
+							class="w-full"
+							data-testid="batch-pitch-select-{index}"
+						>
+							{#if pitch}
+								{availablePitchOptions.find((p) => p.value === pitch)?.label}
+							{:else}
+								{@render mutedPlaceholder(UI_TEXT.placeholders.selectPitch)}
+							{/if}
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value=""
@@ -519,6 +570,7 @@
 						type="single"
 						size="default"
 						class="w-full"
+						data-testid="label-mode-toggle-{index}"
 					>
 						<ToggleGroupItem value="fastener" class="flex-1"
 							>{UI_TEXT.productType.fastener}</ToggleGroupItem
@@ -604,7 +656,7 @@
 			bind:value={qrCode}
 			placeholder={UI_TEXT.placeholders.qrCode}
 			class="w-full"
-			disabled={qrDisabled}
+			disabled={!showQRCode || qrCodeDisabled}
 			onblur={updateLabel}
 		/>
 	</div>
@@ -620,10 +672,12 @@
 				<div class="flex flex-col space-y-2">
 					<div class="flex items-center justify-between">
 						<div class="text-sm font-medium">{UI_TEXT.settings.standardReference.title}</div>
-						<Switch bind:checked={showReference} disabled={!standardId} />
+						<Switch bind:checked={showReference} disabled={standardReferenceDisabled} />
 					</div>
 					<div class="text-xs text-muted-foreground">
-						{UI_TEXT.settings.standardReference.description}
+						{standardReferenceDisabled
+							? UI_TEXT.settings.standardReference.disabledGeneral
+							: UI_TEXT.settings.standardReference.description}
 					</div>
 				</div>
 
@@ -633,12 +687,18 @@
 						<div class="text-sm font-medium">{UI_TEXT.settings.hardwareIcon.title}</div>
 						<Switch
 							bind:checked={showImage}
-							disabled={!standardId}
+							disabled={hardwareImageDisabled}
 							data-testid="hardware-image-switch-{index}"
 						/>
 					</div>
 					<div class="text-xs text-muted-foreground">
-						{UI_TEXT.settings.hardwareIcon.description}
+						{#if hardwareImageDisabled}
+							{tapeHeight === 9
+								? UI_TEXT.settings.hardwareIcon.disabled9mm
+								: UI_TEXT.settings.hardwareIcon.disabledGeneral}
+						{:else}
+							{UI_TEXT.settings.hardwareIcon.description}
+						{/if}
 					</div>
 				</div>
 			{/if}

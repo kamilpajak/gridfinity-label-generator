@@ -237,18 +237,20 @@ export class SingleModePage extends BasePage {
 	}
 
 	async toggleQRCode() {
-		// Check the state before clicking
-		const wasEnabledBefore = await this.qrCodeUrlInput.isEnabled().catch(() => false);
+		// Check the switch state before clicking
+		const wasCheckedBefore = await this.qrCodeSwitch.isChecked();
 
 		// Use data-testid for reliable selection
 		await this.qrCodeSwitch.click();
 
-		// Wait for the opposite state
-		if (wasEnabledBefore) {
-			// When disabling, the input becomes disabled, not hidden
+		// Wait for the switch state to change and input to reflect the new state
+		if (wasCheckedBefore) {
+			// When toggling off, wait for switch to be unchecked and input to be disabled
+			await expect(this.qrCodeSwitch).not.toBeChecked();
 			await expect(this.qrCodeUrlInput).toBeDisabled();
 		} else {
-			// When enabling, wait for it to be enabled
+			// When toggling on, wait for switch to be checked and input to be enabled
+			await expect(this.qrCodeSwitch).toBeChecked();
 			await expect(this.qrCodeUrlInput).toBeEnabled();
 		}
 	}
@@ -322,28 +324,6 @@ export class SingleModePage extends BasePage {
 
 	async getLengthPlaceholder(): Promise<string | null> {
 		return await this.lengthInput.getAttribute('placeholder');
-	}
-
-	// Label width methods
-	async setLabelWidth(width: number) {
-		// Slider uses aria-valuenow attribute - need to set it via evaluate
-		await this.page.evaluate(
-			({ width }) => {
-				const slider = document.querySelector('[role="slider"]');
-				if (slider) {
-					slider.setAttribute('aria-valuenow', width.toString());
-					slider.dispatchEvent(new Event('input', { bubbles: true }));
-					slider.dispatchEvent(new Event('change', { bubbles: true }));
-				}
-			},
-			{ width }
-		);
-		await this.preview.waitForLabelRender();
-	}
-
-	async getLabelWidth(): Promise<number> {
-		const value = await this.labelWidthValue.textContent();
-		return parseInt(value?.replace('mm', '') || '35', 10);
 	}
 
 	// Optional note methods

@@ -412,10 +412,15 @@
 									role="combobox"
 									aria-expanded={standardsOpen}
 									class="w-full justify-between font-normal"
+									data-testid="batch-hardware-select-{index}"
 								>
-									{selectedStandard
-										? formatDesignations(selectedStandard)
-										: UI_TEXT.placeholders.selectStandard}
+									{#if selectedStandard}
+										{formatDesignations(selectedStandard)}
+									{:else}
+										<span class="text-muted-foreground">
+											{UI_TEXT.placeholders.selectStandard}
+										</span>
+									{/if}
 									<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 								</Button>
 							{/snippet}
@@ -455,8 +460,18 @@
 						>{UI_TEXT.fields.threadSize}</label
 					>
 					<Select bind:value={threadSize} type="single">
-						<SelectTrigger id="thread-size-{index}" class="w-full">
-							{threadSize || UI_TEXT.placeholders.selectSize}
+						<SelectTrigger
+							id="thread-size-{index}"
+							class="w-full"
+							data-testid="batch-thread-size-select-{index}"
+						>
+							{#if threadSize}
+								{threadSize}
+							{:else}
+								<span class="text-muted-foreground">
+									{UI_TEXT.placeholders.selectSize}
+								</span>
+							{/if}
 						</SelectTrigger>
 						<SelectContent>
 							{#each availableThreadSizes as size (size)}
@@ -472,10 +487,18 @@
 						<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
 					>
 					<Select bind:value={pitch} type="single">
-						<SelectTrigger id="pitch-{index}" class="w-full">
-							{pitch
-								? availablePitchOptions.find((p) => p.value === pitch)?.label
-								: UI_TEXT.placeholders.selectPitch}
+						<SelectTrigger
+							id="pitch-{index}"
+							class="w-full"
+							data-testid="batch-pitch-select-{index}"
+						>
+							{#if pitch}
+								{availablePitchOptions.find((p) => p.value === pitch)?.label}
+							{:else}
+								<span class="text-muted-foreground">
+									{UI_TEXT.placeholders.selectPitch}
+								</span>
+							{/if}
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value=""

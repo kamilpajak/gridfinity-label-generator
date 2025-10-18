@@ -80,11 +80,11 @@ test.describe('Select Fields Visual Consistency (TDD)', () => {
 				'[data-testid="pitch-select"]'
 			];
 
-			return selectors.map((selector, index) => {
+			return selectors.map((selector) => {
 				const element = document.querySelector(selector);
 				if (!element) return null;
-				// For hardware-select (index 0), look for the span with text-muted-foreground
-				if (index === 0) {
+				// For hardware-select (Button with Popover), look for the span with text-muted-foreground
+				if (selector === '[data-testid="hardware-select"]') {
 					const span = element.querySelector('.text-muted-foreground');
 					if (span) {
 						const style = window.getComputedStyle(span);
@@ -135,4 +135,114 @@ test.describe('Select Fields Visual Consistency (TDD)', () => {
 	// Note: Removed "filled state" test as it's overly restrictive
 	// Button and SelectTrigger can have different colors when filled due to different component implementations
 	// The important thing is that empty placeholders are consistently gray (tested above)
+});
+
+test.describe('Batch Mode - Select Fields Visual Consistency', () => {
+	let labelPage: SingleModePage;
+
+	test.beforeEach(async ({ page }) => {
+		labelPage = new SingleModePage(page);
+		await labelPage.goto();
+	});
+
+	test('batch mode select fields should have consistent muted foreground color', async ({
+		page
+	}) => {
+		// Navigate to Batch Mode tab
+		await page.getByRole('tab', { name: 'Batch Mode' }).click();
+
+		// Wait for Batch Mode content to be visible
+		await page.waitForSelector('[data-testid="add-label-button"]', { state: 'visible' });
+
+		// Add a label row
+		await page.getByTestId('add-label-button').click();
+
+		// Wait for first label row to appear
+		await page.waitForSelector('[data-testid="batch-label-row-0"]', { state: 'visible' });
+
+		// Get the CSS variable value for muted-foreground
+		const mutedForegroundColor = await page.evaluate(() => {
+			const temp = document.createElement('div');
+			temp.className = 'text-muted-foreground';
+			temp.style.visibility = 'hidden';
+			document.body.appendChild(temp);
+			const style = window.getComputedStyle(temp);
+			const color = style.color;
+			document.body.removeChild(temp);
+			return color;
+		});
+
+		// Get colors from all batch mode select fields
+		const selectColors = await page.evaluate(() => {
+			const selectors = [
+				'[data-testid="batch-hardware-select-0"]',
+				'[data-testid="batch-thread-size-select-0"]',
+				'[data-testid="batch-pitch-select-0"]'
+			];
+
+			return selectors.map((selector) => {
+				const element = document.querySelector(selector);
+				if (!element) return null;
+				// For batch-hardware-select (Button with Popover), look for the span
+				if (selector === '[data-testid="batch-hardware-select-0"]') {
+					const span = element.querySelector('.text-muted-foreground');
+					if (span) {
+						const style = window.getComputedStyle(span);
+						return style.color;
+					}
+				}
+				// For SelectTrigger elements, query the span inside
+				const span = element.querySelector('.text-muted-foreground');
+				if (span) {
+					const style = window.getComputedStyle(span);
+					return style.color;
+				}
+				return null;
+			});
+		});
+
+		// All batch mode select fields should use the muted-foreground color
+		selectColors.forEach((color) => {
+			expect(color).not.toBeNull();
+			expect(color).toBe(mutedForegroundColor);
+		});
+	});
+
+	test('batch and single mode placeholders should match', async ({ page }) => {
+		// Get single mode muted-foreground color first
+		await labelPage.selectMode('fastener');
+
+		const singleModeMutedColor = await page.evaluate(() => {
+			const temp = document.createElement('div');
+			temp.className = 'text-muted-foreground';
+			temp.style.visibility = 'hidden';
+			document.body.appendChild(temp);
+			const style = window.getComputedStyle(temp);
+			const color = style.color;
+			document.body.removeChild(temp);
+			return color;
+		});
+
+		// Navigate to Batch Mode
+		await page.getByRole('tab', { name: 'Batch Mode' }).click();
+		await page.waitForSelector('[data-testid="add-label-button"]', { state: 'visible' });
+		await page.getByTestId('add-label-button').click();
+		await page.waitForSelector('[data-testid="batch-label-row-0"]', { state: 'visible' });
+
+		// Get batch mode color
+		const batchModeColor = await page.evaluate(() => {
+			const element = document.querySelector('[data-testid="batch-thread-size-select-0"]');
+			if (!element) return null;
+			const span = element.querySelector('.text-muted-foreground');
+			if (span) {
+				const style = window.getComputedStyle(span);
+				return style.color;
+			}
+			return null;
+		});
+
+		// Colors should match
+		expect(batchModeColor).not.toBeNull();
+		expect(batchModeColor).toBe(singleModeMutedColor);
+	});
 });

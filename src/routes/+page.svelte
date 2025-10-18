@@ -241,6 +241,20 @@
 		}
 	});
 
+	// Reset Standard Reference and Hardware Image when switching to General Item mode
+	$effect(() => {
+		if (labelMode === 'general') {
+			untrack(() => {
+				if (showStandard) {
+					showStandard = false;
+				}
+				if (showHardwareImage) {
+					showHardwareImage = false;
+				}
+			});
+		}
+	});
+
 	// Mutual exclusion for Hardware Icon and QR Code on narrow labels
 	// Track previous values to detect which one changed
 	let prevShowHardwareImage = $state(showHardwareImage);
@@ -362,6 +376,10 @@
 		lengthTouched = false;
 	}
 </script>
+
+{#snippet mutedPlaceholder(text: string)}
+	<span class="text-muted-foreground">{text}</span>
+{/snippet}
 
 <svelte:head>
 	<title>Gridfinity Label Generator</title>
@@ -562,9 +580,11 @@
 														class="w-full justify-between font-normal"
 														data-testid="hardware-select"
 													>
-														{selectedStandard
-															? formatDesignations(selectedStandard)
-															: UI_TEXT.placeholders.selectStandard}
+														{#if selectedStandard}
+															{formatDesignations(selectedStandard)}
+														{:else}
+															{@render mutedPlaceholder(UI_TEXT.placeholders.selectStandard)}
+														{/if}
 														<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 													</Button>
 												{/snippet}
@@ -607,7 +627,11 @@
 												class="w-full"
 												data-testid="thread-size-select"
 											>
-												{threadSize || UI_TEXT.placeholders.selectSize}
+												{#if threadSize}
+													{threadSize}
+												{:else}
+													{@render mutedPlaceholder(UI_TEXT.placeholders.selectSize)}
+												{/if}
 											</SelectTrigger>
 											<SelectContent>
 												{#each availableThreadSizes as size (size)}
@@ -628,9 +652,11 @@
 												data-testid="pitch-select"
 												disabled={pitchDisabled}
 											>
-												{pitch
-													? availablePitchOptions.find((p) => p.value === pitch)?.label
-													: UI_TEXT.placeholders.selectPitch}
+												{#if pitch}
+													{availablePitchOptions.find((p) => p.value === pitch)?.label}
+												{:else}
+													{@render mutedPlaceholder(UI_TEXT.placeholders.selectPitch)}
+												{/if}
 											</SelectTrigger>
 											<SelectContent>
 												<SelectItem value=""
@@ -721,7 +747,7 @@
 									bind:value={qrCodeUrl}
 									placeholder={UI_TEXT.placeholders.qrCode}
 									class="w-full"
-									disabled={!showQRCode}
+									disabled={!showQRCode || qrCodeDisabled}
 									data-testid="qr-code-url-input"
 								/>
 							</div>

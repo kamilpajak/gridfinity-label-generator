@@ -34,6 +34,9 @@
 	const isFastenerMode = $derived(label.mode === 'fastener');
 	const qrDisabled = $derived(tapeHeight === 9);
 
+	// Width threshold (in mm) below which Hardware Icon and QR Code are mutually exclusive
+	const NARROW_LABEL_WIDTH_THRESHOLD = 50;
+
 	// Thread sizes
 	const metricThreadSizes = [
 		'M1.4',
@@ -122,29 +125,57 @@
 	let prevShowImage = $state(showImage);
 	let prevShowQRCode = $state(showQRCode);
 	let prevWidth = $state(width);
+	let mutualExclusionInitialized = $state(false);
 
 	$effect(() => {
-		// Only apply mutual exclusion when width < 50mm and both are not disabled
-		if (width < 50 && !hardwareImageDisabled && !qrCodeDisabled) {
-			// Check if Hardware Icon was just enabled
-			if (showImage && !prevShowImage && showQRCode) {
+		// Apply mutual exclusion when width < NARROW_LABEL_WIDTH_THRESHOLD
+		// Note: We check the 'checked' state (showImage/showQRCode) regardless of disabled state
+		// because we want to prevent both from being checked simultaneously even if one is disabled
+		if (width < NARROW_LABEL_WIDTH_THRESHOLD) {
+			// BUGFIX: On first run, if both switches are checked, uncheck QR Code
+			// This handles the initial state where both default to true
+			if (!mutualExclusionInitialized && showImage && showQRCode) {
 				untrack(() => {
 					showQRCode = false;
+					mutualExclusionInitialized = true;
 				});
 			}
-			// Check if QR Code was just enabled
-			else if (showQRCode && !prevShowQRCode && showImage) {
-				untrack(() => {
-					showImage = false;
-				});
+			// Only apply dynamic mutual exclusion if neither switch is disabled
+			else if (!hardwareImageDisabled && !qrCodeDisabled) {
+				// Check if Hardware Icon was just enabled
+				if (showImage && !prevShowImage && showQRCode) {
+					untrack(() => {
+						showQRCode = false;
+					});
+				}
+				// Check if QR Code was just enabled
+				else if (showQRCode && !prevShowQRCode && showImage) {
+					untrack(() => {
+						showImage = false;
+					});
+				}
+				// Check if width was just reduced below threshold while both were enabled
+				else if (
+					prevWidth >= NARROW_LABEL_WIDTH_THRESHOLD &&
+					width < NARROW_LABEL_WIDTH_THRESHOLD &&
+					showImage &&
+					showQRCode
+				) {
+					// Prefer keeping Hardware Icon, disable QR Code
+					untrack(() => {
+						showQRCode = false;
+					});
+				} else if (!mutualExclusionInitialized) {
+					// Mark as initialized even if both weren't enabled
+					mutualExclusionInitialized = true;
+				}
+			} else if (!mutualExclusionInitialized) {
+				// Mark as initialized if one or both switches are disabled
+				mutualExclusionInitialized = true;
 			}
-			// Check if width was just reduced below 50mm while both were enabled
-			else if (prevWidth >= 50 && width < 50 && showImage && showQRCode) {
-				// Prefer keeping Hardware Icon, disable QR Code
-				untrack(() => {
-					showQRCode = false;
-				});
-			}
+		} else if (!mutualExclusionInitialized) {
+			// Mark as initialized if width >= threshold
+			mutualExclusionInitialized = true;
 		}
 
 		// Update previous values for next change detection
@@ -260,9 +291,32 @@
 	});
 
 	// Reset pitch when thread size changes
+	let previousThreadSize = $state(threadSize);
 	$effect(() => {
-		if (threadSize) {
+		if (threadSize !== previousThreadSize) {
 			pitch = '';
+			previousThreadSize = threadSize;
+		}
+	});
+
+	// Clear length and thread fields when changing to washer/nut (which don't have threads or length)
+	let previousStandardId = $state(standardId);
+	$effect(() => {
+		// Only clear if standard actually changed (not just initial load)
+		if (standardId !== previousStandardId) {
+			const newStandard = getStandardById(standardId);
+			if (
+				newStandard &&
+				(newStandard.hardwareType === HardwareType.NUT ||
+					newStandard.hardwareType === HardwareType.WASHER)
+			) {
+				// Clear all thread-related fields and length for washers/nuts
+				threadSize = '';
+				pitch = '';
+				threadType = '';
+				length = '';
+			}
+			previousStandardId = standardId;
 		}
 	});
 

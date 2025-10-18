@@ -735,7 +735,7 @@
 									bind:value={qrCodeUrl}
 									placeholder={UI_TEXT.placeholders.qrCode}
 									class="w-full"
-									disabled={!showQRCode}
+									disabled={qrCodeDisabled}
 									data-testid="qr-code-url-input"
 								/>
 							</div>

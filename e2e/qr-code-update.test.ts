@@ -69,8 +69,8 @@ test.describe('QR Code Updates', () => {
 		// Add some text to show label
 		await labelPage.fillPrimaryText('Test Label');
 
-		// Initially QR code should be disabled
-		await expect(labelPage.qrCodeUrlInput).toBeDisabled();
+		// Note: QR code URL input is always enabled (matches batch mode behavior)
+		await expect(labelPage.qrCodeUrlInput).toBeEnabled();
 
 		// Enable QR code
 		await labelPage.toggleQRCode();
@@ -85,7 +85,8 @@ test.describe('QR Code Updates', () => {
 
 		// Disable QR code
 		await labelPage.toggleQRCode();
-		await expect(labelPage.qrCodeUrlInput).toBeDisabled();
+		// Input remains enabled even when QR toggle is off
+		await expect(labelPage.qrCodeUrlInput).toBeEnabled();
 
 		// Wait for canvas to re-render without QR code
 		await labelPage.preview.waitForLabelRender();

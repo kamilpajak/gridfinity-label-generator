@@ -643,7 +643,7 @@
 				<div class="flex flex-col space-y-2">
 					<div class="flex items-center justify-between">
 						<div class="text-sm font-medium">{UI_TEXT.settings.standardReference.title}</div>
-						<Switch bind:checked={showReference} disabled={!standardId} />
+						<Switch bind:checked={showReference} />
 					</div>
 					<div class="text-xs text-muted-foreground">
 						{UI_TEXT.settings.standardReference.description}
@@ -654,11 +654,7 @@
 				<div class="flex flex-col space-y-2">
 					<div class="flex items-center justify-between">
 						<div class="text-sm font-medium">{UI_TEXT.settings.hardwareIcon.title}</div>
-						<Switch
-							bind:checked={showImage}
-							disabled={!standardId}
-							data-testid="hardware-image-switch-{index}"
-						/>
+						<Switch bind:checked={showImage} data-testid="hardware-image-switch-{index}" />
 					</div>
 					<div class="text-xs text-muted-foreground">
 						{UI_TEXT.settings.hardwareIcon.description}
@@ -670,11 +666,7 @@
 			<div class="flex flex-col space-y-2">
 				<div class="flex items-center justify-between">
 					<div class="text-sm font-medium">{UI_TEXT.settings.qrCode.title}</div>
-					<Switch
-						bind:checked={showQRCode}
-						disabled={qrDisabled}
-						data-testid="qr-code-switch-{index}"
-					/>
+					<Switch bind:checked={showQRCode} data-testid="qr-code-switch-{index}" />
 				</div>
 				<div class="text-xs text-muted-foreground">
 					{qrDisabled ? UI_TEXT.settings.qrCode.disabled9mm : UI_TEXT.settings.qrCode.description}

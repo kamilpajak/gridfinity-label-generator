@@ -237,20 +237,25 @@ export class SingleModePage extends BasePage {
 	}
 
 	async toggleQRCode() {
-		// Check the state before clicking
-		const wasEnabledBefore = await this.qrCodeUrlInput.isEnabled().catch(() => false);
+		// Check the switch state before clicking
+		const wasCheckedBefore = await this.qrCodeSwitch.isChecked();
 
 		// Use data-testid for reliable selection
 		await this.qrCodeSwitch.click();
 
-		// Wait for the opposite state
-		if (wasEnabledBefore) {
-			// When disabling, the input becomes disabled, not hidden
-			await expect(this.qrCodeUrlInput).toBeDisabled();
+		// Wait for the switch state to change
+		// Note: The QR code URL input is now always enabled (matches batch mode behavior)
+		// so we only verify the switch state changes
+		if (wasCheckedBefore) {
+			// When toggling off, wait for switch to be unchecked
+			await expect(this.qrCodeSwitch).not.toBeChecked();
 		} else {
-			// When enabling, wait for it to be enabled
-			await expect(this.qrCodeUrlInput).toBeEnabled();
+			// When toggling on, wait for switch to be checked
+			await expect(this.qrCodeSwitch).toBeChecked();
 		}
+
+		// QR code input is always enabled in both states (like batch mode)
+		await expect(this.qrCodeUrlInput).toBeEnabled();
 	}
 
 	async isQRCodeEnabled(): Promise<boolean> {

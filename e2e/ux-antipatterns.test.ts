@@ -31,8 +31,8 @@ test.describe('UX Anti-Patterns Detection', () => {
 			await labelPage.selectMode(scenario.mode);
 			await labelPage.selectLabelSize(scenario.height);
 
-			// Wait for UI to stabilize
-			await page.waitForTimeout(100);
+			// Wait for switches to be fully rendered
+			await expect(labelPage.hardwareImageSwitch).toBeVisible();
 
 			// Check all switches
 			const switches = [
@@ -92,10 +92,14 @@ test.describe('UX Anti-Patterns Detection', () => {
 				.locator('[data-testid^="label-mode-toggle"]')
 				.first();
 			const modeButton = modeToggle.getByRole('radio', { name: scenario.modeButtonText });
-			await modeButton.click();
 
-			// Wait for UI to stabilize
-			await page.waitForTimeout(200);
+			// Check if button is already selected (default mode in batch is Fastener)
+			const currentState = await modeButton.getAttribute('data-state');
+			if (currentState !== 'on') {
+				await modeButton.click();
+				// Wait for mode switch to complete
+				await expect(modeButton).toHaveAttribute('data-state', 'on');
+			}
 
 			// Get all switches for this label
 			const switches = await page

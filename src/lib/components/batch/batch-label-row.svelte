@@ -358,6 +358,10 @@
 	}
 </script>
 
+{#snippet mutedPlaceholder(text: string)}
+	<span class="text-muted-foreground">{text}</span>
+{/snippet}
+
 <div class="space-y-6 rounded-lg border p-4" data-testid="batch-label-row-{index}">
 	<!-- Header Row -->
 	<div class="flex items-center justify-between">
@@ -447,9 +451,7 @@
 									{#if selectedStandard}
 										{formatDesignations(selectedStandard)}
 									{:else}
-										<span class="text-muted-foreground">
-											{UI_TEXT.placeholders.selectStandard}
-										</span>
+										{@render mutedPlaceholder(UI_TEXT.placeholders.selectStandard)}
 									{/if}
 									<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 								</Button>
@@ -498,9 +500,7 @@
 							{#if threadSize}
 								{threadSize}
 							{:else}
-								<span class="text-muted-foreground">
-									{UI_TEXT.placeholders.selectSize}
-								</span>
+								{@render mutedPlaceholder(UI_TEXT.placeholders.selectSize)}
 							{/if}
 						</SelectTrigger>
 						<SelectContent>
@@ -525,9 +525,7 @@
 							{#if pitch}
 								{availablePitchOptions.find((p) => p.value === pitch)?.label}
 							{:else}
-								<span class="text-muted-foreground">
-									{UI_TEXT.placeholders.selectPitch}
-								</span>
+								{@render mutedPlaceholder(UI_TEXT.placeholders.selectPitch)}
 							{/if}
 						</SelectTrigger>
 						<SelectContent>

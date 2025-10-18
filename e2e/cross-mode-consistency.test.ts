@@ -36,7 +36,8 @@ test.describe('Cross-Mode Consistency', () => {
 
 		// Add a label (defaults to fastener mode, no standard)
 		await batchPage.addLabel();
-		await page.waitForTimeout(100); // Let UI stabilize
+		// Wait for the label row to be visible and interactive
+		await expect(page.getByTestId('batch-label-row-0')).toBeVisible();
 
 		// Get batch mode switch states (label index 0)
 		const batchHardwareImageSwitch = page.getByTestId('hardware-image-switch-0');
@@ -111,7 +112,8 @@ test.describe('Cross-Mode Consistency', () => {
 			.first();
 		const generalButton = modeToggle.getByRole('radio', { name: 'General Item' });
 		await generalButton.click();
-		await page.waitForTimeout(100);
+		// Wait for mode switch to complete
+		await expect(generalButton).toHaveAttribute('data-state', 'on');
 
 		// Get batch mode states
 		// In general mode, hardware switches don't exist in batch mode
@@ -147,7 +149,8 @@ test.describe('Cross-Mode Consistency', () => {
 		await batchPage.navigation.switchToBatchMode();
 		await batchPage.selectTapeHeight('9mm');
 		await batchPage.addLabel();
-		await page.waitForTimeout(100);
+		// Wait for switches to be visible
+		await expect(page.getByTestId('hardware-image-switch-0')).toBeVisible();
 
 		// Get batch mode states for 9mm
 		const batchHardwareImageSwitch = page.getByTestId('hardware-image-switch-0');
@@ -187,7 +190,8 @@ test.describe('Cross-Mode Consistency', () => {
 		const batchPage = new BatchModePage(page);
 		await batchPage.navigation.switchToBatchMode();
 		await batchPage.addLabel();
-		await page.waitForTimeout(100);
+		// Wait for label row to be fully rendered
+		await expect(page.getByTestId('batch-label-row-0')).toBeVisible();
 
 		// Get batch mode defaults
 		const batchRow = page.getByTestId('batch-label-row-0');

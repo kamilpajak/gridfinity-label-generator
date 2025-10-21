@@ -19,11 +19,13 @@
  * Hardware type categorization - simplified like McMaster-Carr
  */
 export enum HardwareType {
-	SCREW = 'screw', // Socket head, countersunk, pan head, etc. - requires length
-	BOLT = 'bolt', // Hex head, carriage, etc. - requires length
+	SCREW = 'screw', // Socket head, countersunk, pan head, etc. (metric thread) - requires length
+	BOLT = 'bolt', // Hex head, carriage, etc. (metric thread) - requires length
+	WOOD_SCREW = 'wood_screw', // Wood screws (self-tapping thread, no pitch) - requires length
 	NUT = 'nut', // Hex, lock, wing, etc. - NO length
 	WASHER = 'washer', // Flat, spring, lock, etc. - NO length
-	PIN = 'pin', // Dowel, cotter, spring, etc. - requires length
+	PIN = 'pin', // Dowel, cotter, spring pins, etc. - requires length
+	RING = 'ring', // Retaining rings, snap rings, circlips, etc. - NO length
 	RIVET = 'rivet', // Blind, solid, etc. - requires length
 	OTHER = 'other' // Everything else - requires length by default
 }
@@ -208,4 +210,28 @@ export function formatPrimaryDesignation(standard: ISODINStandard): string {
 	}
 
 	return '';
+}
+
+/**
+ * Check if length input should be disabled for a given hardware type
+ * @param hardwareType - The hardware type to check
+ * @returns True if length input should be disabled
+ */
+export function shouldDisableLength(hardwareType?: HardwareType): boolean {
+	// Types that DON'T require length: NUT, WASHER, RING
+	return (
+		hardwareType === HardwareType.NUT ||
+		hardwareType === HardwareType.WASHER ||
+		hardwareType === HardwareType.RING
+	);
+}
+
+/**
+ * Check if pitch input should be disabled for a given hardware type
+ * @param hardwareType - The hardware type to check
+ * @returns True if pitch input should be disabled
+ */
+export function shouldDisablePitch(hardwareType?: HardwareType): boolean {
+	// Washers have no threads, wood screws have self-tapping threads without metric pitch
+	return hardwareType === HardwareType.WASHER || hardwareType === HardwareType.WOOD_SCREW;
 }

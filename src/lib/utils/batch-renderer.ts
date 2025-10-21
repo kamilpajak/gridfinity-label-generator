@@ -286,20 +286,25 @@ async function calculateLabelData(
 
 	if (config.mode === 'fastener') {
 		const fastenerConfig = config as FastenerLabelConfig;
+
+		// Get standard first to access hardwareType
+		if (fastenerConfig.standard) {
+			standard = getStandardById(fastenerConfig.standard);
+		}
+
 		primaryText = formatPrimaryText(
 			'fastener',
 			fastenerConfig.threadSize,
 			fastenerConfig.length?.toString() ?? '',
 			'',
 			fastenerConfig.pitch,
-			fastenerConfig.threadType
+			fastenerConfig.threadType,
+			standard?.hardwareType
 		);
 
 		// Build secondary text from standard (only if showReference is enabled)
 		let baseSecondaryText = '';
-		if (fastenerConfig.standard) {
-			standard = getStandardById(fastenerConfig.standard);
-
+		if (standard) {
 			// Only include standard designation text if showReference toggle is enabled
 			const showReferenceText = fastenerConfig.showReference ?? true;
 			if (showReferenceText) {

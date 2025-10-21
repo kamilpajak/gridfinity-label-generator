@@ -3,6 +3,7 @@
  * Provides type-safe Matomo tracking for SvelteKit with GDPR considerations
  */
 
+import { dev } from '$app/environment';
 import { env } from '$env/dynamic/public';
 
 type MatomoCommand =
@@ -32,6 +33,12 @@ declare global {
  */
 export function initMatomo(): void {
 	if (typeof window === 'undefined') return;
+
+	// Disable analytics in development mode
+	if (dev) {
+		console.info('Analytics disabled in development mode');
+		return;
+	}
 
 	// Validate configuration
 	if (!env.PUBLIC_MATOMO_URL || !env.PUBLIC_MATOMO_SITE_ID) {

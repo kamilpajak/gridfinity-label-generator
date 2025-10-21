@@ -4,16 +4,29 @@
  * Provides functions for formatting label text based on mode and input values
  */
 
+import { HardwareType } from '$lib/data/standards';
+
 /**
  * Formats thread designation with pitch and type
  * @param threadSize - Thread size (e.g., M5, M3, #10, 1/4)
  * @param pitch - Optional thread pitch (e.g., '0.5', '1.5' for metric mm, '24', '32' for imperial TPI)
  * @param threadType - Optional thread type (e.g., 'UNC', 'UNF' for imperial)
+ * @param hardwareType - Optional hardware type to determine if 'M' prefix should be stripped
  * @returns Formatted thread designation
  */
-function formatThreadDesignation(threadSize: string, pitch?: string, threadType?: string): string {
+function formatThreadDesignation(
+	threadSize: string,
+	pitch?: string,
+	threadType?: string,
+	hardwareType?: string
+): string {
 	const isMetric = threadSize.toUpperCase().startsWith('M');
+
+	// For wood screws, strip the 'M' prefix (wood screws don't use metric thread designation)
 	let formatted = threadSize;
+	if (hardwareType === HardwareType.WOOD_SCREW && isMetric) {
+		formatted = threadSize.substring(1); // Remove 'M' prefix
+	}
 
 	if (pitch) {
 		// Metric: use × (multiplication sign) - M5 × 0.5
@@ -38,6 +51,7 @@ function formatThreadDesignation(threadSize: string, pitch?: string, threadType?
  * @param primaryText - Custom primary text (for general mode)
  * @param pitch - Optional thread pitch (e.g., '0.5', '1.5' for metric mm, '24', '32' for imperial TPI)
  * @param threadType - Optional thread type (e.g., 'UNC', 'UNF' for imperial, 'standard', 'fine' for metric)
+ * @param hardwareType - Optional hardware type to determine formatting rules
  * @returns Formatted primary text
  */
 export function formatPrimaryText(
@@ -46,11 +60,12 @@ export function formatPrimaryText(
 	length: string,
 	primaryText: string,
 	pitch?: string,
-	threadType?: string
+	threadType?: string,
+	hardwareType?: string
 ): string {
 	if (labelMode === 'fastener') {
 		const isMetric = threadSize.toUpperCase().startsWith('M');
-		const formattedThread = formatThreadDesignation(threadSize, pitch, threadType);
+		const formattedThread = formatThreadDesignation(threadSize, pitch, threadType, hardwareType);
 
 		if (formattedThread && length) {
 			// Show both thread size (with pitch) and length

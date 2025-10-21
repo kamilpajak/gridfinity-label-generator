@@ -13,7 +13,9 @@
 		standards,
 		formatDesignations,
 		getStandardById,
-		HardwareType
+		HardwareType,
+		shouldDisableLength,
+		shouldDisablePitch
 	} from '$lib/data/standards';
 	import { getPitchOptions } from '$lib/data/thread-pitch';
 	import type { BatchLabelConfig, FastenerLabelConfig, GeneralLabelConfig } from '$lib/types/batch';
@@ -213,11 +215,9 @@
 		prevWidth = width;
 	});
 
-	// Disable length input for nuts and washers (they don't have length specification)
-	const lengthDisabled = $derived(
-		selectedStandard?.hardwareType === HardwareType.NUT ||
-			selectedStandard?.hardwareType === HardwareType.WASHER
-	);
+	// Disable length and pitch inputs based on hardware type
+	const lengthDisabled = $derived(shouldDisableLength(selectedStandard?.hardwareType));
+	const pitchDisabled = $derived(shouldDisablePitch(selectedStandard?.hardwareType));
 
 	function closeStandards() {
 		standardsOpen = false;
@@ -521,6 +521,7 @@
 							id="pitch-{index}"
 							class="w-full"
 							data-testid="batch-pitch-select-{index}"
+							disabled={pitchDisabled}
 						>
 							{#if pitch}
 								{availablePitchOptions.find((p) => p.value === pitch)?.label}

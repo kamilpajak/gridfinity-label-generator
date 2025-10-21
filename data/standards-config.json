@@ -317,9 +317,6 @@
 		},
 		"iso23429": {
 			"din": ["911"]
-		},
-		"iso9999": {
-			"din": ["123"]
 		}
 	},
 	"dinOnly": {
@@ -391,6 +388,12 @@
 		},
 		"din467": {
 			"description": "Knurled nuts, low type"
+		},
+		"din471": {
+			"description": "External circlips for shafts"
+		},
+		"din472": {
+			"description": "Internal circlips for bores"
 		},
 		"din478": {
 			"description": "Square head bolts with collar"

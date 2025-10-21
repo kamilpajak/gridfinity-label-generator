@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { formatPrimaryText, formatSecondaryText, isLabelValid } from './label-formatter';
+import { HardwareType } from '$lib/data/standards';
 
 describe('formatPrimaryText', () => {
 	describe('Metric threads with pitch', () => {
@@ -21,6 +22,28 @@ describe('formatPrimaryText', () => {
 		it('should format M8 without pitch and 25mm length as M8 × 25 (standard pitch implied)', () => {
 			const result = formatPrimaryText('fastener', 'M8', '25', '');
 			expect(result).toBe('M8 × 25');
+		});
+	});
+
+	describe('Wood screws (self-tapping, no metric thread)', () => {
+		it('should format wood screw M5 with 20mm length as 5 × 20 (strip M prefix)', () => {
+			const result = formatPrimaryText('fastener', 'M5', '20', '', '', '', HardwareType.WOOD_SCREW);
+			expect(result).toBe('5 × 20');
+		});
+
+		it('should format wood screw M4 with 30mm length as 4 × 30 (strip M prefix)', () => {
+			const result = formatPrimaryText('fastener', 'M4', '30', '', '', '', HardwareType.WOOD_SCREW);
+			expect(result).toBe('4 × 30');
+		});
+
+		it('should format wood screw M3 without length as 3 (strip M prefix)', () => {
+			const result = formatPrimaryText('fastener', 'M3', '', '', '', '', HardwareType.WOOD_SCREW);
+			expect(result).toBe('3');
+		});
+
+		it('should keep regular metric screw M5 with 20mm length as M5 × 20 (keep M prefix)', () => {
+			const result = formatPrimaryText('fastener', 'M5', '20', '', '', '', HardwareType.SCREW);
+			expect(result).toBe('M5 × 20');
 		});
 	});
 

@@ -5,13 +5,15 @@
  * Following McMaster-Carr style simple categorization
  */
 
-// Hardware type enum (matches TypeScript enum)
+// Hardware type enum (matches TypeScript enum in src/lib/data/standards.ts)
 const HardwareType = {
-	SCREW: 'screw',
-	BOLT: 'bolt',
+	SCREW: 'screw', // Metric thread screws
+	BOLT: 'bolt', // Metric thread bolts
+	WOOD_SCREW: 'wood_screw', // Wood screws (self-tapping, no pitch)
 	NUT: 'nut',
 	WASHER: 'washer',
 	PIN: 'pin',
+	RING: 'ring', // Retaining rings, snap rings
 	RIVET: 'rivet',
 	OTHER: 'other'
 };
@@ -248,7 +250,35 @@ function getHardwareType(designations, description = '') {
 	if (lowerDesc.includes('washer')) {
 		return HardwareType.WASHER;
 	}
-	if (lowerDesc.includes('pin') || lowerDesc.includes('dowel') || lowerDesc.includes('cotter')) {
+	// Check for wood screws / tapping screws before general screws
+	if (
+		lowerDesc.includes('wood screw') ||
+		lowerDesc.includes('tapping screw') ||
+		lowerDesc.includes('self-tapping') ||
+		lowerDesc.includes('thread cutting') ||
+		lowerDesc.includes('thread forming')
+	) {
+		return HardwareType.WOOD_SCREW;
+	}
+	// Check for rings before pins (both can have similar keywords)
+	if (
+		lowerDesc.includes('retaining ring') ||
+		lowerDesc.includes('snap ring') ||
+		lowerDesc.includes('circlip')
+	) {
+		return HardwareType.RING;
+	}
+	// Pin check - be specific to avoid matching "tapping" or other words containing "pin"
+	if (
+		lowerDesc.includes('dowel pin') ||
+		lowerDesc.includes('cotter pin') ||
+		lowerDesc.includes('spring pin') ||
+		lowerDesc.includes('clevis pin') ||
+		(lowerDesc.includes('pin') &&
+			!lowerDesc.includes('tapping') &&
+			!lowerDesc.includes('shopping') &&
+			!lowerDesc.includes('pinion'))
+	) {
 		return HardwareType.PIN;
 	}
 	if (lowerDesc.includes('rivet')) {
@@ -271,7 +301,12 @@ function getHardwareType(designations, description = '') {
  * @returns {boolean} True if length is required
  */
 function requiresLength(hardwareType) {
-	return hardwareType !== HardwareType.NUT && hardwareType !== HardwareType.WASHER;
+	// Types that DON'T require length: NUT, WASHER, RING
+	return (
+		hardwareType !== HardwareType.NUT &&
+		hardwareType !== HardwareType.WASHER &&
+		hardwareType !== HardwareType.RING
+	);
 }
 
 export { HardwareType, getHardwareType, requiresLength };

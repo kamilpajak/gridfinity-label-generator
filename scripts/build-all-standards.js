@@ -277,15 +277,25 @@ function addDesignationSystem(designations, crossref, systemName) {
 }
 
 /**
- * Find and add image to standard object
+ * Find and add image and hardwareType to standard object
  * @param {Object} standard - Standard object to add image to
  * @param {string} standardId - Standard ID for lookup in mappings
- * @param {Object} imageMappings - image image mappings
+ * @param {Object} imageMappings - image image mappings (can be string or {image, hardwareType})
  * @param {Array} designations - Designations array for auto-detection
  */
 function addImageToStandard(standard, standardId, imageMappings, designations) {
 	if (imageMappings[standardId]) {
-		standard.image = imageMappings[standardId];
+		const mapping = imageMappings[standardId];
+		// Handle both old format (string) and new format ({image, hardwareType})
+		if (typeof mapping === 'string') {
+			standard.image = mapping;
+		} else if (mapping.image) {
+			standard.image = mapping.image;
+			// Prefer hardwareType from image scraper (more accurate than heuristics)
+			if (mapping.hardwareType && !standard.hardwareType) {
+				standard.hardwareType = mapping.hardwareType;
+			}
+		}
 	} else {
 		const foundImage = findImageForStandard(designations);
 		if (foundImage) {

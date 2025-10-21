@@ -21,7 +21,8 @@
 		standards,
 		formatDesignations,
 		getStandardById,
-		HardwareType
+		shouldDisableLength,
+		shouldDisablePitch
 	} from '$lib/data/standards';
 	import { getPitchOptions } from '$lib/data/thread-pitch';
 	import LabelPreview from '$lib/components/label/label-preview.svelte';
@@ -161,14 +162,9 @@
 
 	const selectedStandard = $derived(getStandardById(selectedStandardId ?? ''));
 
-	// Disable length input for nuts and washers (they don't have length specification)
-	const lengthDisabled = $derived(
-		selectedStandard?.hardwareType === HardwareType.NUT ||
-			selectedStandard?.hardwareType === HardwareType.WASHER
-	);
-
-	// Disable pitch input for washers (they don't have threads)
-	const pitchDisabled = $derived(selectedStandard?.hardwareType === HardwareType.WASHER);
+	// Disable length and pitch inputs based on hardware type
+	const lengthDisabled = $derived(shouldDisableLength(selectedStandard?.hardwareType));
+	const pitchDisabled = $derived(shouldDisablePitch(selectedStandard?.hardwareType));
 
 	// Dynamic placeholder based on hardware type and measurement system
 	let lengthPlaceholder = $derived(
@@ -208,7 +204,8 @@
 			lengthDisabled || !lengthValidationResult.isValid ? '' : length,
 			primaryText,
 			pitch || undefined,
-			threadType || undefined
+			threadType || undefined,
+			selectedStandard?.hardwareType
 		)
 	);
 

@@ -26,7 +26,11 @@
 	} from '$lib/data/standards';
 	import { getPitchOptions } from '$lib/data/thread-pitch';
 	import LabelPreview from '$lib/components/label/label-preview.svelte';
-	import { formatPrimaryText, formatSecondaryText } from '$lib/utils/label-formatter';
+	import {
+		formatPrimaryText,
+		formatSecondaryText,
+		appendOptionalNote
+	} from '$lib/utils/label-formatter';
 	import { exportCanvasLabelAsPNG } from '$lib/utils/label-exporter';
 	import { validateLength, type ValidationResult } from '$lib/utils/input-validator';
 	import BatchModePanel from '$lib/components/batch/batch-mode-panel.svelte';
@@ -305,25 +309,27 @@
 		if (!hasContent) return;
 		console.log('downloadLabelAsPNG called');
 
-		// Prepare full secondary text including optional note
-		const fullSecondaryText = (
-			(labelSecondaryText ||
-				(showStandard && selectedStandard
-					? (() => {
-							// Use only the primary designation for the label
-							const primaryDesignation = selectedStandard.designations.find(
-								(d) => d.system === selectedStandard.primarySystem
-							);
-							if (primaryDesignation) {
-								return `${primaryDesignation.system} ${primaryDesignation.code}`;
-							}
-							// Fallback to first designation if primary not found
-							return selectedStandard.designations.length > 0
-								? `${selectedStandard.designations[0].system} ${selectedStandard.designations[0].code}`
-								: '';
-						})()
-					: '')) + (optionalNote ? ` ${optionalNote}` : '')
-		).trim();
+		// Prepare base secondary text (from labelSecondaryText or standard designation)
+		const baseSecondaryText =
+			labelSecondaryText ||
+			(showStandard && selectedStandard
+				? (() => {
+						// Use only the primary designation for the label
+						const primaryDesignation = selectedStandard.designations.find(
+							(d) => d.system === selectedStandard.primarySystem
+						);
+						if (primaryDesignation) {
+							return `${primaryDesignation.system} ${primaryDesignation.code}`;
+						}
+						// Fallback to first designation if primary not found
+						return selectedStandard.designations.length > 0
+							? `${selectedStandard.designations[0].system} ${selectedStandard.designations[0].code}`
+							: '';
+					})()
+				: '');
+
+		// Append optional note to base text
+		const fullSecondaryText = appendOptionalNote(baseSecondaryText, optionalNote);
 
 		console.log('Calling exportCanvasLabelAsPNG with:', {
 			labelWidth: Number(labelWidth),

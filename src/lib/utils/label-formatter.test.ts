@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { formatPrimaryText, formatSecondaryText, isLabelValid } from './label-formatter';
+import {
+	formatPrimaryText,
+	formatSecondaryText,
+	isLabelValid,
+	appendOptionalNote
+} from './label-formatter';
 import { HardwareType } from '$lib/data/standards';
 
 describe('formatPrimaryText', () => {
@@ -161,5 +166,42 @@ describe('isLabelValid', () => {
 			const result = isLabelValid('invalid', 'M5', '20', 'Text');
 			expect(result).toBe(false);
 		});
+	});
+});
+
+describe('appendOptionalNote', () => {
+	it('should append note to base text with proper spacing', () => {
+		const result = appendOptionalNote('ISO 4762', 'Special coating');
+		expect(result).toBe('ISO 4762 Special coating');
+	});
+
+	it('should return only note when base text is empty', () => {
+		const result = appendOptionalNote('', 'Just a note');
+		expect(result).toBe('Just a note');
+	});
+
+	it('should return base text when note is undefined', () => {
+		const result = appendOptionalNote('DIN 912', undefined);
+		expect(result).toBe('DIN 912');
+	});
+
+	it('should return base text when note is empty string', () => {
+		const result = appendOptionalNote('DIN 912', '');
+		expect(result).toBe('DIN 912');
+	});
+
+	it('should handle empty base text and undefined note', () => {
+		const result = appendOptionalNote('', undefined);
+		expect(result).toBe('');
+	});
+
+	it('should not add leading space when base text is empty but note exists', () => {
+		const result = appendOptionalNote('', 'Note without leading space');
+		expect(result).toBe('Note without leading space');
+	});
+
+	it('should properly combine base text and note without extra spaces', () => {
+		const result = appendOptionalNote('M8 × 25', 'Grade 8.8');
+		expect(result).toBe('M8 × 25 Grade 8.8');
 	});
 });

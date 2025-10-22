@@ -95,6 +95,17 @@ export function formatSecondaryText(labelMode: string, secondaryText: string): s
 }
 
 /**
+ * Appends optional note to base text
+ * @param baseText - Base text (e.g., standard designation or secondary text)
+ * @param note - Optional note to append
+ * @returns Combined text, properly formatted without leading/trailing spaces
+ */
+export function appendOptionalNote(baseText: string, note: string | undefined): string {
+	if (!note) return baseText;
+	return baseText ? `${baseText} ${note}` : note;
+}
+
+/**
  * Determines if a label configuration is valid for preview
  * @param labelMode - 'fastener' or 'general' mode
  * @param threadSize - Thread size (for fastener mode)

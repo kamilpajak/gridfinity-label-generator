@@ -536,7 +536,7 @@ describe('batch-renderer', () => {
 			// Verify secondaryText does NOT contain standard designation
 			expect(mockSolveLabelLayout).toHaveBeenCalledWith(
 				expect.objectContaining({
-					secondaryText: ' Custom note' // Should only have note, no "ISO 4017"
+					secondaryText: 'Custom note' // Fixed: no leading space before note (appendOptionalNote handles spacing)
 				})
 			);
 		});

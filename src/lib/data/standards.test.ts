@@ -132,4 +132,36 @@ describe('Standards Search', () => {
 		expect(lowerResults.length).toBe(upperResults.length);
 		expect(lowerResults.length).toBe(mixedResults.length);
 	});
+
+	it('should find all scraped standards by their numeric codes', () => {
+		const unsearchable: string[] = [];
+
+		generatedStandards.forEach((standard) => {
+			// Get all numeric codes from designations (e.g., "912", "4762", "127")
+			const numericCodes = standard.designations.map((d) => d.code);
+
+			// Try to find this standard using each of its numeric codes
+			let foundByAnyCode = false;
+			for (const code of numericCodes) {
+				const results = searchStandards(code);
+				if (results.some((r) => r.id === standard.id)) {
+					foundByAnyCode = true;
+					break;
+				}
+			}
+
+			if (!foundByAnyCode) {
+				unsearchable.push(
+					`${standard.id} (${standard.designations.map((d) => `${d.system} ${d.code}`).join(', ')})`
+				);
+			}
+		});
+
+		if (unsearchable.length > 0) {
+			console.error('Standards that cannot be found by their numeric codes:');
+			console.error(unsearchable.join('\n'));
+		}
+
+		expect(unsearchable).toHaveLength(0);
+	});
 });

@@ -28,24 +28,44 @@
 		// Combine value and keywords for searching
 		const allSearchableText = [valueLower, ...(keywords || [])].map((text) => text.toLowerCase());
 
-		// Check each searchable text field
+		// Find the best match score across all searchable fields
+		let bestScore = 0;
+
 		for (const text of allSearchableText) {
+			let score = 0;
+
 			// Exact match = highest priority (perfect match)
-			if (text === searchLower) return 1.0;
-
+			if (text === searchLower) {
+				score = 1.0;
+			}
 			// Starts with = high priority
-			if (text.startsWith(searchLower)) return 0.9;
-
+			else if (text.startsWith(searchLower)) {
+				score = 0.9;
+			}
 			// Check for exact word match in the text
-			const words = text.split(/\s+/);
-			if (words.includes(searchLower)) return 0.85;
+			else {
+				const words = text.split(/\s+/);
+				if (words.includes(searchLower)) {
+					score = 0.85;
+				}
+				// Contains as substring = medium priority
+				else if (text.includes(searchLower)) {
+					score = 0.7;
+				}
+			}
 
-			// Contains as substring = medium priority
-			if (text.includes(searchLower)) return 0.7;
+			// Keep track of the best score
+			if (score > bestScore) {
+				bestScore = score;
+			}
+
+			// Early exit if we found a perfect match
+			if (bestScore === 1.0) {
+				break;
+			}
 		}
 
-		// No match found
-		return 0;
+		return bestScore;
 	}
 </script>
 

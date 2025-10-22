@@ -7,7 +7,7 @@
 import type { BatchState, BatchLabelConfig, FastenerLabelConfig } from '$lib/types/batch';
 import { solveLabelLayout } from './label-constraint-solver';
 import { renderLabelToCanvas } from './label-renderer';
-import { formatPrimaryText } from './label-formatter';
+import { formatPrimaryText, appendOptionalNote } from './label-formatter';
 import { getStandardById } from '$lib/data/standards';
 
 export interface BatchRenderOptions {
@@ -266,13 +266,6 @@ function getStandardDesignationText(standard: ReturnType<typeof getStandardById>
 }
 
 /**
- * Appends note to text if present
- */
-function appendNote(baseText: string, note: string | undefined): string {
-	return note ? `${baseText} ${note}` : baseText;
-}
-
-/**
  * Calculates render data for a single label
  */
 async function calculateLabelData(
@@ -313,11 +306,11 @@ async function calculateLabelData(
 		}
 
 		// Append optional note to secondary text (matches single mode)
-		secondaryText = appendNote(baseSecondaryText, config.note);
+		secondaryText = appendOptionalNote(baseSecondaryText, config.note);
 	} else {
 		primaryText = config.primaryText;
 		// Append optional note to secondary text (matches single mode)
-		secondaryText = appendNote(config.secondaryText ?? '', config.note);
+		secondaryText = appendOptionalNote(config.secondaryText ?? '', config.note);
 	}
 
 	return {

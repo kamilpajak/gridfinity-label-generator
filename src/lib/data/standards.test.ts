@@ -164,4 +164,38 @@ describe('Standards Search', () => {
 
 		expect(unsearchable).toHaveLength(0);
 	});
+
+	it('should prioritize exact numeric match over partial match (DIN 96 before DIN 964)', () => {
+		// Search for "96" should return DIN 96 as first result, not DIN 964 or ISO 2010
+		const results = searchStandards('96');
+
+		expect(results.length).toBeGreaterThan(0);
+
+		// Find which result is DIN 96
+		const din96Index = results.findIndex((s) =>
+			s.designations.some((d) => d.system === 'DIN' && d.code === '96')
+		);
+
+		// Find which result is DIN 964 (ISO 2010)
+		const din964Index = results.findIndex((s) =>
+			s.designations.some((d) => d.system === 'DIN' && d.code === '964')
+		);
+
+		// Print first 5 results for debugging
+		console.log('Search results for "96":');
+		results.slice(0, 5).forEach((std, i) => {
+			const codes = std.designations.map((d) => `${d.system} ${d.code}`).join(', ');
+			console.log(`${i + 1}. ${std.id}: ${codes}`);
+		});
+
+		// DIN 96 should come before DIN 964 (if both exist)
+		if (din96Index !== -1 && din964Index !== -1) {
+			expect(din96Index).toBeLessThan(din964Index);
+		}
+
+		// DIN 96 should be the first result
+		if (din96Index !== -1) {
+			expect(din96Index).toBe(0);
+		}
+	});
 });

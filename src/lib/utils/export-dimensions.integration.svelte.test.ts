@@ -59,7 +59,8 @@ describe('Export dimensions integration', () => {
 			showStandard: false,
 			showHardwareImage: false,
 			showQRCode: false,
-			dpi: 360
+			dpi: 360,
+			labelMode: 'general' as const
 		};
 
 		// Export in single mode

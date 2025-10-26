@@ -348,7 +348,11 @@
 				showStandard,
 				showHardwareImage,
 				showQRCode,
-				qrCodeUrl
+				qrCodeUrl,
+				// New params for descriptive filenames
+				labelMode: labelMode as 'fastener' | 'general',
+				threadSize,
+				length
 			});
 			console.log('Export completed successfully');
 		} catch (error) {

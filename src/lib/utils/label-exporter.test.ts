@@ -183,7 +183,8 @@ describe('label-exporter', () => {
 				secondaryText: '',
 				showStandard: false,
 				showHardwareImage: false,
-				showQRCode: false
+				showQRCode: false,
+				labelMode: 'general'
 			});
 
 			// Default margins: left: 2, right: 2, top: 1, bottom: 1
@@ -202,7 +203,8 @@ describe('label-exporter', () => {
 				secondaryText: '',
 				showStandard: false,
 				showHardwareImage: false,
-				showQRCode: false
+				showQRCode: false,
+				labelMode: 'general' as const
 			});
 
 			// Printable width: 50 - 2 - 2 = 46mm
@@ -220,7 +222,8 @@ describe('label-exporter', () => {
 				showStandard: false,
 				showHardwareImage: false,
 				showQRCode: false,
-				margins: { left: 3, right: 3, top: 2, bottom: 2 }
+				margins: { left: 3, right: 3, top: 2, bottom: 2 },
+				labelMode: 'general' as const
 			});
 
 			// Printable width: 40 - 3 - 3 = 34mm
@@ -240,7 +243,8 @@ describe('label-exporter', () => {
 				showStandard: false,
 				showHardwareImage: false,
 				showQRCode: false,
-				dpi: 300 // Custom DPI
+				dpi: 300, // Custom DPI
+				labelMode: 'general' as const
 			});
 
 			// Printable: 31mm x 10mm
@@ -257,7 +261,8 @@ describe('label-exporter', () => {
 				secondaryText: '',
 				showStandard: false,
 				showHardwareImage: false,
-				showQRCode: false
+				showQRCode: false,
+				labelMode: 'general' as const
 			});
 
 			expect(mockCanvas.width).toBe(Math.round(31 * (360 / 25.4)));
@@ -274,7 +279,8 @@ describe('label-exporter', () => {
 				secondaryText: 'Secondary',
 				showStandard: true,
 				showHardwareImage: true,
-				showQRCode: false
+				showQRCode: false,
+				labelMode: 'general' as const
 			});
 
 			expect(labelRenderer.renderLabelToCanvas).toHaveBeenCalledWith(
@@ -293,7 +299,8 @@ describe('label-exporter', () => {
 				secondaryText: '',
 				showStandard: false,
 				showHardwareImage: false,
-				showQRCode: false
+				showQRCode: false,
+				labelMode: 'general' as const
 			});
 
 			expect(labelRenderer.renderLabelToCanvas).toHaveBeenCalledWith(
@@ -318,7 +325,8 @@ describe('label-exporter', () => {
 				secondaryText: '',
 				showStandard: false,
 				showHardwareImage: false,
-				showQRCode: false
+				showQRCode: false,
+				labelMode: 'general' as const
 			});
 
 			// Check canvas.toBlob was called
@@ -329,7 +337,7 @@ describe('label-exporter', () => {
 
 			// Check anchor element was configured
 			expect(mockAnchor.href).toBe('blob:mock-url');
-			expect(mockAnchor.download).toBe('label_31x10mm.png');
+			expect(mockAnchor.download).toBe('Test.png'); // Test is primaryText in general mode
 			expect(mockAnchor.style?.display).toBe('none');
 
 			// Check anchor was added to DOM, clicked, and removed
@@ -346,7 +354,7 @@ describe('label-exporter', () => {
 			expect(requestAnimationFrameSpy).toHaveBeenCalled();
 		});
 
-		it('should generate correct filename based on printable dimensions', async () => {
+		it('should generate correct filename from primary text', async () => {
 			await exportCanvasLabelAsPNG({
 				labelWidth: 50,
 				labelHeight: 9,
@@ -354,11 +362,11 @@ describe('label-exporter', () => {
 				secondaryText: '',
 				showStandard: false,
 				showHardwareImage: false,
-				showQRCode: false
+				showQRCode: false,
+				labelMode: 'general' as const
 			});
 
-			// Printable: 46mm x 7mm
-			expect(mockAnchor.download).toBe('label_46x7mm.png');
+			expect(mockAnchor.download).toBe('Test.png'); // Test is primaryText in general mode
 		});
 	});
 
@@ -378,7 +386,8 @@ describe('label-exporter', () => {
 					secondaryText: '',
 					showStandard: false,
 					showHardwareImage: false,
-					showQRCode: false
+					showQRCode: false,
+					labelMode: 'general' as const
 				})
 			).rejects.toThrow('Render failed');
 
@@ -401,7 +410,8 @@ describe('label-exporter', () => {
 					secondaryText: '',
 					showStandard: false,
 					showHardwareImage: false,
-					showQRCode: false
+					showQRCode: false,
+					labelMode: 'general' as const
 				})
 			).rejects.toThrow('Failed to create PNG blob');
 
@@ -429,7 +439,8 @@ describe('label-exporter', () => {
 				showStandard: true,
 				showHardwareImage: true,
 				showQRCode: true,
-				qrCodeUrl: 'https://example.com'
+				qrCodeUrl: 'https://example.com',
+				labelMode: 'general' as const
 			});
 
 			expect(labelRenderer.renderLabelToCanvas).toHaveBeenCalledWith(
@@ -461,7 +472,8 @@ describe('label-exporter', () => {
 				secondaryText: 'ISO 4032',
 				showStandard: true,
 				showHardwareImage: true,
-				showQRCode: false
+				showQRCode: false,
+				labelMode: 'general' as const
 			});
 
 			// Verify that renderLabelToCanvas was called with layout that has metadata

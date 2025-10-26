@@ -7,6 +7,7 @@
 import { renderLabelToCanvas } from './label-renderer';
 import { solveLabelLayout } from './label-constraint-solver';
 import { enrichWithCoverageMetrics } from './layout-metrics';
+import { generateLabelFilename } from './filename-generator';
 import type { ISODINStandard } from '$lib/data/standards';
 
 export interface CanvasExportOptions {
@@ -26,6 +27,10 @@ export interface CanvasExportOptions {
 		top: number;
 		bottom: number;
 	};
+	// New fields for filename generation
+	labelMode: 'fastener' | 'general';
+	threadSize?: string;
+	length?: string;
 }
 
 const DEFAULT_DPI = 360;
@@ -48,7 +53,10 @@ export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Prom
 		showQRCode,
 		qrCodeUrl,
 		dpi = DEFAULT_DPI,
-		margins = DEFAULT_MARGINS
+		margins = DEFAULT_MARGINS,
+		labelMode,
+		threadSize,
+		length
 	} = options;
 
 	// Calculate printable area dimensions (without margins)
@@ -131,9 +139,21 @@ export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Prom
 		throw error;
 	}
 
+	// Generate descriptive filename
+	const filename = generateLabelFilename({
+		labelMode,
+		standard,
+		threadSize,
+		length,
+		primaryText,
+		secondaryText,
+		printableWidth,
+		printableHeight
+	});
+
 	// Download the canvas
-	console.log('About to download canvas');
-	await downloadCanvasAsPng(exportCanvas, `label_${printableWidth}x${printableHeight}mm.png`);
+	console.log('About to download canvas with filename:', filename);
+	await downloadCanvasAsPng(exportCanvas, filename);
 	console.log('Download initiated');
 }
 

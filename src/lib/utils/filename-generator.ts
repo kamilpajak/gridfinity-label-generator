@@ -115,9 +115,9 @@ function generateGeneralFilename(
  */
 function sanitizeStandardCode(text: string): string {
 	return text
-		.replace(/[^\w\s.-]/g, '') // Remove special chars except spaces, dots, hyphens
-		.replace(/\s+/g, '') // Remove spaces
-		.replace(/-+/g, ''); // Remove hyphens (also handles start/end)
+		.replaceAll(/[^\w\s.-]/g, '') // Remove special chars except spaces, dots, hyphens
+		.replaceAll(/\s+/g, '') // Remove spaces
+		.replaceAll(/-+/g, ''); // Remove hyphens (also handles start/end)
 }
 
 /**
@@ -128,9 +128,9 @@ function sanitizeStandardCode(text: string): string {
  */
 function sanitizeForFilename(text: string): string {
 	return text
-		.replace(/[^\w\s-]/g, '') // Remove special chars except spaces and hyphens
-		.replace(/\s+/g, '') // Remove spaces
-		.replace(/-+/g, ''); // Remove hyphens (also handles start/end)
+		.replaceAll(/[^\w\s-]/g, '') // Remove special chars except spaces and hyphens
+		.replaceAll(/\s+/g, '') // Remove spaces
+		.replaceAll(/-+/g, ''); // Remove hyphens (also handles start/end)
 }
 
 /**
@@ -140,9 +140,9 @@ function sanitizeForFilename(text: string): string {
  */
 function sanitizeThreadSize(threadSize: string): string {
 	return threadSize
-		.replace(/"/g, 'in') // Replace quote with 'in'
-		.replace(/\//g, '-') // Replace slash with hyphen
-		.replace(/[^\w-]/g, ''); // Remove other special chars
+		.replaceAll(/"/g, 'in') // Replace quote with 'in'
+		.replaceAll(/\//g, '-') // Replace slash with hyphen
+		.replaceAll(/[^\w-]/g, ''); // Remove other special chars
 }
 
 /**

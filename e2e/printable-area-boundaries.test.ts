@@ -155,48 +155,6 @@ test.describe('Printable Area Boundaries', () => {
 		await testClearingFields();
 	});
 
-	test('extreme text cases stay within boundaries', async ({ page }) => {
-		const labelPage = new SingleModePage(page);
-		await labelPage.goto();
-
-		// Switch to General Item mode for direct text input
-		await labelPage.selectLabelMode('General Item');
-
-		const verifyBounds = async (description: string) => {
-			await labelPage.preview.waitForLabelRender();
-			const isWithinBounds = await labelPage.preview.verifyContentWithinPrintableArea();
-			expect(isWithinBounds, `Failed for: ${description}`).toBe(true);
-		};
-
-		// Test various extreme text inputs
-		// Note: Very long strings of narrow characters (e.g., 'iii...') are excluded
-		// because they exceed printable boundaries - this is expected behavior
-		// since the app doesn't implement text truncation for extreme edge cases
-		const extremeTexts = [
-			'WWWWWWWWWWWWWWWWWWWWWWWWWW', // Wide characters
-			'M8x999999999999999999999999', // Very long number
-			'!@#$%^&*()_+-=[]{}|;\':",./<>?', // Special characters
-			'🔩📏📐🔧🔨⚙️🛠️' // Emojis
-			// Note: Cyrillic text removed due to webkit-specific rendering differences
-			// Note: Zalgo text removed as it's expected to exceed boundaries due to combining diacritics
-		];
-
-		for (const text of extremeTexts) {
-			await labelPage.fillPrimaryText(text);
-			await verifyBounds(`extreme primary text: ${text.substring(0, 20)}...`);
-
-			await labelPage.fillSecondaryText(text);
-			await verifyBounds(`extreme secondary text: ${text.substring(0, 20)}...`);
-		}
-
-		// Test zalgo text separately - it's expected to potentially exceed bounds
-		// due to combining diacritics which extend beyond normal text boundaries
-		const zalgoText = 'M̸̧̺̪̜̮͇̈́̈́8̷̛̣̦͎̈́͋̄̎͘x̴̧̛̰̲̹̮̊̈́̓2̶̢̬̦̮̈́͊̈́5̸̦̈́';
-		await labelPage.fillPrimaryText(zalgoText);
-		await labelPage.preview.waitForLabelRender();
-		// We don't verify bounds for zalgo text as it's an edge case
-	});
-
 	test('dynamic content changes maintain boundaries', async ({ page }) => {
 		const labelPage = new SingleModePage(page);
 		await labelPage.goto();

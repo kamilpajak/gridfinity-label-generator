@@ -5,6 +5,13 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	test: {
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'lcov'],
+			reportsDirectory: './coverage',
+			include: ['src/lib/**/*.ts', 'src/routes/**/*.ts'],
+			exclude: ['**/*.test.ts', '**/*.spec.ts', '**/types/**', '**/*.d.ts']
+		},
 		projects: [
 			{
 				extends: './vite.config.ts',

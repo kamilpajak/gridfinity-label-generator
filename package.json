@@ -1,7 +1,7 @@
 {
 	"name": "gridscribe",
 	"private": true,
-	"version": "0.0.1",
+	"version": "2.3.0",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
@@ -20,9 +20,15 @@
 		"scrape-images": "node scripts/download-images.js",
 		"merge-mappings": "node scripts/merge-mappings.js",
 		"build-standards": "node scripts/build-all-standards.js",
-		"validate-images": "node scripts/validate-images.js"
+		"validate-images": "node scripts/validate-images.js",
+		"check-changelog": "node scripts/check-changelog.js",
+		"release": "node scripts/release.js",
+		"release:dry-run": "node scripts/release.js --dry-run",
+		"commitlint": "commitlint"
 	},
 	"devDependencies": {
+		"@commitlint/cli": "^20.3.0",
+		"@commitlint/config-conventional": "^20.3.0",
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
 		"@fontsource/fira-mono": "^5.0.0",

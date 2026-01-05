@@ -1,6 +1,6 @@
 # Gridfinity Label Generator
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/kamilpajak/gridfinity-label-generator/releases)
+[![Version](https://img.shields.io/github/v/release/kamilpajak/gridfinity-label-generator)](https://github.com/kamilpajak/gridfinity-label-generator/releases)
 [![Framework](https://img.shields.io/badge/framework-SvelteKit-orange)](https://kit.svelte.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 

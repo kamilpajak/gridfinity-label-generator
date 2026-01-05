@@ -117,8 +117,7 @@ function sanitizeStandardCode(text: string): string {
 	return text
 		.replace(/[^\w\s.-]/g, '') // Remove special chars except spaces, dots, hyphens
 		.replace(/\s+/g, '') // Remove spaces
-		.replace(/-+/g, '') // Remove hyphens
-		.replace(/^-+|-+$/g, ''); // Trim hyphens from start/end
+		.replace(/-+/g, ''); // Remove hyphens (also handles start/end)
 }
 
 /**
@@ -131,8 +130,7 @@ function sanitizeForFilename(text: string): string {
 	return text
 		.replace(/[^\w\s-]/g, '') // Remove special chars except spaces and hyphens
 		.replace(/\s+/g, '') // Remove spaces
-		.replace(/-+/g, '') // Remove hyphens
-		.replace(/^-+|-+$/g, ''); // Trim hyphens from start/end
+		.replace(/-+/g, ''); // Remove hyphens (also handles start/end)
 }
 
 /**

@@ -20,7 +20,14 @@ Just open it in your browser, design your label, and print. No installation, no 
 **General Purpose Labels**
 
 - Create custom text labels for any other workshop items
+- Upload your own images for personalized labels (12mm tape)
 - Works for electronics, tools, 3D printer parts, craft supplies, and more
+
+**Batch Mode**
+
+- Generate multiple labels at once
+- Configure each label individually
+- Export all labels in one go
 
 **Professional Output**
 

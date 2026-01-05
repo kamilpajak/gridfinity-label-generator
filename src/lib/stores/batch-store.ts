@@ -162,9 +162,21 @@ function createBatchStore() {
 					return state;
 				}
 				const labelToDuplicate = state.labels[index];
+
+				// Deep copy for GeneralLabelConfig with customImage
+				let duplicatedLabel: BatchLabelConfig;
+				if (labelToDuplicate.mode === 'general' && labelToDuplicate.customImage) {
+					duplicatedLabel = {
+						...labelToDuplicate,
+						customImage: { ...labelToDuplicate.customImage }
+					};
+				} else {
+					duplicatedLabel = { ...labelToDuplicate };
+				}
+
 				return {
 					...state,
-					labels: [...state.labels, { ...labelToDuplicate }]
+					labels: [...state.labels, duplicatedLabel]
 				};
 			});
 		},

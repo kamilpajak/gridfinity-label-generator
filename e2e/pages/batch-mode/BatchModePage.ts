@@ -2,6 +2,7 @@ import { type Page, type Locator, expect } from '@playwright/test';
 import { BasePage } from '../base/BasePage';
 import { NavigationTabs } from '../components/NavigationTabs';
 import { ExportSection } from '../components/ExportSection';
+import { ImageUploaderComponent } from '../components/ImageUploader';
 
 /**
  * Page object for Batch Mode
@@ -149,5 +150,36 @@ export class BatchModePage extends BasePage {
 		await deleteButton.click();
 		// Wait for the label to be removed
 		await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+	}
+
+	// Label mode methods
+	/**
+	 * Switch label mode between Hardware and General Item
+	 * @param index - Label index (0-based)
+	 * @param mode - Target mode: 'hardware' or 'general'
+	 */
+	async switchLabelMode(index: number, mode: 'hardware' | 'general') {
+		const modeToggle = this.page.getByTestId(`label-mode-toggle-${index}`);
+		const buttonText = mode === 'general' ? 'General Item' : 'Hardware';
+		const button = modeToggle.locator(`button:has-text("${buttonText}")`);
+		await button.click();
+		// Wait for UI to update
+		await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+	}
+
+	/**
+	 * Get ImageUploader component for a specific label
+	 * @param index - Label index (0-based)
+	 */
+	getImageUploader(index: number): ImageUploaderComponent {
+		return new ImageUploaderComponent(this.page, index);
+	}
+
+	/**
+	 * Get primary text input for a label
+	 * @param index - Label index (0-based)
+	 */
+	getPrimaryTextInput(index: number): Locator {
+		return this.page.getByTestId(`primary-text-input-${index}`);
 	}
 }

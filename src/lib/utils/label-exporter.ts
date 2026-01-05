@@ -31,6 +31,10 @@ export interface CanvasExportOptions {
 	labelMode: 'fastener' | 'general';
 	threadSize?: string;
 	length?: string;
+	/** Custom image source (base64 data URL) for general mode labels */
+	customImageSrc?: string;
+	/** Aspect ratio of custom image (width/height) */
+	customImageAspectRatio?: number;
 }
 
 const DEFAULT_DPI = 360;
@@ -56,7 +60,9 @@ export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Prom
 		margins = DEFAULT_MARGINS,
 		labelMode,
 		threadSize,
-		length
+		length,
+		customImageSrc,
+		customImageAspectRatio
 	} = options;
 
 	// Calculate printable area dimensions (without margins)
@@ -79,9 +85,17 @@ export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Prom
 		printableHeight
 	};
 
-	// Calculate hardware image aspect ratio if needed
+	// Calculate image aspect ratio if needed
+	// For general mode: use custom image aspect ratio
+	// For fastener mode: load hardware image aspect ratio dynamically
 	let hardwareImageAspectRatio: number | undefined;
-	if (showHardwareImage && standard?.image) {
+	const isGeneralItemMode = labelMode === 'general';
+
+	if (isGeneralItemMode && showHardwareImage && customImageSrc && customImageAspectRatio) {
+		// General mode with custom image - use provided aspect ratio
+		hardwareImageAspectRatio = customImageAspectRatio;
+	} else if (!isGeneralItemMode && showHardwareImage && standard?.image) {
+		// Fastener mode with standard image - load aspect ratio dynamically
 		try {
 			const img = new Image();
 			await new Promise<void>((resolve, reject) => {
@@ -128,7 +142,8 @@ export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Prom
 				showStandard,
 				showHardwareImage,
 				showQRCode,
-				qrCodeUrl
+				qrCodeUrl,
+				customImageSrc
 			},
 			scale,
 			showMargins: false // No margins in export

@@ -41,6 +41,11 @@ export const UI_TEXT = {
 		additionalInfo: 'Additional information...',
 		qrCode: 'Text or URL for QR code'
 	},
+	/**
+	 * Reusable label fragments for form fields.
+	 * IMPORTANT: Always use these constants in Svelte templates instead of hardcoding.
+	 * Example: {UI_TEXT.labels.optional} NOT "(optional)" or "(Optional)"
+	 */
 	labels: {
 		optional: '(Optional)'
 	},

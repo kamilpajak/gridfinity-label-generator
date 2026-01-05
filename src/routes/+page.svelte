@@ -34,6 +34,8 @@
 	import { exportCanvasLabelAsPNG } from '$lib/utils/label-exporter';
 	import { validateLength, type ValidationResult } from '$lib/utils/input-validator';
 	import BatchModePanel from '$lib/components/batch/batch-mode-panel.svelte';
+	import ImageUploader from '$lib/components/shared/image-uploader.svelte';
+	import type { CustomImage } from '$lib/types/batch';
 	import { UI_TEXT } from '$lib/constants/ui-text';
 
 	const DEBOUNCE_DELAY_MS = 300;
@@ -53,6 +55,10 @@
 	let secondaryText = $state('');
 	let optionalNote = $state('');
 	let qrCodeUrl = $state('');
+
+	// Custom image state (general mode only)
+	let customImage = $state<CustomImage | undefined>(undefined);
+	let showCustomImage = $state(true);
 
 	let measurementSystemDisabled = $derived(labelMode !== 'fastener');
 
@@ -338,6 +344,13 @@
 			secondaryText: fullSecondaryText
 		});
 
+		// Determine effective showHardwareImage for export
+		// In general mode, use custom image; in fastener mode, use hardware image
+		const isGeneralItemMode = labelMode === 'general';
+		const effectiveShowHardwareImage = isGeneralItemMode
+			? showCustomImage && !!customImage
+			: showHardwareImage;
+
 		try {
 			await exportCanvasLabelAsPNG({
 				labelWidth: Number(labelWidth),
@@ -345,14 +358,18 @@
 				primaryText: labelPrimaryText,
 				secondaryText: fullSecondaryText,
 				standard: selectedStandard,
-				showStandard,
-				showHardwareImage,
+				showStandard: isGeneralItemMode ? false : showStandard,
+				showHardwareImage: effectiveShowHardwareImage,
 				showQRCode,
 				qrCodeUrl,
 				// New params for descriptive filenames
 				labelMode: labelMode as 'fastener' | 'general',
 				threadSize,
-				length
+				length,
+				// Custom image for general mode
+				customImageSrc: isGeneralItemMode && showCustomImage ? customImage?.data : undefined,
+				customImageAspectRatio:
+					isGeneralItemMode && showCustomImage ? customImage?.aspectRatio : undefined
 			});
 			console.log('Export completed successfully');
 		} catch (error) {
@@ -381,6 +398,8 @@
 		qrCodeUrl = '';
 		selectedStandardId = '';
 		lengthTouched = false;
+		customImage = undefined;
+		showCustomImage = true;
 	}
 </script>
 
@@ -728,19 +747,29 @@
 											/>
 										</div>
 									</div>
-									<div class="space-y-2">
-										<label for="optional-note-general" class="text-sm font-medium"
-											>{UI_TEXT.fields.note}
-											<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
-										>
-										<Input
-											id="optional-note-general"
-											bind:value={optionalNote}
-											placeholder={UI_TEXT.placeholders.additionalInfo}
-											class="w-full"
-											data-testid="optional-note-input"
-										/>
-									</div>
+
+									<!-- Custom Image (12mm only) -->
+									{#if labelHeight === '12'}
+										<div class="space-y-2">
+											<div class="flex items-center justify-between">
+												<label class="text-sm font-medium">
+													Custom Image
+													<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span>
+												</label>
+												{#if customImage}
+													<div class="flex items-center gap-2">
+														<span class="text-sm text-muted-foreground">Show on label</span>
+														<Switch bind:checked={showCustomImage} />
+													</div>
+												{/if}
+											</div>
+											<ImageUploader
+												bind:value={customImage}
+												disabled={false}
+												testId="custom-image-uploader-single"
+											/>
+										</div>
+									{/if}
 								</div>
 							{/if}
 
@@ -779,6 +808,8 @@
 								labelHeight={parseInt(labelHeight)}
 								{labelWidth}
 								bind:canvasRef
+								{customImage}
+								{showCustomImage}
 							/>
 							<div class="mt-4 flex justify-center">
 								<Button

@@ -2,6 +2,7 @@
 	// Fonts are now imported globally in app.css
 	import { onMount, onDestroy } from 'svelte';
 	import type { ISODINStandard } from '$lib/data/standards';
+	import type { CustomImage } from '$lib/types/batch';
 	import { AspectRatio } from '$lib/components/ui/aspect-ratio';
 	import TagIcon from '@lucide/svelte/icons/tag';
 	import {
@@ -24,6 +25,10 @@
 		labelHeight: number; // 9 or 12 mm
 		labelWidth: number; // 30-80 mm
 		canvasRef?: HTMLCanvasElement | undefined;
+		/** Custom image for general mode labels */
+		customImage?: CustomImage;
+		/** Whether to show custom image on label */
+		showCustomImage?: boolean;
 	}
 
 	let {
@@ -37,7 +42,9 @@
 		qrCodeUrl,
 		labelHeight,
 		labelWidth,
-		canvasRef = $bindable()
+		canvasRef = $bindable(),
+		customImage,
+		showCustomImage = false
 	}: Props = $props();
 
 	let container: HTMLDivElement;
@@ -60,6 +67,9 @@
 		printableWidth: labelWidth - 4, // 2mm left + 2mm right margins
 		printableHeight: labelHeight - 2 // 1mm top + 1mm bottom margins
 	});
+
+	// Determine if we're in General Item mode (no hardware standard selected)
+	const isGeneralItemMode = $derived(!standard);
 
 	// Prepare full secondary text including optional note
 	const fullSecondaryText = $derived(
@@ -106,6 +116,10 @@
 		standard;
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		dimensions;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		customImage;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		showCustomImage;
 
 		const calculateLayout = async () => {
 			// Cancel any previous layout calculation
@@ -124,9 +138,14 @@
 					return;
 				}
 
-				// Calculate hardware image aspect ratio if needed
+				// Calculate image aspect ratio based on mode
 				let hardwareImageAspectRatio: number | undefined;
-				if (showHardwareImage && standard?.image) {
+
+				if (isGeneralItemMode && showCustomImage && customImage) {
+					// General Item mode with custom image - use custom image aspect ratio
+					hardwareImageAspectRatio = customImage.aspectRatio;
+				} else if (!isGeneralItemMode && showHardwareImage && standard?.image) {
+					// Fastener mode with standard image - load aspect ratio dynamically
 					try {
 						const img = new Image();
 						await new Promise<void>((resolve, reject) => {
@@ -140,16 +159,17 @@
 					}
 				}
 
-				// In General Item mode (no standard), hardware-related features should not affect layout
-				// even if their UI switches are still enabled (they get disabled in UI but state persists)
-				const isGeneralItemMode = !standard;
-				const effectiveShowHardwareImage = isGeneralItemMode ? false : showHardwareImage;
+				// Determine effective show flags for layout solver
+				// In General Item mode, use custom image; in Fastener mode, use hardware image
+				const effectiveShowImage = isGeneralItemMode
+					? showCustomImage && !!customImage
+					: showHardwareImage;
 				const effectiveShowStandard = isGeneralItemMode ? false : showStandard;
 
 				const baseLayout = await solveLabelLayout({
 					dimensions,
 					showQRCode,
-					showHardwareImage: effectiveShowHardwareImage,
+					showHardwareImage: effectiveShowImage,
 					showStandard: effectiveShowStandard,
 					primaryText: primaryText || '',
 					secondaryText: fullSecondaryText,
@@ -194,6 +214,10 @@
 		qrCodeUrl;
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		showQRCode;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		customImage;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		showCustomImage;
 
 		if (!canvasRef || !container || !layout) return;
 
@@ -244,6 +268,11 @@
 						return;
 					}
 
+					// In General Item mode, use custom image; in Fastener mode, use hardware image
+					const effectiveShowImage = isGeneralItemMode
+						? showCustomImage && !!customImage
+						: showHardwareImage;
+
 					await renderLabelToCanvas({
 						canvas: canvasRef,
 						dimensions,
@@ -252,10 +281,11 @@
 							primaryText: primaryText || '',
 							secondaryText: fullSecondaryText,
 							standard,
-							showStandard,
-							showHardwareImage,
+							showStandard: isGeneralItemMode ? false : showStandard,
+							showHardwareImage: effectiveShowImage,
 							showQRCode,
-							qrCodeUrl
+							qrCodeUrl,
+							customImageSrc: isGeneralItemMode && showCustomImage ? customImage?.data : undefined
 						},
 						scale: scale * dpr,
 						showMargins: true,

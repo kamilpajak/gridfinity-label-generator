@@ -28,7 +28,7 @@ const mockCanvas = {
 	getContext: vi.fn(() => mockContext)
 };
 
-// Mock Image
+// Mock Image base class
 class MockImage {
 	onload: (() => void) | null = null;
 	onerror: ((e: Event) => void) | null = null;
@@ -41,6 +41,27 @@ class MockImage {
 		this.width = 100;
 		this.height = 200;
 	}
+}
+
+// Factory functions for mock Image classes (extracted to reduce nesting depth)
+function createMockImageThatLoads(width = 100, height = 100) {
+	return class extends MockImage {
+		constructor() {
+			super();
+			this.width = width;
+			this.height = height;
+			setTimeout(() => this.onload?.(), 0);
+		}
+	} as unknown as typeof Image;
+}
+
+function createMockImageThatFails() {
+	return class extends MockImage {
+		constructor() {
+			super();
+			setTimeout(() => this.onerror?.(new Event('error')), 0);
+		}
+	} as unknown as typeof Image;
 }
 
 // Mock document.fonts
@@ -64,8 +85,8 @@ vi.mock('./url-shortener', () => ({
 
 describe('label-renderer', () => {
 	beforeEach(() => {
-		global.Image = MockImage as unknown as typeof Image;
-		global.document = {
+		globalThis.Image = MockImage as unknown as typeof Image;
+		globalThis.document = {
 			fonts: mockFonts,
 			createElement: vi.fn(() => mockCanvas)
 		} as unknown as Document;
@@ -113,16 +134,7 @@ describe('label-renderer', () => {
 		};
 
 		it('should draw image at exact dimensions from constraint solver', async () => {
-			global.Image = class extends MockImage {
-				constructor() {
-					super();
-					this.width = 100;
-					this.height = 200;
-					setTimeout(() => {
-						if (this.onload) this.onload();
-					}, 0);
-				}
-			} as unknown as typeof Image;
+			globalThis.Image = createMockImageThatLoads(100, 200);
 
 			await renderLabelToCanvas(baseOptions);
 
@@ -143,16 +155,7 @@ describe('label-renderer', () => {
 				scale: 2
 			};
 
-			global.Image = class extends MockImage {
-				constructor() {
-					super();
-					this.width = 100;
-					this.height = 200;
-					setTimeout(() => {
-						if (this.onload) this.onload();
-					}, 0);
-				}
-			} as unknown as typeof Image;
+			globalThis.Image = createMockImageThatLoads(100, 200);
 
 			await renderLabelToCanvas(scaledOptions);
 
@@ -179,22 +182,42 @@ describe('label-renderer', () => {
 			for (const testCase of testCases) {
 				vi.clearAllMocks();
 
-				global.Image = class extends MockImage {
-					constructor() {
-						super();
-						this.width = testCase.width;
-						this.height = testCase.height;
-						setTimeout(() => {
-							if (this.onload) this.onload();
-						}, 0);
-					}
-				} as unknown as typeof Image;
+				globalThis.Image = createMockImageThatLoads(testCase.width, testCase.height);
 
 				await renderLabelToCanvas(baseOptions);
 
 				// All images drawn at same dimensions regardless of source aspect ratio
 				expect(mockContext.drawImage).toHaveBeenCalledWith(expect.any(MockImage), 1, 2, 6, 6);
 			}
+		});
+
+		it('should render label without throwing when image fails to load (graceful degradation)', async () => {
+			globalThis.Image = createMockImageThatFails();
+
+			// Should not throw - graceful degradation
+			await expect(renderLabelToCanvas(baseOptions)).resolves.not.toThrow();
+
+			// Text should still be rendered
+			expect(mockContext.fillText).toHaveBeenCalled();
+		});
+
+		it('should render label when customImageSrc is provided', async () => {
+			globalThis.Image = createMockImageThatLoads(100, 100);
+
+			const optionsWithCustomImage = {
+				...baseOptions,
+				content: {
+					...baseOptions.content,
+					standard: undefined,
+					customImageSrc: 'data:image/png;base64,abc123',
+					showHardwareImage: true
+				}
+			};
+
+			await renderLabelToCanvas(optionsWithCustomImage);
+
+			// Image should be drawn using customImageSrc
+			expect(mockContext.drawImage).toHaveBeenCalled();
 		});
 	});
 });

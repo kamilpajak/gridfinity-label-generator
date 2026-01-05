@@ -4,7 +4,12 @@
  * Renders multiple labels horizontally on a single canvas with cutting lines
  */
 
-import type { BatchState, BatchLabelConfig, FastenerLabelConfig } from '$lib/types/batch';
+import type {
+	BatchState,
+	BatchLabelConfig,
+	FastenerLabelConfig,
+	GeneralLabelConfig
+} from '$lib/types/batch';
 import { solveLabelLayout } from './label-constraint-solver';
 import { renderLabelToCanvas } from './label-renderer';
 import { formatPrimaryText, appendOptionalNote } from './label-formatter';
@@ -86,6 +91,33 @@ function drawCuttingLine(
 }
 
 /**
+ * Calculates hardware image aspect ratio from custom image or standard image
+ */
+async function getHardwareImageAspectRatio(
+	customImage: { aspectRatio: number } | undefined,
+	standardImage: string | undefined
+): Promise<number | undefined> {
+	if (customImage) {
+		return customImage.aspectRatio;
+	}
+
+	if (!standardImage) return undefined;
+
+	try {
+		const img = new Image();
+		await new Promise<void>((resolve, reject) => {
+			img.onload = () => resolve();
+			img.onerror = reject;
+			img.src = standardImage;
+		});
+		return img.naturalWidth / img.naturalHeight;
+	} catch (e) {
+		console.warn('Failed to load image for aspect ratio calculation:', e);
+		return undefined;
+	}
+}
+
+/**
  * Renders a single label onto the main canvas
  */
 async function renderSingleLabel(
@@ -110,30 +142,28 @@ async function renderSingleLabel(
 	// Determine flags - respect per-label toggle settings (default to true if undefined)
 	const showQRCode =
 		(labelData.config.showQRCode ?? true) && !!(labelData.config.qrCode && batch.height === 12);
+
+	// Get custom image data for general mode
+	const generalConfig =
+		labelData.config.mode === 'general' ? (labelData.config as GeneralLabelConfig) : null;
+	const customImage = generalConfig?.customImage;
+	const showCustomImage = generalConfig?.showCustomImage ?? true;
+
+	// showHardwareImage: fastener mode with standard image OR general mode with custom image (12mm only)
 	const showHardwareImage =
 		labelData.config.mode === 'fastener'
 			? (labelData.config.showImage ?? true) && !!labelData.standard?.image
-			: false;
+			: batch.height === 12 && showCustomImage && !!customImage;
+
 	const showStandard =
 		labelData.config.mode === 'fastener'
 			? (labelData.config.showReference ?? true) && !!labelData.standard
 			: false;
 
 	// Calculate hardware image aspect ratio if needed
-	let hardwareImageAspectRatio: number | undefined;
-	if (showHardwareImage && labelData.standard?.image) {
-		try {
-			const img = new Image();
-			await new Promise<void>((resolve, reject) => {
-				img.onload = () => resolve();
-				img.onerror = reject;
-				img.src = labelData.standard!.image!;
-			});
-			hardwareImageAspectRatio = img.naturalWidth / img.naturalHeight;
-		} catch (e) {
-			console.warn('Failed to load image for aspect ratio calculation:', e);
-		}
-	}
+	const hardwareImageAspectRatio = showHardwareImage
+		? await getHardwareImageAspectRatio(customImage, labelData.standard?.image)
+		: undefined;
 
 	// Solve layout for this label
 	const layout = await solveLabelLayout({
@@ -168,7 +198,8 @@ async function renderSingleLabel(
 			showStandard,
 			showHardwareImage,
 			showQRCode,
-			qrCodeUrl: labelData.config.qrCode
+			qrCodeUrl: labelData.config.qrCode,
+			customImageSrc: customImage?.data
 		},
 		scale,
 		showMargins: false

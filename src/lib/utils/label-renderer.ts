@@ -27,6 +27,8 @@ export interface RenderOptions {
 		showHardwareImage: boolean;
 		showQRCode: boolean;
 		qrCodeUrl?: string;
+		/** Custom image source (base64 data URL) for general mode labels */
+		customImageSrc?: string;
 	};
 	scale?: number;
 	showMargins?: boolean;
@@ -40,20 +42,43 @@ const imageCache = new LRUCache<string, HTMLImageElement>(50);
 const qrCache = new LRUCache<string, string>(50);
 
 /**
+ * Throws if the abort signal is aborted
+ */
+function throwIfAborted(signal?: AbortSignal): void {
+	if (signal?.aborted) throw new Error('Render aborted');
+}
+
+/**
+ * Draws the margins guide rectangle
+ */
+function drawMarginsGuide(
+	ctx: CanvasRenderingContext2D,
+	dimensions: { printableWidth: number; printableHeight: number },
+	scale: number
+): void {
+	ctx.save();
+	ctx.strokeStyle = '#f3f4f6';
+	ctx.lineWidth = 0.05 * scale;
+	ctx.setLineDash([0.2 * scale, 0.2 * scale]);
+	ctx.strokeRect(
+		2 * scale,
+		1 * scale,
+		dimensions.printableWidth * scale,
+		dimensions.printableHeight * scale
+	);
+	ctx.restore();
+}
+
+/**
  * Renders a label to canvas
  */
 export async function renderLabelToCanvas(options: RenderOptions): Promise<void> {
 	const { canvas, dimensions, layout, content, scale = 1, showMargins = true, signal } = options;
 	const ctx = canvas.getContext('2d');
 
-	if (!ctx) {
-		throw new Error('Failed to get canvas context');
-	}
+	if (!ctx) throw new Error('Failed to get canvas context');
 
-	// Check if aborted before starting
-	if (signal?.aborted) {
-		throw new Error('Render aborted');
-	}
+	throwIfAborted(signal);
 
 	// Atomic canvas clearing - reset everything at once
 	ctx.save();
@@ -63,32 +88,13 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.restore();
 
-	// Check again after clearing - render might have been aborted during clear
-	if (signal?.aborted) {
-		throw new Error('Render aborted');
-	}
+	throwIfAborted(signal);
 
-	// Draw margins guide if enabled
-	if (showMargins) {
-		ctx.save();
-		ctx.strokeStyle = '#f3f4f6';
-		ctx.lineWidth = 0.05 * scale;
-		ctx.setLineDash([0.2 * scale, 0.2 * scale]);
-		ctx.strokeRect(
-			2 * scale,
-			1 * scale,
-			dimensions.printableWidth * scale,
-			dimensions.printableHeight * scale
-		);
-		ctx.restore();
-	}
+	if (showMargins) drawMarginsGuide(ctx, dimensions, scale);
 
 	// Save context and set up coordinate system for printable area
 	ctx.save();
-	// Only translate if showing margins (preview mode)
-	if (showMargins) {
-		ctx.translate(2 * scale, 1 * scale); // Move to printable area origin
-	}
+	if (showMargins) ctx.translate(2 * scale, 1 * scale);
 
 	// Draw text (positioning already determined by layout solver)
 	if (content.primaryText) {
@@ -113,25 +119,26 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 		});
 	}
 
-	// Draw hardware image
-	if (content.showHardwareImage && content.standard?.image && layout.hardwareImage) {
-		// Check if aborted before async operation
-		if (signal?.aborted) throw new Error('Render aborted');
-
-		await drawImage(ctx, {
-			src: content.standard.image,
-			x: layout.hardwareImage.x * scale,
-			y: layout.hardwareImage.y * scale,
-			width: (layout.hardwareImage.width ?? 0) * scale,
-			height: (layout.hardwareImage.height ?? 0) * scale
-		});
+	// Draw hardware image or custom image
+	const imageSrc = content.customImageSrc || content.standard?.image;
+	if (content.showHardwareImage && imageSrc && layout.hardwareImage) {
+		throwIfAborted(signal);
+		try {
+			await drawImage(ctx, {
+				src: imageSrc,
+				x: layout.hardwareImage.x * scale,
+				y: layout.hardwareImage.y * scale,
+				width: (layout.hardwareImage.width ?? 0) * scale,
+				height: (layout.hardwareImage.height ?? 0) * scale
+			});
+		} catch (error) {
+			console.warn('Failed to load image, continuing without it:', error);
+		}
 	}
 
 	// Draw QR code
 	if (content.showQRCode && content.qrCodeUrl && layout.qrCode) {
-		// Check if aborted before async operation
-		if (signal?.aborted) throw new Error('Render aborted');
-
+		throwIfAborted(signal);
 		await drawQRCode(
 			ctx,
 			{
@@ -144,7 +151,6 @@ export async function renderLabelToCanvas(options: RenderOptions): Promise<void>
 		);
 	}
 
-	// Restore context
 	ctx.restore();
 }
 

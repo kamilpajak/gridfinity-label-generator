@@ -81,9 +81,9 @@ This allows pulling images without authentication on VPS.
 # 1. SSH to VPS
 ssh user@your-vps.com
 
-# 2. Stop old container
-docker stop storage-label-maker
-docker rm storage-label-maker
+# 2. Stop old container (if exists)
+docker stop gridscribe 2>/dev/null || true
+docker rm gridscribe 2>/dev/null || true
 
 # 3. Pull new image (using latest)
 docker pull ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
@@ -361,7 +361,3 @@ Optional:
 - Consider using GitHub Actions for automated deployment
 - Keep Docker images updated regularly
 - Monitor container logs for security issues
-
----
-
-For detailed technical information, see [DOCKER_DEPLOYMENT_PLAN.md](./DOCKER_DEPLOYMENT_PLAN.md).

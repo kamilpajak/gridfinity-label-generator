@@ -9,6 +9,7 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { batchStore } from '$lib/stores/batch-store';
 	import StandardSearch from '$lib/components/shared/standard-search.svelte';
+	import ImageUploader from '$lib/components/shared/image-uploader.svelte';
 	import {
 		standards,
 		formatDesignations,
@@ -18,7 +19,12 @@
 		shouldDisablePitch
 	} from '$lib/data/standards';
 	import { getPitchOptions } from '$lib/data/thread-pitch';
-	import type { BatchLabelConfig, FastenerLabelConfig, GeneralLabelConfig } from '$lib/types/batch';
+	import type {
+		BatchLabelConfig,
+		FastenerLabelConfig,
+		GeneralLabelConfig,
+		CustomImage
+	} from '$lib/types/batch';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import XIcon from '@lucide/svelte/icons/x';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
@@ -91,6 +97,14 @@
 	);
 	let showQRCode = $state(label.showQRCode ?? false);
 
+	// Custom image state (general mode only)
+	let customImage = $state<CustomImage | undefined>(
+		!isFastenerMode ? (label as GeneralLabelConfig).customImage : undefined
+	);
+	let showCustomImage = $state(
+		!isFastenerMode ? ((label as GeneralLabelConfig).showCustomImage ?? true) : false
+	);
+
 	let standardsOpen = $state(false);
 
 	// Sync local state with prop changes
@@ -112,6 +126,10 @@
 		showImage = isFastenerMode ? ((label as FastenerLabelConfig).showImage ?? true) : false;
 		showReference = isFastenerMode ? ((label as FastenerLabelConfig).showReference ?? true) : false;
 		showQRCode = label.showQRCode ?? false;
+		customImage = !isFastenerMode ? (label as GeneralLabelConfig).customImage : undefined;
+		showCustomImage = !isFastenerMode
+			? ((label as GeneralLabelConfig).showCustomImage ?? true)
+			: false;
 	});
 
 	const selectedStandard = $derived(getStandardById(standardId));
@@ -269,7 +287,9 @@
 				width,
 				note: note || undefined,
 				qrCode: qrDisabled ? undefined : qrCode || undefined,
-				showQRCode
+				showQRCode,
+				customImage,
+				showCustomImage
 			};
 		}
 
@@ -302,7 +322,9 @@
 			qrCode,
 			showImage,
 			showReference,
-			showQRCode
+			showQRCode,
+			customImage,
+			showCustomImage
 		];
 
 		// Update store whenever any field changes
@@ -609,6 +631,7 @@
 					>
 					<Input
 						id="primary-{index}"
+						data-testid="primary-text-input-{index}"
 						bind:value={primaryText}
 						placeholder={UI_TEXT.placeholders.primaryText}
 						onblur={updateLabel}
@@ -629,20 +652,28 @@
 				</div>
 			</div>
 
-			<!-- Optional Note -->
-			<div class="space-y-2">
-				<label for="note-general-{index}" class="text-sm font-medium"
-					>{UI_TEXT.fields.note}
-					<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
-				>
-				<Input
-					id="note-general-{index}"
-					bind:value={note}
-					placeholder={UI_TEXT.placeholders.additionalInfo}
-					class="w-full"
-					onblur={updateLabel}
-				/>
-			</div>
+			<!-- Custom Image (12mm only) -->
+			{#if tapeHeight === 12}
+				<div class="space-y-2">
+					<div class="flex items-center justify-between">
+						<label class="text-sm font-medium">
+							Custom Image
+							<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span>
+						</label>
+						{#if customImage}
+							<div class="flex items-center gap-2">
+								<span class="text-sm text-muted-foreground">Show on label</span>
+								<Switch bind:checked={showCustomImage} />
+							</div>
+						{/if}
+					</div>
+					<ImageUploader
+						bind:value={customImage}
+						disabled={false}
+						testId="custom-image-uploader-{index}"
+					/>
+				</div>
+			{/if}
 		</div>
 	{/if}
 
@@ -666,9 +697,9 @@
 	<div class="space-y-4 border-t pt-4">
 		<h4 class="font-medium">{UI_TEXT.cards.labelOptions}</h4>
 
-		<!-- Toggle Switches in One Row -->
-		<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-			{#if isFastenerMode}
+		{#if isFastenerMode}
+			<!-- Fastener Mode: Toggle Switches in One Row -->
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 				<!-- Show Standard Code -->
 				<div class="flex flex-col space-y-2">
 					<div class="flex items-center justify-between">
@@ -702,39 +733,74 @@
 						{/if}
 					</div>
 				</div>
-			{/if}
 
-			<!-- QR Code -->
-			<div class="flex flex-col space-y-2">
-				<div class="flex items-center justify-between">
-					<div class="text-sm font-medium">{UI_TEXT.settings.qrCode.title}</div>
-					<Switch
-						bind:checked={showQRCode}
-						disabled={qrDisabled}
-						data-testid="qr-code-switch-{index}"
+				<!-- QR Code -->
+				<div class="flex flex-col space-y-2">
+					<div class="flex items-center justify-between">
+						<div class="text-sm font-medium">{UI_TEXT.settings.qrCode.title}</div>
+						<Switch
+							bind:checked={showQRCode}
+							disabled={qrDisabled}
+							data-testid="qr-code-switch-{index}"
+						/>
+					</div>
+					<div class="text-xs text-muted-foreground">
+						{qrDisabled ? UI_TEXT.settings.qrCode.disabled9mm : UI_TEXT.settings.qrCode.description}
+					</div>
+				</div>
+			</div>
+
+			<!-- Label Width -->
+			<div>
+				<div class="mb-2 flex items-center justify-between">
+					<span class="font-medium">{UI_TEXT.settings.dimensions.labelWidth}</span>
+					<span class="text-sm font-medium">{width}mm</span>
+				</div>
+				<Slider
+					bind:value={width}
+					type="single"
+					min={35}
+					max={100}
+					step={1}
+					class="w-full"
+					data-testid="width-slider-{index}"
+				/>
+			</div>
+		{:else}
+			<!-- General Mode: QR Code toggle and Label Width in same row -->
+			<div class="flex flex-col gap-6 sm:flex-row sm:items-start">
+				<!-- QR Code (fixed width) -->
+				<div class="flex flex-col space-y-2 sm:shrink-0">
+					<div class="flex items-center justify-between gap-4">
+						<div class="text-sm font-medium">{UI_TEXT.settings.qrCode.title}</div>
+						<Switch
+							bind:checked={showQRCode}
+							disabled={qrDisabled}
+							data-testid="qr-code-switch-{index}"
+						/>
+					</div>
+					<div class="text-xs text-muted-foreground">
+						{qrDisabled ? UI_TEXT.settings.qrCode.disabled9mm : UI_TEXT.settings.qrCode.description}
+					</div>
+				</div>
+
+				<!-- Label Width (takes remaining space) -->
+				<div class="min-w-0 flex-1">
+					<div class="mb-2 flex items-center justify-between">
+						<span class="text-sm font-medium">{UI_TEXT.settings.dimensions.labelWidth}</span>
+						<span class="text-sm font-medium">{width}mm</span>
+					</div>
+					<Slider
+						bind:value={width}
+						type="single"
+						min={35}
+						max={100}
+						step={1}
+						class="w-full"
+						data-testid="width-slider-{index}"
 					/>
 				</div>
-				<div class="text-xs text-muted-foreground">
-					{qrDisabled ? UI_TEXT.settings.qrCode.disabled9mm : UI_TEXT.settings.qrCode.description}
-				</div>
 			</div>
-		</div>
-
-		<!-- Label Width -->
-		<div>
-			<div class="mb-2 flex items-center justify-between">
-				<span class="font-medium">{UI_TEXT.settings.dimensions.labelWidth}</span>
-				<span class="text-sm font-medium">{width}mm</span>
-			</div>
-			<Slider
-				bind:value={width}
-				type="single"
-				min={35}
-				max={100}
-				step={1}
-				class="w-full"
-				data-testid="width-slider-{index}"
-			/>
-		</div>
+		{/if}
 	</div>
 </div>

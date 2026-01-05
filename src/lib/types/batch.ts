@@ -18,6 +18,19 @@ export interface FastenerLabelConfig {
 	showQRCode?: boolean; // Show QR code if qrCode data provided
 }
 
+/**
+ * Custom image data for general labels
+ * Stored as embedded base64 in localStorage
+ */
+export interface CustomImage {
+	/** Base64 data URL of the processed image */
+	data: string;
+	/** Aspect ratio (width/height) for constraint solver */
+	aspectRatio: number;
+	/** Original filename for display */
+	originalName?: string;
+}
+
 export interface GeneralLabelConfig {
 	mode: 'general';
 	primaryText: string;
@@ -27,6 +40,9 @@ export interface GeneralLabelConfig {
 	qrCode?: string;
 	// Toggle flag for visual elements (defaults to true if undefined)
 	showQRCode?: boolean; // Show QR code if qrCode data provided
+	// Custom image support
+	customImage?: CustomImage;
+	showCustomImage?: boolean; // Show custom image if provided (defaults to true)
 }
 
 export type BatchLabelConfig = FastenerLabelConfig | GeneralLabelConfig;

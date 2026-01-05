@@ -457,6 +457,53 @@ describe('label-exporter', () => {
 				})
 			);
 		});
+
+		it('should pass customImageSrc to renderLabelToCanvas for general mode labels', async () => {
+			const customImageSrc = 'data:image/jpeg;base64,/9j/4AAQSkZJRg==';
+			const customImageAspectRatio = 1.5;
+
+			await exportCanvasLabelAsPNG({
+				labelWidth: 35,
+				labelHeight: 12,
+				primaryText: 'Custom Label',
+				secondaryText: 'With Image',
+				showStandard: false,
+				showHardwareImage: true,
+				showQRCode: false,
+				labelMode: 'general',
+				customImageSrc,
+				customImageAspectRatio
+			});
+
+			expect(labelRenderer.renderLabelToCanvas).toHaveBeenCalledWith(
+				expect.objectContaining({
+					content: expect.objectContaining({
+						customImageSrc
+					})
+				})
+			);
+		});
+
+		it('should NOT pass customImageSrc when not provided', async () => {
+			await exportCanvasLabelAsPNG({
+				labelWidth: 35,
+				labelHeight: 12,
+				primaryText: 'No Image Label',
+				secondaryText: '',
+				showStandard: false,
+				showHardwareImage: false,
+				showQRCode: false,
+				labelMode: 'general'
+			});
+
+			expect(labelRenderer.renderLabelToCanvas).toHaveBeenCalledWith(
+				expect.objectContaining({
+					content: expect.objectContaining({
+						customImageSrc: undefined
+					})
+				})
+			);
+		});
 	});
 
 	describe('layout-metrics integration', () => {

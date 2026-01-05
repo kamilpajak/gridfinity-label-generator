@@ -16,6 +16,8 @@ This repository has been completely rewritten from Qwik to SvelteKit for better 
 
 - **Fastener Labels**: Generate labels for screws, bolts, nuts, and washers with automatic hardware type detection
 - **General Item Labels**: Create custom labels for any storage needs
+- **Batch Mode**: Generate multiple labels at once with individual configuration
+- **Custom Images**: Upload your own images for general item labels (12mm tape)
 - **Smart Formatting**: Automatically formats thread sizes and lengths based on metric/imperial selection
 - **Hardware Standards**: Comprehensive ISO/DIN standard library with visual icons
 - **Real-time Preview**: See your label as you design it
@@ -109,10 +111,11 @@ gridfinity-label-generator/
 │   ├── lib/
 │   │   ├── components/  # UI components
 │   │   ├── data/        # Hardware standards data
-│   │   └── utils/       # Utility functions
+│   │   └── utils/       # Utility functions (with *.test.ts)
 │   ├── app.html         # HTML template
 │   └── app.css          # Global styles
-├── tests/               # Test files
+├── e2e/                 # Playwright E2E tests
+├── docs/                # Documentation
 ├── static/              # Static assets
 └── package.json         # Dependencies
 ```

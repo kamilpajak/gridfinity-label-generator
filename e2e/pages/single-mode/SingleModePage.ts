@@ -3,6 +3,7 @@ import { BasePage } from '../base/BasePage';
 import { NavigationTabs } from '../components/NavigationTabs';
 import { ExportSection } from '../components/ExportSection';
 import { SingleLabelPreview } from '../components/SingleLabelPreview';
+import { ImageUploaderComponent } from '../components/ImageUploader';
 
 /**
  * Page object for Single Label mode
@@ -388,6 +389,14 @@ export class SingleModePage extends BasePage {
 	async clearForm() {
 		await this.clearButton.click();
 		await this.preview.waitForReady();
+	}
+
+	/**
+	 * Get ImageUploader component for single mode
+	 * Only visible in General Item mode with 12mm tape
+	 */
+	getImageUploader(): ImageUploaderComponent {
+		return new ImageUploaderComponent(this.page, 'single');
 	}
 
 	// Complete label creation helper

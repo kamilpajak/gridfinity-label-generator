@@ -255,6 +255,77 @@ describe('batchStore', () => {
 
 			expect(get(batchStore).labels).toHaveLength(1);
 		});
+
+		it('should deep copy customImage object (not share reference)', () => {
+			const customImage = {
+				data: 'data:image/png;base64,abc123',
+				aspectRatio: 1.5,
+				originalName: 'test.png'
+			};
+			const label: GeneralLabelConfig = {
+				mode: 'general',
+				primaryText: 'With Image',
+				width: 40,
+				customImage,
+				showCustomImage: true
+			};
+			batchStore.addLabel(label);
+			batchStore.duplicateLabel(0);
+
+			const state = get(batchStore);
+			const original = state.labels[0] as GeneralLabelConfig;
+			const duplicate = state.labels[1] as GeneralLabelConfig;
+
+			// Should have equal values
+			expect(duplicate.customImage).toEqual(original.customImage);
+			// But NOT the same object reference
+			expect(duplicate.customImage).not.toBe(original.customImage);
+		});
+
+		it('should isolate customImage mutations between original and duplicate', () => {
+			const label: GeneralLabelConfig = {
+				mode: 'general',
+				primaryText: 'Test',
+				width: 40,
+				customImage: {
+					data: 'data:image/png;base64,original',
+					aspectRatio: 2,
+					originalName: 'original.png'
+				}
+			};
+			batchStore.addLabel(label);
+			batchStore.duplicateLabel(0);
+
+			// Get state and mutate duplicated label's customImage
+			const state = get(batchStore);
+			const duplicate = state.labels[1] as GeneralLabelConfig;
+			if (duplicate.customImage) {
+				duplicate.customImage.data = 'data:image/png;base64,mutated';
+				duplicate.customImage.originalName = 'mutated.png';
+			}
+
+			// Original should be unchanged
+			const original = state.labels[0] as GeneralLabelConfig;
+			expect(original.customImage?.data).toBe('data:image/png;base64,original');
+			expect(original.customImage?.originalName).toBe('original.png');
+		});
+
+		it('should handle labels without customImage (fastener mode)', () => {
+			const fastenerLabel: FastenerLabelConfig = {
+				mode: 'fastener',
+				measurementSystem: 'metric',
+				threadSize: 'M6',
+				length: 20,
+				width: 35,
+				standard: 'iso-4017'
+			};
+			batchStore.addLabel(fastenerLabel);
+			batchStore.duplicateLabel(0);
+
+			const state = get(batchStore);
+			expect(state.labels).toHaveLength(2);
+			expect(state.labels[1]).toEqual(fastenerLabel);
+		});
 	});
 
 	describe('reorderLabels', () => {

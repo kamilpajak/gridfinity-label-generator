@@ -17,6 +17,9 @@
 	import InfoIcon from '@lucide/svelte/icons/info';
 	import CoffeeIcon from '@lucide/svelte/icons/coffee';
 	import SendIcon from '@lucide/svelte/icons/send';
+	import WhatsNewCard from '$lib/components/whats-new/whats-new-card.svelte';
+
+	let { data } = $props();
 	import {
 		standards,
 		formatDesignations,
@@ -834,7 +837,7 @@
 					</Card.Root>
 				</div>
 
-				<div>
+				<div class="space-y-6">
 					<Card.Root class="border-slate-200/50 shadow-xl">
 						<Card.Header>
 							<Card.Title>{UI_TEXT.cards.labelSettings}</Card.Title>
@@ -971,6 +974,8 @@
 							</div>
 						</Card.Content>
 					</Card.Root>
+
+					<WhatsNewCard changelog={data.changelog} appVersion={data.appVersion} />
 				</div>
 			</div>
 		</Tabs.Content>

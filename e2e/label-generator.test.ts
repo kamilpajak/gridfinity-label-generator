@@ -128,9 +128,9 @@ test.describe('Label Generator - Single Mode', () => {
 		// Export and wait for download
 		const download = await labelPage.exportSection.exportLabels();
 
-		// Verify download filename
+		// Verify download filename (descriptive format since PR #44)
 		expect(labelPage.exportSection.verifyDownloadFilename(download, 'single')).toBe(true);
-		expect(download.suggestedFilename()).toMatch(/label_\d+x\d+mm\.png/);
+		expect(download.suggestedFilename()).toBe('M8_ISO4762.png');
 	});
 
 	test('should select hardware standard from dropdown', async () => {

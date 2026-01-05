@@ -45,11 +45,16 @@ export class ExportSection {
 
 	/**
 	 * Get expected filename pattern based on mode
+	 * Since PR #44, filenames are descriptive based on label content:
+	 * - General: PRIMARY_SECONDARY.png or PRIMARY.png
+	 * - Fastener: STANDARD_THREADSIZExLENGTHmm.png
+	 * - Batch: labels-batch-Nx-WxHmm.png
 	 */
 	getExpectedFilenamePattern(mode: 'single' | 'batch'): RegExp {
 		if (mode === 'single') {
-			// Single label: label_31x10mm.png
-			return /label_\d+x\d+mm\.png/;
+			// Single label: descriptive name based on content
+			// Examples: M8_ISO4762.png, DIN912_M6x20mm.png, Resistors_100Ohm.png
+			return /^[\w.-]+\.png$/;
 		} else {
 			// Batch labels: labels-batch-5x-31x10mm.png (5 labels example)
 			return /labels-batch-\d+x-\d+x\d+mm\.png/;

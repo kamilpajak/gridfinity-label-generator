@@ -51,6 +51,56 @@ This project uses **pnpm** as the package manager. All commands should use `pnpm
 - `pnpm lint` - Check code formatting and ESLint rules
 - `pnpm format` - Auto-format code with Prettier
 
+### Releasing
+
+- `pnpm release:dry-run` - Preview what the next release would be
+- `pnpm release` - Create a new release (bumps version, tags, pushes)
+
+## Commit Conventions
+
+This project uses **Conventional Commits** enforced by commitlint.
+
+### Format
+
+```
+type(scope): description
+
+[optional body]
+
+[optional footer]
+```
+
+### Types
+
+| Type       | Description                 | Version Bump |
+| ---------- | --------------------------- | ------------ |
+| `feat`     | New feature                 | minor        |
+| `fix`      | Bug fix                     | patch        |
+| `docs`     | Documentation only          | -            |
+| `style`    | Formatting, no code change  | -            |
+| `refactor` | Code change, no feature/fix | -            |
+| `perf`     | Performance improvement     | patch        |
+| `test`     | Adding tests                | -            |
+| `build`    | Build system changes        | -            |
+| `ci`       | CI configuration            | -            |
+| `chore`    | Other changes               | -            |
+
+### Breaking Changes
+
+Add `!` after type or include `BREAKING CHANGE:` in footer for major version bump:
+
+```
+feat!: remove deprecated API
+```
+
+## Release Process
+
+1. **Write code** with conventional commits
+2. **Update CHANGELOG.md** manually (user-friendly descriptions)
+3. **Run `pnpm release:dry-run`** to preview version bump
+4. **Run `pnpm release`** to create release
+5. **GitHub Actions** creates GitHub Release automatically
+
 ## Architecture
 
 ### Stack

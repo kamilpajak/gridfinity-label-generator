@@ -283,7 +283,7 @@
 			"din": ["7996"]
 		},
 		"iso14584": {
-			"din": ["7997"]
+			"din": []
 		},
 		"iso14585": {
 			"din": ["7995"]
@@ -331,6 +331,9 @@
 		},
 		"din97": {
 			"description": "Slotted countersunk flat head wood screws"
+		},
+		"din7997": {
+			"description": "Cross recessed countersunk head wood screws"
 		},
 		"din127": {
 			"description": "Spring lock washers, Type A"

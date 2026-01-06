@@ -59,25 +59,27 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 
 **Najczęściej żądane - status (zweryfikowane przez search):**
 
-| Standard            | W bazie  | Obrazek | Search test                        |
-| ------------------- | -------- | ------- | ---------------------------------- |
-| DIN 7985 / ISO 7045 | ✅       | ✅      | `7985` → ✅ znajduje               |
-| DIN 965             | ✅       | ✅      | `965` → ✅ znajduje                |
-| DIN 7997            | ✅       | ❌      | `7997` → ✅ ale bez obrazka        |
-| DIN 916             | ❌       | ❌      | `916` → ⚠️ zwraca DIN 6916 (inny!) |
-| Torx heads          | ❌       | ❌      | `torx` → 0 wyników                 |
-| Grub screw          | ❌ alias | -       | `grub` → 0 wyników                 |
+| Standard            | W bazie  | Obrazek | Search test                           |
+| ------------------- | -------- | ------- | ------------------------------------- |
+| DIN 7985 / ISO 7045 | ✅       | ✅      | `7985` → ✅ znajduje                  |
+| DIN 965             | ✅       | ✅      | `965` → ✅ znajduje                   |
+| DIN 7997            | ✅       | ✅      | `7997` → ✅ obrazek dodany            |
+| DIN 916             | ❌       | ❌      | `916` → 0 wyników (ISO 4029 wycofane) |
+| DIN 6916            | ✅       | ✅      | `6916` → ✅ washer (naprawione!)      |
+| Torx heads          | ❌       | ❌      | `torx` → 0 wyników                    |
+| Grub screw          | ❌ alias | -       | `grub` → 0 wyników                    |
 
 **Wnioski z analizy search:**
 
 - Search **działa poprawnie** - problem to brakujące dane
-- DIN 6916 ≠ DIN 916 (użytkownik dostaje mylący wynik)
+- ~~DIN 6916 ≠ DIN 916~~ ✅ NAPRAWIONE - DIN 6916 teraz poprawnie jako washer
+- DIN 916 (set screw) = ISO 4029 - standard wycofany, brak w bazie ISO
 - Brak aliasów: "grub screw" = "set screw", "torx" = "hexalobular"
 
 **Akcja:**
 
-1. Dodać DIN 916 (grub screws / set screws bez kołnierza)
-2. Dodać obrazek dla DIN 7997
+1. ~~Dodać obrazek dla DIN 7997~~ ✅ DONE (scraper fix)
+2. ~~Naprawić DIN 6916 klasyfikację~~ ✅ DONE (było screw → teraz washer)
 3. Rozważyć aliasy w search (grub→set screw, torx→hexalobular)
 
 ---
@@ -249,7 +251,7 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 ### Średnioterminowe
 
 4. ~~**Dodać UI dla thread pitch**~~ ✅ DONE - już zaimplementowane
-5. **Dodać DIN 916** (set screws) + obrazek DIN 7997
+5. ~~**Obrazek DIN 7997 + fix DIN 6916**~~ ✅ DONE - scraper fix + washer classification
 6. **Dodać aliasy do search** (grub→set screw, torx→hexalobular)
 
 ### Długoterminowe
@@ -266,4 +268,6 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 - **Problemy z rozmiarem:** tylko 8% użytkowników
 - **Powtarzające się żądania:** ~~Thread pitch~~ ✅, więcej standardów, batch improvements
 
-Aplikacja jest dobrze przyjmowana. Główny focus powinien być na poprawie discoverability istniejących funkcji i dodaniu brakujących standardów (DIN 916, obrazki, aliasy search).
+Aplikacja jest dobrze przyjmowana. Główny focus powinien być na poprawie discoverability istniejących funkcji i dodaniu aliasów search (grub→set screw, torx→hexalobular).
+
+> **Ostatnia aktualizacja:** 2026-01-06 - DIN 7997 obrazek, DIN 6916 washer fix

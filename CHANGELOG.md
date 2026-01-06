@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.1] - 2026-01-06
+
+### Added
+
+- Standard Images: 49 new hardware images including DIN 7997 (wood screws), improving visual reference coverage.
+
+### Fixed
+
+- DIN 6916 Classification: Corrected from "screw" to "washer" (HV washer for structural bolting).
+
 ## [2.5.0] - 2026-01-06
 
 ### Added

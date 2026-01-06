@@ -7,6 +7,31 @@
 import { describe, it, expect } from 'vitest';
 import { getStandardById, searchStandards } from './standards';
 
+describe('DIN 7997 - Wood screw classification', () => {
+	it('should exist in standards database', () => {
+		const standard = getStandardById('din7997');
+		expect(standard).toBeDefined();
+	});
+
+	it('should have hardwareType "wood_screw"', () => {
+		const standard = getStandardById('din7997');
+		expect(standard?.hardwareType).toBe('wood_screw');
+	});
+
+	it('should have description mentioning wood screw', () => {
+		const standard = getStandardById('din7997');
+		expect(standard?.description.toLowerCase()).toMatch(/wood.screw/i);
+	});
+
+	it('should be a DIN-only standard (not ISO 14584)', () => {
+		const standard = getStandardById('din7997');
+		expect(standard?.primarySystem).toBe('DIN');
+		// Should NOT have ISO designation (ISO 14584 is a different product)
+		const isoDesignation = standard?.designations.find((d) => d.system === 'ISO');
+		expect(isoDesignation).toBeUndefined();
+	});
+});
+
 describe('DIN 6916 vs DIN 916 distinction', () => {
 	describe('DIN 6916 - HV Washer for structural bolting', () => {
 		it('should exist in standards database', () => {

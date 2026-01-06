@@ -3,8 +3,8 @@
 # Stage 1: Builder
 FROM node:20-alpine AS builder
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Install pnpm (pinned version for reproducible builds)
+RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
 
 # Set working directory
 WORKDIR /app
@@ -30,8 +30,8 @@ RUN pnpm prune --prod
 # Stage 2: Production
 FROM node:20-alpine AS production
 
-# Install pnpm (lightweight, only for running)
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 
 # Set working directory
 WORKDIR /app
@@ -41,6 +41,12 @@ COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/CHANGELOG.md ./CHANGELOG.md
+
+# Set ownership to non-root user
+RUN chown -R nodejs:nodejs /app
+
+# Switch to non-root user
+USER nodejs
 
 # Expose port 80 (to match existing infrastructure)
 EXPOSE 80

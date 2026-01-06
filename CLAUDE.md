@@ -51,6 +51,20 @@ This project uses **pnpm** as the package manager. All commands should use `pnpm
 - `pnpm lint` - Check code formatting and ESLint rules
 - `pnpm format` - Auto-format code with Prettier
 
+### SonarCloud API
+
+Pobieranie metryk projektu (wymaga tokena SONAR_TOKEN):
+
+```bash
+curl -s -u "${SONAR_TOKEN}:" "https://sonarcloud.io/api/measures/component?component=kamilpajak_gridfinity-label-generator&metricKeys=bugs,vulnerabilities,code_smells,coverage,reliability_issues,maintainability_issues,security_issues"
+```
+
+Pobieranie listy issues:
+
+```bash
+curl -s -u "${SONAR_TOKEN}:" "https://sonarcloud.io/api/issues/search?componentKeys=kamilpajak_gridfinity-label-generator&ps=100&facets=types,severities"
+```
+
 ### Releasing
 
 - `pnpm release:dry-run` - Preview what the next release would be

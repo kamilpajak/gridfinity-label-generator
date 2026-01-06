@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.3] - 2026-01-06
+
+### Fixed
+
+- Hardware Classifications: Corrected categories for DIN 444 (eye bolts), DIN 1478 (turnbuckles), and separated ISO 10509 (tapping screws) from DIN 6923 (flange nuts).
+
 ## [2.5.2] - 2026-01-06
 
 ### Fixed

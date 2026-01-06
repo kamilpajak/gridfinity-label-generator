@@ -40,9 +40,8 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Documentation (keep deployment plan and changelog)
+# Documentation (keep changelog for app)
 *.md
-!DOCKER_DEPLOYMENT_PLAN.md
 !CHANGELOG.md
 
 # Development files

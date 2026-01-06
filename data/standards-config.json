@@ -235,7 +235,7 @@
 			"din": ["960"]
 		},
 		"iso10509": {
-			"din": ["6923"]
+			"din": []
 		},
 		"iso10510": {
 			"din": ["6902"]
@@ -492,7 +492,7 @@
 			"description": "Washers for clevis pins"
 		},
 		"din1478": {
-			"description": "Hexagon socket set screws with thrust point"
+			"description": "Turnbuckles, closed style, steel tube"
 		},
 		"din1479": {
 			"description": "Hexagon socket head shoulder screws"
@@ -559,6 +559,9 @@
 		},
 		"din6918": {
 			"description": "Hexagon socket head cap screws with collar"
+		},
+		"din6923": {
+			"description": "Hexagon flange nuts"
 		},
 		"din6925": {
 			"description": "Prevailing torque type hexagon nuts with flange"

@@ -109,10 +109,7 @@ const hardwareTypeMappings = {
 		type: HardwareType.BOLT,
 		// Hex head bolts and similar
 		din: [
-			'931',
-			'933',
-			'960',
-			'961',
+			'444',
 			'558',
 			'561',
 			'601',
@@ -122,7 +119,11 @@ const hardwareTypeMappings = {
 			'607',
 			'608',
 			'609',
-			'610'
+			'610',
+			'931',
+			'933',
+			'960',
+			'961'
 		],
 		iso: ['4014', '4016', '4017', '4018', '8676', '8765']
 	},
@@ -138,7 +139,6 @@ const hardwareTypeMappings = {
 			'94',
 			'258',
 			'427',
-			'444',
 			'1433',
 			'1434',
 			'1443',
@@ -152,7 +152,6 @@ const hardwareTypeMappings = {
 			'1475',
 			'1476',
 			'1477',
-			'1478',
 			'1481',
 			'6325',
 			'7977',

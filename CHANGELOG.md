@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.4] - 2026-01-06
+
+### Fixed
+
+- DIN 917: Corrected from "pipe plugs" to "hexagon cap nuts".
+- DIN 6917: Corrected from "screws" to "square taper washers for I-sections".
+
 ## [2.5.3] - 2026-01-06
 
 ### Fixed

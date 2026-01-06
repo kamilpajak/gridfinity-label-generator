@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-01-06
+
+### Added
+
+- Small Imperial Sizes: Added #0 and #2 thread sizes for electronics and miniature hardware (Arduino, Raspberry Pi, sensors).
+
+### Fixed
+
+- Imperial Fractions: Batch mode now correctly handles fractional lengths like 1/4", 3/8", 1-1/2" instead of rounding to whole numbers.
+
 ## [2.4.0] - 2026-01-05
 
 ### Added

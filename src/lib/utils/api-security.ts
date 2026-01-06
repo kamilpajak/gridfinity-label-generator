@@ -78,7 +78,7 @@ export function isPrivateOrLocalUrl(urlString: string): boolean {
 		// URL.hostname returns them without brackets, which is what we need
 		// However, ipaddr.js needs the clean format
 		// Remove any remaining brackets (shouldn't happen but be safe)
-		hostname = hostname.replace(/^(\[)|(\])$/g, '');
+		hostname = hostname.replace(/^\[/, '').replace(/\]$/, '');
 
 		// Try to parse as IP address using ipaddr.js
 		if (ipaddr.isValid(hostname)) {

@@ -2,8 +2,8 @@
  * Simple LRU (Least Recently Used) Cache implementation
  */
 export class LRUCache<K, V> {
-	private maxSize: number;
-	private cache: Map<K, V>;
+	private readonly maxSize: number;
+	private readonly cache: Map<K, V>;
 
 	constructor(maxSize: number = 50) {
 		this.maxSize = maxSize;

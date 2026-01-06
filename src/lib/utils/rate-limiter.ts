@@ -25,7 +25,7 @@ export class RateLimiter {
 	private readonly maxRequests: number;
 	private readonly windowMs: number;
 	private readonly store: Map<string, RequestRecord> = new Map();
-	private cleanupIntervalId?: ReturnType<typeof setInterval>;
+	private readonly cleanupIntervalId?: ReturnType<typeof setInterval>;
 
 	constructor(config: RateLimiterConfig) {
 		this.maxRequests = config.maxRequests;

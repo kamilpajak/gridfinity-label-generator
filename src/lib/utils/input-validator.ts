@@ -30,7 +30,7 @@ export function validateThreadSize(input: string | null | undefined): Validation
 	// Whole numbers like "1" or "2" are only valid with inch marks for thread sizes
 	const imperialFractionPattern = /^\d+\/\d+$/;
 	// Imperial whole number pattern: must have inch mark
-	const imperialWholePattern = /^\d+(″|")$/;
+	const imperialWholePattern = /^\d+[″"]$/;
 
 	if (
 		metricPattern.test(trimmed) ||
@@ -106,15 +106,13 @@ export function validateLength(
 		if (fractionPattern.test(trimmed) || mixedPattern.test(trimmed)) {
 			return { isValid: false, message: 'Use decimal format for metric (e.g., 10, 25.5)' };
 		}
-	} else {
+	} else if (
+		decimalPattern.test(trimmed) ||
+		fractionPattern.test(trimmed) ||
+		mixedPattern.test(trimmed)
+	) {
 		// Imperial accepts all formats: decimals, fractions, and mixed numbers
-		if (
-			decimalPattern.test(trimmed) ||
-			fractionPattern.test(trimmed) ||
-			mixedPattern.test(trimmed)
-		) {
-			return { isValid: true };
-		}
+		return { isValid: true };
 	}
 
 	return { isValid: false, message: 'Invalid length format' };

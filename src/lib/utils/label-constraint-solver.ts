@@ -37,6 +37,37 @@ export interface ElementPosition {
 
 export type LayoutMode = 'ONE_LINE' | 'TWO_LINE' | 'IMAGE_HORIZONTAL';
 
+/** Font metrics for primary and secondary text */
+interface FontMetricsData {
+	primary: { ascent: number; descent: number };
+	secondary: { ascent: number; descent: number };
+}
+
+/** Grouped text measurements for constraint functions */
+interface TextMeasurements {
+	primaryHeight: number;
+	secondaryHeight: number;
+	primaryWidth?: number;
+}
+
+/** Primary text solver variables */
+interface PrimaryTextVars {
+	x: Variable;
+	y: Variable;
+	top: Variable;
+	bottom: Variable;
+	centerY: Variable;
+}
+
+/** Secondary text solver variables */
+interface SecondaryTextVars {
+	x: Variable;
+	y: Variable;
+	top: Variable;
+	bottom: Variable;
+	centerY: Variable;
+}
+
 export interface SolverOutput {
 	primaryText: ElementPosition;
 	secondaryText: ElementPosition;
@@ -296,7 +327,7 @@ async function calculateSplitHalfFontSizes(
 	primaryText: string,
 	secondaryText: string,
 	availableWidth: number,
-	fontBounds: {
+	_fontBounds: {
 		primary: { min: number; max: number };
 		secondary: { min: number; max: number };
 	},
@@ -351,7 +382,7 @@ async function calculateSplitHalfFontSizes(
  */
 async function calculateImageHorizontalSplitHalfSizes(
 	dimensions: LabelDimensions,
-	imageAspectRatio: number,
+	_imageAspectRatio: number,
 	fontMetricsData: {
 		primary: { ascent: number; descent: number };
 		secondary: { ascent: number; descent: number };
@@ -609,7 +640,14 @@ function calculateOptimalImageSize(
 
 	// Reserve space for text based on label proportions
 	const labelAspectRatio = dimensions.printableWidth / dimensions.printableHeight;
-	const textReserveRatio = labelAspectRatio < 3.0 ? 0.5 : labelAspectRatio < 4.0 ? 0.6 : 0.65;
+	let textReserveRatio: number;
+	if (labelAspectRatio < 3) {
+		textReserveRatio = 0.5;
+	} else if (labelAspectRatio < 4) {
+		textReserveRatio = 0.6;
+	} else {
+		textReserveRatio = 0.65;
+	}
 
 	const textReserve = Math.max(MIN_TEXT_WIDTH, availableWidth * textReserveRatio);
 	const maxWidth = availableWidth - textReserve - MIN_SPACING;
@@ -660,11 +698,9 @@ function solveLayoutConstraints(
 			mode,
 			hardwareImageAspectRatio ?? 1
 		);
-		// In IMAGE_HORIZONTAL mode, image is at top, text starts at left edge
+		// In IMAGE_HORIZONTAL mode, image is at top, text starts at left edge (default 0)
 		// In other modes, image is on the left, text starts after it
-		if (mode === 'IMAGE_HORIZONTAL') {
-			textStartX = 0; // Text starts at left edge
-		} else {
+		if (mode !== 'IMAGE_HORIZONTAL') {
 			textStartX = imageSize.width + MIN_SPACING; // Text starts after image
 		}
 	}
@@ -690,11 +726,7 @@ function solveLayoutConstraints(
  */
 function buildPrimaryTextConstraints(
 	solver: Solver,
-	primaryTextX: Variable,
-	primaryTextY: Variable,
-	primaryTextTop: Variable,
-	primaryTextBottom: Variable,
-	primaryTextCenterY: Variable,
+	vars: PrimaryTextVars,
 	primaryTextHeight: number,
 	primaryFontMetrics: { ascent: number; descent: number },
 	textStartX: number
@@ -704,33 +736,33 @@ function buildPrimaryTextConstraints(
 
 	// Horizontal position (starts after left elements)
 	solver.addConstraint(
-		new Constraint(new Expression(primaryTextX), Operator.Eq, textStartX, Strength.required)
+		new Constraint(new Expression(vars.x), Operator.Eq, textStartX, Strength.required)
 	);
 
 	// Vertical relationships
 	solver.addConstraint(
 		new Constraint(
-			new Expression(primaryTextTop),
+			new Expression(vars.top),
 			Operator.Eq,
-			new Expression(primaryTextY).minus(primaryTextHeight * PRIMARY_ASCENT_RATIO),
+			new Expression(vars.y).minus(primaryTextHeight * PRIMARY_ASCENT_RATIO),
 			Strength.required
 		)
 	);
 
 	solver.addConstraint(
 		new Constraint(
-			new Expression(primaryTextBottom),
+			new Expression(vars.bottom),
 			Operator.Eq,
-			new Expression(primaryTextY).plus(primaryTextHeight * PRIMARY_DESCENT_RATIO),
+			new Expression(vars.y).plus(primaryTextHeight * PRIMARY_DESCENT_RATIO),
 			Strength.required
 		)
 	);
 
 	solver.addConstraint(
 		new Constraint(
-			new Expression(primaryTextCenterY),
+			new Expression(vars.centerY),
 			Operator.Eq,
-			new Expression(primaryTextY).minus(primaryTextHeight * (PRIMARY_ASCENT_RATIO / 2)),
+			new Expression(vars.y).minus(primaryTextHeight * (PRIMARY_ASCENT_RATIO / 2)),
 			Strength.required
 		)
 	);
@@ -850,34 +882,30 @@ function buildImageConstraints(
  */
 function applySharedLineConstraints(
 	solver: Solver,
-	primaryTextX: Variable,
-	primaryTextY: Variable,
-	secondaryTextX: Variable,
-	secondaryTextY: Variable,
-	secondaryTextTop: Variable,
-	secondaryTextBottom: Variable,
-	secondaryTextCenterY: Variable,
+	primaryX: Variable,
+	primaryY: Variable,
+	secondaryVars: SecondaryTextVars,
 	secondaryTextHeight: number,
-	fontMetricsData: { secondary: { ascent: number; descent: number } },
+	secondaryFontMetrics: { ascent: number; descent: number },
 	primaryTextWidth: number | undefined
 ) {
 	// Secondary text vertical relationships
 	addSecondaryTextVerticalConstraints(
 		solver,
-		secondaryTextY,
-		secondaryTextTop,
-		secondaryTextBottom,
-		secondaryTextCenterY,
+		secondaryVars.y,
+		secondaryVars.top,
+		secondaryVars.bottom,
+		secondaryVars.centerY,
 		secondaryTextHeight,
-		fontMetricsData.secondary
+		secondaryFontMetrics
 	);
 
 	// Place both texts on the same baseline
 	solver.addConstraint(
 		new Constraint(
-			new Expression(primaryTextY),
+			new Expression(primaryY),
 			Operator.Eq,
-			new Expression(secondaryTextY),
+			new Expression(secondaryVars.y),
 			Strength.required
 		)
 	);
@@ -888,9 +916,9 @@ function applySharedLineConstraints(
 	if (primaryTextWidth && primaryTextWidth > 0) {
 		solver.addConstraint(
 			new Constraint(
-				new Expression(secondaryTextX),
+				new Expression(secondaryVars.x),
 				Operator.Eq,
-				new Expression(primaryTextX).plus(primaryTextWidth).plus(MIN_SPACING),
+				new Expression(primaryX).plus(primaryTextWidth).plus(MIN_SPACING),
 				Strength.required
 			)
 		);
@@ -898,9 +926,9 @@ function applySharedLineConstraints(
 		// No primary text - secondary text starts at primary text position
 		solver.addConstraint(
 			new Constraint(
-				new Expression(secondaryTextX),
+				new Expression(secondaryVars.x),
 				Operator.Eq,
-				new Expression(primaryTextX),
+				new Expression(primaryX),
 				Strength.required
 			)
 		);
@@ -951,7 +979,7 @@ function createLayoutVariables() {
 function applyOneLineConstraints(
 	solver: Solver,
 	variables: ReturnType<typeof createLayoutVariables>,
-	primaryTextHeight: number,
+	_primaryTextHeight: number,
 	secondaryTextHeight: number,
 	dimensions: LabelDimensions,
 	fontMetricsData: {
@@ -978,13 +1006,15 @@ function applyOneLineConstraints(
 		solver,
 		primaryTextX,
 		primaryTextY,
-		secondaryTextX,
-		secondaryTextY,
-		secondaryTextTop,
-		secondaryTextBottom,
-		secondaryTextCenterY,
+		{
+			x: secondaryTextX,
+			y: secondaryTextY,
+			top: secondaryTextTop,
+			bottom: secondaryTextBottom,
+			centerY: secondaryTextCenterY
+		},
 		secondaryTextHeight,
-		fontMetricsData,
+		fontMetricsData.secondary,
 		primaryTextWidth
 	);
 
@@ -1021,14 +1051,9 @@ function applyOneLineConstraints(
 function applySplitHalfConstraints(
 	solver: Solver,
 	variables: ReturnType<typeof createLayoutVariables>,
-	primaryTextHeight: number,
-	secondaryTextHeight: number,
+	textMeasurements: TextMeasurements,
 	dimensions: LabelDimensions,
-	fontMetricsData: {
-		primary: { ascent: number; descent: number };
-		secondary: { ascent: number; descent: number };
-	},
-	primaryTextWidth: number | undefined,
+	fontMetricsData: FontMetricsData,
 	imageHeight: number
 ) {
 	const {
@@ -1048,14 +1073,16 @@ function applySplitHalfConstraints(
 		solver,
 		primaryTextX,
 		primaryTextY,
-		secondaryTextX,
-		secondaryTextY,
-		secondaryTextTop,
-		secondaryTextBottom,
-		secondaryTextCenterY,
-		secondaryTextHeight,
-		fontMetricsData,
-		primaryTextWidth
+		{
+			x: secondaryTextX,
+			y: secondaryTextY,
+			top: secondaryTextTop,
+			bottom: secondaryTextBottom,
+			centerY: secondaryTextCenterY
+		},
+		textMeasurements.secondaryHeight,
+		fontMetricsData.secondary,
+		textMeasurements.primaryWidth
 	);
 
 	// Split-half layout:
@@ -1092,13 +1119,9 @@ function applyTwoLineConstraints(
 	solver: Solver,
 	variables: ReturnType<typeof createLayoutVariables>,
 	primaryText: string,
-	primaryTextHeight: number,
-	secondaryTextHeight: number,
+	textMeasurements: TextMeasurements,
 	dimensions: LabelDimensions,
-	fontMetricsData: {
-		primary: { ascent: number; descent: number };
-		secondary: { ascent: number; descent: number };
-	},
+	fontMetricsData: FontMetricsData,
 	layoutInfo: { textStartX: number }
 ) {
 	const {
@@ -1127,7 +1150,7 @@ function applyTwoLineConstraints(
 		secondaryTextTop,
 		secondaryTextBottom,
 		secondaryTextCenterY,
-		secondaryTextHeight,
+		textMeasurements.secondaryHeight,
 		fontMetricsData.secondary
 	);
 
@@ -1140,10 +1163,10 @@ function applyTwoLineConstraints(
 
 	// Calculate total combined height of both texts
 	const primaryTextHeight_visual =
-		primaryTextHeight * (PRIMARY_ASCENT_RATIO + fontMetricsData.primary.descent);
+		textMeasurements.primaryHeight * (PRIMARY_ASCENT_RATIO + fontMetricsData.primary.descent);
 	const SECONDARY_ASCENT_RATIO = fontMetricsData.secondary.ascent;
 	const secondaryTextHeight_visual =
-		secondaryTextHeight * (SECONDARY_ASCENT_RATIO + fontMetricsData.secondary.descent);
+		textMeasurements.secondaryHeight * (SECONDARY_ASCENT_RATIO + fontMetricsData.secondary.descent);
 
 	// Check if primary text actually exists (not just height > 0, but actual text content)
 	const hasPrimaryText = primaryText && primaryText.trim().length > 0;
@@ -1301,11 +1324,13 @@ function solveWithFontSizes(
 	// Build primary text constraints
 	buildPrimaryTextConstraints(
 		solver,
-		variables.primaryTextX,
-		variables.primaryTextY,
-		variables.primaryTextTop,
-		variables.primaryTextBottom,
-		variables.primaryTextCenterY,
+		{
+			x: variables.primaryTextX,
+			y: variables.primaryTextY,
+			top: variables.primaryTextTop,
+			bottom: variables.primaryTextBottom,
+			centerY: variables.primaryTextCenterY
+		},
 		primaryTextHeight,
 		fontMetricsData.primary,
 		layoutInfo.textStartX
@@ -1326,11 +1351,13 @@ function solveWithFontSizes(
 		applySplitHalfConstraints(
 			solver,
 			variables,
-			primaryTextHeight,
-			secondaryTextHeight,
+			{
+				primaryHeight: primaryTextHeight,
+				secondaryHeight: secondaryTextHeight,
+				primaryWidth: primaryTextWidth
+			},
 			dimensions,
 			fontMetricsData,
-			primaryTextWidth,
 			layoutInfo.imageSize?.height ?? 0
 		);
 	} else if (hasSecondaryText) {
@@ -1338,8 +1365,10 @@ function solveWithFontSizes(
 			solver,
 			variables,
 			input.primaryText,
-			primaryTextHeight,
-			secondaryTextHeight,
+			{
+				primaryHeight: primaryTextHeight,
+				secondaryHeight: secondaryTextHeight
+			},
 			dimensions,
 			fontMetricsData,
 			layoutInfo

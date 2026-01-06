@@ -121,6 +121,32 @@ function matchesPrimarySystem(std: ISODINStandard, query: string): boolean {
 }
 
 /**
+ * Compare two standards for relevance sorting
+ * Returns negative if a should come first, positive if b should come first
+ */
+function compareStandardRelevance(a: ISODINStandard, b: ISODINStandard, query: string): number {
+	// Priority checks in order of importance
+	const checks: Array<(std: ISODINStandard) => boolean> = [
+		(std) => hasExactCodeMatch(std, query),
+		(std) => hasExactFullMatch(std, query),
+		(std) => codeStartsWith(std, query),
+		(std) => fullDesignationStartsWith(std, query),
+		(std) => matchesPrimarySystem(std, query),
+		(std) => !!std.image
+	];
+
+	for (const check of checks) {
+		const aMatch = check(a);
+		const bMatch = check(b);
+		if (aMatch !== bMatch) {
+			return aMatch ? -1 : 1;
+		}
+	}
+
+	return 0;
+}
+
+/**
  * Search for standards by any designation code or description
  * @param query - The search query (can be ISO, DIN, ANSI, PN code or description)
  * @returns Array of matching standards, sorted by relevance
@@ -146,40 +172,7 @@ export function searchStandards(query: string): ISODINStandard[] {
 	});
 
 	// Sort by relevance (most relevant first)
-	return results.sort((a, b) => {
-		// 1. Exact code match (highest priority)
-		const aExactCode = hasExactCodeMatch(a, normalizedQuery);
-		const bExactCode = hasExactCodeMatch(b, normalizedQuery);
-		if (aExactCode !== bExactCode) return aExactCode ? -1 : 1;
-
-		// 2. Exact full designation match (e.g., "din 912")
-		const aExactFull = hasExactFullMatch(a, normalizedQuery);
-		const bExactFull = hasExactFullMatch(b, normalizedQuery);
-		if (aExactFull !== bExactFull) return aExactFull ? -1 : 1;
-
-		// 3. Code starts with query
-		const aStartsWith = codeStartsWith(a, normalizedQuery);
-		const bStartsWith = codeStartsWith(b, normalizedQuery);
-		if (aStartsWith !== bStartsWith) return aStartsWith ? -1 : 1;
-
-		// 4. Full designation starts with query (e.g., "din" matches "DIN 912")
-		const aFullStartsWith = fullDesignationStartsWith(a, normalizedQuery);
-		const bFullStartsWith = fullDesignationStartsWith(b, normalizedQuery);
-		if (aFullStartsWith !== bFullStartsWith) return aFullStartsWith ? -1 : 1;
-
-		// 5. Primary system match (prefer matching primary system)
-		const aMatchesPrimary = matchesPrimarySystem(a, normalizedQuery);
-		const bMatchesPrimary = matchesPrimarySystem(b, normalizedQuery);
-		if (aMatchesPrimary !== bMatchesPrimary) return aMatchesPrimary ? -1 : 1;
-
-		// 6. Has image (prefer standards with images)
-		const aHasImage = !!a.image;
-		const bHasImage = !!b.image;
-		if (aHasImage !== bHasImage) return aHasImage ? -1 : 1;
-
-		// 7. Keep original order for equal relevance
-		return 0;
-	});
+	return results.sort((a, b) => compareStandardRelevance(a, b, normalizedQuery));
 }
 
 /**

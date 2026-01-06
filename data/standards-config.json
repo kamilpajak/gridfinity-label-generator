@@ -459,7 +459,7 @@
 			"description": "Tee bolts"
 		},
 		"din917": {
-			"description": "Hexagon socket pipe plugs"
+			"description": "Hexagon cap nuts, low type"
 		},
 		"din928": {
 			"description": "Square weld nuts"
@@ -555,7 +555,7 @@
 			"description": "Plain washers for high-strength structural bolting (HV)"
 		},
 		"din6917": {
-			"description": "Hexagon socket countersunk head screws with collar"
+			"description": "Square taper washers for I-sections"
 		},
 		"din6918": {
 			"description": "Hexagon socket head cap screws with collar"

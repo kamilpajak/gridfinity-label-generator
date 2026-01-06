@@ -51,6 +51,8 @@ coverage/
 # Playwright
 playwright-report/
 playwright/.cache/
+.playwright-mcp/
+e2e/.tmp-test-images/
 
 # Logs
 logs/

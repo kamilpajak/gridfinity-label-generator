@@ -14,6 +14,7 @@ import { solveLabelLayout } from './label-constraint-solver';
 import { renderLabelToCanvas } from './label-renderer';
 import { formatPrimaryText, appendOptionalNote } from './label-formatter';
 import { getStandardById } from '$lib/data/standards';
+import { decimalToFraction } from './fraction-parser';
 
 export interface BatchRenderOptions {
 	canvas: HTMLCanvasElement;
@@ -316,10 +317,19 @@ async function calculateLabelData(
 			standard = getStandardById(fastenerConfig.standard);
 		}
 
+		// Format length: use fractions for imperial, regular toString for metric
+		let formattedLength = '';
+		if (fastenerConfig.length !== undefined) {
+			formattedLength =
+				fastenerConfig.measurementSystem === 'imperial'
+					? decimalToFraction(fastenerConfig.length)
+					: fastenerConfig.length.toString();
+		}
+
 		primaryText = formatPrimaryText(
 			'fastener',
 			fastenerConfig.threadSize,
-			fastenerConfig.length?.toString() ?? '',
+			formattedLength,
 			'',
 			fastenerConfig.pitch,
 			fastenerConfig.threadType,

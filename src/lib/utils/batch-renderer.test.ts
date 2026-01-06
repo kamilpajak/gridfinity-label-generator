@@ -614,6 +614,112 @@ describe('batch-renderer', () => {
 		});
 	});
 
+	describe('imperial fraction formatting', () => {
+		it('should format imperial length as fraction in primaryText', async () => {
+			const batch: BatchState = {
+				height: 12,
+				labels: [
+					{
+						mode: 'fastener',
+						measurementSystem: 'imperial',
+						threadSize: '1/4″',
+						length: 0.25, // stored as decimal, should display as "1/4"
+						width: 40
+					}
+				],
+				maxLabels: 20
+			};
+
+			await renderBatchTape({ canvas: mockCanvas, batch, dpi: 300 });
+
+			// Verify solver was called with primaryText containing "1/4" (not "0.25")
+			expect(mockSolveLabelLayout).toHaveBeenCalledWith(
+				expect.objectContaining({
+					primaryText: expect.stringContaining('1/4')
+				})
+			);
+			// Should NOT contain decimal representation
+			expect(mockSolveLabelLayout).not.toHaveBeenCalledWith(
+				expect.objectContaining({
+					primaryText: expect.stringContaining('0.25')
+				})
+			);
+		});
+
+		it('should format imperial length 3/8 correctly', async () => {
+			const batch: BatchState = {
+				height: 12,
+				labels: [
+					{
+						mode: 'fastener',
+						measurementSystem: 'imperial',
+						threadSize: '#8',
+						length: 0.375, // should display as "3/8"
+						width: 40
+					}
+				],
+				maxLabels: 20
+			};
+
+			await renderBatchTape({ canvas: mockCanvas, batch, dpi: 300 });
+
+			expect(mockSolveLabelLayout).toHaveBeenCalledWith(
+				expect.objectContaining({
+					primaryText: expect.stringContaining('3/8')
+				})
+			);
+		});
+
+		it('should format imperial mixed fraction 1-1/2 correctly', async () => {
+			const batch: BatchState = {
+				height: 12,
+				labels: [
+					{
+						mode: 'fastener',
+						measurementSystem: 'imperial',
+						threadSize: '1/4″',
+						length: 1.5, // should display as "1-1/2"
+						width: 40
+					}
+				],
+				maxLabels: 20
+			};
+
+			await renderBatchTape({ canvas: mockCanvas, batch, dpi: 300 });
+
+			expect(mockSolveLabelLayout).toHaveBeenCalledWith(
+				expect.objectContaining({
+					primaryText: expect.stringContaining('1-1/2')
+				})
+			);
+		});
+
+		it('should keep metric length as decimal', async () => {
+			const batch: BatchState = {
+				height: 12,
+				labels: [
+					{
+						mode: 'fastener',
+						measurementSystem: 'metric',
+						threadSize: 'M6',
+						length: 20,
+						width: 40
+					}
+				],
+				maxLabels: 20
+			};
+
+			await renderBatchTape({ canvas: mockCanvas, batch, dpi: 300 });
+
+			// Metric should show "20", not a fraction
+			expect(mockSolveLabelLayout).toHaveBeenCalledWith(
+				expect.objectContaining({
+					primaryText: expect.stringContaining('20')
+				})
+			);
+		});
+	});
+
 	describe('cutting line placement', () => {
 		it('should draw 2 cutting lines for 3 labels', async () => {
 			const batch: BatchState = {

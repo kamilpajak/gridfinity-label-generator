@@ -19,6 +19,7 @@
 		shouldDisablePitch
 	} from '$lib/data/standards';
 	import { getPitchOptions } from '$lib/data/thread-pitch';
+	import { parseFraction } from '$lib/utils/fraction-parser';
 	import type {
 		BatchLabelConfig,
 		FastenerLabelConfig,
@@ -61,7 +62,19 @@
 		'M16',
 		'M20'
 	];
-	const imperialThreadSizes = ['#4', '#6', '#8', '#10', '1/4″', '5/16″', '3/8″', '1/2″', '5/8″'];
+	const imperialThreadSizes = [
+		'#0',
+		'#2',
+		'#4',
+		'#6',
+		'#8',
+		'#10',
+		'1/4″',
+		'5/16″',
+		'3/8″',
+		'1/2″',
+		'5/8″'
+	];
 
 	// Standards with images
 	const standardsWithImages = $derived(standards.filter((s) => s.image));
@@ -270,7 +283,7 @@
 				threadSize,
 				pitch: pitch || undefined,
 				threadType: threadType || undefined,
-				length: parseFloat(length) || undefined,
+				length: parseFraction(length),
 				width,
 				standard: standardId || undefined,
 				note: note || undefined,

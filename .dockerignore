@@ -40,9 +40,10 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Documentation (except deployment plan)
+# Documentation (keep deployment plan and changelog)
 *.md
 !DOCKER_DEPLOYMENT_PLAN.md
+!CHANGELOG.md
 
 # Development files
 .eslintrc*

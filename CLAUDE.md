@@ -65,6 +65,16 @@ Pobieranie listy issues:
 curl -s -u "${SONAR_TOKEN}:" "https://sonarcloud.io/api/issues/search?componentKeys=kamilpajak_gridfinity-label-generator&ps=100&facets=types,severities"
 ```
 
+### Survey API
+
+Pobieranie zagregowanych odpowiedzi z ankiety (Google Apps Script):
+
+```bash
+curl -sL "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
+```
+
+Flaga `-L` podąża za redirectami (Google Apps Script zwraca 302).
+
 ### Releasing
 
 - `pnpm release:dry-run` - Preview what the next release would be

@@ -9,6 +9,14 @@ export interface PitchOption {
 }
 
 export const imperialThreadPitches: Record<string, PitchOption[]> = {
+	'#0': [
+		{ value: '80', label: '80 TPI (UNC)', type: 'UNC' }
+		// Note: #0 has no standard UNF pitch per ANSI/ASME B1.1
+	],
+	'#2': [
+		{ value: '56', label: '56 TPI (UNC)', type: 'UNC' },
+		{ value: '64', label: '64 TPI (UNF)', type: 'UNF' }
+	],
 	'#4': [
 		{ value: '40', label: '40 TPI (UNC)', type: 'UNC' },
 		{ value: '48', label: '48 TPI (UNF)', type: 'UNF' }

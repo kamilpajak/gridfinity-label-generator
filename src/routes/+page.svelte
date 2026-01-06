@@ -103,7 +103,19 @@
 		'M20'
 	];
 
-	const imperialThreadSizes = ['#4', '#6', '#8', '#10', '1/4″', '5/16″', '3/8″', '1/2″', '5/8″'];
+	const imperialThreadSizes = [
+		'#0',
+		'#2',
+		'#4',
+		'#6',
+		'#8',
+		'#10',
+		'1/4″',
+		'5/16″',
+		'3/8″',
+		'1/2″',
+		'5/8″'
+	];
 
 	let availableThreadSizes = $derived(
 		measurementSystem === 'metric' ? metricThreadSizes : imperialThreadSizes

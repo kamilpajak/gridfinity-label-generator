@@ -2,53 +2,47 @@
 
 This directory contains scripts for processing and generating standards data with images for the Gridfinity Label Generator.
 
-## Complete Workflow
+## Architecture
 
 ```
-┌────────────────────────────┐
-│ 1. Scrape Images           │
-│    download-images-  │
-│    all.js                  │
-│    ↓ generates             │
-│    image-image-          │
-│    mappings.json           │
-└────────────┬───────────────┘
-             │
-┌────────────▼───────────────┐
-│ 2. Merge Mappings          │
-│    merge-mappings.js       │
-│    ↓ updates               │
-│    standards-config.json   │
-└────────────┬───────────────┘
-             │
-┌────────────▼───────────────┐     ┌─────────────────────────┐
-│ 3. Build Standards         │     │  standards-config.json  │
-│    build-all-standards.js  │ ◄───┤  - crossref             │
-│    ↓ generates             │     │  - dinOnly              │
-│    standards-generated.ts  │     │  - imageMappings        │
-└────────────┬───────────────┘     └─────────────────────────┘
-             │                               ▲
-┌────────────▼───────────────┐               │
-│ 4. Validate Images         │               │
-│    validate-images.js      │ ──────────────┘
-│    ✓ checks all refs       │
-└────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                      DATA SOURCES                               │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  example.com                        dinmedia.de                  │
+│  (images)                          (descriptions - SSOT)        │
+│      │                                   │                      │
+│      ▼                                   ▼                      │
+│  scrape-image-         generate-dinmedia-mappings.js          │
+│  images-all.js                           │                      │
+│      │                                   ▼                      │
+│      │                   scrape-dinmedia-metadata.js            │
+│      │                                   │                      │
+│      ▼                                   ▼                      │
+│  image-image-          dinmedia-id-mappings.json              │
+│  mappings.json           dinmedia-metadata-cache.json           │
+│      │                                   │                      │
+│      └───────────────┬───────────────────┘                      │
+│                      │                                          │
+│                      ▼                                          │
+│           build-all-standards.js ◄── standards-config.json      │
+│                      │                                          │
+│                      ▼                                          │
+│           standards-generated.ts                                │
+│                      │                                          │
+│                      ▼                                          │
+│           validate-images.js                                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ## Scripts
 
-### 1. download-images.js
+### Image Scraping
 
-Scrapes product images from all example.com categories with authorization.
+#### download-images.js
 
-**Purpose:**
-
-- Downloads images from 4 categories: śruby, nakrętki, podkładki, wkręty
-- Auto-trims white backgrounds using Sharp
-- Saves ONE PNG file per product (under primary standard name)
-- Generates JSON mappings for secondary standards (ISO/PN cross-references)
-
-**Usage:**
+Scrapes product images from example.com categories.
 
 ```bash
 pnpm scrape-images              # Production run
@@ -58,57 +52,58 @@ pnpm scrape-images --limit=5    # Limit per category
 
 **Output:**
 
-- `static/images/standards/*.png` - Product images
-- `data/image-mappings.json` - Standard → image mappings
-
-**Requirements:**
-
-- Authorization from example.com
-- Playwright browser installed (`pnpm exec playwright install chromium`)
-- Sharp library for image processing
+- `static/images/standards/*.png` — Product images
+- `data/image-mappings.json` — Standard → image mappings (SSOT for images)
 
 ---
 
-### 2. merge-mappings.js
+### DIN Media Integration
 
-Merges scraped image mappings into the main configuration file.
+#### generate-dinmedia-mappings.js
 
-**Purpose:**
-
-- Replaces entire `imageMappings` section in standards-config.json
-- Preserves crossref and dinOnly sections
-
-**Usage:**
+Searches dinmedia.de for each standard and creates ID mappings.
 
 ```bash
-pnpm merge-mappings
+pnpm generate-dinmedia-mappings              # Incremental (skip existing)
+pnpm generate-dinmedia-mappings --force      # Re-search all
+pnpm generate-dinmedia-mappings --limit=10   # Test with limit
+pnpm generate-dinmedia-mappings --delay=2000 # Custom delay (ms)
 ```
-
-**Input:**
-
-- `data/image-mappings.json` - Generated by scraper
 
 **Output:**
 
-- `data/standards-config.json` - Updated imageMappings section
+- `data/dinmedia-id-mappings.json` — Standard ID → DIN Media ID mappings
 
 ---
 
-### 3. build-all-standards.js
+#### scrape-dinmedia-metadata.js
 
-Unified script that processes all standards data in a single pipeline.
+Scrapes metadata (title, status, date) from dinmedia.de for each mapped standard.
 
-**Purpose:**
+```bash
+pnpm scrape-dinmedia              # Incremental (skip cached < 30 days)
+pnpm scrape-dinmedia:force        # Re-fetch all
+pnpm scrape-dinmedia --limit=10   # Test with limit
+pnpm scrape-dinmedia --delay=2000 # Custom delay (ms)
+```
 
-- Processes raw ISO metadata from JSONL format (~78k standards)
-- Filters to fastener standards (ICS 21.060, TC 2 committee)
-- Excludes withdrawn and replaced standards
-- Applies cross-references (ISO↔DIN, ANSI, PN)
-- Includes DIN-only standards
-- Adds image references from mappings
-- Generates final TypeScript module
+**Output:**
 
-**Usage:**
+- `data/dinmedia-metadata-cache.json` — Cached metadata (SSOT for descriptions)
+
+**Features:**
+
+- Retry with exponential backoff (3 attempts)
+- Cache validity: 30 days (7 days for WITHDRAWN standards)
+- Detects WITHDRAWN status
+
+---
+
+### Build
+
+#### build-all-standards.js
+
+Unified script that generates the final TypeScript module.
 
 ```bash
 pnpm build-standards
@@ -116,97 +111,102 @@ pnpm build-standards
 
 **Input:**
 
-- `data/raw/iso_deliverables_metadata.jsonl` - Raw ISO standards data
-  - Source: [ISO Open Data](https://isopublicstorageprod.blob.core.windows.net/opendata/_latest/iso_deliverables_metadata/json/iso_deliverables_metadata.jsonl)
-- `data/standards-config.json` - All configurations
+- `data/standards-config.json` — Standards list (crossref, dinOnly)
+- `data/image-mappings.json` — Image mappings (SSOT)
+- `data/dinmedia-metadata-cache.json` — Descriptions (SSOT)
 
 **Output:**
 
-- `src/lib/data/standards-generated.ts` - TypeScript module with all standards
-
-**Features:**
-
-- Processes everything in memory (no intermediate files)
-- Supports multiple designation systems (ISO, DIN, ANSI, PN)
-- Only adds image property when mapping exists in config
+- `src/lib/data/standards-generated.ts` — TypeScript module with all standards
 
 ---
 
-### 4. validate-images.js
+#### hardware-type-mappings.js
 
-Validates that all image references in generated standards have corresponding files.
+Helper module for categorizing fastener hardware types.
 
-**Purpose:**
+**Not executed directly** — imported by build-all-standards.js.
 
-- Extracts image paths from standards-generated.ts
-- Checks if files exist in static/images/standards/
-- Reports missing files (exits with code 1 if any missing)
+---
 
-**Usage:**
+#### lib/playwright-utils.js
+
+Shared utilities for Playwright-based scraping scripts.
+
+**Not executed directly** — imported by generate-dinmedia-mappings.js and scrape-dinmedia-metadata.js.
+
+**Exports:**
+
+- `sleep(ms)` — Async sleep
+- `retryWithBackoff(fn, maxRetries, baseDelayMs)` — Retry with exponential backoff
+- `acceptCookies(page, baseUrl)` — Accept cookies on DIN Media
+- `parseCliArgs(argv)` — Parse --force, --limit=N, --delay=MS with validation
+- `DEFAULT_USER_AGENT` — Browser User-Agent string
+- `DINMEDIA_BASE_URL` — DIN Media base URL
+
+---
+
+### Validation & Analysis
+
+#### validate-images.js
+
+Validates that all image references have corresponding files.
 
 ```bash
 pnpm validate-images
 ```
 
-**Input:**
-
-- `src/lib/data/standards-generated.ts` - Generated standards file
-
-**Output:**
-
-- Console report of existing vs missing images
-- Exit code 0 (success) or 1 (missing files)
+**Exit codes:** 0 = success, 1 = missing files
 
 ---
 
-### hardware-type-mappings.js
+#### analyze-aspect-ratios.mjs
 
-Helper module for categorizing fastener hardware types.
+Analyzes aspect ratios of standard images.
 
-**Purpose:**
+```bash
+pnpm analyze-images           # Show statistics
+pnpm analyze-images 1.5 2.0   # Search for specific ratios
+```
 
-- Determines hardware type (screw, bolt, nut, washer, etc.)
-- Used by build-all-standards.js during generation
+---
 
-**Not executed directly** - imported as a module.
+### Release
+
+#### check-changelog.js
+
+Validates CHANGELOG.md before release.
+
+```bash
+pnpm check-changelog
+```
+
+---
+
+#### release.js
+
+Automates version bumping and release creation.
+
+```bash
+pnpm release:dry-run    # Preview changes
+pnpm release            # Create release
+```
 
 ## Data Files
 
-### standards-config.json
-
-Unified configuration file containing:
-
-```json
-{
-	"crossref": {
-		"iso4762": { "din": ["912"] },
-		"iso7046": { "din": ["965"] }
-		// ... ISO to DIN/ANSI/PN mappings
-	},
-	"dinOnly": {
-		"din127": {
-			"description": "Spring lock washers, Type A"
-		}
-		// ... DIN standards without ISO equivalents
-	},
-	"imageMappings": {
-		"iso4762": "/images/standards/din_912.png",
-		"iso7046": "/images/standards/din_965.png"
-		// ... standard ID to image path mappings
-	}
-}
-```
+| File                           | Purpose                            | SSOT for     |
+| ------------------------------ | ---------------------------------- | ------------ |
+| `standards-config.json`        | Standards list (crossref, dinOnly) | —            |
+| `image-mappings.json`  | Image paths                        | Images       |
+| `dinmedia-id-mappings.json`    | Standard → DIN Media ID            | —            |
+| `dinmedia-metadata-cache.json` | Titles, status, dates              | Descriptions |
 
 ## Quick Start
 
-### Initial Setup (One-time)
+### Initial Setup
 
 ```bash
-# 1. Download ISO metadata
-curl -o data/raw/iso_deliverables_metadata.jsonl \
-  https://isopublicstorageprod.blob.core.windows.net/opendata/_latest/iso_deliverables_metadata/json/iso_deliverables_metadata.jsonl
-
-# 2. Install Playwright browser
+# Install Playwright browser
 pnpm exec playwright install chromium
 ```
 
@@ -216,73 +216,51 @@ pnpm exec playwright install chromium
 # 1. Scrape images (when needed)
 pnpm scrape-images
 
-# 2. Merge mappings
-pnpm merge-mappings
+# 2. Generate DIN Media mappings (one-time per new standard)
+pnpm generate-dinmedia-mappings
 
-# 3. Build standards
+# 3. Scrape metadata (refresh monthly)
+pnpm scrape-dinmedia
+
+# 4. Build standards
 pnpm build-standards
 
-# 4. Validate
+# 5. Validate
 pnpm validate-images
-
-# 5. Run tests
-pnpm test:unit src/lib/data/standards.test.ts
 ```
 
-## Adding New Standards
+### Adding New Standards
 
-### Add ISO→DIN Cross-reference
+#### Add ISO→DIN Cross-reference
 
-1. Edit `data/standards-config.json`
-2. Add to `crossref` section:
+1. Edit `data/standards-config.json`:
    ```json
-   "iso1234": {"din": ["5678"]}
-   ```
-3. Run: `pnpm build-standards`
-
-### Add DIN-only Standard
-
-1. Edit `data/standards-config.json`
-2. Add to `dinOnly` section:
-   ```json
-   "din999": {
-     "description": "Description here"
+   "crossref": {
+     "iso1234": { "din": ["5678"] }
    }
    ```
-3. Run: `pnpm build-standards`
+2. Run: `pnpm generate-dinmedia-mappings && pnpm scrape-dinmedia && pnpm build-standards`
 
-### Add Image Mapping
+#### Add DIN-only Standard
 
-1. Option A: Scrape from example.com
-
-   ```bash
-   pnpm scrape-images
-   pnpm merge-mappings
-   ```
-
-2. Option B: Manual mapping
-
+1. Edit `data/standards-config.json`:
    ```json
-   // Edit data/standards-config.json
-   "imageMappings": {
-     "iso1234": "/images/standards/din_5678.png"
+   "dinOnly": {
+     "din999": { "description": "Fallback description" }
    }
    ```
-
-3. Rebuild: `pnpm build-standards`
+2. Run: `pnpm build-standards`
 
 ## Data Sources
 
-- ISO metadata: [ISO Open Data](https://isopublicstorageprod.blob.core.windows.net/opendata/_latest/iso_deliverables_metadata/json/iso_deliverables_metadata.jsonl)
-- Images: [example.com](https://example.com) (with authorization)
-- Cross-references based on:
+- **Images:** [example.com](https://example.com) (with authorization)
+- **Descriptions:** [dinmedia.de](https://www.dinmedia.de) (Single Source of Truth)
+- **Cross-references:**
   - [Fuller Fasteners DIN-ISO crossover chart](https://fullerfasteners.com/tech/din-iso-en-crossover-chart/)
   - [Inoxa standards table](https://inoxa.pl/blog/post/tabela-norm-wedlug-din-pn-iso)
-  - Industry standard mappings
 
 ## Requirements
 
-- Node.js 18+ (for ES modules)
-- Playwright (for image scraping)
-- Sharp (for image processing)
-- Raw ISO data file in `data/raw/` (3.7MB, download from ISO Open Data link above)
+- Node.js 18+ (ES modules)
+- Playwright (image/metadata scraping)
+- Sharp (image processing)

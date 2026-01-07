@@ -22,9 +22,9 @@ function formatThreadDesignation(
 ): string {
 	const isMetric = threadSize.toUpperCase().startsWith('M');
 
-	// For wood screws, strip the 'M' prefix (wood screws don't use metric thread designation)
+	// For self-tapping screws, strip the 'M' prefix (they use nominal diameter, not metric thread)
 	let formatted = threadSize;
-	if (hardwareType === HardwareType.WOOD_SCREW && isMetric) {
+	if (hardwareType === HardwareType.SELF_TAPPING && isMetric) {
 		formatted = threadSize.substring(1); // Remove 'M' prefix
 	}
 

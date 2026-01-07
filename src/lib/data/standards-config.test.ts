@@ -5,17 +5,45 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { getStandardById, searchStandards } from './standards';
+import { getStandardById, searchStandards, standards, HardwareType } from './standards';
 
-describe('DIN 7997 - Wood screw classification', () => {
+const VALID_HARDWARE_TYPES = Object.values(HardwareType);
+
+describe('All standards validation', () => {
+	it('every standard should have a hardwareType assigned', () => {
+		const missingHardwareType = standards.filter((s) => !s.hardwareType);
+
+		if (missingHardwareType.length > 0) {
+			const ids = missingHardwareType.map((s) => s.id).join(', ');
+			expect.fail(`Standards missing hardwareType: ${ids}`);
+		}
+
+		expect(missingHardwareType).toHaveLength(0);
+	});
+
+	it('every standard should have a valid hardwareType value', () => {
+		const invalidHardwareType = standards.filter(
+			(s) => s.hardwareType && !VALID_HARDWARE_TYPES.includes(s.hardwareType)
+		);
+
+		if (invalidHardwareType.length > 0) {
+			const details = invalidHardwareType.map((s) => `${s.id}: "${s.hardwareType}"`).join(', ');
+			expect.fail(`Standards with invalid hardwareType: ${details}`);
+		}
+
+		expect(invalidHardwareType).toHaveLength(0);
+	});
+});
+
+describe('DIN 7997 - Self-tapping screw classification', () => {
 	it('should exist in standards database', () => {
 		const standard = getStandardById('din7997');
 		expect(standard).toBeDefined();
 	});
 
-	it('should have hardwareType "wood_screw"', () => {
+	it('should have hardwareType "self_tapping"', () => {
 		const standard = getStandardById('din7997');
-		expect(standard?.hardwareType).toBe('wood_screw');
+		expect(standard?.hardwareType).toBe('self_tapping');
 	});
 
 	it('should have description mentioning wood screw', () => {

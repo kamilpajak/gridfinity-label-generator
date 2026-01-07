@@ -1,19 +1,29 @@
 /**
- * Simplified Hardware Type Mappings
+ * Hardware Type Mappings
  *
- * Maps standard numbers to hardware types for automatic categorization
- * Following McMaster-Carr style simple categorization
+ * Maps DIN/ISO standard numbers to hardware types for automatic categorization.
+ * Inspired by McMaster-Carr's practical fastener categorization approach.
+ * Used by build-all-standards.js to assign hardwareType to each standard.
+ *
+ * Hardware type affects UI behavior:
+ * - Thread designation: SCREW uses "M" prefix (M5, M6), SELF_TAPPING strips it (5, 6)
+ * - Length field: Required for SCREW, SELF_TAPPING, PIN, RIVET; hidden for NUT, WASHER, RING
+ *
+ * @see src/lib/utils/label-formatter.ts - formatThreadDesignation() for M prefix handling
+ * @see src/lib/data/standards.ts - HardwareType enum (must stay in sync)
  */
 
 // Hardware type enum (matches TypeScript enum in src/lib/data/standards.ts)
 const HardwareType = {
-	SCREW: 'screw', // Metric thread screws
-	BOLT: 'bolt', // Metric thread bolts
-	WOOD_SCREW: 'wood_screw', // Wood screws (self-tapping, no pitch)
+	// ISO metric thread (M prefix): hex bolts, socket screws, machine screws, etc.
+	SCREW: 'screw',
+	// Self-tapping/drilling thread (no M prefix): creates own thread in material
+	// Includes: wood screws, sheet metal screws, tapping screws, drilling screws
+	SELF_TAPPING: 'self_tapping',
 	NUT: 'nut',
 	WASHER: 'washer',
 	PIN: 'pin',
-	RING: 'ring', // Retaining rings, snap rings
+	RING: 'ring', // Retaining rings, snap rings, circlips
 	RIVET: 'rivet',
 	OTHER: 'other'
 };
@@ -79,51 +89,32 @@ const hardwareTypeMappings = {
 			'6917',
 			'9021'
 		],
-		iso: ['7089', '7090', '7091', '7092', '7093', '7094', '10642', '10643', '10644']
+		iso: ['7089', '7090', '7091', '7092', '7093', '7094', '10643', '10644']
 	},
 
-	// SCREWS
+	// SCREWS - ISO metric thread with "M" prefix (e.g., M5, M6×0.75, M8×1.25)
+	// Includes: hex bolts, socket screws, countersunk, pan head, machine screws, etc.
 	screws: {
 		type: HardwareType.SCREW,
-		// Socket head cap screws, countersunk, pan head, etc.
 		din: [
+			// Socket head cap screws
 			'912',
 			'913',
 			'914',
 			'915',
 			'916',
+			'6912',
+			// Countersunk, pan head, etc.
 			'963',
 			'964',
 			'965',
 			'966',
 			'967',
-			'7991',
 			'7984',
 			'7985',
 			'7988',
-			'6912'
-		],
-		iso: [
-			'4762',
-			'4763',
-			'4764',
-			'4765',
-			'4766',
-			'2009',
-			'2010',
-			'7046',
-			'7047',
-			'10642',
-			'14579',
-			'14580'
-		]
-	},
-
-	// BOLTS
-	bolts: {
-		type: HardwareType.BOLT,
-		// Hex head bolts and similar
-		din: [
+			'7991',
+			// Hex head bolts
 			'444',
 			'558',
 			'561',
@@ -138,9 +129,54 @@ const hardwareTypeMappings = {
 			'931',
 			'933',
 			'960',
-			'961'
+			'961',
+			'7968', // Hexagon fit bolts with hexagon nut
+			'7969', // Slotted countersunk head bolts with hexagon nut
+			'7990' // Hexagon head bolts with hexagon nut
 		],
-		iso: ['4014', '4016', '4017', '4018', '8676', '8765']
+		iso: [
+			// Socket head cap screws
+			'4762',
+			'4763',
+			'4764',
+			'4765',
+			'4766',
+			'2009',
+			'2010',
+			'7046',
+			'7047',
+			'10642',
+			'14579',
+			'14580',
+			// Hex head bolts
+			'4014',
+			'4016',
+			'4017',
+			'4018',
+			'8676',
+			'8765'
+		]
+	},
+
+	// SELF-TAPPING SCREWS (wood screws, tapping screws, drilling screws)
+	// Thread designation: nominal diameter without "M" prefix (e.g., 4.2, 4.8, 5.5 or ST4.2)
+	selfTapping: {
+		type: HardwareType.SELF_TAPPING,
+		// Self-tapping, self-drilling, sheet metal screws - thread cuts into material
+		din: ['95', '96', '97', '571', '7971', '7972', '7973', '7976', '7981', '7982', '7983', '7997'],
+		iso: [
+			'1479', // Hexagon head tapping screws
+			'1481', // Slotted pan head tapping screws
+			'1482', // Slotted countersunk head tapping screws
+			'1483', // Slotted raised countersunk head tapping screws
+			'7049', // Cross-recessed pan head tapping screws
+			'7050', // Cross-recessed countersunk head tapping screws
+			'7051', // Cross-recessed raised countersunk head tapping screws
+			'7053', // Hexagon washer head tapping screws
+			'15480', // Hexagon washer head drilling screws
+			'15481', // Cross recessed pan head drilling screws
+			'15482' // Cross recessed countersunk head drilling screws
+		]
 	},
 
 	// PINS
@@ -265,15 +301,16 @@ function getHardwareType(designations, description = '') {
 	if (lowerDesc.includes('washer')) {
 		return HardwareType.WASHER;
 	}
-	// Check for wood screws / tapping screws before general screws
+	// Check for self-tapping / tapping screws before general screws
 	if (
 		lowerDesc.includes('wood screw') ||
 		lowerDesc.includes('tapping screw') ||
 		lowerDesc.includes('self-tapping') ||
+		lowerDesc.includes('drilling screw') ||
 		lowerDesc.includes('thread cutting') ||
 		lowerDesc.includes('thread forming')
 	) {
-		return HardwareType.WOOD_SCREW;
+		return HardwareType.SELF_TAPPING;
 	}
 	// Check for rings before pins (both can have similar keywords)
 	if (
@@ -299,10 +336,13 @@ function getHardwareType(designations, description = '') {
 	if (lowerDesc.includes('rivet')) {
 		return HardwareType.RIVET;
 	}
-	if (lowerDesc.includes('bolt') || (lowerDesc.includes('hex') && lowerDesc.includes('head'))) {
-		return HardwareType.BOLT;
-	}
-	if (lowerDesc.includes('screw') || lowerDesc.includes('socket')) {
+	// All metric thread fasteners (bolts, screws, socket head, etc.)
+	if (
+		lowerDesc.includes('bolt') ||
+		lowerDesc.includes('screw') ||
+		lowerDesc.includes('socket') ||
+		(lowerDesc.includes('hex') && lowerDesc.includes('head'))
+	) {
 		return HardwareType.SCREW;
 	}
 
@@ -317,6 +357,7 @@ function getHardwareType(designations, description = '') {
  */
 function requiresLength(hardwareType) {
 	// Types that DON'T require length: NUT, WASHER, RING
+	// All others (SCREW, SELF_TAPPING, PIN, RIVET, OTHER) require length
 	return (
 		hardwareType !== HardwareType.NUT &&
 		hardwareType !== HardwareType.WASHER &&

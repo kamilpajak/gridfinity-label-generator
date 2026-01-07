@@ -51,6 +51,29 @@ This project uses **pnpm** as the package manager. All commands should use `pnpm
 - `pnpm lint` - Check code formatting and ESLint rules
 - `pnpm format` - Auto-format code with Prettier
 
+### Standards Data (DIN Media Integration)
+
+DIN Media (dinmedia.de) is the **Single Source of Truth** for standard descriptions.
+
+```bash
+# One-time: Generate mappings (standard ID → DIN Media ID)
+pnpm generate-dinmedia-mappings
+
+# Scrape metadata (incremental, skips cached entries < 30 days)
+pnpm scrape-dinmedia
+
+# Force re-scrape all metadata
+pnpm scrape-dinmedia:force
+
+# Build standards with DIN Media descriptions
+pnpm build-standards
+```
+
+Data files:
+
+- `data/dinmedia-id-mappings.json` - Standard ID to DIN Media ID mappings
+- `data/dinmedia-metadata-cache.json` - Cached titles, status, dates from DIN Media
+
 ### SonarCloud API
 
 Pobieranie metryk projektu (wymaga tokena SONAR_TOKEN):

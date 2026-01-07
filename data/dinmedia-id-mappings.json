@@ -1,0 +1,1127 @@
+{
+	"iso7049": {
+		"dinMediaId": "144749673",
+		"searchQuery": "ISO 7049",
+		"originalId": "iso7049"
+	},
+	"iso7050": {
+		"dinMediaId": "144749687",
+		"searchQuery": "ISO 7050",
+		"originalId": "iso7050"
+	},
+	"iso7051": {
+		"dinMediaId": "144749700",
+		"searchQuery": "ISO 7051",
+		"originalId": "iso7051"
+	},
+	"iso1479": {
+		"dinMediaId": "144749611",
+		"searchQuery": "ISO 1479",
+		"originalId": "iso1479"
+	},
+	"iso15481": {
+		"dinMediaId": "25334161",
+		"searchQuery": "ISO 15481",
+		"originalId": "iso15481"
+	},
+	"iso15482": {
+		"dinMediaId": "25334167",
+		"searchQuery": "ISO 15482",
+		"originalId": "iso15482"
+	},
+	"iso15480": {
+		"dinMediaId": "309756250",
+		"searchQuery": "ISO 15480",
+		"originalId": "iso15480"
+	},
+	"iso7046": {
+		"dinMediaId": "145878219",
+		"searchQuery": "ISO 7046",
+		"originalId": "iso7046"
+	},
+	"iso7045": {
+		"dinMediaId": "145624864",
+		"searchQuery": "ISO 7045",
+		"originalId": "iso7045"
+	},
+	"iso7047": {
+		"dinMediaId": "145624908",
+		"searchQuery": "ISO 7047",
+		"originalId": "iso7047"
+	},
+	"iso2009": {
+		"dinMediaId": "145624837",
+		"searchQuery": "ISO 2009",
+		"originalId": "iso2009"
+	},
+	"iso1207": {
+		"dinMediaId": "144749583",
+		"searchQuery": "ISO 1207",
+		"originalId": "iso1207"
+	},
+	"iso1580": {
+		"dinMediaId": "145624824",
+		"searchQuery": "ISO 1580",
+		"originalId": "iso1580"
+	},
+	"iso2010": {
+		"dinMediaId": "145624850",
+		"searchQuery": "ISO 2010",
+		"originalId": "iso2010"
+	},
+	"iso14583": {
+		"dinMediaId": "140721444",
+		"searchQuery": "ISO 14583",
+		"originalId": "iso14583"
+	},
+	"iso4017": {
+		"dinMediaId": "356927525",
+		"searchQuery": "ISO 4017",
+		"originalId": "iso4017"
+	},
+	"iso4014": {
+		"dinMediaId": "356927584",
+		"searchQuery": "ISO 4014",
+		"originalId": "iso4014"
+	},
+	"iso8676": {
+		"dinMediaId": "356927456",
+		"searchQuery": "ISO 8676",
+		"originalId": "iso8676"
+	},
+	"iso8765": {
+		"dinMediaId": "356927429",
+		"searchQuery": "ISO 8765",
+		"originalId": "iso8765"
+	},
+	"iso7412": {
+		"dinMediaId": "698452",
+		"searchQuery": "ISO 7412",
+		"originalId": "iso7412"
+	},
+	"iso4762": {
+		"dinMediaId": "71808601",
+		"searchQuery": "ISO 4762",
+		"originalId": "iso4762"
+	},
+	"iso10642": {
+		"dinMediaId": "314388792",
+		"searchQuery": "ISO 10642",
+		"originalId": "iso10642"
+	},
+	"iso14580": {
+		"dinMediaId": "140721430",
+		"searchQuery": "ISO 14580",
+		"originalId": "iso14580"
+	},
+	"iso8677": {
+		"dinMediaId": "734873",
+		"searchQuery": "ISO 8677",
+		"originalId": "iso8677"
+	},
+	"iso299": {
+		"dinMediaId": "737169",
+		"searchQuery": "ISO 299",
+		"originalId": "iso299"
+	},
+	"iso4032": {
+		"dinMediaId": "372357158",
+		"searchQuery": "ISO 4032",
+		"originalId": "iso4032"
+	},
+	"iso4035": {
+		"dinMediaId": "372581412",
+		"searchQuery": "ISO 4035",
+		"originalId": "iso4035"
+	},
+	"iso7414": {
+		"dinMediaId": "698550",
+		"searchQuery": "ISO 7414",
+		"originalId": "iso7414"
+	},
+	"iso10511": {
+		"dinMediaId": "393223315",
+		"searchQuery": "ISO 10511",
+		"originalId": "iso10511"
+	},
+	"iso7040": {
+		"dinMediaId": "393223418",
+		"searchQuery": "ISO 7040",
+		"originalId": "iso7040"
+	},
+	"iso7042": {
+		"dinMediaId": "393223513",
+		"searchQuery": "ISO 7042",
+		"originalId": "iso7042"
+	},
+	"iso4161": {
+		"dinMediaId": "164911910",
+		"searchQuery": "ISO 4161",
+		"originalId": "iso4161"
+	},
+	"iso7044": {
+		"dinMediaId": "164911932",
+		"searchQuery": "ISO 7044",
+		"originalId": "iso7044"
+	},
+	"iso7038": {
+		"dinMediaId": "310691130",
+		"searchQuery": "ISO 7038",
+		"originalId": "iso7038"
+	},
+	"iso7035": {
+		"dinMediaId": "310691130",
+		"searchQuery": "ISO 7035",
+		"originalId": "iso7035"
+	},
+	"din562": {
+		"dinMediaId": "178392223",
+		"searchQuery": "DIN 562",
+		"originalId": "din562"
+	},
+	"iso7089": {
+		"dinMediaId": "34334832",
+		"searchQuery": "ISO 7089",
+		"originalId": "iso7089"
+	},
+	"iso7091": {
+		"dinMediaId": "34334888",
+		"searchQuery": "ISO 7091",
+		"originalId": "iso7091"
+	},
+	"iso7093": {
+		"dinMediaId": "34242692",
+		"searchQuery": "ISO 7093",
+		"originalId": "iso7093"
+	},
+	"iso7094": {
+		"dinMediaId": "34535874",
+		"searchQuery": "ISO 7094",
+		"originalId": "iso7094"
+	},
+	"iso7416": {
+		"dinMediaId": "698610",
+		"searchQuery": "ISO 7416",
+		"originalId": "iso7416"
+	},
+	"iso8738": {
+		"dinMediaId": "735283",
+		"searchQuery": "ISO 8738",
+		"originalId": "iso8738"
+	},
+	"iso7092": {
+		"dinMediaId": "34334946",
+		"searchQuery": "ISO 7092",
+		"originalId": "iso7092"
+	},
+	"iso2338": {
+		"dinMediaId": "3507549",
+		"searchQuery": "ISO 2338",
+		"originalId": "iso2338"
+	},
+	"iso8734": {
+		"dinMediaId": "4513139",
+		"searchQuery": "ISO 8734",
+		"originalId": "iso8734"
+	},
+	"iso8735": {
+		"dinMediaId": "4513150",
+		"searchQuery": "ISO 8735",
+		"originalId": "iso8735"
+	},
+	"iso8752": {
+		"dinMediaId": "120116788",
+		"searchQuery": "ISO 8752",
+		"originalId": "iso8752"
+	},
+	"iso8750": {
+		"dinMediaId": "99486858",
+		"searchQuery": "ISO 8750",
+		"originalId": "iso8750"
+	},
+	"iso8748": {
+		"dinMediaId": "99486871",
+		"searchQuery": "ISO 8748",
+		"originalId": "iso8748"
+	},
+	"iso13337": {
+		"dinMediaId": "120116775",
+		"searchQuery": "ISO 13337",
+		"originalId": "iso13337"
+	},
+	"iso2339": {
+		"dinMediaId": "724526",
+		"searchQuery": "ISO 2339",
+		"originalId": "iso2339"
+	},
+	"iso8736": {
+		"dinMediaId": "735121",
+		"searchQuery": "ISO 8736",
+		"originalId": "iso8736"
+	},
+	"iso8737": {
+		"dinMediaId": "735201",
+		"searchQuery": "ISO 8737",
+		"originalId": "iso8737"
+	},
+	"iso8744": {
+		"dinMediaId": "390254409",
+		"searchQuery": "ISO 8744",
+		"originalId": "iso8744"
+	},
+	"iso8745": {
+		"dinMediaId": "390254438",
+		"searchQuery": "ISO 8745",
+		"originalId": "iso8745"
+	},
+	"iso8740": {
+		"dinMediaId": "390254453",
+		"searchQuery": "ISO 8740",
+		"originalId": "iso8740"
+	},
+	"iso8741": {
+		"dinMediaId": "390254394",
+		"searchQuery": "ISO 8741",
+		"originalId": "iso8741"
+	},
+	"iso8742": {
+		"dinMediaId": "3360470",
+		"searchQuery": "ISO 8742",
+		"originalId": "iso8742"
+	},
+	"iso8746": {
+		"dinMediaId": "390254379",
+		"searchQuery": "ISO 8746",
+		"originalId": "iso8746"
+	},
+	"iso8747": {
+		"dinMediaId": "390254364",
+		"searchQuery": "ISO 8747",
+		"originalId": "iso8747"
+	},
+	"iso2341": {
+		"dinMediaId": "724684",
+		"searchQuery": "ISO 2341",
+		"originalId": "iso2341"
+	},
+	"din933": {
+		"dinMediaId": "7379074",
+		"searchQuery": "DIN 933",
+		"originalId": "din933"
+	},
+	"din931": {
+		"dinMediaId": "98781480",
+		"searchQuery": "DIN 931",
+		"originalId": "din931"
+	},
+	"din961": {
+		"dinMediaId": "2741655",
+		"searchQuery": "DIN 961",
+		"originalId": "din961"
+	},
+	"din960": {
+		"dinMediaId": "7379230",
+		"searchQuery": "DIN 960",
+		"originalId": "din960"
+	},
+	"din6914": {
+		"dinMediaId": "7377088",
+		"searchQuery": "DIN 6914",
+		"originalId": "din6914"
+	},
+	"din7990": {
+		"dinMediaId": "274413760",
+		"searchQuery": "DIN 7990",
+		"originalId": "din7990"
+	},
+	"din6921": {
+		"dinMediaId": "1042298",
+		"searchQuery": "DIN 6921",
+		"originalId": "din6921"
+	},
+	"din609": {
+		"dinMediaId": "263876674",
+		"searchQuery": "DIN 609",
+		"originalId": "din609"
+	},
+	"din610": {
+		"dinMediaId": "7379042",
+		"searchQuery": "DIN 610",
+		"originalId": "din610"
+	},
+	"din7968": {
+		"dinMediaId": "274413722",
+		"searchQuery": "DIN 7968",
+		"originalId": "din7968"
+	},
+	"din912": {
+		"dinMediaId": "76433778",
+		"searchQuery": "DIN 912",
+		"originalId": "din912"
+	},
+	"din7991": {
+		"dinMediaId": "2888214",
+		"searchQuery": "DIN 7991",
+		"originalId": "din7991"
+	},
+	"iso7380": {
+		"dinMediaId": "363730886",
+		"searchQuery": "ISO 7380",
+		"originalId": "iso7380"
+	},
+	"din6912": {
+		"dinMediaId": "331996195",
+		"searchQuery": "DIN 6912",
+		"originalId": "din6912"
+	},
+	"din7984": {
+		"dinMediaId": "349413305",
+		"searchQuery": "DIN 7984",
+		"originalId": "din7984"
+	},
+	"iso7379": {
+		"dinMediaId": "697251",
+		"searchQuery": "ISO 7379",
+		"originalId": "iso7379"
+	},
+	"din603": {
+		"dinMediaId": "267609068",
+		"searchQuery": "DIN 603",
+		"originalId": "din603"
+	},
+	"din938": {
+		"dinMediaId": "392482848",
+		"searchQuery": "DIN 938",
+		"originalId": "din938"
+	},
+	"din939": {
+		"dinMediaId": "392483495",
+		"searchQuery": "DIN 939",
+		"originalId": "din939"
+	},
+	"din835": {
+		"dinMediaId": "392482260",
+		"searchQuery": "DIN 835",
+		"originalId": "din835"
+	},
+	"din2510": {
+		"dinMediaId": "332154762",
+		"searchQuery": "DIN 2510",
+		"originalId": "din2510"
+	},
+	"din316": {
+		"dinMediaId": "263645062",
+		"searchQuery": "DIN 316",
+		"originalId": "din316"
+	},
+	"din444": {
+		"dinMediaId": "267609142",
+		"searchQuery": "DIN 444",
+		"originalId": "din444"
+	},
+	"din478": {
+		"dinMediaId": "256854264",
+		"searchQuery": "DIN 478",
+		"originalId": "din478"
+	},
+	"din464": {
+		"dinMediaId": "95360204",
+		"searchQuery": "DIN 464",
+		"originalId": "din464"
+	},
+	"din653": {
+		"dinMediaId": "76988422",
+		"searchQuery": "DIN 653",
+		"originalId": "din653"
+	},
+	"din404": {
+		"dinMediaId": "275149853",
+		"searchQuery": "DIN 404",
+		"originalId": "din404"
+	},
+	"din15237": {
+		"dinMediaId": "673811",
+		"searchQuery": "DIN 15237",
+		"originalId": "din15237"
+	},
+	"din22424": {
+		"dinMediaId": "1682507",
+		"searchQuery": "DIN 22424",
+		"originalId": "din22424"
+	},
+	"din186": {
+		"dinMediaId": "382538227",
+		"searchQuery": "DIN 186",
+		"originalId": "din186"
+	},
+	"din261": {
+		"dinMediaId": "383026319",
+		"searchQuery": "DIN 261",
+		"originalId": "din261"
+	},
+	"din605": {
+		"dinMediaId": "132134571",
+		"searchQuery": "DIN 605",
+		"originalId": "din605"
+	},
+	"din604": {
+		"dinMediaId": "267609097",
+		"searchQuery": "DIN 604",
+		"originalId": "din604"
+	},
+	"din607": {
+		"dinMediaId": "132135162",
+		"searchQuery": "DIN 607",
+		"originalId": "din607"
+	},
+	"din787": {
+		"dinMediaId": "76374386",
+		"searchQuery": "DIN 787",
+		"originalId": "din787"
+	},
+	"din6304": {
+		"dinMediaId": "885037",
+		"searchQuery": "DIN 6304",
+		"originalId": "din6304"
+	},
+	"din6306": {
+		"dinMediaId": "885097",
+		"searchQuery": "DIN 6306",
+		"originalId": "din6306"
+	},
+	"din7643": {
+		"dinMediaId": "80724833",
+		"searchQuery": "DIN 7643",
+		"originalId": "din7643"
+	},
+	"din529": {
+		"dinMediaId": "132182757",
+		"searchQuery": "DIN 529",
+		"originalId": "din529"
+	},
+	"din525": {
+		"dinMediaId": "391884001",
+		"searchQuery": "DIN 525",
+		"originalId": "din525"
+	},
+	"din934": {
+		"dinMediaId": "7381044",
+		"searchQuery": "DIN 934",
+		"originalId": "din934"
+	},
+	"din6330": {
+		"dinMediaId": "61614931",
+		"searchQuery": "DIN 6330",
+		"originalId": "din6330"
+	},
+	"din439": {
+		"dinMediaId": "7379415",
+		"searchQuery": "DIN 439",
+		"originalId": "din439"
+	},
+	"din6915": {
+		"dinMediaId": "7376925",
+		"searchQuery": "DIN 6915",
+		"originalId": "din6915"
+	},
+	"din985": {
+		"dinMediaId": "1347121",
+		"searchQuery": "DIN 985",
+		"originalId": "din985"
+	},
+	"din982": {
+		"dinMediaId": "1347092",
+		"searchQuery": "DIN 982",
+		"originalId": "din982"
+	},
+	"din980": {
+		"dinMediaId": "1889520",
+		"searchQuery": "DIN 980",
+		"originalId": "din980"
+	},
+	"din1587": {
+		"dinMediaId": "344995769",
+		"searchQuery": "DIN 1587",
+		"originalId": "din1587"
+	},
+	"din986": {
+		"dinMediaId": "186932096",
+		"searchQuery": "DIN 986",
+		"originalId": "din986"
+	},
+	"din6923": {
+		"dinMediaId": "1042453",
+		"searchQuery": "DIN 6923",
+		"originalId": "din6923"
+	},
+	"din6331": {
+		"dinMediaId": "61614719",
+		"searchQuery": "DIN 6331",
+		"originalId": "din6331"
+	},
+	"din6926": {
+		"dinMediaId": "1069655",
+		"searchQuery": "DIN 6926",
+		"originalId": "din6926"
+	},
+	"din6927": {
+		"dinMediaId": "1069797",
+		"searchQuery": "DIN 6927",
+		"originalId": "din6927"
+	},
+	"din937": {
+		"dinMediaId": "115444084",
+		"searchQuery": "DIN 937",
+		"originalId": "din937"
+	},
+	"din979": {
+		"dinMediaId": "186928487",
+		"searchQuery": "DIN 979",
+		"originalId": "din979"
+	},
+	"din935": {
+		"dinMediaId": "7378756",
+		"searchQuery": "DIN 935",
+		"originalId": "din935"
+	},
+	"din917": {
+		"dinMediaId": "344873180",
+		"searchQuery": "DIN 917",
+		"originalId": "din917"
+	},
+	"din929": {
+		"dinMediaId": "194678780",
+		"searchQuery": "DIN 929",
+		"originalId": "din929"
+	},
+	"din431": {
+		"dinMediaId": "178383710",
+		"searchQuery": "DIN 431",
+		"originalId": "din431"
+	},
+	"din315": {
+		"dinMediaId": "263644532",
+		"searchQuery": "DIN 315",
+		"originalId": "din315"
+	},
+	"din557": {
+		"dinMediaId": "397574074",
+		"searchQuery": "DIN 557",
+		"originalId": "din557"
+	},
+	"din928": {
+		"dinMediaId": "194677746",
+		"searchQuery": "DIN 928",
+		"originalId": "din928"
+	},
+	"din1624": {
+		"dinMediaId": "7379159",
+		"searchQuery": "DIN 1624",
+		"originalId": "din1624"
+	},
+	"din7965": {
+		"dinMediaId": "393105092",
+		"searchQuery": "DIN 7965",
+		"originalId": "din7965"
+	},
+	"din467": {
+		"dinMediaId": "382424329",
+		"searchQuery": "DIN 467",
+		"originalId": "din467"
+	},
+	"din466": {
+		"dinMediaId": "382538952",
+		"searchQuery": "DIN 466",
+		"originalId": "din466"
+	},
+	"din1479": {
+		"dinMediaId": "77536633",
+		"searchQuery": "DIN 1479",
+		"originalId": "din1479"
+	},
+	"din981": {
+		"dinMediaId": "116123795",
+		"searchQuery": "DIN 981",
+		"originalId": "din981"
+	},
+	"din70852": {
+		"dinMediaId": "1436039",
+		"searchQuery": "DIN 70852",
+		"originalId": "din70852"
+	},
+	"din1816": {
+		"dinMediaId": "690036",
+		"searchQuery": "DIN 1816",
+		"originalId": "din1816"
+	},
+	"din508": {
+		"dinMediaId": "73223328",
+		"searchQuery": "DIN 508",
+		"originalId": "din508"
+	},
+	"din546": {
+		"dinMediaId": "376535307",
+		"searchQuery": "DIN 546",
+		"originalId": "din546"
+	},
+	"din7967": {
+		"dinMediaId": "500355",
+		"searchQuery": "DIN 7967",
+		"originalId": "din7967"
+	},
+	"din74361": {
+		"dinMediaId": "106064242",
+		"searchQuery": "DIN 74361",
+		"originalId": "din74361b"
+	},
+	"din6305": {
+		"dinMediaId": "47866548",
+		"searchQuery": "DIN 6305",
+		"originalId": "din6305"
+	},
+	"din6307": {
+		"dinMediaId": "1441292",
+		"searchQuery": "DIN 6307",
+		"originalId": "din6307"
+	},
+	"din125": {
+		"dinMediaId": "7378692",
+		"searchQuery": "DIN 125",
+		"originalId": "din125"
+	},
+	"din126": {
+		"dinMediaId": "7378609",
+		"searchQuery": "DIN 126",
+		"originalId": "din126"
+	},
+	"din9021": {
+		"dinMediaId": "7376830",
+		"searchQuery": "DIN 9021",
+		"originalId": "din9021"
+	},
+	"din440": {
+		"dinMediaId": "383352025",
+		"searchQuery": "DIN 440",
+		"originalId": "din440r"
+	},
+	"din6916": {
+		"dinMediaId": "90026465",
+		"searchQuery": "DIN 6916",
+		"originalId": "din6916"
+	},
+	"din1440": {
+		"dinMediaId": "7379080",
+		"searchQuery": "DIN 1440",
+		"originalId": "din1440"
+	},
+	"din6340": {
+		"dinMediaId": "1343017",
+		"searchQuery": "DIN 6340",
+		"originalId": "din6340"
+	},
+	"din7349": {
+		"dinMediaId": "118002171",
+		"searchQuery": "DIN 7349",
+		"originalId": "din7349"
+	},
+	"din433": {
+		"dinMediaId": "7379413",
+		"searchQuery": "DIN 433",
+		"originalId": "din433"
+	},
+	"din988": {
+		"dinMediaId": "395215057",
+		"searchQuery": "DIN 988",
+		"originalId": "din988"
+	},
+	"din7603": {
+		"dinMediaId": "39910272",
+		"searchQuery": "DIN 7603",
+		"originalId": "din7603"
+	},
+	"din127": {
+		"dinMediaId": "7378611",
+		"searchQuery": "DIN 127",
+		"originalId": "din127"
+	},
+	"din6797": {
+		"dinMediaId": "1389324",
+		"searchQuery": "DIN 6797",
+		"originalId": "din6797a"
+	},
+	"din6798": {
+		"dinMediaId": "1389357",
+		"searchQuery": "DIN 6798",
+		"originalId": "din6798a"
+	},
+	"din6796": {
+		"dinMediaId": "118048617",
+		"searchQuery": "DIN 6796",
+		"originalId": "din6796"
+	},
+	"din137": {
+		"dinMediaId": "110161678",
+		"searchQuery": "DIN 137",
+		"originalId": "din137a"
+	},
+	"din128": {
+		"dinMediaId": "2370631",
+		"searchQuery": "DIN 128",
+		"originalId": "din128a"
+	},
+	"din7980": {
+		"dinMediaId": "3074633",
+		"searchQuery": "DIN 7980",
+		"originalId": "din7980"
+	},
+	"din2093": {
+		"dinMediaId": "7379298",
+		"searchQuery": "DIN 2093",
+		"originalId": "din2093"
+	},
+	"din436": {
+		"dinMediaId": "383351981",
+		"searchQuery": "DIN 436",
+		"originalId": "din436"
+	},
+	"din435": {
+		"dinMediaId": "383351931",
+		"searchQuery": "DIN 435",
+		"originalId": "din435"
+	},
+	"din434": {
+		"dinMediaId": "383351828",
+		"searchQuery": "DIN 434",
+		"originalId": "din434"
+	},
+	"din6319": {
+		"dinMediaId": "7376643",
+		"searchQuery": "DIN 6319",
+		"originalId": "din6319d"
+	},
+	"din93": {
+		"dinMediaId": "7373801",
+		"searchQuery": "DIN 93",
+		"originalId": "din93"
+	},
+	"din463": {
+		"dinMediaId": "703343",
+		"searchQuery": "DIN 463",
+		"originalId": "din463"
+	},
+	"din432": {
+		"dinMediaId": "7379077",
+		"searchQuery": "DIN 432",
+		"originalId": "din432"
+	},
+	"din462": {
+		"dinMediaId": "678813",
+		"searchQuery": "DIN 462",
+		"originalId": "din462"
+	},
+	"din7981": {
+		"dinMediaId": "2853229",
+		"searchQuery": "DIN 7981",
+		"originalId": "din7981"
+	},
+	"din7982": {
+		"dinMediaId": "2853271",
+		"searchQuery": "DIN 7982",
+		"originalId": "din7982c"
+	},
+	"din7983": {
+		"dinMediaId": "2853321",
+		"searchQuery": "DIN 7983",
+		"originalId": "din7983"
+	},
+	"din7976": {
+		"dinMediaId": "3106501",
+		"searchQuery": "DIN 7976",
+		"originalId": "din7976"
+	},
+	"iso7053": {
+		"dinMediaId": "309756235",
+		"searchQuery": "ISO 7053",
+		"originalId": "iso7053"
+	},
+	"din7504": {
+		"dinMediaId": "2580738",
+		"searchQuery": "DIN 7504",
+		"originalId": "din7504m"
+	},
+	"din571": {
+		"dinMediaId": "264089011",
+		"searchQuery": "DIN 571",
+		"originalId": "din571"
+	},
+	"din95": {
+		"dinMediaId": "264022565",
+		"searchQuery": "DIN 95",
+		"originalId": "din95"
+	},
+	"din96": {
+		"dinMediaId": "264088654",
+		"searchQuery": "DIN 96",
+		"originalId": "din96"
+	},
+	"din97": {
+		"dinMediaId": "264088739",
+		"searchQuery": "DIN 97",
+		"originalId": "din97"
+	},
+	"din965": {
+		"dinMediaId": "2847805",
+		"searchQuery": "DIN 965",
+		"originalId": "din965"
+	},
+	"din7985": {
+		"dinMediaId": "2853361",
+		"searchQuery": "DIN 7985",
+		"originalId": "din7985"
+	},
+	"din967": {
+		"dinMediaId": "291134158",
+		"searchQuery": "DIN 967",
+		"originalId": "din967"
+	},
+	"din966": {
+		"dinMediaId": "2847901",
+		"searchQuery": "DIN 966",
+		"originalId": "din966"
+	},
+	"din963": {
+		"dinMediaId": "2880215",
+		"searchQuery": "DIN 963",
+		"originalId": "din963"
+	},
+	"din84": {
+		"dinMediaId": "7379194",
+		"searchQuery": "DIN 84",
+		"originalId": "din84"
+	},
+	"din85": {
+		"dinMediaId": "7378777",
+		"searchQuery": "DIN 85",
+		"originalId": "din85"
+	},
+	"din964": {
+		"dinMediaId": "2888850",
+		"searchQuery": "DIN 964",
+		"originalId": "din964"
+	},
+	"din921": {
+		"dinMediaId": "391883983",
+		"searchQuery": "DIN 921",
+		"originalId": "din921"
+	},
+	"din923": {
+		"dinMediaId": "376535192",
+		"searchQuery": "DIN 923",
+		"originalId": "din923"
+	},
+	"din927": {
+		"dinMediaId": "151444428",
+		"searchQuery": "DIN 927",
+		"originalId": "din927"
+	},
+	"din7500": {
+		"dinMediaId": "1513410",
+		"searchQuery": "DIN 7500",
+		"originalId": "din7500m"
+	},
+	"din7516": {
+		"dinMediaId": "264157873",
+		"searchQuery": "DIN 7516",
+		"originalId": "din7516a"
+	},
+	"din7": {
+		"dinMediaId": "7380757",
+		"searchQuery": "DIN 7",
+		"originalId": "din7"
+	},
+	"din6325": {
+		"dinMediaId": "1441625",
+		"searchQuery": "DIN 6325",
+		"originalId": "din6325"
+	},
+	"din7979": {
+		"dinMediaId": "1482099",
+		"searchQuery": "DIN 7979",
+		"originalId": "din7979d"
+	},
+	"din1481": {
+		"dinMediaId": "1873688",
+		"searchQuery": "DIN 1481",
+		"originalId": "din1481"
+	},
+	"din7343": {
+		"dinMediaId": "1457447",
+		"searchQuery": "DIN 7343",
+		"originalId": "din7343"
+	},
+	"din7344": {
+		"dinMediaId": "1457515",
+		"searchQuery": "DIN 7344",
+		"originalId": "din7344"
+	},
+	"din7346": {
+		"dinMediaId": "506604",
+		"searchQuery": "DIN 7346",
+		"originalId": "din7346"
+	},
+	"din1": {
+		"dinMediaId": "7380756",
+		"searchQuery": "DIN 1",
+		"originalId": "din1"
+	},
+	"din7978": {
+		"dinMediaId": "1482048",
+		"searchQuery": "DIN 7978",
+		"originalId": "din7978"
+	},
+	"din7977": {
+		"dinMediaId": "1481964",
+		"searchQuery": "DIN 7977",
+		"originalId": "din7977"
+	},
+	"din258": {
+		"dinMediaId": "150836639",
+		"searchQuery": "DIN 258",
+		"originalId": "din258"
+	},
+	"din1471": {
+		"dinMediaId": "7379300",
+		"searchQuery": "DIN 1471",
+		"originalId": "din1471"
+	},
+	"din1472": {
+		"dinMediaId": "1836586",
+		"searchQuery": "DIN 1472",
+		"originalId": "din1472"
+	},
+	"din1473": {
+		"dinMediaId": "1836673",
+		"searchQuery": "DIN 1473",
+		"originalId": "din1473"
+	},
+	"din1474": {
+		"dinMediaId": "1835005",
+		"searchQuery": "DIN 1474",
+		"originalId": "din1474"
+	},
+	"din1475": {
+		"dinMediaId": "1838035",
+		"searchQuery": "DIN 1475",
+		"originalId": "din1475"
+	},
+	"din1477": {
+		"dinMediaId": "1838579",
+		"searchQuery": "DIN 1477",
+		"originalId": "din1477"
+	},
+	"din1444": {
+		"dinMediaId": "1839414",
+		"searchQuery": "DIN 1444",
+		"originalId": "din1444"
+	},
+	"din471": {
+		"dinMediaId": "138166354",
+		"searchQuery": "DIN 471",
+		"originalId": "din471"
+	},
+	"din472": {
+		"dinMediaId": "272887139",
+		"searchQuery": "DIN 472",
+		"originalId": "din472"
+	},
+	"din7993": {
+		"dinMediaId": "506947",
+		"searchQuery": "DIN 7993",
+		"originalId": "din7993a"
+	},
+	"din5417": {
+		"dinMediaId": "139394495",
+		"searchQuery": "DIN 5417",
+		"originalId": "din5417"
+	},
+	"din6799": {
+		"dinMediaId": "272887976",
+		"searchQuery": "DIN 6799",
+		"originalId": "din6799"
+	},
+	"din705": {
+		"dinMediaId": "299486658",
+		"searchQuery": "DIN 705",
+		"originalId": "din705"
+	},
+	"din983": {
+		"dinMediaId": "320675262",
+		"searchQuery": "DIN 983",
+		"originalId": "din983"
+	},
+	"din7999": {
+		"dinMediaId": "1078124",
+		"searchQuery": "DIN 7999",
+		"originalId": "din7999"
+	},
+	"din7969": {
+		"dinMediaId": "274413739",
+		"searchQuery": "DIN 7969",
+		"originalId": "din7969"
+	},
+	"din936": {
+		"dinMediaId": "115444041",
+		"searchQuery": "DIN 936",
+		"originalId": "din936"
+	},
+	"din6925": {
+		"dinMediaId": "1352464",
+		"searchQuery": "DIN 6925",
+		"originalId": "din6925"
+	},
+	"iso7043": {
+		"dinMediaId": "164911921",
+		"searchQuery": "ISO 7043",
+		"originalId": "iso7043"
+	},
+	"din80705": {
+		"dinMediaId": "289076519",
+		"searchQuery": "DIN 80705",
+		"originalId": "din80705"
+	},
+	"din103": {
+		"dinMediaId": "103714685",
+		"searchQuery": "DIN 103",
+		"originalId": "din103"
+	},
+	"din1804": {
+		"dinMediaId": "689902",
+		"searchQuery": "DIN 1804",
+		"originalId": "din1804d"
+	},
+	"din80701": {
+		"dinMediaId": "272672464",
+		"searchQuery": "DIN 80701",
+		"originalId": "din80701"
+	},
+	"din25201": {
+		"dinMediaId": "1318746",
+		"searchQuery": "DIN 25201",
+		"originalId": "din25201"
+	},
+	"din7997": {
+		"dinMediaId": "264260248",
+		"searchQuery": "DIN 7997",
+		"originalId": "din7997"
+	},
+	"din6334": {
+		"dinMediaId": "179684536",
+		"searchQuery": "DIN 6334",
+		"originalId": "din6334"
+	},
+	"din1476": {
+		"dinMediaId": "1838416",
+		"searchQuery": "DIN 1476",
+		"originalId": "din1476"
+	}
+}

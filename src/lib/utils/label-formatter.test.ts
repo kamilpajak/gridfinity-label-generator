@@ -30,19 +30,35 @@ describe('formatPrimaryText', () => {
 		});
 	});
 
-	describe('Wood screws (self-tapping, no metric thread)', () => {
-		it('should format wood screw M5 with 20mm length as 5 × 20 (strip M prefix)', () => {
-			const result = formatPrimaryText('fastener', 'M5', '20', '', '', '', HardwareType.WOOD_SCREW);
+	describe('Self-tapping screws (no metric thread)', () => {
+		it('should format self-tapping screw M5 with 20mm length as 5 × 20 (strip M prefix)', () => {
+			const result = formatPrimaryText(
+				'fastener',
+				'M5',
+				'20',
+				'',
+				'',
+				'',
+				HardwareType.SELF_TAPPING
+			);
 			expect(result).toBe('5 × 20');
 		});
 
-		it('should format wood screw M4 with 30mm length as 4 × 30 (strip M prefix)', () => {
-			const result = formatPrimaryText('fastener', 'M4', '30', '', '', '', HardwareType.WOOD_SCREW);
+		it('should format self-tapping screw M4 with 30mm length as 4 × 30 (strip M prefix)', () => {
+			const result = formatPrimaryText(
+				'fastener',
+				'M4',
+				'30',
+				'',
+				'',
+				'',
+				HardwareType.SELF_TAPPING
+			);
 			expect(result).toBe('4 × 30');
 		});
 
-		it('should format wood screw M3 without length as 3 (strip M prefix)', () => {
-			const result = formatPrimaryText('fastener', 'M3', '', '', '', '', HardwareType.WOOD_SCREW);
+		it('should format self-tapping screw M3 without length as 3 (strip M prefix)', () => {
+			const result = formatPrimaryText('fastener', 'M3', '', '', '', '', HardwareType.SELF_TAPPING);
 			expect(result).toBe('3');
 		});
 

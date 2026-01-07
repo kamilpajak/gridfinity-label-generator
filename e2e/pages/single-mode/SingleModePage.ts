@@ -297,6 +297,31 @@ export class SingleModePage extends BasePage {
 		await this.page.getByRole('option', { name: size }).click();
 	}
 
+	async openThreadSizeDropdown() {
+		await this.threadSizeButton.click();
+		await this.page.getByRole('option').first().waitFor({ state: 'visible' });
+	}
+
+	async getAvailableThreadSizes(): Promise<string[]> {
+		const options = this.page.getByRole('option');
+		const count = await options.count();
+		const sizes: string[] = [];
+		for (let i = 0; i < count; i++) {
+			const text = await options.nth(i).textContent();
+			if (text) sizes.push(text.trim());
+		}
+		return sizes;
+	}
+
+	async hasThreadSize(size: string): Promise<boolean> {
+		const option = this.page.getByRole('option', { name: size, exact: true });
+		return (await option.count()) > 0;
+	}
+
+	getThreadSizeOption(size: string) {
+		return this.page.getByRole('option', { name: size, exact: true });
+	}
+
 	async selectPitch(pitch: string) {
 		await this.pitchSelect.click();
 		await this.page.getByRole('option', { name: pitch }).click();

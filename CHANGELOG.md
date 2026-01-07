@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-01-07
+
+### Improved
+
+- Standard Descriptions: More accurate and consistent descriptions sourced from official DIN Media database.
+
 ## [2.5.4] - 2026-01-06
 
 ### Fixed

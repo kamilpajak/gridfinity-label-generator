@@ -18,7 +18,7 @@
 		shouldDisableLength,
 		shouldDisablePitch
 	} from '$lib/data/standards';
-	import { getPitchOptions } from '$lib/data/thread-pitch';
+	import { getPitchOptions, getThreadSizes } from '$lib/data/thread-pitch';
 	import { parseFraction } from '$lib/utils/fraction-parser';
 	import type {
 		BatchLabelConfig,
@@ -46,36 +46,6 @@
 	// Width threshold (in mm) below which Hardware Icon and QR Code are mutually exclusive
 	const NARROW_LABEL_WIDTH_THRESHOLD = 50;
 
-	// Thread sizes
-	const metricThreadSizes = [
-		'M1.4',
-		'M1.6',
-		'M2',
-		'M2.5',
-		'M3',
-		'M4',
-		'M5',
-		'M6',
-		'M8',
-		'M10',
-		'M12',
-		'M16',
-		'M20'
-	];
-	const imperialThreadSizes = [
-		'#0',
-		'#2',
-		'#4',
-		'#6',
-		'#8',
-		'#10',
-		'1/4″',
-		'5/16″',
-		'3/8″',
-		'1/2″',
-		'5/8″'
-	];
-
 	// Standards with images
 	const standardsWithImages = $derived(standards.filter((s) => s.image));
 
@@ -83,10 +53,6 @@
 	let labelMode = $state(label.mode);
 	let measurementSystem = $state<'metric' | 'imperial'>(
 		isFastenerMode ? (label as FastenerLabelConfig).measurementSystem : 'metric'
-	);
-
-	let availableThreadSizes = $derived(
-		measurementSystem === 'metric' ? metricThreadSizes : imperialThreadSizes
 	);
 	let threadSize = $state(isFastenerMode ? (label as FastenerLabelConfig).threadSize : '');
 	let pitch = $state(isFastenerMode ? (label as FastenerLabelConfig).pitch || '' : '');
@@ -146,6 +112,21 @@
 	});
 
 	const selectedStandard = $derived(getStandardById(standardId));
+
+	// Thread sizes - determined by measurement system, hardware type, and standard
+	// Wood screws use plain diameters, sheet metal self-tapping use ST-series
+	const availableThreadSizes = $derived(
+		getThreadSizes(measurementSystem, selectedStandard?.hardwareType, selectedStandard?.id)
+	);
+
+	// Reset thread size when hardware type changes (e.g., switching to/from self-tapping)
+	$effect(() => {
+		const hwType = selectedStandard?.hardwareType;
+		if (hwType !== undefined && threadSize && !availableThreadSizes.includes(threadSize)) {
+			threadSize = '';
+			pitch = '';
+		}
+	});
 
 	// Disable hardware-related options for 9mm labels or in general item mode
 	const hardwareImageDisabled = $derived(tapeHeight === 9 || labelMode === 'general');

@@ -1,63 +1,63 @@
 {
 	"iso7049": {
 		"image": "/images/standards/din_7981.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7050": {
 		"image": "/images/standards/din_7982.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7051": {
 		"image": "/images/standards/din_7983.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso1479": {
 		"image": "/images/standards/din_7976.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso15481": {
 		"image": "/images/standards/din_7504m.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso15482": {
 		"image": "/images/standards/din_7504o.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso15480": {
 		"image": "/images/standards/iso_15480.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7046": {
 		"image": "/images/standards/din_965.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7045": {
 		"image": "/images/standards/din_7985.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7047": {
 		"image": "/images/standards/din_966.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso2009": {
 		"image": "/images/standards/din_963.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso1207": {
 		"image": "/images/standards/din_84.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso1580": {
 		"image": "/images/standards/din_85.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso2010": {
 		"image": "/images/standards/din_964.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso14583": {
 		"image": "/images/standards/din_7985.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso4017": {
 		"image": "/images/standards/iso_4014.png",
@@ -693,127 +693,127 @@
 	},
 	"din7981": {
 		"image": "/images/standards/din_7981.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7982c": {
 		"image": "/images/standards/din_7982.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7983": {
 		"image": "/images/standards/din_7983.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7976": {
 		"image": "/images/standards/din_7976.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7053": {
 		"image": "/images/standards/iso_7053.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7504m": {
 		"image": "/images/standards/din_7504m.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7504t": {
 		"image": "/images/standards/din_7504t.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7504o": {
 		"image": "/images/standards/din_7504o.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7504k": {
 		"image": "/images/standards/din_7504k.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7504p": {
 		"image": "/images/standards/din_7504.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din571": {
 		"image": "/images/standards/din_571.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din95": {
 		"image": "/images/standards/din_95.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din96": {
 		"image": "/images/standards/din_96.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din97": {
 		"image": "/images/standards/din_97.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din965": {
 		"image": "/images/standards/din_965.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7985": {
 		"image": "/images/standards/din_7985.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din967": {
 		"image": "/images/standards/din_967.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din966": {
 		"image": "/images/standards/din_966.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din963": {
 		"image": "/images/standards/din_963.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din84": {
 		"image": "/images/standards/din_84.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din85": {
 		"image": "/images/standards/din_85.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din964": {
 		"image": "/images/standards/din_964.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din921": {
 		"image": "/images/standards/din_921.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din923": {
 		"image": "/images/standards/din_923.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din927": {
 		"image": "/images/standards/din_927.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7500m": {
 		"image": "/images/standards/din_7500m.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7500c": {
 		"image": "/images/standards/din_7500c.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7500d": {
 		"image": "/images/standards/din_7500d.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7516a": {
 		"image": "/images/standards/din_7516a.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7516d": {
 		"image": "/images/standards/din_7516d.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7516e": {
 		"image": "/images/standards/din_7516e.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7": {
 		"image": "/images/standards/din_7.png",
@@ -1377,135 +1377,135 @@
 	},
 	"din7981i": {
 		"image": "/images/standards/din_7981.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7049p": {
 		"image": "/images/standards/din_7981.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7982": {
 		"image": "/images/standards/din_7982.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7050c": {
 		"image": "/images/standards/din_7982.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7983i": {
 		"image": "/images/standards/din_7983.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7051p": {
 		"image": "/images/standards/din_7983.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7976i": {
 		"image": "/images/standards/din_7976.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso1479p": {
 		"image": "/images/standards/din_7976.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7504n": {
 		"image": "/images/standards/din_7504m.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7504": {
 		"image": "/images/standards/din_7504.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7997": {
 		"image": "/images/standards/din_7997.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din571p": {
 		"image": "/images/standards/din_571.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din95p": {
 		"image": "/images/standards/din_95.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din96p": {
 		"image": "/images/standards/din_96.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din97p": {
 		"image": "/images/standards/din_97.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din965i": {
 		"image": "/images/standards/din_965.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7046p": {
 		"image": "/images/standards/din_965.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7985i": {
 		"image": "/images/standards/din_7985.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7045p": {
 		"image": "/images/standards/din_7985.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din966i": {
 		"image": "/images/standards/din_966.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso7047p": {
 		"image": "/images/standards/din_966.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din963i": {
 		"image": "/images/standards/din_963.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso2009p": {
 		"image": "/images/standards/din_963.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din84i": {
 		"image": "/images/standards/din_84.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso1207p": {
 		"image": "/images/standards/din_84.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din85i": {
 		"image": "/images/standards/din_85.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso1580p": {
 		"image": "/images/standards/din_85.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din964i": {
 		"image": "/images/standards/din_964.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso2010p": {
 		"image": "/images/standards/din_964.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din921p": {
 		"image": "/images/standards/din_921.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din923p": {
 		"image": "/images/standards/din_923.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din927d": {
 		"image": "/images/standards/din_927.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"iso14583p": {
 		"image": "/images/standards/din_7985.png",
-		"hardwareType": "wood_screw"
+		"hardwareType": "self_tapping"
 	},
 	"din7i": {
 		"image": "/images/standards/din_7.png",

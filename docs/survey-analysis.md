@@ -189,6 +189,25 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 
 ---
 
+#### ~~10. Rozmiary ST dla Self-Tapping~~ ✅ DONE
+
+**Problem:** Self-tapping screws używały tej samej listy rozmiarów co metryczne (M3, M4...).
+
+**Rozwiązanie:** Zaimplementowano `ThreadSizeSystem` z czterema typami:
+
+| System       | Standard                 | Rozmiary                | Użycie                          |
+| ------------ | ------------------------ | ----------------------- | ------------------------------- |
+| `iso_metric` | ISO 68-1, ISO 261        | M3, M4, M5...           | Standardowe śruby metryczne     |
+| `uts`        | ANSI/ASME B1.1           | #4, #6, 1/4"...         | Śruby calowe (Unified Thread)   |
+| `tapping`    | ISO 1478, DIN 7970       | ST2.2, ST3.5, ST4.2...  | Wkręty samogwintujące do blachy |
+| `nominal`    | _(brak - średnica nom.)_ | 3, 3.5, 4, 4.5, 5, 6... | Wkręty do drewna                |
+
+Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping → `tapping`
+
+**Uwaga:** ST3.5 to standardowy rozmiar (inaczej niż odrzucony M3.5!)
+
+---
+
 ### 🟢 Niski Priorytet / Nice-to-Have
 
 | Funkcja                 | Opis                              |
@@ -253,12 +272,13 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 4. ~~**Dodać UI dla thread pitch**~~ ✅ DONE - już zaimplementowane
 5. ~~**Obrazek DIN 7997 + fix DIN 6916**~~ ✅ DONE - scraper fix + washer classification
 6. **Dodać aliasy do search** (grub→set screw, torx→hexalobular)
+7. ~~**Rozmiary ST dla self-tapping**~~ ✅ DONE - ThreadSizeSystem (`tapping`, `nominal`)
 
 ### Długoterminowe
 
-7. **Eksport SVG/PDF** - wymaga przepisania renderera
-8. **System ulubionych/zapisywania** - nowa funkcjonalność
-9. **API publiczne** - dla integracji zewnętrznych
+8. **Eksport SVG/PDF** - wymaga przepisania renderera
+9. **System ulubionych/zapisywania** - nowa funkcjonalność
+10. **API publiczne** - dla integracji zewnętrznych
 
 ---
 
@@ -270,4 +290,4 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 
 Aplikacja jest dobrze przyjmowana. Główny focus powinien być na poprawie discoverability istniejących funkcji i dodaniu aliasów search (grub→set screw, torx→hexalobular).
 
-> **Ostatnia aktualizacja:** 2026-01-06 - DIN 7997 obrazek, DIN 6916 washer fix
+> **Ostatnia aktualizacja:** 2026-01-07 - ThreadSizeSystem z obsługą wood screws (TDD, Option B)

@@ -74,7 +74,7 @@ lerna-debug.log*
 .npm
 
 # Data files
-/data/raw/
+/data/*-report.json
 
 # Backups
 backups/

@@ -3,15 +3,7 @@
 		"image": "/images/standards/din_7981.png",
 		"hardwareType": "wood_screw"
 	},
-	"pn83116": {
-		"image": "/images/standards/din_7981.png",
-		"hardwareType": "wood_screw"
-	},
 	"iso7050": {
-		"image": "/images/standards/din_7982.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn83114": {
 		"image": "/images/standards/din_7982.png",
 		"hardwareType": "wood_screw"
 	},
@@ -19,15 +11,7 @@
 		"image": "/images/standards/din_7983.png",
 		"hardwareType": "wood_screw"
 	},
-	"pn83115": {
-		"image": "/images/standards/din_7983.png",
-		"hardwareType": "wood_screw"
-	},
 	"iso1479": {
-		"image": "/images/standards/din_7976.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn83101": {
 		"image": "/images/standards/din_7976.png",
 		"hardwareType": "wood_screw"
 	},
@@ -43,27 +27,7 @@
 		"image": "/images/standards/iso_15480.png",
 		"hardwareType": "wood_screw"
 	},
-	"pn82501": {
-		"image": "/images/standards/din_571.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn82504": {
-		"image": "/images/standards/din_95.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn82505": {
-		"image": "/images/standards/din_96.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn82503": {
-		"image": "/images/standards/din_97.png",
-		"hardwareType": "wood_screw"
-	},
 	"iso7046": {
-		"image": "/images/standards/din_965.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn82208": {
 		"image": "/images/standards/din_965.png",
 		"hardwareType": "wood_screw"
 	},
@@ -71,15 +35,7 @@
 		"image": "/images/standards/din_7985.png",
 		"hardwareType": "wood_screw"
 	},
-	"pn82202": {
-		"image": "/images/standards/din_7985.png",
-		"hardwareType": "wood_screw"
-	},
 	"iso7047": {
-		"image": "/images/standards/din_966.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn82212": {
 		"image": "/images/standards/din_966.png",
 		"hardwareType": "wood_screw"
 	},
@@ -87,15 +43,7 @@
 		"image": "/images/standards/din_963.png",
 		"hardwareType": "wood_screw"
 	},
-	"pn82207": {
-		"image": "/images/standards/din_963.png",
-		"hardwareType": "wood_screw"
-	},
 	"iso1207": {
-		"image": "/images/standards/din_84.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn82215": {
 		"image": "/images/standards/din_84.png",
 		"hardwareType": "wood_screw"
 	},
@@ -103,24 +51,8 @@
 		"image": "/images/standards/din_85.png",
 		"hardwareType": "wood_screw"
 	},
-	"pn82201": {
-		"image": "/images/standards/din_85.png",
-		"hardwareType": "wood_screw"
-	},
 	"iso2010": {
 		"image": "/images/standards/din_964.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn82211": {
-		"image": "/images/standards/din_964.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn82280": {
-		"image": "/images/standards/din_921.png",
-		"hardwareType": "wood_screw"
-	},
-	"pn61241": {
-		"image": "/images/standards/din_923.png",
 		"hardwareType": "wood_screw"
 	},
 	"iso14583": {
@@ -131,16 +63,8 @@
 		"image": "/images/standards/iso_4014.png",
 		"hardwareType": "screw"
 	},
-	"pn82105": {
-		"image": "/images/standards/din_933.png",
-		"hardwareType": "screw"
-	},
 	"iso4014": {
 		"image": "/images/standards/iso_4014.png",
-		"hardwareType": "screw"
-	},
-	"pn82101": {
-		"image": "/images/standards/din_931.png",
 		"hardwareType": "screw"
 	},
 	"iso8676": {
@@ -155,23 +79,7 @@
 		"image": "/images/standards/din_6914.png",
 		"hardwareType": "screw"
 	},
-	"pn82247": {
-		"image": "/images/standards/din_6921d.png",
-		"hardwareType": "screw"
-	},
-	"pn82342": {
-		"image": "/images/standards/din_609.png",
-		"hardwareType": "screw"
-	},
-	"pn82341": {
-		"image": "/images/standards/din_610.png",
-		"hardwareType": "screw"
-	},
 	"iso4762": {
-		"image": "/images/standards/din_912.png",
-		"hardwareType": "screw"
-	},
-	"pn82302": {
 		"image": "/images/standards/din_912.png",
 		"hardwareType": "screw"
 	},
@@ -187,79 +95,15 @@
 		"image": "/images/standards/din_603.png",
 		"hardwareType": "screw"
 	},
-	"pn82406": {
-		"image": "/images/standards/din_603.png",
-		"hardwareType": "screw"
-	},
-	"pn82125": {
-		"image": "/images/standards/din_938d.png",
-		"hardwareType": "screw"
-	},
-	"pn82131": {
-		"image": "/images/standards/din_939d.png",
-		"hardwareType": "screw"
-	},
-	"pn82137": {
-		"image": "/images/standards/din_835d.png",
-		"hardwareType": "screw"
-	},
-	"pn82436": {
-		"image": "/images/standards/din_316.png",
-		"hardwareType": "screw"
-	},
-	"pn82425": {
-		"image": "/images/standards/din_444d.png",
-		"hardwareType": "screw"
-	},
-	"pn82301": {
-		"image": "/images/standards/din_478.png",
-		"hardwareType": "screw"
-	},
-	"pn82456": {
-		"image": "/images/standards/din_464.png",
-		"hardwareType": "screw"
-	},
-	"pn82457": {
-		"image": "/images/standards/din_653.png",
-		"hardwareType": "screw"
-	},
-	"pn82450": {
-		"image": "/images/standards/din_22424d.png",
-		"hardwareType": "screw"
-	},
-	"pn82418": {
-		"image": "/images/standards/din_186.png",
-		"hardwareType": "screw"
-	},
-	"pn82402": {
-		"image": "/images/standards/din_605.png",
-		"hardwareType": "screw"
-	},
 	"iso299": {
 		"image": "/images/standards/din_508.png",
 		"hardwareType": "nut"
-	},
-	"pn61271": {
-		"image": "/images/standards/din_787.png",
-		"hardwareType": "screw"
 	},
 	"iso4032": {
 		"image": "/images/standards/iso_4032.png",
 		"hardwareType": "nut"
 	},
-	"pn82144": {
-		"image": "/images/standards/din_934.png",
-		"hardwareType": "nut"
-	},
-	"pn82155": {
-		"image": "/images/standards/din_6330.png",
-		"hardwareType": "nut"
-	},
 	"iso4035": {
-		"image": "/images/standards/din_439.png",
-		"hardwareType": "nut"
-	},
-	"pn82153": {
 		"image": "/images/standards/din_439.png",
 		"hardwareType": "nut"
 	},
@@ -271,10 +115,6 @@
 		"image": "/images/standards/din_985.png",
 		"hardwareType": "nut"
 	},
-	"pn82175": {
-		"image": "/images/standards/din_985.png",
-		"hardwareType": "nut"
-	},
 	"iso7040": {
 		"image": "/images/standards/din_982.png",
 		"hardwareType": "nut"
@@ -283,24 +123,12 @@
 		"image": "/images/standards/din_6925.png",
 		"hardwareType": "nut"
 	},
-	"pn82176": {
-		"image": "/images/standards/din_980.png",
-		"hardwareType": "nut"
-	},
 	"iso4161": {
-		"image": "/images/standards/din_6923.png",
-		"hardwareType": "nut"
-	},
-	"pn82168": {
 		"image": "/images/standards/din_6923.png",
 		"hardwareType": "nut"
 	},
 	"iso7044": {
 		"image": "/images/standards/din_6927.png",
-		"hardwareType": "nut"
-	},
-	"pn82159": {
-		"image": "/images/standards/din_979.png",
 		"hardwareType": "nut"
 	},
 	"iso7038": {
@@ -311,43 +139,11 @@
 		"image": "/images/standards/din_935.png",
 		"hardwareType": "nut"
 	},
-	"pn82148": {
-		"image": "/images/standards/din_935.png",
-		"hardwareType": "nut"
-	},
-	"pn82182": {
-		"image": "/images/standards/din_917d.png",
-		"hardwareType": "nut"
-	},
-	"pn82169": {
-		"image": "/images/standards/din_929.png",
-		"hardwareType": "nut"
-	},
-	"pn82439": {
-		"image": "/images/standards/din_315.png",
-		"hardwareType": "nut"
-	},
 	"din562": {
 		"image": "/images/standards/din_557.png",
 		"hardwareType": "nut"
 	},
-	"pn82267": {
-		"image": "/images/standards/din_1479d.png",
-		"hardwareType": "nut"
-	},
-	"pn61275": {
-		"image": "/images/standards/din_508.png",
-		"hardwareType": "nut"
-	},
-	"pn82463": {
-		"image": "/images/standards/din_546.png",
-		"hardwareType": "nut"
-	},
 	"iso7089": {
-		"image": "/images/standards/din_125.png",
-		"hardwareType": "washer"
-	},
-	"pn82006": {
 		"image": "/images/standards/din_125.png",
 		"hardwareType": "washer"
 	},
@@ -355,23 +151,11 @@
 		"image": "/images/standards/din_126.png",
 		"hardwareType": "washer"
 	},
-	"pn82005": {
-		"image": "/images/standards/din_126.png",
-		"hardwareType": "washer"
-	},
 	"iso7093": {
 		"image": "/images/standards/din_9021.png",
 		"hardwareType": "washer"
 	},
-	"pn82030": {
-		"image": "/images/standards/din_9021.png",
-		"hardwareType": "washer"
-	},
 	"iso7094": {
-		"image": "/images/standards/din_440.png",
-		"hardwareType": "washer"
-	},
-	"pn82019": {
 		"image": "/images/standards/din_440.png",
 		"hardwareType": "washer"
 	},
@@ -383,80 +167,12 @@
 		"image": "/images/standards/din_1440.png",
 		"hardwareType": "washer"
 	},
-	"pn82004": {
-		"image": "/images/standards/din_1440.png",
-		"hardwareType": "washer"
-	},
 	"iso7092": {
 		"image": "/images/standards/din_433.png",
 		"hardwareType": "washer"
 	},
-	"pn82007": {
-		"image": "/images/standards/din_433.png",
-		"hardwareType": "washer"
-	},
-	"pn82008": {
-		"image": "/images/standards/din_7980.png",
-		"hardwareType": "washer"
-	},
-	"pn82024": {
-		"image": "/images/standards/din_6797a.png",
-		"hardwareType": "washer"
-	},
-	"pn82023": {
-		"image": "/images/standards/din_6797j.png",
-		"hardwareType": "washer"
-	},
-	"pn82038": {
-		"image": "/images/standards/din_137a.png",
-		"hardwareType": "washer"
-	},
-	"pn82037": {
-		"image": "/images/standards/din_137b.png",
-		"hardwareType": "washer"
-	},
-	"pn82010": {
-		"image": "/images/standards/din_436.png",
-		"hardwareType": "washer"
-	},
-	"pn82009": {
-		"image": "/images/standards/din_435.png",
-		"hardwareType": "washer"
-	},
-	"pn82018": {
-		"image": "/images/standards/din_434.png",
-		"hardwareType": "washer"
-	},
-	"pn82028": {
-		"image": "/images/standards/din_6319d.png",
-		"hardwareType": "washer"
-	},
-	"pn82026": {
-		"image": "/images/standards/din_6319c.png",
-		"hardwareType": "washer"
-	},
-	"pn82021": {
-		"image": "/images/standards/din_93.png",
-		"hardwareType": "washer"
-	},
-	"pn82022": {
-		"image": "/images/standards/din_463.png",
-		"hardwareType": "washer"
-	},
-	"pn82011": {
-		"image": "/images/standards/din_432.png",
-		"hardwareType": "washer"
-	},
-	"pn82016": {
-		"image": "/images/standards/din_462.png",
-		"hardwareType": "washer"
-	},
 	"iso2338": {
 		"image": "/images/standards/din_7.png",
-		"hardwareType": "pin"
-	},
-	"pn85021": {
-		"image": "/images/standards/din_6325.png",
 		"hardwareType": "pin"
 	},
 	"iso8734": {
@@ -467,23 +183,11 @@
 		"image": "/images/standards/din_7979d.png",
 		"hardwareType": "pin"
 	},
-	"pn85018": {
-		"image": "/images/standards/din_7979d.png",
-		"hardwareType": "pin"
-	},
 	"iso8752": {
 		"image": "/images/standards/din_1481.png",
 		"hardwareType": "pin"
 	},
-	"pn85023": {
-		"image": "/images/standards/din_1481.png",
-		"hardwareType": "pin"
-	},
 	"iso8750": {
-		"image": "/images/standards/din_7343.png",
-		"hardwareType": "pin"
-	},
-	"pn85029": {
 		"image": "/images/standards/din_7343.png",
 		"hardwareType": "pin"
 	},
@@ -499,15 +203,7 @@
 		"image": "/images/standards/din_1.png",
 		"hardwareType": "pin"
 	},
-	"pn85020": {
-		"image": "/images/standards/din_1.png",
-		"hardwareType": "pin"
-	},
 	"iso8736": {
-		"image": "/images/standards/din_7978.png",
-		"hardwareType": "pin"
-	},
-	"pn85019": {
 		"image": "/images/standards/din_7978.png",
 		"hardwareType": "pin"
 	},
@@ -515,15 +211,7 @@
 		"image": "/images/standards/din_258.png",
 		"hardwareType": "pin"
 	},
-	"pn85022": {
-		"image": "/images/standards/din_7977.png",
-		"hardwareType": "pin"
-	},
 	"iso8744": {
-		"image": "/images/standards/din_1471.png",
-		"hardwareType": "pin"
-	},
-	"pn85025": {
 		"image": "/images/standards/din_1471.png",
 		"hardwareType": "pin"
 	},
@@ -535,15 +223,7 @@
 		"image": "/images/standards/din_1473.png",
 		"hardwareType": "pin"
 	},
-	"pn85024": {
-		"image": "/images/standards/din_1473.png",
-		"hardwareType": "pin"
-	},
 	"iso8741": {
-		"image": "/images/standards/din_1474.png",
-		"hardwareType": "pin"
-	},
-	"pn85026": {
 		"image": "/images/standards/din_1474.png",
 		"hardwareType": "pin"
 	},
@@ -551,15 +231,7 @@
 		"image": "/images/standards/din_1475.png",
 		"hardwareType": "pin"
 	},
-	"pn85027": {
-		"image": "/images/standards/din_1475.png",
-		"hardwareType": "pin"
-	},
 	"iso8746": {
-		"image": "/images/standards/din_1476.png",
-		"hardwareType": "pin"
-	},
-	"pn82981": {
 		"image": "/images/standards/din_1476.png",
 		"hardwareType": "pin"
 	},
@@ -567,20 +239,8 @@
 		"image": "/images/standards/din_1477.png",
 		"hardwareType": "pin"
 	},
-	"pn82982": {
-		"image": "/images/standards/din_1477.png",
-		"hardwareType": "pin"
-	},
 	"iso2341": {
 		"image": "/images/standards/din_1444.png",
-		"hardwareType": "pin"
-	},
-	"pn85111": {
-		"image": "/images/standards/din_472d.png",
-		"hardwareType": "pin"
-	},
-	"pn85112": {
-		"image": "/images/standards/din_6799d.png",
 		"hardwareType": "pin"
 	},
 	"din933": {
@@ -1295,16 +955,12 @@
 		"image": "/images/standards/din_6914.png",
 		"hardwareType": "screw"
 	},
-	"pn82343": {
-		"image": "/images/standards/din_6914.png",
-		"hardwareType": "screw"
-	},
 	"din7990d": {
-		"image": "/images/standards/din_7990d.png",
+		"image": "/images/standards/din_7990.png",
 		"hardwareType": "screw"
 	},
 	"din6921d": {
-		"image": "/images/standards/din_6921d.png",
+		"image": "/images/standards/din_6921.png",
 		"hardwareType": "screw"
 	},
 	"din609p": {
@@ -1344,19 +1000,19 @@
 		"hardwareType": "screw"
 	},
 	"din938d": {
-		"image": "/images/standards/din_938d.png",
+		"image": "/images/standards/din_938.png",
 		"hardwareType": "screw"
 	},
 	"din939d": {
-		"image": "/images/standards/din_939d.png",
+		"image": "/images/standards/din_939.png",
 		"hardwareType": "screw"
 	},
 	"din835d": {
-		"image": "/images/standards/din_835d.png",
+		"image": "/images/standards/din_835.png",
 		"hardwareType": "screw"
 	},
 	"din2510d": {
-		"image": "/images/standards/din_2510d.png",
+		"image": "/images/standards/din_2510.png",
 		"hardwareType": "screw"
 	},
 	"din316p": {
@@ -1364,7 +1020,7 @@
 		"hardwareType": "screw"
 	},
 	"din444d": {
-		"image": "/images/standards/din_444d.png",
+		"image": "/images/standards/din_444.png",
 		"hardwareType": "screw"
 	},
 	"din478p": {
@@ -1380,7 +1036,7 @@
 		"hardwareType": "screw"
 	},
 	"din22424d": {
-		"image": "/images/standards/din_22424d.png",
+		"image": "/images/standards/din_22424.png",
 		"hardwareType": "screw"
 	},
 	"din186p": {
@@ -1388,27 +1044,15 @@
 		"hardwareType": "screw"
 	},
 	"din261d": {
-		"image": "/images/standards/din_261d.png",
-		"hardwareType": "screw"
-	},
-	"pn82424": {
-		"image": "/images/standards/din_261d.png",
+		"image": "/images/standards/din_261.png",
 		"hardwareType": "screw"
 	},
 	"din604d": {
-		"image": "/images/standards/din_604d.png",
-		"hardwareType": "screw"
-	},
-	"pn82408": {
-		"image": "/images/standards/din_604d.png",
+		"image": "/images/standards/din_604.png",
 		"hardwareType": "screw"
 	},
 	"din607d": {
-		"image": "/images/standards/din_607d.png",
-		"hardwareType": "screw"
-	},
-	"pn82410": {
-		"image": "/images/standards/din_607d.png",
+		"image": "/images/standards/din_607.png",
 		"hardwareType": "screw"
 	},
 	"din787i": {
@@ -1428,15 +1072,15 @@
 		"hardwareType": "screw"
 	},
 	"din6304d": {
-		"image": "/images/standards/din_6304d.png",
+		"image": "/images/standards/din_6304.png",
 		"hardwareType": "screw"
 	},
 	"din6306d": {
-		"image": "/images/standards/din_6306d.png",
+		"image": "/images/standards/din_6306.png",
 		"hardwareType": "screw"
 	},
 	"din7643d": {
-		"image": "/images/standards/din_7643d.png",
+		"image": "/images/standards/din_7643.png",
 		"hardwareType": "screw"
 	},
 	"din529c": {
@@ -1444,7 +1088,7 @@
 		"hardwareType": "screw"
 	},
 	"din525d": {
-		"image": "/images/standards/din_525d.png",
+		"image": "/images/standards/din_525.png",
 		"hardwareType": "screw"
 	},
 	"din934i": {
@@ -1473,14 +1117,6 @@
 	},
 	"iso7414p": {
 		"image": "/images/standards/din_6915.png",
-		"hardwareType": "nut"
-	},
-	"pn82171": {
-		"image": "/images/standards/din_6915.png",
-		"hardwareType": "nut"
-	},
-	"pn74303": {
-		"image": "/images/standards/din_2510.png",
 		"hardwareType": "nut"
 	},
 	"din985i": {
@@ -1512,11 +1148,7 @@
 		"hardwareType": "nut"
 	},
 	"din1587d": {
-		"image": "/images/standards/din_1587d.png",
-		"hardwareType": "nut"
-	},
-	"pn82181": {
-		"image": "/images/standards/din_1587d.png",
+		"image": "/images/standards/din_1587.png",
 		"hardwareType": "nut"
 	},
 	"din6923i": {
@@ -1560,7 +1192,7 @@
 		"hardwareType": "nut"
 	},
 	"din917d": {
-		"image": "/images/standards/din_917d.png",
+		"image": "/images/standards/din_917.png",
 		"hardwareType": "nut"
 	},
 	"din929p": {
@@ -1579,15 +1211,7 @@
 		"image": "/images/standards/din_103.png",
 		"hardwareType": "nut"
 	},
-	"pn82151": {
-		"image": "/images/standards/din_557.png",
-		"hardwareType": "nut"
-	},
 	"din467p": {
-		"image": "/images/standards/din_467.png",
-		"hardwareType": "nut"
-	},
-	"pn82462": {
 		"image": "/images/standards/din_467.png",
 		"hardwareType": "nut"
 	},
@@ -1595,28 +1219,16 @@
 		"image": "/images/standards/din_466.png",
 		"hardwareType": "nut"
 	},
-	"pn82461": {
-		"image": "/images/standards/din_466.png",
-		"hardwareType": "nut"
-	},
 	"din1479d": {
-		"image": "/images/standards/din_1479d.png",
+		"image": "/images/standards/din_1479.png",
 		"hardwareType": "nut"
 	},
 	"din1804d": {
 		"image": "/images/standards/din_1804d.png",
 		"hardwareType": "nut"
 	},
-	"pn82471": {
-		"image": "/images/standards/din_1804d.png",
-		"hardwareType": "nut"
-	},
 	"din1816d": {
-		"image": "/images/standards/din_1816d.png",
-		"hardwareType": "nut"
-	},
-	"pn82466": {
-		"image": "/images/standards/din_1816d.png",
+		"image": "/images/standards/din_1816.png",
 		"hardwareType": "nut"
 	},
 	"din508i": {
@@ -1632,11 +1244,11 @@
 		"hardwareType": "nut"
 	},
 	"din6305d": {
-		"image": "/images/standards/din_6305d.png",
+		"image": "/images/standards/din_6305.png",
 		"hardwareType": "nut"
 	},
 	"din6307d": {
-		"image": "/images/standards/din_6307d.png",
+		"image": "/images/standards/din_6307.png",
 		"hardwareType": "nut"
 	},
 	"din80701": {
@@ -1683,10 +1295,6 @@
 		"image": "/images/standards/din_6916.png",
 		"hardwareType": "washer"
 	},
-	"pn82039": {
-		"image": "/images/standards/din_6916.png",
-		"hardwareType": "washer"
-	},
 	"din1440i": {
 		"image": "/images/standards/din_1440.png",
 		"hardwareType": "washer"
@@ -1696,11 +1304,11 @@
 		"hardwareType": "washer"
 	},
 	"din6340d": {
-		"image": "/images/standards/din_6340d.png",
+		"image": "/images/standards/din_6340.png",
 		"hardwareType": "washer"
 	},
 	"din7349d": {
-		"image": "/images/standards/din_7349d.png",
+		"image": "/images/standards/din_7349.png",
 		"hardwareType": "washer"
 	},
 	"din433i": {
@@ -1712,11 +1320,11 @@
 		"hardwareType": "washer"
 	},
 	"din988d": {
-		"image": "/images/standards/din_988d.png",
+		"image": "/images/standards/din_988.png",
 		"hardwareType": "washer"
 	},
 	"din7603d": {
-		"image": "/images/standards/din_7603d.png",
+		"image": "/images/standards/din_7603.png",
 		"hardwareType": "washer"
 	},
 	"din127p": {
@@ -1732,7 +1340,7 @@
 		"hardwareType": "washer"
 	},
 	"din2093d": {
-		"image": "/images/standards/din_2093d.png",
+		"image": "/images/standards/din_2093.png",
 		"hardwareType": "washer"
 	},
 	"din25201": {
@@ -1892,7 +1500,7 @@
 		"hardwareType": "wood_screw"
 	},
 	"din927d": {
-		"image": "/images/standards/din_927d.png",
+		"image": "/images/standards/din_927.png",
 		"hardwareType": "wood_screw"
 	},
 	"iso14583p": {
@@ -2103,16 +1711,12 @@
 		"image": "/images/standards/din_1444.png",
 		"hardwareType": "pin"
 	},
-	"pn83002": {
-		"image": "/images/standards/din_1444.png",
-		"hardwareType": "pin"
-	},
 	"din471d": {
-		"image": "/images/standards/din_471d.png",
+		"image": "/images/standards/din_471.png",
 		"hardwareType": "pin"
 	},
 	"din472d": {
-		"image": "/images/standards/din_472d.png",
+		"image": "/images/standards/din_472.png",
 		"hardwareType": "pin"
 	},
 	"din7993": {
@@ -2120,19 +1724,19 @@
 		"hardwareType": "pin"
 	},
 	"din5417d": {
-		"image": "/images/standards/din_5417d.png",
+		"image": "/images/standards/din_5417.png",
 		"hardwareType": "pin"
 	},
 	"din6799d": {
-		"image": "/images/standards/din_6799d.png",
+		"image": "/images/standards/din_6799.png",
 		"hardwareType": "pin"
 	},
 	"din705d": {
-		"image": "/images/standards/din_705d.png",
+		"image": "/images/standards/din_705.png",
 		"hardwareType": "pin"
 	},
 	"din983d": {
-		"image": "/images/standards/din_983d.png",
+		"image": "/images/standards/din_983.png",
 		"hardwareType": "pin"
 	}
 }

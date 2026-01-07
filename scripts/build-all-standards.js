@@ -4,10 +4,12 @@
  * Unified Standards Builder
  *
  * This script processes all standards data in a single pipeline:
- * 1. Processes raw ISO data from JSONL
- * 2. Applies cross-references and mappings
- * 3. Includes DIN-only standards
- * 4. Generates final TypeScript module
+ * 1. Loads standards configuration (crossref for ISO, dinOnly for DIN)
+ * 2. Loads DIN Media metadata cache (SSOT for descriptions)
+ * 3. Loads image image mappings (SSOT for images)
+ * 4. Processes ISO standards from crossref
+ * 5. Processes DIN-only standards
+ * 6. Generates final TypeScript module
  *
  * Purpose:
  * - Single script for entire build process
@@ -20,8 +22,10 @@
  *   node scripts/build-all-standards.js
  *
  * Input:
- *   data/raw/iso_deliverables_metadata.jsonl - Raw ISO standards data
- *   data/standards-config.json - All configurations (crossref, DIN-only, images)
+ *   data/standards-config.json - Standards list (crossref, dinOnly)
+ *   data/image-mappings.json - Image mappings from image
+ *   data/dinmedia-id-mappings.json - Standard ID → DIN Media ID mappings
+ *   data/dinmedia-metadata-cache.json - Cached metadata from DIN Media (SSOT)
  *
  * Output:
  *   src/lib/data/standards-generated.ts - TypeScript module with all standards
@@ -30,11 +34,67 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import readline from 'readline';
 import { getHardwareType } from './hardware-type-mappings.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// DIN Media integration files
+const DINMEDIA_MAPPINGS_FILE = path.join(__dirname, '..', 'data', 'dinmedia-id-mappings.json');
+const DINMEDIA_CACHE_FILE = path.join(__dirname, '..', 'data', 'dinmedia-metadata-cache.json');
+
+/**
+ * Load DIN Media data (mappings and metadata cache)
+ * @returns {Object} { mappings, cache } or null if not available
+ */
+function loadDinMediaData() {
+	try {
+		const mappings = JSON.parse(fs.readFileSync(DINMEDIA_MAPPINGS_FILE, 'utf8'));
+		const cache = JSON.parse(fs.readFileSync(DINMEDIA_CACHE_FILE, 'utf8'));
+		return { mappings, cache };
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * Get description from DIN Media cache for a standard
+ * @param {string} standardId - Standard ID (e.g., 'iso4762', 'din912')
+ * @param {Object} dinMediaData - { mappings, cache } from loadDinMediaData
+ * @param {string} fallbackDescription - Fallback description if not found
+ * @returns {string} Description from DIN Media or fallback
+ */
+function getDinMediaDescription(standardId, dinMediaData, fallbackDescription) {
+	if (!dinMediaData) return fallbackDescription;
+
+	// Normalize ID (remove variant suffix for lookup)
+	const baseId = standardId.replace(/[a-z]$/i, '').toLowerCase();
+
+	const mapping = dinMediaData.mappings[baseId] || dinMediaData.mappings[standardId];
+	if (!mapping) return fallbackDescription;
+
+	const metadata = dinMediaData.cache[mapping.dinMediaId];
+	if (!metadata || !metadata.titleEn) return fallbackDescription;
+
+	return metadata.titleEn;
+}
+
+/**
+ * Check if a standard is withdrawn according to DIN Media cache
+ * @param {string} standardId - Standard ID
+ * @param {Object} dinMediaData - { mappings, cache } from loadDinMediaData
+ * @returns {boolean} True if withdrawn
+ */
+function isWithdrawn(standardId, dinMediaData) {
+	if (!dinMediaData) return false;
+
+	const baseId = standardId.replace(/[a-z]$/i, '').toLowerCase();
+	const mapping = dinMediaData.mappings[baseId] || dinMediaData.mappings[standardId];
+	if (!mapping) return false;
+
+	const metadata = dinMediaData.cache[mapping.dinMediaId];
+	return metadata?.status === 'WITHDRAWN';
+}
 
 /**
  * Check if an image file exists in the static directory
@@ -64,199 +124,6 @@ function findImageForStandard(designations) {
 	}
 
 	return null;
-}
-
-/**
- * Load all ISO data from JSONL (unfiltered, for validation)
- * @param {string} filePath - Path to JSONL file
- * @returns {Map} Map of isoId -> full ISO data
- */
-async function loadAllISOData(filePath) {
-	const isoDataMap = new Map();
-	const fileStream = fs.createReadStream(filePath);
-	const rl = readline.createInterface({
-		input: fileStream,
-		crlfDelay: Infinity
-	});
-
-	for await (const line of rl) {
-		if (!line.trim()) continue;
-
-		try {
-			const data = JSON.parse(line);
-
-			// Extract ISO number from reference
-			const match = data.reference?.match(/ISO (\d+)/);
-			if (!match) continue;
-
-			const isoNumber = match[1];
-			const id = `iso${isoNumber}`;
-
-			// Keep the most recent version (last one wins)
-			isoDataMap.set(id, data);
-		} catch (error) {
-			// Skip invalid JSONL lines (usually malformed JSON)
-			// This is expected for some lines in the raw data
-			if (process.env.DEBUG) {
-				console.warn(`Skipped invalid line in loadAllISOData: ${error.message}`);
-			}
-		}
-	}
-
-	return isoDataMap;
-}
-
-// Process ISO data from JSONL
-async function processISOData(filePath) {
-	const standards = [];
-	const seenIds = new Set(); // Track duplicates
-	const fileStream = fs.createReadStream(filePath);
-	const rl = readline.createInterface({
-		input: fileStream,
-		crlfDelay: Infinity
-	});
-
-	for await (const line of rl) {
-		if (!line.trim()) continue;
-
-		try {
-			const data = JSON.parse(line);
-
-			// Skip non-fastener standards
-			if (!data.icsCode || !data.icsCode.some((code) => code.startsWith('21.060'))) {
-				continue;
-			}
-
-			// Skip withdrawn standards (95+ codes)
-			if (data.currentStage && data.currentStage >= 9500) {
-				continue;
-			}
-
-			// Must be from TC 2 committee (fasteners)
-			if (
-				!data.ownerCommittee ||
-				!(data.ownerCommittee === 'ISO/TC 2' || data.ownerCommittee.startsWith('ISO/TC 2/'))
-			) {
-				continue;
-			}
-
-			// Skip if replaced by another standard
-			if (data.replacedBy && data.replacedBy.length > 0) {
-				continue;
-			}
-
-			// Extract number from reference
-			const match = data.reference.match(/ISO (\d+)/);
-			if (!match) continue;
-
-			const isoNumber = match[1];
-			const id = `iso${isoNumber}`;
-
-			// Skip duplicates (keep the first one)
-			if (seenIds.has(id)) {
-				continue;
-			}
-			seenIds.add(id);
-
-			// Create standard object
-			standards.push({
-				id,
-				primarySystem: 'ISO',
-				reference: data.reference,
-				title: data.title?.en || data.title?.fr || '',
-				icsCode: data.icsCode,
-				scope: data.abstract?.en || data.abstract?.fr || ''
-			});
-		} catch (error) {
-			// Skip invalid JSONL lines (usually malformed JSON or missing fields)
-			// This is expected for some lines in the raw data
-			if (process.env.DEBUG) {
-				console.warn(`Skipped invalid line in processISOData: ${error.message}`);
-			}
-		}
-	}
-
-	return standards;
-}
-
-/**
- * Validate standards configuration against ISO database
- * @param {Object} config - Configuration object from standards-config.json
- * @param {Map} isoDataMap - Map of isoId -> full ISO data
- * @returns {boolean} True if validation passes, exits process on errors
- */
-function validateConfig(config, isoDataMap) {
-	const errors = [];
-	const warnings = [];
-
-	console.log('\n🔍 Validating standards configuration...');
-
-	// Validate crossref entries
-	for (const [isoId] of Object.entries(config.crossref)) {
-		const isoData = isoDataMap.get(isoId);
-
-		// 1. Check ISO exists in database
-		if (!isoData) {
-			errors.push(`${isoId}: NOT FOUND in ISO database`);
-			continue;
-		}
-
-		// 2. Check ICS code (must be fastener)
-		if (!isoData.icsCode || !isoData.icsCode.some((code) => code.startsWith('21.060'))) {
-			const icsDisplay = isoData.icsCode ? isoData.icsCode.join(', ') : 'none';
-			errors.push(
-				`${isoId}: Wrong category (ICS ${icsDisplay}), not fasteners (21.060.xx required)`
-			);
-		}
-
-		// 3. Check committee (should be ISO/TC 2)
-		if (
-			isoData.ownerCommittee &&
-			!(isoData.ownerCommittee === 'ISO/TC 2' || isoData.ownerCommittee.startsWith('ISO/TC 2/'))
-		) {
-			warnings.push(
-				`${isoId}: Wrong committee (${isoData.ownerCommittee}), expected ISO/TC 2 (fasteners committee)`
-			);
-		}
-
-		// 4. Check stage (withdrawn standards)
-		if (isoData.currentStage >= 9599) {
-			warnings.push(
-				`${isoId}: WITHDRAWN (stage ${isoData.currentStage}), should be removed from config`
-			);
-		} else if (isoData.currentStage >= 9500) {
-			warnings.push(
-				`${isoId}: Under withdrawal review (stage ${isoData.currentStage}), will not appear in generated file`
-			);
-		}
-
-		// 5. Check replacedBy (will be hidden in generated file)
-		if (isoData.replacedBy && isoData.replacedBy.length > 0) {
-			warnings.push(
-				`${isoId}: Has replacement (${isoData.replacedBy.join(', ')}), will not appear in generated file`
-			);
-		}
-	}
-
-	// Report validation results
-	if (errors.length > 0) {
-		console.error(`\n❌ VALIDATION FAILED: ${errors.length} error(s) found\n`);
-		errors.forEach((error) => console.error(`   ❌ ${error}`));
-		console.error(
-			'\n💡 These errors must be fixed before building. Please update data/standards-config.json\n'
-		);
-		process.exit(1);
-	}
-
-	if (warnings.length > 0) {
-		console.warn(`\n⚠️  ${warnings.length} warning(s):\n`);
-		warnings.forEach((warning) => console.warn(`   ⚠️  ${warning}`));
-		console.warn('');
-	} else {
-		console.log('   ✅ All configuration entries are valid');
-	}
-
-	return true;
 }
 
 /**
@@ -304,85 +171,118 @@ function addImageToStandard(standard, standardId, imageMappings, designations) {
 	}
 }
 
-// Main build function
+/**
+ * Main build orchestration function
+ *
+ * Orchestrates the entire build process:
+ * 1. Loads configuration and mapping files
+ * 2. Processes ISO standards from crossref
+ * 3. Processes DIN-only standards
+ * 4. Enriches with DIN Media descriptions (SSOT)
+ * 5. Adds images from image mappings
+ * 6. Determines hardware types
+ * 7. Generates TypeScript output file
+ */
 async function buildStandards() {
 	// Input files
-	const isoDataFile = path.join(__dirname, '..', 'data', 'raw', 'iso_deliverables_metadata.jsonl');
 	const configFile = path.join(__dirname, '..', 'data', 'standards-config.json');
 	const imageMappingsFile = path.join(__dirname, '..', 'data', 'image-mappings.json');
 	const outputFile = path.join(__dirname, '..', 'src', 'lib', 'data', 'standards-generated.ts');
 
 	// Load configuration
 	const config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+	console.log(
+		`📋 Loaded config: ${Object.keys(config.crossref).length} ISO crossrefs, ${Object.keys(config.dinOnly).length} DIN-only`
+	);
 
 	// Load image image mappings (single source of truth for image mappings)
 	let imageMappings = {};
 	try {
 		imageMappings = JSON.parse(fs.readFileSync(imageMappingsFile, 'utf8'));
-		console.log(`📋 Loaded ${Object.keys(imageMappings).length} image mappings from image`);
+		console.log(`🖼️  Loaded ${Object.keys(imageMappings).length} image mappings from image`);
 	} catch {
-		console.log('📋 No image mappings found, continuing without them');
+		console.log('🖼️  No image mappings found, continuing without them');
 	}
 
-	// Load ALL ISO data for validation (before filtering)
-	console.log('📚 Loading ISO database for validation...');
-	const isoDataMap = await loadAllISOData(isoDataFile);
-	console.log(`   Loaded ${isoDataMap.size} ISO standards from database`);
+	// Load DIN Media data (Single Source of Truth for descriptions)
+	const dinMediaData = loadDinMediaData();
+	if (dinMediaData) {
+		const mappingCount = Object.keys(dinMediaData.mappings).length;
+		const cacheCount = Object.keys(dinMediaData.cache).length - 1; // -1 for _meta
+		console.log(
+			`🏛️  Loaded DIN Media data: ${mappingCount} mappings, ${cacheCount} cached metadata`
+		);
+	} else {
+		console.log('🏛️  No DIN Media data found, using fallback descriptions');
+	}
 
-	// Validate configuration against ISO database
-	validateConfig(config, isoDataMap);
+	// Process ISO standards from crossref
+	console.log('\n📚 Processing ISO standards from crossref...');
+	const withdrawnISO = [];
 
-	// Process ISO standards (with filtering)
-	console.log('\n📚 Processing ISO standards for output...');
-	const isoStandards = await processISOData(isoDataFile);
-	console.log(`   Found ${isoStandards.length} ISO standards that match fastener criteria`);
-
-	// Process ISO standards with configurations
-	const processedISO = isoStandards.map((std) => {
-		const crossref = config.crossref[std.id] || {};
+	const processedISO = Object.entries(config.crossref).map(([id, crossref]) => {
+		const isoNumber = id.replace('iso', '');
 
 		// Build designations array
-		const designations = [{ system: 'ISO', code: std.id.replace('iso', '') }];
+		const designations = [{ system: 'ISO', code: isoNumber }];
 
 		// Add cross-referenced systems
 		addDesignationSystem(designations, crossref, 'DIN');
 		addDesignationSystem(designations, crossref, 'ANSI');
 		addDesignationSystem(designations, crossref, 'PN');
 
+		// Check if withdrawn
+		if (isWithdrawn(id, dinMediaData)) {
+			withdrawnISO.push(id);
+		}
+
 		// Build standard object
 		// Prefer DIN as primarySystem if DIN designation exists
 		const hasDIN = designations.some((d) => d.system === 'DIN');
+		// Get description from DIN Media (SSOT) or fallback
+		const fallbackDescription = crossref.description || `ISO ${isoNumber}`;
+		const description = getDinMediaDescription(id, dinMediaData, fallbackDescription);
 		const standard = {
-			id: std.id,
+			id,
 			primarySystem: hasDIN ? 'DIN' : 'ISO',
-			description: std.title,
+			description,
 			designations,
-			hardwareType: getHardwareType(designations, std.title)
+			hardwareType: getHardwareType(designations, description)
 		};
 
-		// Add optional fields
-		if (std.icsCode) standard.icsCode = std.icsCode;
-		if (std.reference) standard.reference = std.reference;
-
 		// Add image
-		addImageToStandard(standard, std.id, imageMappings, designations);
+		addImageToStandard(standard, id, imageMappings, designations);
 
 		return standard;
 	});
 
-	console.log('🔩 Processing DIN-only standards...');
+	console.log(`   Found ${processedISO.length} ISO standards`);
+	if (withdrawnISO.length > 0) {
+		console.log(`   ⚠️  ${withdrawnISO.length} withdrawn: ${withdrawnISO.join(', ')}`);
+	}
 
 	// Process DIN-only standards
+	console.log('🔩 Processing DIN-only standards...');
+	const withdrawnDIN = [];
+
 	const dinStandards = Object.entries(config.dinOnly).map(([id, dinConfig]) => {
 		const dinNumber = id.replace('din', '');
 		const designations = [{ system: 'DIN', code: dinNumber }];
 
+		// Check if withdrawn
+		if (isWithdrawn(id, dinMediaData)) {
+			withdrawnDIN.push(id);
+		}
+
+		// Get description from DIN Media (SSOT) or fallback to config
+		const description = getDinMediaDescription(id, dinMediaData, dinConfig.description);
+
 		const standard = {
 			id,
 			primarySystem: 'DIN',
-			description: dinConfig.description,
+			description,
 			designations,
-			hardwareType: getHardwareType(designations, dinConfig.description)
+			hardwareType: getHardwareType(designations, description)
 		};
 
 		// Add image
@@ -392,6 +292,11 @@ async function buildStandards() {
 	});
 
 	console.log(`   Found ${dinStandards.length} DIN-only standards`);
+	if (withdrawnDIN.length > 0) {
+		console.log(
+			`   ⚠️  ${withdrawnDIN.length} withdrawn: ${withdrawnDIN.slice(0, 10).join(', ')}${withdrawnDIN.length > 10 ? '...' : ''}`
+		);
+	}
 
 	// Combine all standards
 	const allStandards = [...processedISO, ...dinStandards];
@@ -417,10 +322,10 @@ async function buildStandards() {
 	// Generate TypeScript file
 	const tsContent = `/**
  * GENERATED FILE - DO NOT EDIT
- * 
+ *
  * This file is automatically generated by scripts/build-all-standards.js
  * To update, modify the source data and run: pnpm build-standards
- * 
+ *
  * Generated: ${new Date().toISOString()}
  * Total standards: ${sortedStandards.length}
  * ISO standards: ${processedISO.length}

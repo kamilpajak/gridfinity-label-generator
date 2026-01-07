@@ -16,12 +16,14 @@
  */
 
 /**
- * Hardware type categorization - simplified like McMaster-Carr
+ * Hardware type categorization
+ * Inspired by McMaster-Carr's practical fastener categorization.
+ *
+ * @see scripts/hardware-type-mappings.js for mapping logic
  */
 export enum HardwareType {
-	SCREW = 'screw', // Socket head, countersunk, pan head, etc. (metric thread) - requires length
-	BOLT = 'bolt', // Hex head, carriage, etc. (metric thread) - requires length
-	WOOD_SCREW = 'wood_screw', // Wood screws (self-tapping thread, no pitch) - requires length
+	SCREW = 'screw', // All metric thread fasteners (hex, socket, pan head, etc.) - requires length
+	SELF_TAPPING = 'self_tapping', // Self-tapping/drilling screws (no M prefix, no pitch) - requires length
 	NUT = 'nut', // Hex, lock, wing, etc. - NO length
 	WASHER = 'washer', // Flat, spring, lock, etc. - NO length
 	PIN = 'pin', // Dowel, cotter, spring pins, etc. - requires length
@@ -225,6 +227,6 @@ export function shouldDisableLength(hardwareType?: HardwareType): boolean {
  * @returns True if pitch input should be disabled
  */
 export function shouldDisablePitch(hardwareType?: HardwareType): boolean {
-	// Washers have no threads, wood screws have self-tapping threads without metric pitch
-	return hardwareType === HardwareType.WASHER || hardwareType === HardwareType.WOOD_SCREW;
+	// Washers have no threads, self-tapping screws have non-metric threads without pitch selection
+	return hardwareType === HardwareType.WASHER || hardwareType === HardwareType.SELF_TAPPING;
 }

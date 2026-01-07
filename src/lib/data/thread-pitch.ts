@@ -2,6 +2,8 @@
  * Thread pitch data for imperial (UNC/UNF) and metric fasteners
  */
 
+import { HardwareType, type ThreadSizeSystem } from './standards';
+
 export interface PitchOption {
 	value: string; // Pitch value (e.g., '24' for imperial, '1.5' for metric)
 	label: string; // Display label (e.g., '24 TPI (UNC)', '1.5mm (standard)')
@@ -132,5 +134,144 @@ export function hasPitchOptions(
 		return threadSize in imperialThreadPitches;
 	} else {
 		return threadSize in metricThreadPitches;
+	}
+}
+
+/**
+ * Standard metric thread sizes (ISO)
+ */
+export const metricSizes = [
+	'M1.4',
+	'M1.6',
+	'M2',
+	'M2.5',
+	'M3',
+	'M4',
+	'M5',
+	'M6',
+	'M8',
+	'M10',
+	'M12',
+	'M16',
+	'M20'
+];
+
+/**
+ * Standard imperial thread sizes (ANSI/ASME)
+ */
+export const imperialSizes = [
+	'#0',
+	'#2',
+	'#4',
+	'#6',
+	'#8',
+	'#10',
+	'1/4″',
+	'5/16″',
+	'3/8″',
+	'1/2″',
+	'5/8″'
+];
+
+/**
+ * Self-tapping sheet metal screw sizes (ISO 1478)
+ * These are dedicated sizes for thread-forming screws in sheet metal.
+ * Note: ST3.5 is a standard size here (unlike non-standard M3.5)
+ */
+export const selfTappingSizes = [
+	'ST2.2',
+	'ST2.9',
+	'ST3.5',
+	'ST3.9',
+	'ST4.2',
+	'ST4.8',
+	'ST5.5',
+	'ST6.3'
+];
+
+/**
+ * Wood screw sizes (DIN 571, DIN 7997, etc.)
+ * Plain diameter values in mm without prefix.
+ */
+export const woodScrewSizes = ['3', '3.5', '4', '4.5', '5', '6', '8', '10'];
+
+/**
+ * Standard IDs that are wood screws (not sheet metal self-tapping)
+ * These use plain diameter sizes instead of ST series.
+ */
+export const WOOD_SCREW_STANDARD_IDS = ['din571', 'din7997', 'din95', 'din96', 'din97'];
+
+/**
+ * Minimal standard interface for thread size system determination
+ */
+interface StandardForThreadSize {
+	id: string;
+	hardwareType?: string;
+	threadSizeSystem?: ThreadSizeSystem;
+}
+
+/**
+ * Determine the thread size system for a given standard
+ * @param standard - Standard object with id, hardwareType, and optional threadSizeSystem
+ * @param measurementSystem - User's selected measurement system
+ * @returns The appropriate thread size system
+ */
+export function getThreadSizeSystem(
+	standard: StandardForThreadSize | undefined,
+	measurementSystem: 'metric' | 'imperial'
+): ThreadSizeSystem {
+	// No standard selected - use measurement system
+	if (!standard) {
+		return measurementSystem === 'metric' ? 'iso_metric' : 'uts';
+	}
+
+	// Explicit override takes precedence
+	if (standard.threadSizeSystem) {
+		return standard.threadSizeSystem;
+	}
+
+	// Smart defaults for self-tapping
+	if (standard.hardwareType === HardwareType.SELF_TAPPING) {
+		// Wood screws use nominal shank diameter (no thread standard)
+		if (WOOD_SCREW_STANDARD_IDS.includes(standard.id)) {
+			return 'nominal';
+		}
+		// Other self-tapping (sheet metal) use tapping screw thread per ISO 1478
+		return 'tapping';
+	}
+
+	// Default to measurement system
+	return measurementSystem === 'metric' ? 'iso_metric' : 'uts';
+}
+
+/**
+ * Get available thread sizes based on measurement system, hardware type, and standard
+ * @param measurementSystem - 'metric' or 'imperial'
+ * @param hardwareType - Hardware type string (e.g., 'screw', 'self_tapping')
+ * @param standardId - Optional standard ID for more precise size selection
+ * @returns Array of thread size strings
+ */
+export function getThreadSizes(
+	measurementSystem: 'metric' | 'imperial',
+	hardwareType?: string,
+	standardId?: string
+): string[] {
+	// Determine thread size system
+	// Pass standard info if we have either standardId or hardwareType
+	const standardInfo =
+		standardId || hardwareType ? { id: standardId || '', hardwareType } : undefined;
+	const system = getThreadSizeSystem(standardInfo, measurementSystem);
+
+	// Return appropriate sizes based on system
+	switch (system) {
+		case 'tapping':
+			return selfTappingSizes;
+		case 'nominal':
+			return woodScrewSizes;
+		case 'uts':
+			return imperialSizes;
+		case 'iso_metric':
+		default:
+			return metricSizes;
 	}
 }

@@ -66,17 +66,89 @@ describe('formatPrimaryText', () => {
 			const result = formatPrimaryText('fastener', 'M5', '20', '', '', '', HardwareType.SCREW);
 			expect(result).toBe('M5 × 20');
 		});
+
+		// ST sizes - new dedicated self-tapping thread sizes
+		it('should format ST3.5 self-tapping with length as ST3.5 × 20 (keep ST prefix)', () => {
+			const result = formatPrimaryText(
+				'fastener',
+				'ST3.5',
+				'20',
+				'',
+				'',
+				'',
+				HardwareType.SELF_TAPPING
+			);
+			expect(result).toBe('ST3.5 × 20');
+		});
+
+		it('should format ST4.2 self-tapping without length as ST4.2', () => {
+			const result = formatPrimaryText(
+				'fastener',
+				'ST4.2',
+				'',
+				'',
+				'',
+				'',
+				HardwareType.SELF_TAPPING
+			);
+			expect(result).toBe('ST4.2');
+		});
+
+		it('should format ST6.3 self-tapping with 50mm length as ST6.3 × 50', () => {
+			const result = formatPrimaryText(
+				'fastener',
+				'ST6.3',
+				'50',
+				'',
+				'',
+				'',
+				HardwareType.SELF_TAPPING
+			);
+			expect(result).toBe('ST6.3 × 50');
+		});
+
+		// Wood screw sizes - plain diameter in mm (no prefix, no inch suffix)
+		it('should format wood screw 4.5 with 40mm length as 4.5 × 40 (no prefix, no suffix)', () => {
+			const result = formatPrimaryText(
+				'fastener',
+				'4.5',
+				'40',
+				'',
+				'',
+				'',
+				HardwareType.SELF_TAPPING
+			);
+			expect(result).toBe('4.5 × 40');
+		});
+
+		it('should format wood screw 6 without length as 6', () => {
+			const result = formatPrimaryText('fastener', '6', '', '', '', '', HardwareType.SELF_TAPPING);
+			expect(result).toBe('6');
+		});
+
+		it('should format wood screw 3.5 with 30mm length as 3.5 × 30', () => {
+			const result = formatPrimaryText(
+				'fastener',
+				'3.5',
+				'30',
+				'',
+				'',
+				'',
+				HardwareType.SELF_TAPPING
+			);
+			expect(result).toBe('3.5 × 30');
+		});
 	});
 
 	describe('Imperial threads with TPI (ASME B1.1 format)', () => {
-		it('should format #10 with 32 TPI and 1 inch length as #10−32 × 1"', () => {
+		it('should format #10 with 32 TPI and 1 inch length as #10−32 × 1″', () => {
 			const result = formatPrimaryText('fastener', '#10', '1', '', '32');
-			expect(result).toBe('#10−32 × 1"');
+			expect(result).toBe('#10−32 × 1″');
 		});
 
-		it('should format 1/4 with 20 TPI and 2 inch length as 1/4−20 × 2"', () => {
+		it('should format 1/4 with 20 TPI and 2 inch length as 1/4−20 × 2″', () => {
 			const result = formatPrimaryText('fastener', '1/4', '2', '', '20');
-			expect(result).toBe('1/4−20 × 2"');
+			expect(result).toBe('1/4−20 × 2″');
 		});
 
 		it('should format 1/4 with 20 TPI and no length as 1/4−20 (for taps/dies)', () => {
@@ -86,12 +158,12 @@ describe('formatPrimaryText', () => {
 
 		it('should format fractional inch sizes with decimal lengths', () => {
 			const result = formatPrimaryText('fastener', '3/8', '2.5', '', '16');
-			expect(result).toBe('3/8−16 × 2.5"');
+			expect(result).toBe('3/8−16 × 2.5″');
 		});
 
 		it('should format imperial gauge without TPI and length', () => {
 			const result = formatPrimaryText('fastener', '#8', '1.5', '');
-			expect(result).toBe('#8 × 1.5"');
+			expect(result).toBe('#8 × 1.5″');
 		});
 	});
 

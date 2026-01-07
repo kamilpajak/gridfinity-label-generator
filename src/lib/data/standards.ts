@@ -33,6 +33,16 @@ export enum HardwareType {
 }
 
 /**
+ * Thread size system determines which series of sizes to show in the UI.
+ *
+ * @value 'iso_metric' - ISO metric thread per ISO 68-1, ISO 261 (M3, M4, M5...)
+ * @value 'uts' - Unified Thread Standard per ANSI/ASME B1.1 (#4, #6, 1/4"...)
+ * @value 'tapping' - Tapping screw thread per ISO 1478, DIN 7970 (ST2.2, ST3.5, ST4.2...)
+ * @value 'nominal' - Nominal shank diameter in mm, no thread standard (3, 3.5, 4, 4.5...)
+ */
+export type ThreadSizeSystem = 'iso_metric' | 'uts' | 'tapping' | 'nominal';
+
+/**
  * Interface defining the structure of an ISO/DIN standard
  */
 export interface ISODINStandard {
@@ -65,6 +75,9 @@ export interface ISODINStandard {
 
 	/** Brief scope description */
 	scope?: string;
+
+	/** Thread size system - determines which sizes to show in UI */
+	threadSizeSystem?: ThreadSizeSystem;
 }
 
 /**

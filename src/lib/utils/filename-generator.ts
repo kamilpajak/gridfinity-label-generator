@@ -140,8 +140,8 @@ function sanitizeForFilename(text: string): string {
  */
 function sanitizeThreadSize(threadSize: string): string {
 	return threadSize
-		.replaceAll(/"/g, 'in') // Replace quote with 'in'
-		.replaceAll(/\//g, '-') // Replace slash with hyphen
+		.replaceAll('"', 'in') // Replace quote with 'in'
+		.replaceAll('/', '-') // Replace slash with hyphen
 		.replaceAll(/[^\w-]/g, ''); // Remove other special chars
 }
 

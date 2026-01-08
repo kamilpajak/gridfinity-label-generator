@@ -347,7 +347,7 @@ async function calculateSplitHalfFontSizes(
 	const primaryWidth = await measureText(primaryText, 'Noto Sans', primaryFontSize, '900');
 	const secondaryWidth = await measureText(secondaryText, 'Oswald', secondaryFontSize, '300');
 
-	let scaleFactor = 1.0;
+	let scaleFactor = 1;
 
 	if (mode === 'IMAGE_HORIZONTAL') {
 		// IMAGE_HORIZONTAL: Both texts on same line - check combined width

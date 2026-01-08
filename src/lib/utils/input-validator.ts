@@ -142,10 +142,7 @@ export function validateQRCodeUrl(input: string | null | undefined): ValidationR
 			return { isValid: false, message: 'Invalid URL format' };
 		}
 		// For localhost, allow it
-		if (
-			url.hostname === 'localhost' ||
-			url.hostname.match(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/)
-		) {
+		if (url.hostname === 'localhost' || /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(url.hostname)) {
 			return { isValid: true };
 		}
 		// For other hosts, must have at least a TLD

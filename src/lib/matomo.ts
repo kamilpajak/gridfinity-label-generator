@@ -32,7 +32,7 @@ declare global {
  * - IP anonymization must be configured in Matomo admin (2-3 bytes)
  */
 export function initMatomo(): void {
-	if (typeof globalThis.window === 'undefined') return;
+	if (globalThis.window === undefined) return;
 
 	// Disable analytics in development mode
 	if (dev) {
@@ -79,14 +79,14 @@ export function initMatomo(): void {
  * Use this for SPA navigation tracking
  */
 export function trackPageView(): void {
-	if (typeof globalThis.window === 'undefined' || !globalThis.window._paq) return;
-	globalThis.window._paq.push(['trackPageView']);
+	if (globalThis.window === undefined) return;
+	globalThis.window._paq?.push(['trackPageView']);
 }
 
 /**
  * Track a custom event
  */
 export function trackEvent(category: string, action: string, name?: string, value?: number): void {
-	if (typeof globalThis.window === 'undefined' || !globalThis.window._paq) return;
-	globalThis.window._paq.push(['trackEvent', category, action, name, value]);
+	if (globalThis.window === undefined) return;
+	globalThis.window._paq?.push(['trackEvent', category, action, name, value]);
 }

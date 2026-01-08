@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.7.0] - 2026-01-08
+
+### Improved
+
+- Thread Size Selection: Automatically shows correct thread sizes based on hardware type - M-series for metric bolts, ST-series for sheet metal screws, and nominal diameters for wood screws.
+
 ## [2.6.0] - 2026-01-07
 
 ### Improved

@@ -404,7 +404,12 @@ function utf8ToBase64(str: string): string {
 		return btoa(binary);
 	}
 	// Fallback for environments without TextEncoder (shouldn't happen in modern browsers)
-	return btoa(unescape(encodeURIComponent(str)));
+	// Replace deprecated unescape() with explicit percent-decoding
+	return btoa(
+		encodeURIComponent(str).replaceAll(/%[\dA-F]{2}/gi, (match) =>
+			String.fromCharCode(Number.parseInt(match.slice(1), 16))
+		)
+	);
 }
 
 /**
@@ -412,7 +417,7 @@ function utf8ToBase64(str: string): string {
  */
 function getSvgAspectRatioFromRegex(svgContent: string): number {
 	// Try viewBox first
-	const viewBoxMatch = svgContent.match(/viewBox=["']([^"']+)["']/i);
+	const viewBoxMatch = /viewBox=["']([^"']+)["']/i.exec(svgContent);
 	if (viewBoxMatch) {
 		const parts = viewBoxMatch[1].split(/[\s,]+/).filter(Boolean);
 		if (parts.length >= 4) {
@@ -425,8 +430,8 @@ function getSvgAspectRatioFromRegex(svgContent: string): number {
 	}
 
 	// Try width/height
-	const widthMatch = svgContent.match(/\swidth=["']([^"']+)["']/i);
-	const heightMatch = svgContent.match(/\sheight=["']([^"']+)["']/i);
+	const widthMatch = /\swidth=["']([^"']+)["']/i.exec(svgContent);
+	const heightMatch = /\sheight=["']([^"']+)["']/i.exec(svgContent);
 
 	if (widthMatch && heightMatch) {
 		const width = Number.parseFloat(widthMatch[1]);

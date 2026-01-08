@@ -4,12 +4,7 @@
  * Renders multiple labels horizontally on a single canvas with cutting lines
  */
 
-import type {
-	BatchState,
-	BatchLabelConfig,
-	FastenerLabelConfig,
-	GeneralLabelConfig
-} from '$lib/types/batch';
+import type { BatchState, BatchLabelConfig } from '$lib/types/batch';
 import { solveLabelLayout } from './label-constraint-solver';
 import { renderLabelToCanvas } from './label-renderer';
 import { formatPrimaryText, appendOptionalNote } from './label-formatter';
@@ -145,8 +140,7 @@ async function renderSingleLabel(
 		(labelData.config.showQRCode ?? true) && !!(labelData.config.qrCode && batch.height === 12);
 
 	// Get custom image data for general mode
-	const generalConfig =
-		labelData.config.mode === 'general' ? (labelData.config as GeneralLabelConfig) : null;
+	const generalConfig = labelData.config.mode === 'general' ? labelData.config : null;
 	const customImage = generalConfig?.customImage;
 	const showCustomImage = generalConfig?.showCustomImage ?? true;
 
@@ -310,29 +304,27 @@ async function calculateLabelData(
 	let standard: ReturnType<typeof getStandardById> | undefined = undefined;
 
 	if (config.mode === 'fastener') {
-		const fastenerConfig = config as FastenerLabelConfig;
-
 		// Get standard first to access hardwareType
-		if (fastenerConfig.standard) {
-			standard = getStandardById(fastenerConfig.standard);
+		if (config.standard) {
+			standard = getStandardById(config.standard);
 		}
 
 		// Format length: use fractions for imperial, regular toString for metric
 		let formattedLength = '';
-		if (fastenerConfig.length !== undefined) {
+		if (config.length !== undefined) {
 			formattedLength =
-				fastenerConfig.measurementSystem === 'imperial'
-					? decimalToFraction(fastenerConfig.length)
-					: fastenerConfig.length.toString();
+				config.measurementSystem === 'imperial'
+					? decimalToFraction(config.length)
+					: config.length.toString();
 		}
 
 		primaryText = formatPrimaryText(
 			'fastener',
-			fastenerConfig.threadSize,
+			config.threadSize,
 			formattedLength,
 			'',
-			fastenerConfig.pitch,
-			fastenerConfig.threadType,
+			config.pitch,
+			config.threadType,
 			standard?.hardwareType
 		);
 
@@ -340,7 +332,7 @@ async function calculateLabelData(
 		let baseSecondaryText = '';
 		if (standard) {
 			// Only include standard designation text if showReference toggle is enabled
-			const showReferenceText = fastenerConfig.showReference ?? true;
+			const showReferenceText = config.showReference ?? true;
 			if (showReferenceText) {
 				baseSecondaryText = getStandardDesignationText(standard);
 			}

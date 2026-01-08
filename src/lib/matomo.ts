@@ -32,7 +32,7 @@ declare global {
  * - IP anonymization must be configured in Matomo admin (2-3 bytes)
  */
 export function initMatomo(): void {
-	if (typeof window === 'undefined') return;
+	if (typeof globalThis.window === 'undefined') return;
 
 	// Disable analytics in development mode
 	if (dev) {
@@ -47,10 +47,8 @@ export function initMatomo(): void {
 	}
 
 	// Initialize _paq array (Matomo uses a regular array that gets replaced by their script)
-	if (!window._paq) {
-		window._paq = [] as unknown as MatomoTracker;
-	}
-	const _paq = window._paq;
+	globalThis.window._paq ??= [] as unknown as MatomoTracker;
+	const _paq = globalThis.window._paq;
 
 	// Privacy-focused configuration
 	_paq.push(['disableCookies']); // Cookieless tracking
@@ -81,14 +79,14 @@ export function initMatomo(): void {
  * Use this for SPA navigation tracking
  */
 export function trackPageView(): void {
-	if (typeof window === 'undefined' || !window._paq) return;
-	window._paq.push(['trackPageView']);
+	if (typeof globalThis.window === 'undefined' || !globalThis.window._paq) return;
+	globalThis.window._paq.push(['trackPageView']);
 }
 
 /**
  * Track a custom event
  */
 export function trackEvent(category: string, action: string, name?: string, value?: number): void {
-	if (typeof window === 'undefined' || !window._paq) return;
-	window._paq.push(['trackEvent', category, action, name, value]);
+	if (typeof globalThis.window === 'undefined' || !globalThis.window._paq) return;
+	globalThis.window._paq.push(['trackEvent', category, action, name, value]);
 }

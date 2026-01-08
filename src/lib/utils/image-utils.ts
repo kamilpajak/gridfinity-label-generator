@@ -407,7 +407,7 @@ function utf8ToBase64(str: string): string {
 	// Replace deprecated unescape() with explicit percent-decoding
 	return btoa(
 		encodeURIComponent(str).replaceAll(/%[\dA-F]{2}/gi, (match) =>
-			String.fromCharCode(Number.parseInt(match.slice(1), 16))
+			String.fromCodePoint(Number.parseInt(match.slice(1), 16))
 		)
 	);
 }

@@ -175,7 +175,10 @@
 				<span class="text-sm text-muted-foreground">Processing...</span>
 			{:else}
 				<ImageIcon class="mb-2 h-8 w-8 text-muted-foreground" />
-				<span class="text-sm text-muted-foreground">Drop image or click to upload</span>
+				<span class="text-sm text-muted-foreground lg:hidden">Tap to upload image</span>
+				<span class="hidden text-sm text-muted-foreground lg:inline"
+					>Drop image or click to upload</span
+				>
 			{/if}
 		</button>
 	{/if}

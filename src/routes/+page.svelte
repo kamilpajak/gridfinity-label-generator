@@ -4,19 +4,18 @@
 	import { Switch } from '$lib/components/ui/switch';
 	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
 	import { untrack } from 'svelte';
+	import { slide } from 'svelte/transition';
 	import { Input } from '$lib/components/ui/input';
 	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
-	import { Slider } from '$lib/components/ui/slider';
 	import * as Popover from '$lib/components/ui/popover';
-	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { Button } from '$lib/components/ui/button';
 	import StandardSearch from '$lib/components/shared/standard-search.svelte';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 	import RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw';
-	import InfoIcon from '@lucide/svelte/icons/info';
 	import CoffeeIcon from '@lucide/svelte/icons/coffee';
 	import SendIcon from '@lucide/svelte/icons/send';
+	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 	import WhatsNewCard from '$lib/components/whats-new/whats-new-card.svelte';
 
 	let { data } = $props();
@@ -29,6 +28,7 @@
 	} from '$lib/data/standards';
 	import { getPitchOptions, getThreadSizes } from '$lib/data/thread-pitch';
 	import LabelPreview from '$lib/components/label/label-preview.svelte';
+	import LabelSettingsContent from '$lib/components/label/label-settings-content.svelte';
 	import {
 		formatPrimaryText,
 		formatSecondaryText,
@@ -147,6 +147,7 @@
 
 	let standardsOpen = $state(false);
 	let selectedStandardId = $state('');
+	let settingsExpanded = $state(false);
 
 	const standardsWithImages = $derived(standards.filter((s) => s.image));
 
@@ -415,111 +416,112 @@
 
 <!-- Hero Section -->
 <section
-	class="relative h-[280px] overflow-hidden bg-gradient-to-br from-sky-600 via-sky-700 to-sky-800"
+	class="relative bg-gradient-to-r from-[#005c97] to-[#0c4a6e] px-4 py-6 text-white lg:px-8 lg:pt-12 lg:pb-24"
 >
 	<div class="absolute inset-0 bg-black/10"></div>
-	<div class="absolute -top-32 -right-32 h-64 w-64 rounded-full bg-white/5"></div>
-	<div class="absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-white/5"></div>
+	<div class="absolute -top-32 -right-32 hidden h-64 w-64 rounded-full bg-white/5 lg:block"></div>
+	<div class="absolute -bottom-24 -left-24 hidden h-48 w-48 rounded-full bg-white/5 lg:block"></div>
 
-	<div class="relative z-10 flex h-full items-center px-4 sm:px-6 lg:px-8">
-		<div class="mx-auto w-full max-w-7xl">
-			<div class="grid w-full grid-cols-1 items-center gap-8 lg:grid-cols-3">
-				<div class="lg:col-span-2">
-					<h1 class="mb-4 text-4xl font-bold tracking-tight text-white lg:text-5xl">
-						Gridfinity Label Generator
-					</h1>
-					<p class="mb-6 text-lg leading-relaxed font-light text-sky-100 lg:text-xl">
-						Print-Ready Labels for Your Gridfinity System
-					</p>
-					<div class="flex flex-wrap items-center gap-4 text-sky-100">
-						<div class="flex items-center gap-2">
-							<svg
-								class="h-5 w-5 text-green-400"
-								fill="currentColor"
-								viewBox="0 0 20 20"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-									clip-rule="evenodd"
-								/>
-							</svg>
-							<span class="text-sm font-medium">Easy Configuration</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<svg
-								class="h-5 w-5 text-green-400"
-								fill="currentColor"
-								viewBox="0 0 20 20"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-									clip-rule="evenodd"
-								/>
-							</svg>
-							<span class="text-sm font-medium">Batch Processing</span>
-						</div>
-						<div class="flex items-center gap-2">
-							<svg
-								class="h-5 w-5 text-green-400"
-								fill="currentColor"
-								viewBox="0 0 20 20"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-									clip-rule="evenodd"
-								/>
-							</svg>
-							<span class="text-sm font-medium">Print Ready</span>
-						</div>
+	<div class="relative z-10 mx-auto max-w-7xl">
+		<div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-start lg:gap-8">
+			<div class="text-center lg:text-left">
+				<h1 class="mb-1 text-2xl font-bold tracking-tight lg:mb-4 lg:text-5xl">
+					Gridfinity Label Generator
+				</h1>
+				<p class="text-sm leading-relaxed font-light text-blue-100 lg:mb-6 lg:text-xl">
+					Print-Ready Labels for Your Gridfinity System
+				</p>
+				<div
+					class="hidden flex-wrap items-center justify-center gap-6 text-sm font-medium lg:flex lg:justify-start"
+				>
+					<div class="flex items-center gap-2">
+						<svg
+							class="h-5 w-5 text-emerald-400"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+						<span>Easy Configuration</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<svg
+							class="h-5 w-5 text-emerald-400"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+						<span>Batch Processing</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<svg
+							class="h-5 w-5 text-emerald-400"
+							fill="currentColor"
+							viewBox="0 0 20 20"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+						<span>Print Ready</span>
 					</div>
 				</div>
+			</div>
 
-				<div class="flex flex-col gap-3">
-					<a
-						href="https://www.buymeacoffee.com/kamilpajak"
-						target="_blank"
-						class="inline-flex transform cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-500 px-6 py-3 font-medium text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-600 hover:shadow-xl"
-					>
-						<CoffeeIcon class="h-5 w-5" />
-						Buy me a coffee
-					</a>
-					<button
-						onclick={provideFeedback}
-						class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 font-medium text-white backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/20"
-					>
-						<SendIcon class="h-5 w-5" />
-						Feedback
-					</button>
-				</div>
+			<div class="flex gap-2 lg:flex-col lg:gap-3">
+				<a
+					href="https://www.buymeacoffee.com/kamilpajak"
+					target="_blank"
+					class="inline-flex min-h-[44px] flex-1 transform cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-medium shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-600 hover:shadow-xl lg:flex-none lg:px-6 lg:py-3 lg:text-base"
+				>
+					<CoffeeIcon class="h-4 w-4 lg:h-5 lg:w-5" />
+					<span class="sm:hidden">Support</span>
+					<span class="hidden sm:inline">Buy me a Coffee</span>
+				</a>
+				<button
+					onclick={provideFeedback}
+					class="inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2.5 text-sm font-medium backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/20 lg:flex-none lg:px-6 lg:py-3 lg:text-base"
+				>
+					<SendIcon class="h-4 w-4 lg:h-5 lg:w-5" />
+					Feedback
+				</button>
 			</div>
 		</div>
 	</div>
 </section>
 
-<div class="container mx-auto -mt-8 px-4 pb-8">
+<div class="mx-auto max-w-7xl px-4 py-4 lg:-mt-16 lg:px-6 lg:pt-0 lg:pb-8">
 	<!-- Tabs Component -->
 	<Tabs.Root value="single" class="relative z-20 mx-auto w-full max-w-7xl">
-		<div class="mb-6 rounded-2xl border border-slate-200/50 bg-white p-8 shadow-xl">
-			<div class="flex items-center justify-between">
-				<div>
-					<h2 class="text-2xl font-bold text-slate-800">Label Creator</h2>
-					<p class="mt-1 text-slate-500">Configure and generate your hardware labels.</p>
+		<div class="mb-4 rounded-xl border border-slate-200/60 bg-white p-4 shadow-sm lg:mb-6 lg:p-5">
+			<div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-0">
+				<div class="text-center lg:text-left">
+					<h2 class="text-lg font-bold text-slate-800 lg:text-xl">Label Creator</h2>
+					<p class="mt-0.5 text-sm text-slate-500">Configure and generate your hardware labels.</p>
 				</div>
-				<Tabs.List class="flex rounded-lg bg-slate-100 p-1">
+				<Tabs.List class="flex w-full rounded-lg bg-slate-100 p-1 lg:w-auto">
 					<Tabs.Trigger
 						value="single"
-						class="rounded-md px-4 py-2 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:font-semibold data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=inactive]:text-slate-500"
+						class="min-h-[44px] flex-1 rounded-md px-4 py-2.5 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:font-semibold data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=inactive]:text-slate-500 lg:flex-none"
 						>Single Label</Tabs.Trigger
 					>
 					<Tabs.Trigger
 						value="batch"
-						class="rounded-md px-4 py-2 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:font-semibold data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=inactive]:text-slate-500"
+						class="min-h-[44px] flex-1 rounded-md px-4 py-2.5 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:font-semibold data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=inactive]:text-slate-500 lg:flex-none"
 						>Batch Mode</Tabs.Trigger
 					>
 				</Tabs.List>
@@ -527,13 +529,14 @@
 		</div>
 
 		<Tabs.Content value="single">
-			<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-				<div class="space-y-6 lg:col-span-2">
+			<div class="grid grid-cols-12 gap-4 lg:gap-6">
+				<div class="col-span-12 space-y-4 lg:col-span-8 lg:space-y-6">
 					<Card.Root class="border-slate-200/50 shadow-xl">
 						<Card.Header class="flex flex-row items-start justify-between space-y-0">
 							<div>
-								<Card.Title>Product Information</Card.Title>
-								<Card.Description class="mt-1.5"
+								<Card.Title class="text-lg font-bold text-slate-800">Product Information</Card.Title
+								>
+								<Card.Description class="mt-1.5 hidden lg:block"
 									>Configure your hardware label details</Card.Description
 								>
 							</div>
@@ -561,11 +564,15 @@
 										class="w-full"
 										data-testid="label-mode-toggle"
 									>
-										<ToggleGroupItem value="fastener" class="flex-1" data-testid="mode-fastener"
-											>{UI_TEXT.productType.fastener}</ToggleGroupItem
+										<ToggleGroupItem
+											value="fastener"
+											class="min-h-[44px] flex-1"
+											data-testid="mode-fastener">{UI_TEXT.productType.fastener}</ToggleGroupItem
 										>
-										<ToggleGroupItem value="general" class="flex-1" data-testid="mode-general"
-											>{UI_TEXT.productType.generalItem}</ToggleGroupItem
+										<ToggleGroupItem
+											value="general"
+											class="min-h-[44px] flex-1"
+											data-testid="mode-general">{UI_TEXT.productType.generalItem}</ToggleGroupItem
 										>
 									</ToggleGroup>
 								</div>
@@ -582,10 +589,16 @@
 											? 'pointer-events-none opacity-50'
 											: ''}"
 									>
-										<ToggleGroupItem value="metric" class="flex-1" data-testid="metric-button"
+										<ToggleGroupItem
+											value="metric"
+											class="min-h-[44px] flex-1"
+											data-testid="metric-button"
 											>{UI_TEXT.measurementSystem.metric}</ToggleGroupItem
 										>
-										<ToggleGroupItem value="imperial" class="flex-1" data-testid="imperial-button"
+										<ToggleGroupItem
+											value="imperial"
+											class="min-h-[44px] flex-1"
+											data-testid="imperial-button"
 											>{UI_TEXT.measurementSystem.imperial}</ToggleGroupItem
 										>
 									</ToggleGroup>
@@ -616,7 +629,8 @@
 													</Button>
 												{/snippet}
 											</Popover.Trigger>
-											<Popover.Content class="w-[400px] p-0">
+											<!-- Width: max 400px on desktop, full viewport minus 1rem padding on each side on mobile -->
+											<Popover.Content class="w-[min(400px,calc(100vw-2rem))] p-0">
 												<StandardSearch
 													standards={standardsWithImages}
 													onSelect={(id) => {
@@ -792,9 +806,11 @@
 					</Card.Root>
 
 					<!-- Label Preview Card -->
-					<Card.Root class="border-slate-200/50 shadow-xl">
+					<Card.Root class="gap-4 border-slate-200/50 py-4 shadow-xl">
 						<Card.Header>
-							<Card.Title>{UI_TEXT.cards.labelPreview}</Card.Title>
+							<Card.Title class="text-lg font-bold text-slate-800"
+								>{UI_TEXT.cards.labelPreview}</Card.Title
+							>
 						</Card.Header>
 						<Card.Content>
 							<LabelPreview
@@ -835,141 +851,63 @@
 					</Card.Root>
 				</div>
 
-				<div class="space-y-6">
-					<Card.Root class="border-slate-200/50 shadow-xl">
-						<Card.Header>
-							<Card.Title>{UI_TEXT.cards.labelSettings}</Card.Title>
-						</Card.Header>
-						<Card.Content class="space-y-4">
-							<Tooltip.Provider>
-								<div class="flex items-center justify-between space-x-2">
-									<div class="space-y-0.5">
-										<div class="font-medium">{UI_TEXT.settings.standardReference.title}</div>
-										<div class="text-sm text-muted-foreground">
-											{standardReferenceDisabled
-												? UI_TEXT.settings.standardReference.disabledGeneral
-												: UI_TEXT.settings.standardReference.description}
-										</div>
-									</div>
-									<Switch
-										bind:checked={showStandard}
-										disabled={standardReferenceDisabled}
-										data-testid="standard-reference-switch"
-									/>
-								</div>
-
-								<div class="flex items-center justify-between space-x-2">
-									<div class="space-y-0.5">
-										<div class="flex items-center gap-1.5 font-medium">
-											{UI_TEXT.settings.hardwareIcon.title}
-											{#if labelWidth < 50 && !hardwareImageDisabled && !qrCodeDisabled}
-												<Tooltip.Root>
-													<Tooltip.Trigger>
-														<InfoIcon class="h-3.5 w-3.5 text-muted-foreground" />
-													</Tooltip.Trigger>
-													<Tooltip.Content>
-														<p class="max-w-xs text-sm">
-															{UI_TEXT.tooltips.hardwareIconUnder50mm}
-														</p>
-													</Tooltip.Content>
-												</Tooltip.Root>
-											{/if}
-										</div>
-										<div class="text-sm text-muted-foreground">
-											{#if hardwareImageDisabled}
-												{labelHeight === '9'
-													? UI_TEXT.settings.hardwareIcon.disabled9mm
-													: UI_TEXT.settings.hardwareIcon.disabledGeneral}
-											{:else if labelWidth < 50 && !qrCodeDisabled}
-												{UI_TEXT.settings.hardwareIcon.description}<br />{UI_TEXT.settings
-													.hardwareIcon.exclusiveWithQR}
-											{:else}
-												{UI_TEXT.settings.hardwareIcon.description}
-											{/if}
-										</div>
-									</div>
-									<Switch
-										bind:checked={showHardwareImage}
-										disabled={hardwareImageDisabled}
-										data-testid="hardware-image-switch"
-									/>
-								</div>
-
-								<div class="flex items-center justify-between space-x-2">
-									<div class="space-y-0.5">
-										<div class="flex items-center gap-1.5 font-medium">
-											{UI_TEXT.settings.qrCode.title}
-											{#if labelWidth < 50 && !hardwareImageDisabled && !qrCodeDisabled}
-												<Tooltip.Root>
-													<Tooltip.Trigger>
-														<InfoIcon class="h-3.5 w-3.5 text-muted-foreground" />
-													</Tooltip.Trigger>
-													<Tooltip.Content>
-														<p class="max-w-xs text-sm">
-															{UI_TEXT.tooltips.qrCodeUnder50mm}
-														</p>
-													</Tooltip.Content>
-												</Tooltip.Root>
-											{/if}
-										</div>
-										<div class="text-sm text-muted-foreground">
-											{#if qrCodeDisabled}
-												{UI_TEXT.settings.qrCode.disabled9mm}
-											{:else if labelWidth < 50 && !hardwareImageDisabled}
-												{UI_TEXT.settings.qrCode.description}<br />{UI_TEXT.settings.qrCode
-													.exclusiveWithHardware}
-											{:else}
-												{UI_TEXT.settings.qrCode.description}
-											{/if}
-										</div>
-									</div>
-									<Switch
-										bind:checked={showQRCode}
-										disabled={qrCodeDisabled}
-										data-testid="qr-code-switch"
-									/>
-								</div>
-							</Tooltip.Provider>
-
-							<div class="mt-4 border-t pt-4">
-								<h4 class="mb-3 font-medium">{UI_TEXT.settings.dimensions.title}</h4>
-
-								<div class="space-y-3">
-									<div>
-										<div class="mb-2 text-sm text-muted-foreground">
-											{UI_TEXT.settings.dimensions.labelHeight}
-										</div>
-										<ToggleGroup
-											value={labelHeight}
-											onValueChange={handleLabelHeightChange}
-											variant="outline"
-											type="single"
-											class="w-full"
-											data-testid="label-height-toggle"
-										>
-											<ToggleGroupItem value="9" class="flex-1">9mm</ToggleGroupItem>
-											<ToggleGroupItem value="12" class="flex-1">12mm</ToggleGroupItem>
-										</ToggleGroup>
-									</div>
-
-									<div>
-										<div class="mb-2 flex items-center justify-between">
-											<span class="text-sm text-muted-foreground"
-												>{UI_TEXT.settings.dimensions.labelWidth}</span
-											>
-											<span class="text-sm font-medium">{labelWidth}mm</span>
-										</div>
-										<Slider
-											bind:value={labelWidth}
-											type="single"
-											min={35}
-											max={100}
-											step={1}
-											class="w-full"
-										/>
-									</div>
-								</div>
+				<div class="col-span-12 space-y-4 lg:col-span-4 lg:space-y-6">
+					<!-- Mobile: simple div with collapsible -->
+					<div class="rounded-xl border border-slate-200/60 bg-white shadow-sm lg:hidden">
+						<button
+							onclick={() => (settingsExpanded = !settingsExpanded)}
+							class="flex w-full items-center justify-between p-4 text-left"
+						>
+							<span class="text-lg font-bold text-slate-800">{UI_TEXT.cards.labelSettings}</span>
+							<ChevronDownIcon
+								class="h-5 w-5 text-slate-400 transition-transform duration-200 {settingsExpanded
+									? 'rotate-180'
+									: ''}"
+							/>
+						</button>
+						{#if settingsExpanded}
+							<div transition:slide={{ duration: 200 }} class="px-4 pb-4">
+								<LabelSettingsContent
+									{showStandard}
+									{showHardwareImage}
+									{showQRCode}
+									{labelHeight}
+									{labelWidth}
+									{standardReferenceDisabled}
+									{hardwareImageDisabled}
+									{qrCodeDisabled}
+									onShowStandardChange={(v) => (showStandard = v)}
+									onShowHardwareImageChange={(v) => (showHardwareImage = v)}
+									onShowQRCodeChange={(v) => (showQRCode = v)}
+									onLabelHeightChange={handleLabelHeightChange}
+									onLabelWidthChange={(v) => (labelWidth = v)}
+								/>
 							</div>
+						{/if}
+					</div>
+					<!-- Desktop: Card -->
+					<Card.Root class="hidden border-slate-200/50 shadow-xl lg:block">
+						<Card.Header>
+							<Card.Title class="text-lg font-bold text-slate-800"
+								>{UI_TEXT.cards.labelSettings}</Card.Title
+							>
+						</Card.Header>
+						<Card.Content>
+							<LabelSettingsContent
+								{showStandard}
+								{showHardwareImage}
+								{showQRCode}
+								{labelHeight}
+								{labelWidth}
+								{standardReferenceDisabled}
+								{hardwareImageDisabled}
+								{qrCodeDisabled}
+								onShowStandardChange={(v) => (showStandard = v)}
+								onShowHardwareImageChange={(v) => (showHardwareImage = v)}
+								onShowQRCodeChange={(v) => (showQRCode = v)}
+								onLabelHeightChange={handleLabelHeightChange}
+								onLabelWidthChange={(v) => (labelWidth = v)}
+							/>
 						</Card.Content>
 					</Card.Root>
 

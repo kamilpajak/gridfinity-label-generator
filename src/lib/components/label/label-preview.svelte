@@ -362,9 +362,15 @@
 				class="flex h-full w-full flex-col items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/25 bg-muted/50"
 				data-testid="label-preview-placeholder"
 			>
-				<TagIcon class="mb-3 h-12 w-12 text-muted-foreground/40" />
-				<p class="text-sm font-medium text-muted-foreground">Enter text to preview your label</p>
-				<p class="mt-1 text-xs text-muted-foreground/70">Start typing in the form above</p>
+				<TagIcon class="mb-3 h-8 w-8 text-muted-foreground/40 lg:h-12 lg:w-12" />
+				<p class="text-sm font-medium text-muted-foreground">
+					<span class="lg:hidden">Enter text to preview</span>
+					<span class="hidden lg:inline">Enter text to preview your label</span>
+				</p>
+				<p class="mt-1 text-xs text-muted-foreground/70">
+					<span class="lg:hidden">Start typing above</span>
+					<span class="hidden lg:inline">Start typing in the form above</span>
+				</p>
 				<!-- Alternative: Show sample label with watermark
 				<div class="mt-3 rounded border border-dashed border-muted-foreground/20 bg-muted/30 px-3 py-1">
 					<p class="text-xs font-medium text-muted-foreground/50">Example: M8</p>

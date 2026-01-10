@@ -191,18 +191,13 @@
 					</h3>
 					<p class="text-sm leading-relaxed text-slate-600">
 						If you have questions about this privacy policy or our data practices, please contact us
-						through our GitHub repository:
+						via email:
 					</p>
 					<div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
 						<p class="text-sm text-slate-700">
-							<strong>GitHub:</strong>
-							<a
-								href="https://github.com/kamilpajak/gridfinity-label-generator"
-								target="_blank"
-								rel="noopener noreferrer"
-								class="text-blue-600 hover:underline"
-							>
-								kamilpajak/gridfinity-label-generator
+							<strong>Email:</strong>
+							<a href="mailto:hello@gridfinitylabels.com" class="text-blue-600 hover:underline">
+								hello@gridfinitylabels.com
 							</a>
 							<br />
 							<strong>Response Time:</strong> Within 30 days

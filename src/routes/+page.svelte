@@ -490,7 +490,7 @@
 				<a
 					href="https://www.buymeacoffee.com/kamilpajak"
 					target="_blank"
-					class="inline-flex min-h-[44px] flex-1 transform cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-medium shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-600 hover:shadow-xl lg:flex-none lg:px-6 lg:py-3 lg:text-base"
+					class="inline-flex min-h-[44px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-medium shadow-lg transition-colors hover:bg-amber-600 lg:flex-none lg:px-6 lg:py-3 lg:text-base"
 				>
 					<CoffeeIcon class="h-4 w-4 lg:h-5 lg:w-5" />
 					<span class="sm:hidden">Support</span>

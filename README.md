@@ -1,29 +1,30 @@
 # Gridfinity Label Generator
 
+[![Try Online](https://img.shields.io/badge/Try-Online-blue)](https://gridfinitylabels.com)
 [![Framework](https://img.shields.io/badge/framework-SvelteKit-orange)](https://kit.svelte.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 Create professional labels for your Gridfinity storage system with this modern web application.
 
-## 🚀 Version 2.0 - Complete SvelteKit Rewrite
+**[Try it now at gridfinitylabels.com](https://gridfinitylabels.com)**
 
-This repository has been completely rewritten from Qwik to SvelteKit for better performance, developer experience, and ecosystem support.
-
-> **Looking for the Qwik version?** The original Qwik-based application is preserved in the [`qwik-archive`](https://github.com/kamilpajak/gridfinity-label-generator/tree/qwik-archive) branch.
+![Gridfinity Label Generator Screenshot](docs/screenshot.png)
 
 ## ✨ Features
 
 - **Fastener Labels**: Generate labels for screws, bolts, nuts, and washers with automatic hardware type detection
 - **General Item Labels**: Create custom labels for any storage needs
 - **Batch Mode**: Generate multiple labels at once with individual configuration
-- **Custom Images**: Upload your own images for general item labels (12mm tape)
-- **Smart Formatting**: Automatically formats thread sizes and lengths based on metric/imperial selection
-- **Hardware Standards**: Comprehensive ISO/DIN standard library with visual icons
+- **Custom Images**: Upload your own logos or product images (PNG, JPG, SVG with auto-compression)
+- **Smart Thread Detection**: Automatically shows correct thread sizes based on hardware type
+- **Smart Formatting**: Formats thread sizes and lengths based on metric/imperial selection
+- **Hardware Standards**: 200+ ISO/DIN standards with descriptions from official DIN Media database
 - **Real-time Preview**: See your label as you design it
-- **Export to PNG**: Download print-ready labels
-- **Responsive Design**: Works on desktop and mobile devices
+- **Export to PNG**: Download print-ready labels with descriptive filenames
+- **Mobile-Responsive**: Collapsible settings panel optimized for smaller screens
 - **Display Options**: Toggle standard references, hardware images, and QR codes
 - **Dimension Control**: Support for 9mm and 12mm label tape widths
+- **What's New**: Built-in changelog with recent updates
 
 ## 🛠️ Tech Stack
 
@@ -84,23 +85,6 @@ pnpm build
 - **Cloudflare Pages**: `pnpm add -D @sveltejs/adapter-cloudflare`
 - **Static hosting**: Default adapter creates static files
 
-## 🔄 Migration from v1 (Qwik)
-
-### What's New in v2.0
-
-- **Framework Migration**: Complete rewrite from Qwik to SvelteKit
-- **Modern Component Library**: Migrated to shadcn-svelte for better component architecture
-- **Improved Performance**: Smaller bundle size and faster runtime
-- **Enhanced UI/UX**: Better visual hierarchy and responsive design
-- **Smart Hardware Detection**: Automatic length field management based on hardware type
-- **Better Testing**: Comprehensive test suite with Vitest and Playwright
-
-### Breaking Changes
-
-- Complete framework change - deployment process has changed
-- Build commands updated from `npm` to `pnpm`
-- Different directory structure following SvelteKit conventions
-
 ## 📝 Project Structure
 
 ```
@@ -114,6 +98,7 @@ gridfinity-label-generator/
 │   ├── app.html         # HTML template
 │   └── app.css          # Global styles
 ├── e2e/                 # Playwright E2E tests
+├── scripts/             # CLI tools (SVG processing)
 ├── docs/                # Documentation
 ├── static/              # Static assets
 └── package.json         # Dependencies
@@ -148,7 +133,3 @@ If you find this project helpful, consider:
 - [SvelteKit](https://kit.svelte.dev/) team for the amazing framework
 - [shadcn-svelte](https://www.shadcn-svelte.com/) for the component library
 - All contributors and users of this project
-
----
-
-**Note**: The original Qwik version (v0.1.x) is preserved in the [`qwik-archive`](https://github.com/kamilpajak/gridfinity-label-generator/tree/qwik-archive) branch for reference.

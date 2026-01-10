@@ -8,6 +8,12 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	/**
+	 * Auto-discovered SVG files from static/images/standards/
+	 * Injected by Vite at build time - see vite.config.ts
+	 */
+	const __AVAILABLE_SVGS__: string[];
 }
 
 export {};

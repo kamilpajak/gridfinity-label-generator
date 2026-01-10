@@ -199,8 +199,6 @@
 							<a href="mailto:hello@gridfinitylabels.com" class="text-blue-600 hover:underline">
 								hello@gridfinitylabels.com
 							</a>
-							<br />
-							<strong>Response Time:</strong> Within 30 days
 						</p>
 					</div>
 				</div>

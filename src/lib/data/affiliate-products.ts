@@ -15,51 +15,64 @@ export interface AffiliateProduct {
 	affiliateLink: string | null;
 	/** Product image path or null for icon fallback */
 	image: string | null;
-	/** Badge text (e.g., "Best Seller", "Essential") */
+	/** Badge text (e.g., "Best Seller", "Premium Choice") */
 	badge: string | null;
 	/** Star rating (1-5) or null */
 	rating: number | null;
-	/** Product category for filtering */
-	category: 'essential' | 'recommended' | 'nice-to-have';
+	/** Product category for display grouping */
+	category: 'printer' | 'accessory';
 }
 
 /**
- * Top 3 recommended products for Gridfinity users.
- * Based on requirements document priorities.
+ * Recommended products for Gridfinity users.
+ * Grouped by category: printers first, then accessories.
  */
 export const affiliateProducts: AffiliateProduct[] = [
+	// Label Printers
 	{
-		id: 'magnets_6x2',
-		name: 'Neodymium Magnets 6x2mm',
-		description: 'N52 strength, 100-pack. Essential for Gridfinity bins.',
-		priceDisplay: '$12.99',
-		affiliateLink: null, // To be provided
+		id: 'brother_pte560bt',
+		name: 'Brother PT-E560BT',
+		description: 'Industrial label printer with Bluetooth and auto-cutter.',
+		priceDisplay: '$239.84',
+		affiliateLink: 'https://amzn.to/4qjqcWr',
 		image: null,
-		badge: 'Essential',
+		badge: '💎 My Top Pick',
 		rating: null,
-		category: 'essential'
+		category: 'printer'
 	},
 	{
-		id: 'brother_ptd210',
-		name: 'Brother P-Touch Cube',
-		description: 'Compact label printer. Supports 3.5mm to 12mm tapes.',
-		priceDisplay: '$79.99',
-		affiliateLink: null, // To be provided
+		id: 'brother_ptp710bt',
+		name: 'Brother P-touch CUBE Plus',
+		description: 'Compact Bluetooth label printer. Great for home and office.',
+		priceDisplay: '$99.98',
+		affiliateLink: 'https://amzn.to/4jBHF9R',
 		image: null,
-		badge: null,
-		rating: 4.8,
-		category: 'recommended'
+		badge: '💰 Great Value',
+		rating: null,
+		category: 'printer'
 	},
+	// Accessories
 	{
-		id: 'tze_tape_12mm',
-		name: 'TZe Label Tape 12mm',
-		description: '5-pack assorted colors. Laminated, water resistant.',
-		priceDisplay: '$24.99',
-		affiliateLink: null, // To be provided
+		id: 'tze231_tape',
+		name: 'Brother TZe-231 Tape',
+		description: '12mm black on white. Laminated for durability.',
+		priceDisplay: '$27.45',
+		affiliateLink: 'https://amzn.to/4suZgVb',
 		image: null,
 		badge: 'Best Seller',
 		rating: null,
-		category: 'essential'
+		category: 'accessory'
+	},
+	{
+		id: 'magnets_6x2',
+		name: 'Neodymium Magnets 6x2mm',
+		description: 'Precise 6x2mm dimensions. Perfect for Gridfinity bins.',
+		priceDisplay: '$13.99',
+		affiliateLink: 'https://amzn.to/49lx7XC',
+		image: null,
+		badge: null,
+		rating: null,
+		category: 'accessory'
 	}
 ];
 
@@ -72,4 +85,4 @@ export const AMAZON_STORE_ID = 'gridfinitylab-20';
  * Disclosure text required by Amazon Associates.
  */
 export const AFFILIATE_DISCLOSURE =
-	'As an Amazon Associate, we earn from qualifying purchases at no extra cost to you.';
+	'As an Amazon Associate, we earn from qualifying purchases at no extra cost to you. Prices may vary.';

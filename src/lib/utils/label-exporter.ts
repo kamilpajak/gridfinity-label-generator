@@ -4,7 +4,7 @@
  * Exports canvas-based labels to high-quality PNG files for printing.
  */
 
-import { renderLabelToCanvas } from './label-renderer';
+import { renderLabelToCanvas, resolveImageWithSvgPriority } from './label-renderer';
 import { solveLabelLayout } from './label-constraint-solver';
 import { enrichWithCoverageMetrics } from './layout-metrics';
 import { generateLabelFilename } from './filename-generator';
@@ -95,17 +95,10 @@ export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Prom
 		// General mode with custom image - use provided aspect ratio
 		hardwareImageAspectRatio = customImageAspectRatio;
 	} else if (!isGeneralItemMode && showHardwareImage && standard?.image) {
-		// Fastener mode with standard image - load aspect ratio dynamically
-		try {
-			const img = new Image();
-			await new Promise<void>((resolve, reject) => {
-				img.onload = () => resolve();
-				img.onerror = reject;
-				img.src = standard.image!;
-			});
-			hardwareImageAspectRatio = img.naturalWidth / img.naturalHeight;
-		} catch (e) {
-			console.warn('Failed to load image for aspect ratio calculation:', e);
+		// Fastener mode with standard image - load with SVG priority
+		const resolved = await resolveImageWithSvgPriority(standard.image!);
+		if (resolved.image) {
+			hardwareImageAspectRatio = resolved.image.naturalWidth / resolved.image.naturalHeight;
 		}
 	}
 

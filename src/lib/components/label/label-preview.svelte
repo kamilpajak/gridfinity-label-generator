@@ -10,7 +10,7 @@
 		type LabelDimensions,
 		type SolverOutput
 	} from '$lib/utils/label-constraint-solver';
-	import { renderLabelToCanvas } from '$lib/utils/label-renderer';
+	import { renderLabelToCanvas, resolveImageWithSvgPriority } from '$lib/utils/label-renderer';
 	import { enrichWithCoverageMetrics } from '$lib/utils/layout-metrics';
 
 	interface Props {
@@ -145,17 +145,10 @@
 					// General Item mode with custom image - use custom image aspect ratio
 					hardwareImageAspectRatio = customImage.aspectRatio;
 				} else if (!isGeneralItemMode && showHardwareImage && standard?.image) {
-					// Fastener mode with standard image - load aspect ratio dynamically
-					try {
-						const img = new Image();
-						await new Promise<void>((resolve, reject) => {
-							img.onload = () => resolve();
-							img.onerror = reject;
-							img.src = standard.image!;
-						});
-						hardwareImageAspectRatio = img.naturalWidth / img.naturalHeight;
-					} catch (e) {
-						console.warn('Failed to load image for aspect ratio calculation:', e);
+					// Fastener mode with standard image - load with SVG priority
+					const resolved = await resolveImageWithSvgPriority(standard.image!);
+					if (resolved.image) {
+						hardwareImageAspectRatio = resolved.image.naturalWidth / resolved.image.naturalHeight;
 					}
 				}
 

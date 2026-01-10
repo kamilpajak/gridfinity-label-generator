@@ -9,28 +9,31 @@ This directory contains scripts for processing and generating standards data wit
 │                      DATA SOURCES                               │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  example.com                        dinmedia.de                  │
-│  (images)                          (descriptions - SSOT)        │
-│      │                                   │                      │
-│      ▼                                   ▼                      │
-│  scrape-image-         generate-dinmedia-mappings.js          │
-│  images-all.js                           │                      │
-│      │                                   ▼                      │
-│      │                   scrape-dinmedia-metadata.js            │
-│      │                                   │                      │
-│      ▼                                   ▼                      │
-│  image-image-          dinmedia-id-mappings.json              │
-│  mappings.json           dinmedia-metadata-cache.json           │
-│      │                                   │                      │
-│      └───────────────┬───────────────────┘                      │
-│                      │                                          │
-│                      ▼                                          │
+│  example.com         Würth CAD           dinmedia.de             │
+│  (images PNG)       (images SVG)        (descriptions - SSOT)   │
+│      │                   │                    │                 │
+│      ▼                   ▼                    ▼                 │
+│  scrape-image-   process-wuerth-   generate-dinmedia-         │
+│  images-all.js     svgs.js           mappings.js                │
+│      │                   │                    │                 │
+│      ▼                   │                    ▼                 │
+│  image-image-          │           scrape-dinmedia-           │
+│  mappings.json           │           metadata.js                │
+│      │                   │                    │                 │
+│      │                   ▼                    ▼                 │
+│      │             static/images/      dinmedia-id-mappings.json│
+│      │             standards/*.svg     dinmedia-metadata-       │
+│      │                   │             cache.json               │
+│      │                   │                    │                 │
+│      └───────────────────┴────────────────────┘                 │
+│                          │                                      │
+│                          ▼                                      │
 │           build-all-standards.js ◄── standards-config.json      │
-│                      │                                          │
-│                      ▼                                          │
+│                          │                                      │
+│                          ▼                                      │
 │           standards-generated.ts                                │
-│                      │                                          │
-│                      ▼                                          │
+│                          │                                      │
+│                          ▼                                      │
 │           validate-images.js                                    │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -54,6 +57,77 @@ pnpm scrape-images --limit=5    # Limit per category
 
 - `static/images/standards/*.png` — Product images
 - `data/image-mappings.json` — Standard → image mappings (SSOT for images)
+
+---
+
+### Würth CAD Images
+
+High-quality SVG images from Würth CAD system. These replace lower-quality PNG images from image when available.
+
+#### Filename Pattern
+
+Würth SVG files follow this naming convention:
+
+```
+Wuerth_WIS_{productId}_{standards}_{material}_{finish}_LOD_{lod}_{view}.svg
+```
+
+**Examples:**
+
+```
+Wuerth_WIS_008610_100_DIN_6912_steel_08.8_zinc_plated_LOD_High_1_BACK.svg
+Wuerth_WIS_009201665_DIN_931_bare_stainless_steel_A4_LOD_High_1_LEFT.svg
+Wuerth_WIS_01088__25_ISO_4762DIN_912_steel_10.9_zinc_plated_LOD_High_back.svg
+```
+
+**Components:**
+
+| Part        | Description                                         |
+| ----------- | --------------------------------------------------- |
+| `productId` | Würth product ID (may contain underscores)          |
+| `standards` | ISO/DIN codes (e.g., `DIN_6912`, `ISO_4762DIN_912`) |
+| `material`  | Material type (steel, stainless_steel, etc.)        |
+| `finish`    | Surface finish (zinc_plated, bare, etc.)            |
+| `lod`       | Level of detail (High, Medium, Low)                 |
+| `view`      | View angle: `BACK` (side) or `LEFT` (head)          |
+
+#### Parser Utility
+
+The filename parser is implemented in the main codebase:
+
+- **Location:** `src/lib/utils/wuerth-filename-parser.ts`
+- **Tests:** `src/lib/utils/wuerth-filename-parser.test.ts`
+
+**Exports:**
+
+- `parseWuerthFilename(filename)` — Extract standard info from filename
+- `matchWuerthToStandard(fileInfo)` — Match to internal standard ID (e.g., `iso4762`)
+- `groupWuerthFiles(filePaths)` — Group BACK + LEFT views into pairs
+- `generateTargetFilename(standardId)` — Generate output filename (e.g., `iso_4762.svg`)
+
+#### process-wuerth-svgs.js (TODO)
+
+Processes Würth CAD SVG files into standard images.
+
+```bash
+pnpm process-wuerth              # Process all SVGs in input directory
+pnpm process-wuerth --dry-run    # Preview without writing files
+```
+
+**Input:** Würth SVG pairs (BACK + LEFT views) from `~/Downloads/` or specified directory
+
+**Output:** `static/images/standards/*.svg` — Combined/processed SVG files
+
+**Workflow:**
+
+1. Scan input directory for Würth SVG files
+2. Parse filenames to extract standard info
+3. Match to internal standard IDs
+4. Group BACK + LEFT view pairs
+5. Process SVGs (combine views, clean up, optimize)
+6. Output to `static/images/standards/` with standardized names
+
+**Note:** SVG images take priority over PNG in the label renderer (`resolveImageWithSvgPriority` in `label-renderer.ts`).
 
 ---
 
@@ -253,7 +327,8 @@ pnpm validate-images
 
 ## Data Sources
 
-- **Images:** [example.com](https://example.com) (with authorization)
+- **Images (PNG):** [example.com](https://example.com) (with authorization)
+- **Images (SVG):** Würth CAD system — high-quality vector images (priority over PNG)
 - **Descriptions:** [dinmedia.de](https://www.dinmedia.de) (Single Source of Truth)
 - **Cross-references:**
   - [Fuller Fasteners DIN-ISO crossover chart](https://fullerfasteners.com/tech/din-iso-en-crossover-chart/)

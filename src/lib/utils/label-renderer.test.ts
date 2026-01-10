@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderLabelToCanvas, clearRenderCaches } from './label-renderer';
+import {
+	renderLabelToCanvas,
+	clearRenderCaches,
+	resolveImageWithSvgPriority
+} from './label-renderer';
 import type { SolverOutput } from './label-constraint-solver';
 
 // Mock canvas context
@@ -218,6 +222,62 @@ describe('label-renderer', () => {
 
 			// Image should be drawn using customImageSrc
 			expect(mockContext.drawImage).toHaveBeenCalled();
+		});
+	});
+
+	describe('resolveImageWithSvgPriority', () => {
+		it('should return original src for non-standard image paths', async () => {
+			const result = await resolveImageWithSvgPriority('/images/custom/image.png');
+			expect(result.src).toBe('/images/custom/image.png');
+		});
+
+		it('should return original src for base64 data URLs', async () => {
+			const dataUrl = 'data:image/png;base64,abc123';
+			const result = await resolveImageWithSvgPriority(dataUrl);
+			expect(result.src).toBe(dataUrl);
+		});
+
+		it('should return original src for non-PNG standard images', async () => {
+			const result = await resolveImageWithSvgPriority('/images/standards/din_912.jpg');
+			expect(result.src).toBe('/images/standards/din_912.jpg');
+		});
+
+		it('should load PNG directly when SVG is not in AVAILABLE_SVGS list', async () => {
+			// SVG priority only attempts SVG if it's in the AVAILABLE_SVGS list
+			// Since din_912.svg is not in the list, PNG is loaded directly
+			globalThis.Image = createMockImageThatLoads(100, 50);
+
+			const result = await resolveImageWithSvgPriority('/images/standards/din_912.png');
+
+			expect(result.src).toBe('/images/standards/din_912.png');
+			expect(result.image).toBeInstanceOf(MockImage);
+		});
+
+		it('should load PNG successfully for standard images', async () => {
+			globalThis.Image = createMockImageThatLoads(100, 50);
+
+			const result = await resolveImageWithSvgPriority('/images/standards/din_912.png');
+
+			expect(result.src).toBe('/images/standards/din_912.png');
+			expect(result.image).toBeInstanceOf(MockImage);
+		});
+
+		it('should return loaded image with correct dimensions', async () => {
+			globalThis.Image = createMockImageThatLoads(200, 100);
+
+			const result = await resolveImageWithSvgPriority('/images/standards/iso_4762.png');
+
+			expect(result.image?.width).toBe(200);
+			expect(result.image?.height).toBe(100);
+		});
+
+		it('should return null image when PNG fails to load', async () => {
+			globalThis.Image = createMockImageThatFails();
+
+			const result = await resolveImageWithSvgPriority('/images/standards/din_912.png');
+
+			expect(result.src).toBe('/images/standards/din_912.png');
+			expect(result.image).toBeNull();
 		});
 	});
 });

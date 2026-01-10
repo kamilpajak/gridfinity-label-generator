@@ -17,6 +17,7 @@
 	import SendIcon from '@lucide/svelte/icons/send';
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 	import WhatsNewCard from '$lib/components/whats-new/whats-new-card.svelte';
+	import RecommendedProducts from '$lib/components/affiliate/recommended-products.svelte';
 
 	let { data } = $props();
 	import {
@@ -912,6 +913,8 @@
 					</Card.Root>
 
 					<WhatsNewCard changelog={data.changelog} appVersion={data.appVersion} />
+
+					<RecommendedProducts />
 				</div>
 			</div>
 		</Tabs.Content>

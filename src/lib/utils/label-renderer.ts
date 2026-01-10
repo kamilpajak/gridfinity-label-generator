@@ -41,6 +41,16 @@ const imageCache = new LRUCache<string, HTMLImageElement>(50);
 // Cache for QR codes with LRU eviction
 const qrCache = new LRUCache<string, string>(50);
 
+// Cache for SVG resolution results (tracks which paths have SVG available)
+const svgResolutionCache = new LRUCache<string, ResolvedImage>(50);
+
+/**
+ * Set of standard images that have SVG versions available.
+ * Auto-discovered at build time from static/images/standards/*.svg
+ * See vite.config.ts for the discovery logic.
+ */
+export const AVAILABLE_SVGS = new Set<string>(__AVAILABLE_SVGS__);
+
 /**
  * Throws if the abort signal is aborted
  */
@@ -204,12 +214,16 @@ async function drawImage(
 		height: number;
 	}
 ): Promise<void> {
+	// Resolve path with SVG priority for standard images
+	const resolved = await resolveImageWithSvgPriority(options.src);
+
 	// Check cache first
-	let img = imageCache.get(options.src);
+	let img = imageCache.get(resolved.src);
 
 	if (!img) {
-		img = await loadImage(options.src);
-		imageCache.set(options.src, img);
+		// Use already-loaded image from resolution, or load fresh
+		img = resolved.image ?? (await loadImage(resolved.src));
+		imageCache.set(resolved.src, img);
 	}
 
 	// Draw image at exact position and size calculated by constraint solver
@@ -293,10 +307,77 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 	});
 }
 
+export interface ResolvedImage {
+	/** Final image source path */
+	src: string;
+	/** Loaded image element (null if loading failed) */
+	image: HTMLImageElement | null;
+}
+
+/**
+ * Resolves image path with SVG priority for standard images.
+ * Only tries SVG if it's in the AVAILABLE_SVGS list to avoid 404 attempts.
+ * Returns the loaded image to avoid double loading.
+ * Results are cached for performance.
+ */
+export async function resolveImageWithSvgPriority(originalSrc: string): Promise<ResolvedImage> {
+	// Only apply SVG priority for standard images (not custom/base64)
+	if (!originalSrc.startsWith('/images/standards/') || !originalSrc.endsWith('.png')) {
+		return { src: originalSrc, image: null };
+	}
+
+	// Check cache first
+	const cached = svgResolutionCache.get(originalSrc);
+	if (cached) {
+		// Return cached result with fresh image load if needed
+		if (cached.image) {
+			return cached;
+		}
+		// Image was null in cache, try to load from cached src
+		try {
+			const image = await loadImage(cached.src);
+			const result = { src: cached.src, image };
+			svgResolutionCache.set(originalSrc, result);
+			return result;
+		} catch {
+			return cached;
+		}
+	}
+
+	const svgFilename = originalSrc.replace('/images/standards/', '').replace(/\.png$/, '.svg');
+	const svgSrc = originalSrc.replace(/\.png$/, '.svg');
+
+	// Only try SVG if it's in the available list (avoids 404 attempts)
+	if (AVAILABLE_SVGS.has(svgFilename)) {
+		try {
+			const image = await loadImage(svgSrc);
+			const result = { src: svgSrc, image };
+			svgResolutionCache.set(originalSrc, result);
+			return result;
+		} catch {
+			// SVG failed unexpectedly, fall through to PNG
+		}
+	}
+
+	// Load PNG
+	try {
+		const image = await loadImage(originalSrc);
+		const result = { src: originalSrc, image };
+		svgResolutionCache.set(originalSrc, result);
+		return result;
+	} catch {
+		// Both failed - cache the failure
+		const result = { src: originalSrc, image: null };
+		svgResolutionCache.set(originalSrc, result);
+		return result;
+	}
+}
+
 /**
  * Clears all caches
  */
 export function clearRenderCaches(): void {
 	imageCache.clear();
 	qrCache.clear();
+	svgResolutionCache.clear();
 }

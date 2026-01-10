@@ -1,9 +1,26 @@
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import { readdirSync, existsSync } from 'fs';
+import { resolve } from 'path';
+
+/**
+ * Auto-discover SVG files in static/images/standards/ at build time.
+ * This prevents 404 attempts for non-existent SVGs.
+ */
+function discoverAvailableSvgs(): string[] {
+	const svgDir = resolve(process.cwd(), 'static/images/standards');
+	if (!existsSync(svgDir)) {
+		return [];
+	}
+	return readdirSync(svgDir).filter((f) => f.endsWith('.svg'));
+}
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
+	define: {
+		__AVAILABLE_SVGS__: JSON.stringify(discoverAvailableSvgs())
+	},
 	test: {
 		coverage: {
 			provider: 'v8',

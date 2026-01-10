@@ -3,6 +3,7 @@
 	import type { ISODINStandard } from '$lib/data/standards';
 	import { formatDesignations } from '$lib/data/standards';
 	import { UI_TEXT } from '$lib/constants/ui-text';
+	import StandardImage from './standard-image.svelte';
 
 	interface Props {
 		/** Array of standards to search through */
@@ -88,11 +89,13 @@
 					<span>{formatDesignations(standard)}</span>
 					<span class="text-xs text-muted-foreground">{standard.description}</span>
 				</div>
-				<img
-					src={standard.image}
-					alt={formatDesignations(standard)}
-					class="ml-3 h-10 w-10 flex-shrink-0 object-contain"
-				/>
+				{#if standard.image}
+					<StandardImage
+						src={standard.image}
+						alt={formatDesignations(standard)}
+						class="ml-3 h-10 w-10 flex-shrink-0 object-contain"
+					/>
+				{/if}
 			</Command.Item>
 		{/each}
 	</Command.Group>

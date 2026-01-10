@@ -11,7 +11,7 @@
 
 <button
 	{onclick}
-	class="relative inline-flex min-h-[44px] transform items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 px-3 py-2.5 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:from-purple-600 hover:to-purple-700 hover:shadow-xl lg:px-6 lg:py-3 lg:text-base"
+	class="relative inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 px-3 py-2.5 text-sm font-medium text-white shadow-lg transition-colors hover:from-purple-600 hover:to-purple-700 lg:px-6 lg:py-3 lg:text-base"
 	data-testid="whats-new-button"
 >
 	<Sparkles class="h-4 w-4 lg:h-5 lg:w-5" />

@@ -14,7 +14,7 @@
 	class="relative inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 px-3 py-2.5 text-sm font-medium text-white shadow-lg transition-colors hover:from-purple-600 hover:to-purple-700 lg:px-6 lg:py-3 lg:text-base"
 	data-testid="whats-new-button"
 >
-	<Sparkles class="h-4 w-4 lg:h-5 lg:w-5" />
+	<Sparkles class="animate-sparkle h-4 w-4 lg:h-5 lg:w-5" />
 	<span class="hidden sm:inline">What's New</span>
 	<span class="sm:hidden">New</span>
 	{#if showBadge}
@@ -25,3 +25,21 @@
 		</span>
 	{/if}
 </button>
+
+<style>
+	@keyframes sparkle {
+		0%,
+		100% {
+			opacity: 1;
+			transform: scale(1);
+		}
+		50% {
+			opacity: 0.6;
+			transform: scale(1.15);
+		}
+	}
+
+	:global(.animate-sparkle) {
+		animation: sparkle 2s ease-in-out infinite;
+	}
+</style>

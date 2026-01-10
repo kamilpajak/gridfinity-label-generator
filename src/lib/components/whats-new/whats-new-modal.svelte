@@ -106,7 +106,7 @@
 					<div
 						class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 text-white"
 					>
-						<Sparkles class="h-5 w-5" />
+						<Sparkles class="animate-sparkle h-5 w-5" />
 					</div>
 					<h2 id="whats-new-modal-title" class="text-2xl font-bold text-slate-800">What's New</h2>
 				</div>
@@ -224,5 +224,21 @@
 	}
 	.custom-scrollbar::-webkit-scrollbar-thumb:hover {
 		background: #94a3b8;
+	}
+
+	@keyframes sparkle {
+		0%,
+		100% {
+			opacity: 1;
+			transform: scale(1);
+		}
+		50% {
+			opacity: 0.6;
+			transform: scale(1.15);
+		}
+	}
+
+	:global(.animate-sparkle) {
+		animation: sparkle 2s ease-in-out infinite;
 	}
 </style>

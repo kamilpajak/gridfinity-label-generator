@@ -71,8 +71,18 @@ pnpm standards:add             # Full pipeline for adding new standards
 
 Data files:
 
+- `data/standards-config.json` - Per-system sections (iso, din, etc.) with cross-references
 - `data/dinmedia-id-mappings.json` - Standard ID to DIN Media ID mappings
 - `data/dinmedia-metadata-cache.json` - Cached titles, status, dates from DIN Media
+
+Config structure (per-system sections):
+
+```json
+{
+	"iso": { "4762": { "din": ["912"] } },
+	"din": { "95": {}, "127": { "withdrawn": true } }
+}
+```
 
 #### Validation Gaps (Known Limitations)
 

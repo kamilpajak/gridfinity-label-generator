@@ -37,6 +37,10 @@ const __dirname = path.dirname(__filename);
 
 // Primary source: standards-config.json (all standards we want to validate)
 const CONFIG_FILE = path.join(__dirname, '../data/standards-config.json');
+
+// Valid standard systems
+// NOTE: Keep in sync with src/lib/utils/standards-config.ts
+const VALID_SYSTEMS = ['iso', 'din', 'ansi', 'pn', 'gb', 'jis'];
 // Secondary source: image mappings (for backwards compatibility and additional standards)
 const image_FILE = path.join(__dirname, '../data/image-mappings.json');
 const OUTPUT_FILE = path.join(__dirname, '../data/dinmedia-id-mappings.json');
@@ -177,14 +181,14 @@ async function loadStandardIdsFromConfig() {
 	const config = JSON.parse(await fs.readFile(CONFIG_FILE, 'utf-8'));
 	const ids = [];
 
-	// Extract from crossref section (ISO standards with DIN equivalents)
-	for (const id of Object.keys(config.crossref || {})) {
-		ids.push(id.toLowerCase());
-	}
-
-	// Extract from dinOnly section (DIN standards without ISO equivalent)
-	for (const id of Object.keys(config.dinOnly || {})) {
-		ids.push(id.toLowerCase());
+	// Extract from all system sections (iso, din, ansi, pn, gb, jis)
+	for (const system of VALID_SYSTEMS) {
+		const section = config[system];
+		if (section) {
+			for (const number of Object.keys(section)) {
+				ids.push(`${system}${number}`.toLowerCase());
+			}
+		}
 	}
 
 	return ids;

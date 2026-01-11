@@ -121,5 +121,5 @@ export function getProductIconName(productId: string): ProductIconName {
  * Check if a product has a valid affiliate link.
  */
 export function hasValidAffiliateLink(product: AffiliateProduct): boolean {
-	return product.affiliateLink !== null && product.affiliateLink.startsWith('https://');
+	return product.affiliateLink?.startsWith('https://') ?? false;
 }

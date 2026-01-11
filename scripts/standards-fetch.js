@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 /**
- * Scrape DIN Media Metadata Script
+ * Standards Fetch Script
  *
- * Fetches metadata (title, status, date) from dinmedia.de for each mapped standard.
- * Uses cached data to avoid re-fetching recent entries.
+ * Fetches metadata (title, status, date) from dinmedia.de for each resolved standard.
+ * Part of pipeline: validate → resolve → fetch → build
  *
+ * Uses cached data to avoid re-fetching recent entries (30-day cache).
  * Uses Playwright for JavaScript-rendered pages.
  *
  * Usage:
- *   node scripts/scrape-dinmedia-metadata.js [--force] [--limit=N] [--delay=MS]
+ *   pnpm standards:fetch [--force] [--limit=N] [--delay=MS]
  *
  * Options:
  *   --force     Re-fetch all metadata, ignoring cache

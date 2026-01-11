@@ -1,34 +1,36 @@
 #!/usr/bin/env node
 
 /**
- * Unified Standards Builder
+ * Standards Build Script (v2)
  *
- * This script processes all standards data in a single pipeline:
- * 1. Loads standards configuration (crossref for ISO, dinOnly for DIN)
+ * Builds the final TypeScript module from all data sources.
+ * Part of pipeline: validate → resolve → fetch → build
+ *
+ * Data flow:
+ * 1. Loads standards configuration v2 (iso, din sections)
  * 2. Loads DIN Media metadata cache (SSOT for descriptions)
  * 3. Loads image image mappings (SSOT for images)
- * 4. Processes ISO standards from crossref
- * 5. Processes DIN-only standards
+ * 4. Processes ISO standards from iso section
+ * 5. Processes DIN standards from din section
  * 6. Generates final TypeScript module
  *
- * Purpose:
- * - Single script for entire build process
- * - No intermediate files needed
- * - Processes everything in memory
- *
  * Usage:
- *   pnpm build-standards
- *   # or
- *   node scripts/build-all-standards.js
+ *   pnpm standards:build          # Normal build
+ *   pnpm standards:build:strict   # Fail on unexpected withdrawn standards
+ *
+ * Options:
+ *   --strict  Fail if any standard is withdrawn but not marked in config
  *
  * Input:
- *   data/standards-config.json - Standards list (crossref, dinOnly)
+ *   data/standards-config.json - Standards list (iso, din sections)
  *   data/image-mappings.json - Image mappings from image
  *   data/dinmedia-id-mappings.json - Standard ID → DIN Media ID mappings
  *   data/dinmedia-metadata-cache.json - Cached metadata from DIN Media (SSOT)
  *
  * Output:
  *   src/lib/data/standards-generated.ts - TypeScript module with all standards
+ *
+ * @see docs/plan-standards-config-migration.md
  */
 
 import fs from 'fs';
@@ -39,7 +41,10 @@ import { getHardwareType } from './hardware-type-mappings.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// DIN Media integration files
+// CLI arguments
+const STRICT_MODE = process.argv.includes('--strict');
+
+// DIN Media integration files (Single Source of Truth for both DIN and ISO)
 const DINMEDIA_MAPPINGS_FILE = path.join(__dirname, '..', 'data', 'dinmedia-id-mappings.json');
 const DINMEDIA_CACHE_FILE = path.join(__dirname, '..', 'data', 'dinmedia-metadata-cache.json');
 
@@ -85,7 +90,7 @@ function getDinMediaDescription(standardId, dinMediaData, fallbackDescription) {
  * @param {Object} dinMediaData - { mappings, cache } from loadDinMediaData
  * @returns {boolean} True if withdrawn
  */
-function isWithdrawn(standardId, dinMediaData) {
+function isWithdrawnInDinMedia(standardId, dinMediaData) {
 	if (!dinMediaData) return false;
 
 	const baseId = standardId.replace(/[a-z]$/i, '').toLowerCase();
@@ -94,6 +99,29 @@ function isWithdrawn(standardId, dinMediaData) {
 
 	const metadata = dinMediaData.cache[mapping.dinMediaId];
 	return metadata?.status === 'WITHDRAWN';
+}
+
+/**
+ * Check if a standard is marked as withdrawn in config v2
+ * @param {Object} configEntry - Entry from standards-config.json
+ * @returns {boolean} True if withdrawn: true
+ */
+function isWithdrawnInConfig(configEntry) {
+	return configEntry?.withdrawn === true;
+}
+
+/**
+ * Check if a standard has a DIN Media mapping
+ * Standards without mappings cannot be validated for withdrawn status
+ * @param {string} standardId - Standard ID
+ * @param {Object} dinMediaData - { mappings, cache } from loadDinMediaData
+ * @returns {boolean} True if mapping exists
+ */
+function hasDinMediaMapping(standardId, dinMediaData) {
+	if (!dinMediaData) return false;
+
+	const baseId = standardId.replace(/[a-z]$/i, '').toLowerCase();
+	return !!(dinMediaData.mappings[baseId] || dinMediaData.mappings[standardId]);
 }
 
 /**
@@ -129,14 +157,14 @@ function findImageForStandard(designations) {
 /**
  * Add designation system codes to designations array
  * @param {Array} designations - Array of designation objects to append to
- * @param {Object} crossref - Cross-reference object from config
+ * @param {Object} entry - Entry from config v2
  * @param {string} systemName - System name (e.g., 'DIN', 'ANSI', 'PN')
  */
-function addDesignationSystem(designations, crossref, systemName) {
+function addDesignationSystem(designations, entry, systemName) {
 	const systemKey = systemName.toLowerCase();
-	if (!crossref[systemKey]) return;
+	if (!entry[systemKey]) return;
 
-	const codes = Array.isArray(crossref[systemKey]) ? crossref[systemKey] : [crossref[systemKey]];
+	const codes = Array.isArray(entry[systemKey]) ? entry[systemKey] : [entry[systemKey]];
 
 	codes.forEach((code) => {
 		designations.push({ system: systemName, code: String(code) });
@@ -175,9 +203,9 @@ function addImageToStandard(standard, standardId, imageMappings, designations) {
  * Main build orchestration function
  *
  * Orchestrates the entire build process:
- * 1. Loads configuration and mapping files
- * 2. Processes ISO standards from crossref
- * 3. Processes DIN-only standards
+ * 1. Loads configuration v2 and mapping files
+ * 2. Processes ISO standards from iso section
+ * 3. Processes DIN standards from din section
  * 4. Enriches with DIN Media descriptions (SSOT)
  * 5. Adds images from image mappings
  * 6. Determines hardware types
@@ -189,11 +217,16 @@ async function buildStandards() {
 	const imageMappingsFile = path.join(__dirname, '..', 'data', 'image-mappings.json');
 	const outputFile = path.join(__dirname, '..', 'src', 'lib', 'data', 'standards-generated.ts');
 
-	// Load configuration
+	// Show mode
+	if (STRICT_MODE) {
+		console.log('🔒 Running in STRICT mode - will fail on unexpected withdrawn standards\n');
+	}
+
+	// Load configuration v2
 	const config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
-	console.log(
-		`📋 Loaded config: ${Object.keys(config.crossref).length} ISO crossrefs, ${Object.keys(config.dinOnly).length} DIN-only`
-	);
+	const isoCount = Object.keys(config.iso || {}).length;
+	const dinCount = Object.keys(config.din || {}).length;
+	console.log(`📋 Loaded config v2: ${isoCount} ISO standards, ${dinCount} DIN standards`);
 
 	// Load image image mappings (single source of truth for image mappings)
 	let imageMappings = {};
@@ -204,7 +237,7 @@ async function buildStandards() {
 		console.log('🖼️  No image mappings found, continuing without them');
 	}
 
-	// Load DIN Media data (Single Source of Truth for descriptions)
+	// Load DIN Media data (Single Source of Truth for both DIN and ISO standards)
 	const dinMediaData = loadDinMediaData();
 	if (dinMediaData) {
 		const mappingCount = Object.keys(dinMediaData.mappings).length;
@@ -214,33 +247,50 @@ async function buildStandards() {
 		);
 	} else {
 		console.log('🏛️  No DIN Media data found, using fallback descriptions');
+		if (STRICT_MODE) {
+			console.error('\n❌ STRICT mode requires DIN Media data!');
+			console.error('   Run: pnpm standards:fetch first\n');
+			process.exit(1);
+		}
 	}
 
-	// Process ISO standards from crossref
-	console.log('\n📚 Processing ISO standards from crossref...');
-	const withdrawnISO = [];
+	// Process ISO standards from iso section
+	console.log('\n📚 Processing ISO standards...');
+	const acknowledgedWithdrawnISO = []; // Marked as withdrawn in config
+	const unexpectedWithdrawnISO = []; // WITHDRAWN in DIN Media but not marked in config
+	const unmappedISO = [];
 
-	const processedISO = Object.entries(config.crossref).map(([id, crossref]) => {
-		const isoNumber = id.replace('iso', '');
+	const processedISO = Object.entries(config.iso || {}).map(([number, entry]) => {
+		const id = `iso${number}`;
 
 		// Build designations array
-		const designations = [{ system: 'ISO', code: isoNumber }];
+		const designations = [{ system: 'ISO', code: number }];
 
 		// Add cross-referenced systems
-		addDesignationSystem(designations, crossref, 'DIN');
-		addDesignationSystem(designations, crossref, 'ANSI');
-		addDesignationSystem(designations, crossref, 'PN');
+		addDesignationSystem(designations, entry, 'DIN');
+		addDesignationSystem(designations, entry, 'ANSI');
+		addDesignationSystem(designations, entry, 'PN');
 
-		// Check if withdrawn
-		if (isWithdrawn(id, dinMediaData)) {
-			withdrawnISO.push(id);
+		// Check withdrawn status
+		const markedWithdrawn = isWithdrawnInConfig(entry);
+		const dinMediaWithdrawn = isWithdrawnInDinMedia(id, dinMediaData);
+
+		if (markedWithdrawn) {
+			acknowledgedWithdrawnISO.push(id);
+		} else if (dinMediaWithdrawn) {
+			unexpectedWithdrawnISO.push(id);
+		}
+
+		// Track unmapped ISO standards (cannot be validated)
+		if (!hasDinMediaMapping(id, dinMediaData)) {
+			unmappedISO.push(id);
 		}
 
 		// Build standard object
 		// Prefer DIN as primarySystem if DIN designation exists
 		const hasDIN = designations.some((d) => d.system === 'DIN');
 		// Get description from DIN Media (SSOT) or fallback
-		const fallbackDescription = crossref.description || `ISO ${isoNumber}`;
+		const fallbackDescription = `ISO ${number}`;
 		const description = getDinMediaDescription(id, dinMediaData, fallbackDescription);
 		const standard = {
 			id,
@@ -257,25 +307,55 @@ async function buildStandards() {
 	});
 
 	console.log(`   Found ${processedISO.length} ISO standards`);
-	if (withdrawnISO.length > 0) {
-		console.log(`   ⚠️  ${withdrawnISO.length} withdrawn: ${withdrawnISO.join(', ')}`);
+	if (acknowledgedWithdrawnISO.length > 0) {
+		console.log(
+			`   ℹ️  ${acknowledgedWithdrawnISO.length} acknowledged withdrawn (marked in config)`
+		);
+	}
+	if (unexpectedWithdrawnISO.length > 0) {
+		console.log(
+			`   ⚠️  ${unexpectedWithdrawnISO.length} unexpected withdrawn: ${unexpectedWithdrawnISO.join(', ')}`
+		);
+	}
+	if (unmappedISO.length > 0) {
+		console.log(
+			`   ⚠️  ${unmappedISO.length} ISO standard(s) without DIN Media mapping (cannot validate): ${unmappedISO.slice(0, 10).join(', ')}${unmappedISO.length > 10 ? '...' : ''}`
+		);
 	}
 
-	// Process DIN-only standards
-	console.log('🔩 Processing DIN-only standards...');
-	const withdrawnDIN = [];
+	// STRICT MODE: Only fail on UNEXPECTED withdrawn standards (not marked in config)
+	if (STRICT_MODE && unexpectedWithdrawnISO.length > 0) {
+		console.log('\n❌ STRICT MODE VALIDATION FAILED!\n');
+		console.log('   Unexpected withdrawn ISO standards found:\n');
+		for (const id of unexpectedWithdrawnISO) {
+			console.log(`   • ${id}: WITHDRAWN in DIN Media but not marked in config`);
+		}
+		console.log('\n   Add "withdrawn": true to these entries in standards-config.json.\n');
+		process.exit(1);
+	}
 
-	const dinStandards = Object.entries(config.dinOnly).map(([id, dinConfig]) => {
-		const dinNumber = id.replace('din', '');
-		const designations = [{ system: 'DIN', code: dinNumber }];
+	// Process DIN standards from din section
+	console.log('🔩 Processing DIN standards...');
+	const acknowledgedWithdrawnDIN = []; // Marked as withdrawn in config
+	const unexpectedWithdrawnDIN = []; // WITHDRAWN in DIN Media but not marked in config
 
-		// Check if withdrawn
-		if (isWithdrawn(id, dinMediaData)) {
-			withdrawnDIN.push(id);
+	const dinStandards = Object.entries(config.din || {}).map(([number, entry]) => {
+		const id = `din${number}`;
+		const designations = [{ system: 'DIN', code: number }];
+
+		// Check withdrawn status
+		const markedWithdrawn = isWithdrawnInConfig(entry);
+		const dinMediaWithdrawn = isWithdrawnInDinMedia(id, dinMediaData);
+
+		if (markedWithdrawn) {
+			acknowledgedWithdrawnDIN.push(id);
+		} else if (dinMediaWithdrawn) {
+			unexpectedWithdrawnDIN.push(id);
 		}
 
-		// Get description from DIN Media (SSOT) or fallback to config
-		const description = getDinMediaDescription(id, dinMediaData, dinConfig.description);
+		// Get description from DIN Media (SSOT) or fallback
+		const fallbackDescription = `DIN ${number}`;
+		const description = getDinMediaDescription(id, dinMediaData, fallbackDescription);
 
 		const standard = {
 			id,
@@ -291,11 +371,42 @@ async function buildStandards() {
 		return standard;
 	});
 
-	console.log(`   Found ${dinStandards.length} DIN-only standards`);
-	if (withdrawnDIN.length > 0) {
+	console.log(`   Found ${dinStandards.length} DIN standards`);
+	if (acknowledgedWithdrawnDIN.length > 0) {
 		console.log(
-			`   ⚠️  ${withdrawnDIN.length} withdrawn: ${withdrawnDIN.slice(0, 10).join(', ')}${withdrawnDIN.length > 10 ? '...' : ''}`
+			`   ℹ️  ${acknowledgedWithdrawnDIN.length} acknowledged withdrawn (marked in config)`
 		);
+	}
+	if (unexpectedWithdrawnDIN.length > 0) {
+		console.log(
+			`   ⚠️  ${unexpectedWithdrawnDIN.length} unexpected withdrawn: ${unexpectedWithdrawnDIN.slice(0, 10).join(', ')}${unexpectedWithdrawnDIN.length > 10 ? '...' : ''}`
+		);
+	}
+
+	// STRICT MODE: Only fail on UNEXPECTED withdrawn standards
+	if (STRICT_MODE && unexpectedWithdrawnDIN.length > 0) {
+		console.log('\n❌ STRICT MODE VALIDATION FAILED!\n');
+		console.log('   Unexpected withdrawn DIN standards found:\n');
+		for (const id of unexpectedWithdrawnDIN) {
+			console.log(`   • ${id}: WITHDRAWN in DIN Media but not marked in config`);
+		}
+		console.log('\n   Add "withdrawn": true to these entries in standards-config.json.\n');
+		process.exit(1);
+	}
+
+	// STRICT MODE: Summary
+	if (STRICT_MODE) {
+		const totalWithdrawn = acknowledgedWithdrawnISO.length + acknowledgedWithdrawnDIN.length;
+		const totalMapped = processedISO.length - unmappedISO.length + dinStandards.length;
+		console.log(`\n   ✅ STRICT: All ${totalMapped} mapped standards validated`);
+		if (totalWithdrawn > 0) {
+			console.log(`   ℹ️  ${totalWithdrawn} standards marked as withdrawn (acknowledged)`);
+		}
+		if (unmappedISO.length > 0) {
+			console.log(
+				`   ⚠️  ${unmappedISO.length} ISO standards without DIN Media mapping - cannot validate`
+			);
+		}
 	}
 
 	// Combine all standards
@@ -323,13 +434,13 @@ async function buildStandards() {
 	const tsContent = `/**
  * GENERATED FILE - DO NOT EDIT
  *
- * This file is automatically generated by scripts/build-all-standards.js
- * To update, modify the source data and run: pnpm build-standards
+ * This file is automatically generated by scripts/standards-build.js
+ * To update, modify the source data and run: pnpm standards:build
  *
  * Generated: ${new Date().toISOString()}
  * Total standards: ${sortedStandards.length}
  * ISO standards: ${processedISO.length}
- * DIN-only standards: ${dinStandards.length}
+ * DIN standards: ${dinStandards.length}
  * Standards with images: ${standardsWithImages}
  */
 
@@ -360,7 +471,7 @@ export const generatedStandards: ISODINStandard[] = ${JSON.stringify(sortedStand
 	console.log(`\n✅ Build complete!`);
 	console.log(`   Total standards: ${sortedStandards.length}`);
 	console.log(`   ISO standards: ${processedISO.length}`);
-	console.log(`   DIN-only standards: ${dinStandards.length}`);
+	console.log(`   DIN standards: ${dinStandards.length}`);
 	console.log(`   Standards with images: ${standardsWithImages}`);
 	console.log(`   Output: ${outputFile}`);
 }

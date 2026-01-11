@@ -1,642 +1,557 @@
 {
-	"crossref": {
-		"iso1051": {
-			"din": ["660"]
+	"iso": {
+		"1051": {
+			"din": ["660", "101", "7341"]
 		},
-		"iso1207": {
+		"1207": {
 			"din": ["84"]
 		},
-		"iso1234": {
+		"1234": {
 			"din": ["94"]
 		},
-		"iso1479": {
+		"1479": {
 			"din": ["7976"]
 		},
-		"iso1481": {
+		"1481": {
 			"din": ["7971"]
 		},
-		"iso1482": {
+		"1482": {
 			"din": ["7972"]
 		},
-		"iso1483": {
+		"1483": {
 			"din": ["7973"]
 		},
-		"iso1580": {
+		"1580": {
 			"din": ["85"]
 		},
-		"iso2009": {
+		"2009": {
 			"din": ["963"]
 		},
-		"iso2010": {
+		"2010": {
 			"din": ["964"]
 		},
-		"iso2338": {
+		"2338": {
 			"din": ["7"]
 		},
-		"iso2339": {
+		"2339": {
 			"din": ["1"]
 		},
-		"iso2340": {
+		"2340": {
 			"din": ["1433"]
 		},
-		"iso2341": {
+		"2341": {
 			"din": ["1443"]
 		},
-		"iso2342": {
+		"2342": {
 			"din": ["551"]
 		},
-		"iso3506": {
+		"2936": {
+			"din": ["911"]
+		},
+		"3220": {
+			"din": ["3027"]
+		},
+		"3506": {
 			"din": ["267"]
 		},
-		"iso4014": {
+		"4014": {
 			"din": ["931"]
 		},
-		"iso4016": {
+		"4016": {
 			"din": ["601"]
 		},
-		"iso4017": {
+		"4017": {
 			"din": ["933"]
 		},
-		"iso4018": {
+		"4018": {
 			"din": ["558", "561"]
 		},
-		"iso4026": {
+		"4026": {
 			"din": ["913"]
 		},
-		"iso4027": {
+		"4027": {
 			"din": ["914"]
 		},
-		"iso4028": {
+		"4028": {
 			"din": ["915"]
 		},
-		"iso4029": {
+		"4029": {
 			"din": ["916"]
 		},
-		"iso4032": {
+		"4032": {
 			"din": ["934"]
 		},
-		"iso4033": {
+		"4033": {
 			"din": ["982"]
 		},
-		"iso4034": {
-			"din": ["555", "934"]
-		},
-		"iso4035": {
+		"4035": {
 			"din": ["439"]
 		},
-		"iso4036": {
-			"din": ["936"]
-		},
-		"iso4162": {
+		"4162": {
 			"din": ["6921"]
 		},
-		"iso4762": {
+		"4762": {
 			"din": ["912"]
 		},
-		"iso4766": {
+		"4766": {
 			"din": ["1481"]
 		},
-		"iso7040": {
+		"7040": {
 			"din": ["985"]
 		},
-		"iso7041": {
+		"7041": {
 			"din": ["982"]
 		},
-		"iso7042": {
+		"7042": {
 			"din": ["980", "982"]
 		},
-		"iso7045": {
+		"7045": {
 			"din": ["7985"]
 		},
-		"iso7046": {
+		"7046": {
 			"din": ["965"]
 		},
-		"iso7047": {
+		"7047": {
 			"din": ["966"]
 		},
-		"iso7048": {
+		"7048": {
 			"din": ["7971"]
 		},
-		"iso7049": {
+		"7049": {
 			"din": ["7981"]
 		},
-		"iso7050": {
+		"7050": {
 			"din": ["7982"]
 		},
-		"iso7051": {
+		"7051": {
 			"din": ["7983"]
 		},
-		"iso7053": {
+		"7053": {
 			"din": ["7967"]
 		},
-		"iso7089": {
+		"7089": {
 			"din": ["125"]
 		},
-		"iso7090": {
+		"7090": {
 			"din": ["125"]
 		},
-		"iso7091": {
+		"7091": {
 			"din": ["126"]
 		},
-		"iso7092": {
+		"7092": {
 			"din": ["433"]
 		},
-		"iso7093": {
+		"7093": {
 			"din": ["9021"]
 		},
-		"iso7094": {
+		"7094": {
 			"din": ["440"]
 		},
-		"iso7379": {
+		"7379": {
 			"din": ["6912"]
 		},
-		"iso7380": {
+		"7380": {
 			"din": ["9427"]
 		},
-		"iso7434": {
+		"7434": {
 			"din": ["553"]
 		},
-		"iso7435": {
+		"7435": {
 			"din": ["417"]
 		},
-		"iso7436": {
+		"7436": {
 			"din": ["438"]
 		},
-		"iso7719": {
+		"7719": {
 			"din": ["980"]
 		},
-		"iso7720": {
+		"7720": {
 			"din": ["982"]
 		},
-		"iso8673": {
+		"8673": {
 			"din": ["934"]
 		},
-		"iso8674": {
+		"8674": {
 			"din": ["982"]
 		},
-		"iso8675": {
+		"8675": {
 			"din": ["439"]
 		},
-		"iso8676": {
+		"8676": {
 			"din": ["961"]
 		},
-		"iso8678": {
+		"8678": {
 			"din": ["603"]
 		},
-		"iso8733": {
+		"8733": {
 			"din": ["7979"]
 		},
-		"iso8734": {
+		"8734": {
 			"din": ["6325", "7"]
 		},
-		"iso8735": {
+		"8735": {
 			"din": ["7978"]
 		},
-		"iso8736": {
+		"8736": {
 			"din": ["7977"]
 		},
-		"iso8737": {
+		"8737": {
 			"din": ["7977"]
 		},
-		"iso8738": {
+		"8738": {
 			"din": ["1440"]
 		},
-		"iso8740": {
+		"8740": {
 			"din": ["1473"]
 		},
-		"iso8741": {
+		"8741": {
 			"din": ["1474"]
 		},
-		"iso8744": {
+		"8744": {
 			"din": ["1471"]
 		},
-		"iso8745": {
+		"8745": {
 			"din": ["1472"]
 		},
-		"iso8746": {
+		"8746": {
 			"din": ["1476"]
 		},
-		"iso8747": {
+		"8747": {
 			"din": ["1477"]
 		},
-		"iso8748": {
+		"8748": {
+			"din": ["7344"]
+		},
+		"8750": {
 			"din": ["7343"]
 		},
-		"iso8750": {
+		"8751": {
 			"din": ["7343"]
 		},
-		"iso8751": {
-			"din": ["7343"]
-		},
-		"iso8752": {
+		"8752": {
 			"din": ["1481"]
 		},
-		"iso8765": {
+		"8765": {
 			"din": ["960"]
 		},
-		"iso10509": {
-			"din": []
-		},
-		"iso10510": {
+		"10509": {},
+		"10510": {
 			"din": ["6902"]
 		},
-		"iso10511": {
+		"10511": {
 			"din": ["985"]
 		},
-		"iso10512": {
+		"10512": {
 			"din": ["985"]
 		},
-		"iso10513": {
+		"10513": {
 			"din": ["980"]
 		},
-		"iso10642": {
+		"10642": {
 			"din": ["7991"]
 		},
-		"iso10644": {
+		"10644": {
 			"din": ["7981"]
 		},
-		"iso10669": {
+		"10669": {
 			"din": ["6902"]
 		},
-		"iso10673": {
+		"10673": {
 			"din": ["6902"]
 		},
-		"iso12474": {
+		"12474": {
 			"din": ["912"]
 		},
-		"iso13337": {
+		"13337": {
 			"din": ["7346"]
 		},
-		"iso14579": {
+		"14579": {
 			"din": ["34822"]
 		},
-		"iso14580": {
+		"14580": {
 			"din": ["34823"]
 		},
-		"iso14581": {
+		"14581": {
 			"din": ["7988"]
 		},
-		"iso14582": {
+		"14582": {
 			"din": ["7989"]
 		},
-		"iso14583": {
+		"14583": {
 			"din": ["7996"]
 		},
-		"iso14584": {
-			"din": []
-		},
-		"iso14585": {
+		"14584": {},
+		"14585": {
 			"din": ["7995"]
 		},
-		"iso14586": {
+		"14586": {
 			"din": ["7995"]
 		},
-		"iso14587": {
+		"14587": {
 			"din": ["7982"]
 		},
-		"iso15071": {
+		"15071": {
 			"din": ["6921"]
 		},
-		"iso15072": {
+		"15072": {
 			"din": ["6921"]
 		},
-		"iso15480": {
+		"15480": {
 			"din": ["7504"]
 		},
-		"iso15481": {
+		"15481": {
 			"din": ["7504"]
 		},
-		"iso15482": {
+		"15482": {
 			"din": ["7504"]
 		},
-		"iso15483": {
+		"15483": {
 			"din": ["7504"]
 		},
-		"iso21670": {
+		"15973": {
+			"din": ["7337"]
+		},
+		"15974": {
+			"din": ["7337"]
+		},
+		"15975": {
+			"din": ["7337"]
+		},
+		"15976": {
+			"din": ["7337"]
+		},
+		"15977": {
+			"din": ["7337"]
+		},
+		"15978": {
+			"din": ["7337"]
+		},
+		"15979": {
+			"din": ["7337"]
+		},
+		"15980": {
+			"din": ["7337"]
+		},
+		"15981": {
+			"din": ["7337"]
+		},
+		"15982": {
+			"din": ["7337"]
+		},
+		"15983": {
+			"din": ["7337"]
+		},
+		"15984": {
+			"din": ["7337"]
+		},
+		"16585": {
+			"din": ["7337"]
+		},
+		"21670": {
 			"din": ["929"]
 		},
-		"iso23429": {
+		"23429": {
 			"din": ["911"]
 		}
 	},
-	"dinOnly": {
-		"din93": {
-			"description": "Tab washers with long tab"
-		},
-		"din95": {
-			"description": "Slotted countersunk flat head wood screws"
-		},
-		"din96": {
-			"description": "Slotted round head wood screws"
-		},
-		"din97": {
-			"description": "Slotted countersunk flat head wood screws"
-		},
-		"din7997": {
-			"description": "Cross recessed countersunk head wood screws"
-		},
-		"din127": {
-			"description": "Spring lock washers, Type A"
-		},
-		"din128": {
-			"description": "Curved spring lock washers, Type B"
-		},
-		"din137": {
-			"description": "Wave spring washers, Type A"
-		},
-		"din186": {
-			"description": "T-head bolts"
-		},
-		"din261": {
-			"description": "T-slot bolts"
-		},
-		"din315": {
-			"description": "Wing nuts, German type"
-		},
-		"din316": {
-			"description": "Wing nuts, American type"
-		},
-		"din404": {
-			"description": "Hexagon socket head shoulder screws"
-		},
-		"din431": {
-			"description": "Pipe nuts"
-		},
-		"din432": {
-			"description": "Tab washers with nose"
-		},
-		"din434": {
-			"description": "Square taper washers for U-sections"
-		},
-		"din435": {
-			"description": "Square taper washers for I-sections"
-		},
-		"din436": {
-			"description": "Square washers for wood constructions"
-		},
-		"din444": {
-			"description": "Eye bolts"
-		},
-		"din462": {
-			"description": "Tab washers with 2 tabs"
-		},
-		"din463": {
-			"description": "Tab washers with long tab and wing"
-		},
-		"din464": {
-			"description": "Knurled thumb screws, high type"
-		},
-		"din466": {
-			"description": "Knurled nuts, high type"
-		},
-		"din467": {
-			"description": "Knurled nuts, low type"
-		},
-		"din471": {
-			"description": "External circlips for shafts"
-		},
-		"din472": {
-			"description": "Internal circlips for bores"
-		},
-		"din478": {
-			"description": "Square head bolts with collar"
-		},
-		"din479": {
-			"description": "Square head bolts"
-		},
-		"din480": {
-			"description": "Square head bolts with short thread"
-		},
-		"din508": {
-			"description": "T-slot stones"
-		},
-		"din546": {
-			"description": "Round nuts with set pin holes in side"
-		},
-		"din557": {
-			"description": "Square nuts"
-		},
-		"din562": {
-			"description": "Square thin nuts"
-		},
-		"din564": {
-			"description": "Square head set screws with flat point"
-		},
-		"din571": {
-			"description": "Hexagon head wood screws"
-		},
-		"din580": {
-			"description": "Lifting eye bolts"
-		},
-		"din582": {
-			"description": "Lifting eye nuts"
-		},
-		"din604": {
-			"description": "Mushroom head square neck bolts with flat bearing surface"
-		},
-		"din605": {
-			"description": "Countersunk head square neck bolts"
-		},
-		"din607": {
-			"description": "Cup head square neck bolts with enlarged head"
-		},
-		"din608": {
-			"description": "Countersunk head square neck bolts with high square"
-		},
-		"din609": {
-			"description": "Cup head square neck bolts"
-		},
-		"din610": {
-			"description": "Countersunk head rivets"
-		},
-		"din653": {
-			"description": "Knurled head screws"
-		},
-		"din787": {
-			"description": "Hook bolts"
-		},
-		"din792": {
-			"description": "Tee bolts"
-		},
-		"din917": {
-			"description": "Hexagon cap nuts, low type"
-		},
-		"din928": {
-			"description": "Square weld nuts"
-		},
-		"din935": {
-			"description": "Hexagon castle nuts"
-		},
-		"din936": {
-			"description": "Hexagon thin nuts"
-		},
-		"din937": {
-			"description": "Hexagon crown nuts"
-		},
-		"din979": {
-			"description": "Hexagon thin nuts with collar"
-		},
-		"din981": {
-			"description": "Serrated hexagon nuts"
-		},
-		"din986": {
-			"description": "Prevailing torque type hexagon domed cap nuts"
-		},
-		"din988": {
-			"description": "Studs with collar"
-		},
-		"din1052": {
-			"description": "Slotted round washers"
-		},
-		"din1441": {
-			"description": "Washers for clevis pins"
-		},
-		"din1478": {
-			"description": "Turnbuckles, closed style, steel tube"
-		},
-		"din1479": {
-			"description": "Hexagon socket head shoulder screws"
-		},
-		"din1480": {
-			"description": "Hexagon fit bolts"
-		},
-		"din1587": {
-			"description": "Hexagon domed cap nuts"
-		},
-		"din1804": {
-			"description": "Fastening nuts for shaft ends"
-		},
-		"din1816": {
-			"description": "Slotted headless screws with shank"
-		},
-		"din2093": {
-			"description": "Disc springs"
-		},
-		"din2510": {
-			"description": "DIN 2510 fastener"
-		},
-		"din5406": {
-			"description": "Tapping screws for metal"
-		},
-		"din5903": {
-			"description": "Washers for HV bolts"
-		},
-		"din6319": {
-			"description": "Spherical washers, conical seats"
-		},
-		"din6330": {
-			"description": "Hexagon nuts for structural steel bolting"
-		},
-		"din6331": {
-			"description": "Spherical nuts"
-		},
-		"din6334": {
-			"description": "Coupling nuts"
-		},
-		"din6340": {
-			"description": "Washers for clamping devices"
-		},
-		"din6796": {
-			"description": "Conical spring washers for bolted connections"
-		},
-		"din6797": {
-			"description": "Countersunk serrated lock washers, Type A"
-		},
-		"din6798": {
-			"description": "Serrated lock washers, Type J"
-		},
-		"din6914": {
-			"description": "Hexagon socket button head screws with collar"
-		},
-		"din6915": {
-			"description": "Hexagon socket set screws with dog point and collar"
-		},
-		"din6916": {
-			"description": "Plain washers for high-strength structural bolting (HV)"
-		},
-		"din6917": {
-			"description": "Square taper washers for I-sections"
-		},
-		"din6918": {
-			"description": "Hexagon socket head cap screws with collar"
-		},
-		"din6923": {
-			"description": "Hexagon flange nuts"
-		},
-		"din6925": {
-			"description": "Prevailing torque type hexagon nuts with flange"
-		},
-		"din6926": {
-			"description": "Prevailing torque type hexagon flange nuts"
-		},
-		"din6927": {
-			"description": "Prevailing torque type all-metal hexagon flange nuts"
-		},
-		"din7349": {
-			"description": "Shim rings"
-		},
-		"din7603": {
-			"description": "Sealing washers"
-		},
-		"din7965": {
-			"description": "Thread cutting screws, cross recessed pan head"
-		},
-		"din7968": {
-			"description": "Cross recessed pan head drilling screws with tapping screw thread"
-		},
-		"din7969": {
-			"description": "Cross recessed countersunk head drilling screws"
-		},
-		"din7980": {
-			"description": "Lock washers for cheese head screws"
-		},
-		"din7984": {
-			"description": "Hexagon socket low head cap screws"
-		},
-		"din7990": {
-			"description": "Hexagon socket set screws with flat point and brass tip"
-		},
-		"din7991": {
-			"description": "Hexagon socket countersunk flat head screws"
-		},
-		"din7999": {
-			"description": "Threaded studs"
-		},
-		"din11014": {
-			"description": "Hexagon head bolts with flange"
-		},
-		"din15237": {
-			"description": "Eye bolts for lifting purposes"
-		},
-		"din21346": {
-			"description": "Stud bolts for flanges"
-		},
-		"din22424": {
-			"description": "Parallel pins with internal thread"
-		},
-		"din25193": {
-			"description": "Railway screws"
-		},
-		"din25201": {
-			"description": "Wedge locking washers"
-		},
-		"din34817": {
-			"description": "Spring steel disc washers"
-		},
-		"din70852": {
-			"description": "Pan head tapping screws with collar"
-		},
-		"din70952": {
-			"description": "Round head square neck bolts"
-		},
-		"din74361": {
-			"description": "O-ring retaining washers"
-		},
-		"din80701": {
-			"description": "Wing screws"
-		},
-		"din80705": {
-			"description": "Wing screws with rounded wings"
-		}
+	"din": {
+		"78": {},
+		"93": {
+			"withdrawn": true
+		},
+		"95": {},
+		"96": {},
+		"97": {},
+		"101": {
+			"iso": ["1051"]
+		},
+		"127": {
+			"withdrawn": true
+		},
+		"128": {
+			"withdrawn": true
+		},
+		"137": {},
+		"186": {},
+		"261": {},
+		"315": {},
+		"316": {},
+		"404": {},
+		"431": {},
+		"432": {
+			"withdrawn": true
+		},
+		"434": {},
+		"435": {},
+		"436": {},
+		"444": {},
+		"462": {},
+		"463": {
+			"withdrawn": true
+		},
+		"464": {},
+		"466": {},
+		"467": {},
+		"471": {},
+		"472": {},
+		"478": {},
+		"479": {},
+		"480": {},
+		"508": {
+			"withdrawn": true
+		},
+		"546": {},
+		"557": {},
+		"562": {},
+		"564": {},
+		"571": {},
+		"580": {},
+		"582": {},
+		"604": {},
+		"605": {},
+		"607": {},
+		"608": {},
+		"609": {},
+		"610": {
+			"withdrawn": true
+		},
+		"653": {},
+		"787": {},
+		"792": {},
+		"911": {
+			"iso": ["2936", "23429"],
+			"withdrawn": true
+		},
+		"917": {},
+		"928": {},
+		"935": {
+			"withdrawn": true
+		},
+		"936": {
+			"withdrawn": true
+		},
+		"937": {
+			"withdrawn": true
+		},
+		"979": {},
+		"981": {},
+		"986": {},
+		"988": {},
+		"1052": {},
+		"1441": {},
+		"1478": {},
+		"1479": {},
+		"1480": {},
+		"1587": {},
+		"1804": {},
+		"1816": {},
+		"2093": {
+			"withdrawn": true
+		},
+		"2510": {},
+		"3027": {
+			"iso": ["3220"]
+		},
+		"5406": {},
+		"5903": {},
+		"6319": {
+			"withdrawn": true
+		},
+		"6330": {},
+		"6331": {},
+		"6334": {},
+		"6340": {},
+		"6796": {},
+		"6797": {
+			"withdrawn": true
+		},
+		"6798": {
+			"withdrawn": true
+		},
+		"6914": {
+			"withdrawn": true
+		},
+		"6915": {
+			"withdrawn": true
+		},
+		"6916": {
+			"withdrawn": true
+		},
+		"6917": {},
+		"6918": {},
+		"6923": {
+			"withdrawn": true
+		},
+		"6925": {
+			"withdrawn": true
+		},
+		"6926": {
+			"withdrawn": true
+		},
+		"6927": {
+			"withdrawn": true
+		},
+		"7337": {
+			"iso": [
+				"15973",
+				"15974",
+				"15975",
+				"15976",
+				"15977",
+				"15978",
+				"15979",
+				"15980",
+				"15981",
+				"15982",
+				"15983",
+				"15984",
+				"16585"
+			],
+			"withdrawn": true
+		},
+		"7338": {},
+		"7339": {},
+		"7340": {},
+		"7341": {
+			"iso": ["1051"]
+		},
+		"7344": {
+			"iso": ["8748"],
+			"withdrawn": true
+		},
+		"7349": {},
+		"7603": {},
+		"7965": {},
+		"7968": {},
+		"7969": {},
+		"7980": {
+			"withdrawn": true
+		},
+		"7984": {},
+		"7990": {},
+		"7991": {
+			"withdrawn": true,
+			"replacedBy": "iso10642"
+		},
+		"7997": {},
+		"7999": {
+			"withdrawn": true
+		},
+		"11014": {},
+		"15237": {},
+		"21346": {},
+		"22424": {
+			"withdrawn": true
+		},
+		"25193": {},
+		"25201": {
+			"withdrawn": true
+		},
+		"34817": {},
+		"70852": {},
+		"70952": {},
+		"74361": {},
+		"80701": {},
+		"80705": {}
 	}
 }

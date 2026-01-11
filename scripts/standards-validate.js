@@ -1,27 +1,30 @@
 #!/usr/bin/env node
-
 /**
- * Standards Validate Script
+ * Standards Validate Script (v2)
  *
- * Validates the structure and content of standards-config.json.
+ * Validates the structure and content of standards-config.json v2.
  * Part of pipeline: validate → resolve → fetch → build
  *
+ * V2 structure uses per-system sections (iso, din, etc.) instead of
+ * crossref/dinOnly sections.
+ *
  * Checks:
- * - JSON structure (crossref, dinOnly sections)
- * - ID format (iso####, din####)
- * - No duplicates between sections
- * - Cross-reference consistency
- * - Status field values (CURRENT, WITHDRAWN)
+ * - JSON structure (iso, din, ansi, pn, gb, jis sections)
+ * - Standard number format (digits with optional letter suffix)
+ * - Cross-reference consistency (arrays of numeric strings)
+ * - Withdrawn field (boolean)
  * - ReplacedBy references exist
  *
  * Usage:
  *   pnpm standards:validate
+ *   node scripts/standards-validate.js
+ *   node scripts/standards-validate.js --config="path/to/config.json"
  *
  * Exit codes:
  *   0 - Validation passed
  *   1 - Validation failed
  *
- * @see docs/plan-standards-validation-pipeline.md
+ * @see docs/plan-standards-config-migration.md
  */
 
 import fs from 'fs';
@@ -31,119 +34,133 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Import validator from compiled TypeScript
-// Note: This requires the project to be built or use ts-node
-const CONFIG_FILE = path.join(__dirname, '..', 'data', 'standards-config.json');
+// Parse CLI arguments
+const args = process.argv.slice(2);
+const configArg = args.find((arg) => arg.startsWith('--config='));
+const CONFIG_FILE = configArg
+	? configArg.replace('--config=', '').replace(/"/g, '')
+	: path.join(__dirname, '..', 'data', 'standards-config.json');
 
 /**
- * Validation result type
- * @typedef {{ valid: boolean, errors: string[] }} ValidationResult
+ * Valid standard systems
+ * NOTE: Keep in sync with src/lib/utils/standards-config.ts
  */
+const VALID_SYSTEMS = ['iso', 'din', 'ansi', 'pn', 'gb', 'jis'];
 
 /**
- * Validate the overall structure of the config
+ * Cross-reference systems (systems that can appear as cross-ref keys)
+ */
+const CROSSREF_SYSTEMS = ['din', 'iso', 'ansi', 'pn', 'gb', 'jis'];
+
+/**
+ * Pattern for valid standard numbers
+ */
+const STANDARD_NUMBER_PATTERN = /^\d+[a-z]?$/;
+
+/**
+ * Pattern for valid full standard ID (for replacedBy)
+ */
+const FULL_ID_PATTERN = /^(iso|din|ansi|pn|gb|jis)\d+[a-z]?$/;
+
+/**
+ * Validate config structure
  * @param {unknown} config
- * @returns {ValidationResult}
+ * @returns {{ valid: boolean, errors: string[], warnings: string[] }}
  */
 function validateConfigStructure(config) {
 	const errors = [];
+	const warnings = [];
 
-	if (typeof config !== 'object' || config === null) {
-		return { valid: false, errors: ['Config must be an object'] };
+	if (typeof config !== 'object' || config === null || Array.isArray(config)) {
+		return { valid: false, errors: ['Config must be an object'], warnings: [] };
 	}
 
-	// Check required sections
-	if (!('crossref' in config)) {
-		errors.push('Missing required section: crossref');
-	} else if (
-		typeof config.crossref !== 'object' ||
-		config.crossref === null ||
-		Array.isArray(config.crossref)
-	) {
-		errors.push('crossref must be an object');
+	const keys = Object.keys(config);
+
+	// Check for at least one valid system section
+	const validSystemKeys = keys.filter((k) => VALID_SYSTEMS.includes(k));
+	if (validSystemKeys.length === 0) {
+		errors.push('Config must have at least one system section (iso, din, ansi, pn, gb, jis)');
 	}
 
-	if (!('dinOnly' in config)) {
-		errors.push('Missing required section: dinOnly');
-	} else if (
-		typeof config.dinOnly !== 'object' ||
-		config.dinOnly === null ||
-		Array.isArray(config.dinOnly)
-	) {
-		errors.push('dinOnly must be an object');
+	// Warn about unknown top-level keys
+	const unknownKeys = keys.filter((k) => !VALID_SYSTEMS.includes(k));
+	for (const key of unknownKeys) {
+		warnings.push(`Unknown top-level key: "${key}"`);
 	}
 
-	return { valid: errors.length === 0, errors };
+	// Validate each system section is an object
+	for (const system of validSystemKeys) {
+		const section = config[system];
+		if (typeof section !== 'object' || section === null || Array.isArray(section)) {
+			errors.push(`Section "${system}" must be an object`);
+		}
+	}
+
+	return { valid: errors.length === 0, errors, warnings };
 }
 
 /**
- * Validate ID format (must be iso#### or din####)
- * @param {string} id
- * @returns {ValidationResult}
+ * Validate standard number format
+ * @param {string} number
+ * @returns {{ valid: boolean, errors: string[] }}
  */
-function validateIdFormat(id) {
+function validateStandardNumber(number) {
 	const errors = [];
 
-	if (!id || typeof id !== 'string') {
-		errors.push('Invalid ID format: ID must be a non-empty string');
+	if (!number || typeof number !== 'string') {
+		errors.push('Invalid standard number: must be a non-empty string');
 		return { valid: false, errors };
 	}
 
-	const validPattern = /^(iso|din)\d+$/;
-
-	if (!validPattern.test(id)) {
-		errors.push(`Invalid ID format: "${id}" must match pattern (iso|din) followed by numbers`);
+	if (!STANDARD_NUMBER_PATTERN.test(number)) {
+		errors.push(`Invalid standard number: "${number}" must be digits with optional letter suffix`);
 	}
 
 	return { valid: errors.length === 0, errors };
 }
 
 /**
- * Check for duplicate IDs between crossref and dinOnly sections
- * @param {{ crossref: Object, dinOnly: Object }} config
- * @returns {ValidationResult}
+ * Validate a system section
+ * @param {string} system
+ * @param {object} section
+ * @returns {{ valid: boolean, errors: string[] }}
  */
-function validateNoDuplicates(config) {
+function validateSystemSection(system, section) {
 	const errors = [];
 
-	const crossrefIds = Object.keys(config.crossref || {});
-	const dinOnlyIds = Object.keys(config.dinOnly || {});
-
-	const duplicates = crossrefIds.filter((id) => dinOnlyIds.includes(id));
-
-	for (const dup of duplicates) {
-		errors.push(`Duplicate ID "${dup}" found in both crossref and dinOnly sections`);
-	}
-
-	return { valid: errors.length === 0, errors };
-}
-
-/**
- * Validate cross-reference entries have valid structure
- * @param {{ crossref: Object, dinOnly: Object }} config
- * @returns {ValidationResult}
- */
-function validateCrossReferences(config) {
-	const errors = [];
-
-	const crossref = config.crossref || {};
-
-	for (const [id, entry] of Object.entries(crossref)) {
-		if (!('din' in entry)) {
-			errors.push(`Crossref entry "${id}" is missing din property`);
+	for (const [number, entry] of Object.entries(section)) {
+		// Validate standard number format
+		const numberResult = validateStandardNumber(number);
+		if (!numberResult.valid) {
+			errors.push(`${system}.${number}: ${numberResult.errors[0]}`);
 			continue;
 		}
 
-		if (!Array.isArray(entry.din)) {
-			errors.push(`Crossref entry "${id}": din must be an array`);
+		// Validate entry is an object
+		if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+			errors.push(`${system}.${number}: Entry must be an object`);
 			continue;
 		}
 
-		for (const dinCode of entry.din) {
-			if (typeof dinCode !== 'string' || !/^\d+$/.test(dinCode)) {
-				errors.push(
-					`Crossref entry "${id}": Invalid DIN code "${dinCode}" (must be numeric string)`
-				);
+		// Validate cross-reference arrays
+		for (const crossRefSystem of CROSSREF_SYSTEMS) {
+			if (crossRefSystem in entry) {
+				const crossRefs = entry[crossRefSystem];
+
+				if (!Array.isArray(crossRefs)) {
+					errors.push(`${system}.${number}.${crossRefSystem}: must be an array`);
+					continue;
+				}
+
+				// Validate each cross-ref code is numeric string
+				for (const code of crossRefs) {
+					if (typeof code !== 'string' || !/^\d+$/.test(code)) {
+						errors.push(
+							`${system}.${number}.${crossRefSystem}: Invalid cross-ref code "${code}" (must be numeric string)`
+						);
+					}
+				}
 			}
 		}
 	}
@@ -152,37 +169,95 @@ function validateCrossReferences(config) {
 }
 
 /**
- * Run all validations on the config
+ * Validate withdrawn fields
+ * @param {object} config
+ * @returns {{ valid: boolean, errors: string[], warnings: string[] }}
+ */
+function validateWithdrawnFields(config) {
+	const errors = [];
+	const warnings = [];
+
+	// Build set of all valid standard IDs
+	const allIds = new Set();
+	for (const system of VALID_SYSTEMS) {
+		const section = config[system];
+		if (section) {
+			for (const number of Object.keys(section)) {
+				allIds.add(`${system}${number}`);
+			}
+		}
+	}
+
+	// Validate each entry
+	for (const system of VALID_SYSTEMS) {
+		const section = config[system];
+		if (!section) continue;
+
+		for (const [number, entry] of Object.entries(section)) {
+			const fullId = `${system}${number}`;
+
+			// Validate withdrawn field
+			if ('withdrawn' in entry && entry.withdrawn !== undefined) {
+				if (typeof entry.withdrawn !== 'boolean') {
+					errors.push(`${fullId}: "withdrawn" must be a boolean`);
+				}
+			}
+
+			// Validate replacedBy field
+			if ('replacedBy' in entry && entry.replacedBy !== undefined) {
+				const replacedBy = entry.replacedBy;
+
+				// Check format
+				if (!FULL_ID_PATTERN.test(replacedBy)) {
+					errors.push(`${fullId}: Invalid replacedBy format "${replacedBy}"`);
+				} else if (!allIds.has(replacedBy)) {
+					errors.push(`${fullId}: replacedBy references non-existent standard "${replacedBy}"`);
+				}
+			}
+
+			// Warn if withdrawn but no replacedBy
+			if (entry.withdrawn === true && !entry.replacedBy) {
+				warnings.push(`${fullId}: withdrawn with no replacement specified`);
+			}
+		}
+	}
+
+	return { valid: errors.length === 0, errors, warnings };
+}
+
+/**
+ * Run all validations
  * @param {unknown} config
- * @returns {ValidationResult}
+ * @returns {{ valid: boolean, errors: string[], warnings: string[] }}
  */
 function validateConfig(config) {
 	const allErrors = [];
+	const allWarnings = [];
 
 	// Step 1: Validate structure
 	const structureResult = validateConfigStructure(config);
 	allErrors.push(...structureResult.errors);
+	allWarnings.push(...structureResult.warnings);
 
 	if (!structureResult.valid) {
-		return { valid: false, errors: allErrors };
+		return { valid: false, errors: allErrors, warnings: allWarnings };
 	}
 
-	// Step 2: Validate all ID formats
-	const allIds = [...Object.keys(config.crossref || {}), ...Object.keys(config.dinOnly || {})];
-	for (const id of allIds) {
-		const idResult = validateIdFormat(id);
-		allErrors.push(...idResult.errors);
+	// Step 2: Validate each system section
+	for (const system of VALID_SYSTEMS) {
+		const section = config[system];
+		if (section) {
+			const sectionResult = validateSystemSection(system, section);
+			allErrors.push(...sectionResult.errors);
+		}
 	}
 
-	// Step 3: Check for duplicates
-	const duplicatesResult = validateNoDuplicates(config);
-	allErrors.push(...duplicatesResult.errors);
+	// Step 3: Validate withdrawn fields
+	const withdrawnResult = validateWithdrawnFields(config);
+	allErrors.push(...withdrawnResult.errors);
+	allWarnings.push(...withdrawnResult.warnings);
 
-	// Step 4: Validate cross-references
-	const crossrefResult = validateCrossReferences(config);
-	allErrors.push(...crossrefResult.errors);
-
-	return { valid: allErrors.length === 0, errors: allErrors };
+	return { valid: allErrors.length === 0, errors: allErrors, warnings: allWarnings };
 }
 
 /**
@@ -190,7 +265,7 @@ function validateConfig(config) {
  */
 function main() {
 	console.log('='.repeat(60));
-	console.log('Validate Standards Config');
+	console.log('Validate Standards Config (v2)');
 	console.log('='.repeat(60));
 	console.log(`\nFile: ${CONFIG_FILE}\n`);
 
@@ -211,21 +286,41 @@ function main() {
 	}
 
 	// Count entries
-	const crossrefCount = Object.keys(config.crossref || {}).length;
-	const dinOnlyCount = Object.keys(config.dinOnly || {}).length;
-	console.log(`📋 Found ${crossrefCount} crossref entries, ${dinOnlyCount} dinOnly entries`);
-	console.log(`   Total: ${crossrefCount + dinOnlyCount} standards\n`);
+	let totalCount = 0;
+	for (const system of VALID_SYSTEMS) {
+		const section = config[system];
+		if (section) {
+			const count = Object.keys(section).length;
+			if (count > 0) {
+				console.log(`📋 ${system.toUpperCase()}: ${count} entries`);
+				totalCount += count;
+			}
+		}
+	}
+	console.log(`   Total: ${totalCount} standards\n`);
 
 	// Validate
 	console.log('🔍 Running validation...\n');
 	const result = validateConfig(config);
 
+	// Show warnings
+	if (result.warnings && result.warnings.length > 0) {
+		console.log(`⚠️  ${result.warnings.length} warning(s):\n`);
+		for (const warning of result.warnings.slice(0, 10)) {
+			console.log(`   • ${warning}`);
+		}
+		if (result.warnings.length > 10) {
+			console.log(`   ... and ${result.warnings.length - 10} more`);
+		}
+		console.log('');
+	}
+
 	if (result.valid) {
 		console.log('✅ Validation PASSED\n');
 		console.log('   - Structure: OK');
-		console.log('   - ID formats: OK');
-		console.log('   - No duplicates: OK');
+		console.log('   - Standard numbers: OK');
 		console.log('   - Cross-references: OK');
+		console.log('   - Withdrawn fields: OK');
 		process.exit(0);
 	} else {
 		console.log('❌ Validation FAILED\n');

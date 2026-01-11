@@ -10,13 +10,7 @@
  * @see docs/plan-standards-validation-pipeline.md
  */
 
-/**
- * Standards config structure
- */
-interface StandardsConfig {
-	crossref: Record<string, unknown>;
-	dinOnly: Record<string, unknown>;
-}
+import { extractAllStandardIds, type StandardsConfigV2 } from './standards-config';
 
 /**
  * Check if a standard ID is an ISO standard
@@ -72,25 +66,14 @@ export function standardIdToSearchQuery(id: string): string | null {
 }
 
 /**
- * Extract all standard IDs from standards config
+ * Extract all standard IDs from standards config v2
  *
- * Combines IDs from both crossref and dinOnly sections.
+ * Iterates over all system sections (iso, din, ansi, etc.)
+ * and builds full IDs from system + number.
  *
- * @param config - Standards config object
+ * @param config - Standards config v2 object
  * @returns Array of standard IDs (lowercase)
  */
-export function extractStandardIdsFromConfig(config: StandardsConfig): string[] {
-	const ids: string[] = [];
-
-	// Extract from crossref section (ISO standards with DIN equivalents)
-	for (const id of Object.keys(config.crossref || {})) {
-		ids.push(id.toLowerCase());
-	}
-
-	// Extract from dinOnly section (DIN standards without ISO equivalent)
-	for (const id of Object.keys(config.dinOnly || {})) {
-		ids.push(id.toLowerCase());
-	}
-
-	return ids;
+export function extractStandardIdsFromConfig(config: StandardsConfigV2): string[] {
+	return extractAllStandardIds(config);
 }

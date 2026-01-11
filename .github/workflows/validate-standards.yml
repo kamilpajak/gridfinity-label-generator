@@ -1,0 +1,72 @@
+name: Validate Standards
+
+on:
+  schedule:
+    - cron: '0 3 * * 0' # Weekly Sunday 3am UTC
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+
+      - uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3
+        with:
+          version: 10
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # Cache Playwright browsers
+      - name: Cache Playwright browsers
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+      - name: Install Playwright
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      # Layer 1: Input validation (structure, IDs, duplicates, cross-refs)
+      - name: Validate standards config
+        run: pnpm validate-config
+
+      # Layer 2: External validation (DIN Media - Single Source of Truth)
+      - name: Generate DIN Media mappings
+        run: pnpm generate-dinmedia-mappings
+        continue-on-error: true
+
+      - name: Scrape DIN Media metadata
+        run: pnpm scrape-dinmedia
+        continue-on-error: true
+
+      # Layer 3: Build-time validation (fail on withdrawn standards)
+      - name: Build standards (strict mode)
+        run: pnpm build-standards:strict
+        continue-on-error: true
+
+      # Upload validation reports
+      - name: Upload validation reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: validation-reports
+          path: |
+            data/dinmedia-id-mappings.json
+            data/dinmedia-metadata-cache.json
+            data/dinmedia-mappings-report.json
+            data/dinmedia-scrape-report.json
+          retention-days: 30

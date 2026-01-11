@@ -18,14 +18,20 @@
  *
  * Usage:
  *   pnpm build-standards
+ *   pnpm build-standards:strict  # Fail if ISO validation cache has invalid standards
  *   # or
- *   node scripts/build-all-standards.js
+ *   node scripts/build-all-standards.js [--strict]
+ *
+ * Options:
+ *   --strict  Fail build if any ISO standard is invalid (withdrawn, not found, wrong category)
+ *             Requires data/iso-validation-cache.json from validate-iso script
  *
  * Input:
  *   data/standards-config.json - Standards list (crossref, dinOnly)
  *   data/image-mappings.json - Image mappings from image
  *   data/dinmedia-id-mappings.json - Standard ID → DIN Media ID mappings
  *   data/dinmedia-metadata-cache.json - Cached metadata from DIN Media (SSOT)
+ *   data/iso-validation-cache.json - ISO.org validation cache (optional, required for --strict)
  *
  * Output:
  *   src/lib/data/standards-generated.ts - TypeScript module with all standards
@@ -39,7 +45,10 @@ import { getHardwareType } from './hardware-type-mappings.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// DIN Media integration files
+// CLI arguments
+const STRICT_MODE = process.argv.includes('--strict');
+
+// DIN Media integration files (Single Source of Truth for both DIN and ISO)
 const DINMEDIA_MAPPINGS_FILE = path.join(__dirname, '..', 'data', 'dinmedia-id-mappings.json');
 const DINMEDIA_CACHE_FILE = path.join(__dirname, '..', 'data', 'dinmedia-metadata-cache.json');
 
@@ -203,6 +212,11 @@ async function buildStandards() {
 	const imageMappingsFile = path.join(__dirname, '..', 'data', 'image-mappings.json');
 	const outputFile = path.join(__dirname, '..', 'src', 'lib', 'data', 'standards-generated.ts');
 
+	// Show mode
+	if (STRICT_MODE) {
+		console.log('🔒 Running in STRICT mode - will fail on invalid ISO standards\n');
+	}
+
 	// Load configuration
 	const config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
 	console.log(
@@ -218,7 +232,7 @@ async function buildStandards() {
 		console.log('🖼️  No image mappings found, continuing without them');
 	}
 
-	// Load DIN Media data (Single Source of Truth for descriptions)
+	// Load DIN Media data (Single Source of Truth for both DIN and ISO standards)
 	const dinMediaData = loadDinMediaData();
 	if (dinMediaData) {
 		const mappingCount = Object.keys(dinMediaData.mappings).length;
@@ -228,6 +242,11 @@ async function buildStandards() {
 		);
 	} else {
 		console.log('🏛️  No DIN Media data found, using fallback descriptions');
+		if (STRICT_MODE) {
+			console.error('\n❌ STRICT mode requires DIN Media data!');
+			console.error('   Run: pnpm scrape-dinmedia first\n');
+			process.exit(1);
+		}
 	}
 
 	// Process ISO standards from crossref
@@ -286,6 +305,19 @@ async function buildStandards() {
 		);
 	}
 
+	// STRICT MODE: Fail if any withdrawn standards found
+	if (STRICT_MODE && withdrawnISO.length > 0) {
+		console.log('\n❌ STRICT MODE VALIDATION FAILED!\n');
+		console.log('   Withdrawn ISO standards found:\n');
+		for (const id of withdrawnISO) {
+			console.log(`   • ${id}: WITHDRAWN (from DIN Media)`);
+		}
+		console.log(
+			'\n   Remove these standards from standards-config.json or update DIN Media cache.\n'
+		);
+		process.exit(1);
+	}
+
 	// Process DIN-only standards
 	console.log('🔩 Processing DIN-only standards...');
 	const withdrawnDIN = [];
@@ -321,6 +353,30 @@ async function buildStandards() {
 		console.log(
 			`   ⚠️  ${withdrawnDIN.length} withdrawn: ${withdrawnDIN.slice(0, 10).join(', ')}${withdrawnDIN.length > 10 ? '...' : ''}`
 		);
+	}
+
+	// STRICT MODE: Fail if any withdrawn DIN standards found
+	if (STRICT_MODE && withdrawnDIN.length > 0) {
+		console.log('\n❌ STRICT MODE VALIDATION FAILED!\n');
+		console.log('   Withdrawn DIN standards found:\n');
+		for (const id of withdrawnDIN) {
+			console.log(`   • ${id}: WITHDRAWN (from DIN Media)`);
+		}
+		console.log(
+			'\n   Remove these standards from standards-config.json or update DIN Media cache.\n'
+		);
+		process.exit(1);
+	}
+
+	// STRICT MODE: Summary
+	if (STRICT_MODE) {
+		const totalMapped = processedISO.length - unmappedISO.length + dinStandards.length;
+		console.log(`\n   ✅ STRICT: All ${totalMapped} mapped standards are valid (not withdrawn)`);
+		if (unmappedISO.length > 0) {
+			console.log(
+				`   ⚠️  ${unmappedISO.length} ISO standards without DIN Media mapping - cannot validate`
+			);
+		}
 	}
 
 	// Combine all standards

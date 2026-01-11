@@ -4,7 +4,6 @@
 	import Printer from '@lucide/svelte/icons/printer';
 	import Disc from '@lucide/svelte/icons/disc';
 	import Package from '@lucide/svelte/icons/package';
-	import ArrowRight from '@lucide/svelte/icons/arrow-right';
 	import Info from '@lucide/svelte/icons/info';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import {
@@ -167,18 +166,6 @@
 				{/each}
 			</div>
 		{/if}
-	</div>
-
-	<!-- View All button (placeholder for future /gear page) -->
-	<div class="px-5 pb-5">
-		<button
-			disabled
-			class="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 py-2.5 text-center text-sm font-medium text-white opacity-50 shadow-sm shadow-blue-200"
-		>
-			View All Products
-			<ArrowRight class="h-3 w-3" />
-		</button>
-		<p class="mt-2 text-center text-[10px] text-slate-400">Coming soon</p>
 	</div>
 
 	<!-- Disclosure -->

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { ChangelogEntry } from '$lib/types/changelog';
 	import { getRelativeDate } from '$lib/utils/changelog-parser';
+	import { createEscapeHandler, createBackdropClickHandler } from '$lib/utils/modal-utils';
 	import X from '@lucide/svelte/icons/x';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import Bell from '@lucide/svelte/icons/bell';
@@ -13,6 +14,9 @@
 	}
 
 	let { open = $bindable(), onClose, changelog }: Props = $props();
+
+	const handleKeydown = createEscapeHandler(onClose);
+	const handleBackdropClick = createBackdropClickHandler(onClose);
 
 	// Color schemes for timeline entries (newest to oldest)
 	const colorSchemes = [
@@ -60,18 +64,6 @@
 
 	function getColorScheme(index: number) {
 		return colorSchemes[Math.min(index, colorSchemes.length - 1)];
-	}
-
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') {
-			onClose();
-		}
-	}
-
-	function handleBackdropClick(e: MouseEvent) {
-		if (e.target === e.currentTarget) {
-			onClose();
-		}
 	}
 
 	// Check if this is the newest version

@@ -51,9 +51,35 @@ This project uses **pnpm** as the package manager. All commands should use `pnpm
 - `pnpm lint` - Check code formatting and ESLint rules
 - `pnpm format` - Auto-format code with Prettier
 
-### Standards Data (DIN Media Integration)
+### Standards Data
 
-DIN Media (dinmedia.de) is the **Single Source of Truth** for standard descriptions.
+This project uses two **Single Sources of Truth (SSOT)** for standards data:
+
+#### SSOT 1: Reyher PDF (Cross-references)
+
+**File:** `docs/Reyher_2019-EN_Technische_Informationen_ks.pdf`
+
+The Reyher "Standards Conversion" PDF is the authoritative source for:
+
+- **DIN ↔ ISO mappings** (cross-references between standard systems)
+- Which DIN standards correspond to which ISO standards
+- Table 1: DIN → ISO conversions
+- Table 2: ISO → DIN conversions
+
+When adding or modifying cross-references in `standards-config.json`, always verify against this PDF.
+
+#### SSOT 2: DIN Media (Metadata)
+
+**Website:** [dinmedia.de](https://dinmedia.de)
+
+DIN Media is the authoritative source for:
+
+- **Standard titles** (German and English)
+- **Withdrawn status** (current vs withdrawn)
+- **Replacement standards** (replacedBy)
+- **Publication dates**
+
+#### Pipeline Commands
 
 ```bash
 # Pipeline: validate → resolve → fetch → build
@@ -69,24 +95,25 @@ pnpm standards:refresh         # fetch + build (update cache and rebuild)
 pnpm standards:add             # Full pipeline for adding new standards
 ```
 
-Data files:
+#### Data Files
 
-- `data/standards-config.json` - Per-system sections (iso, din, etc.) with cross-references
-- `data/dinmedia-id-mappings.json` - Standard ID to DIN Media ID mappings
-- `data/dinmedia-metadata-cache.json` - Cached titles, status, dates from DIN Media
+| File                                | SSOT       | Purpose                           |
+| ----------------------------------- | ---------- | --------------------------------- |
+| `data/standards-config.json`        | Reyher PDF | Cross-references (din/iso arrays) |
+| `data/dinmedia-id-mappings.json`    | DIN Media  | Standard ID → DIN Media ID        |
+| `data/dinmedia-metadata-cache.json` | DIN Media  | Titles, status, dates             |
+| `docs/Reyher_2019-EN_*.pdf`         | -          | Reference document                |
 
-Config structure (per-system sections):
+#### Config Structure
 
 ```json
 {
 	"iso": { "4762": { "din": ["912"] } },
-	"din": { "95": {}, "127": { "withdrawn": true } }
+	"din": { "912": { "iso": ["4762", "12474"] }, "127": { "withdrawn": true } }
 }
 ```
 
 #### Validation Gaps (Known Limitations)
-
-The DIN Media SSOT approach has limitations:
 
 1. **ISO standards without DIN Media mapping** - Cannot be validated for withdrawn status
    - Build script warns: "X ISO standard(s) without DIN Media mapping"

@@ -74,6 +74,25 @@ Data files:
 - `data/dinmedia-id-mappings.json` - Standard ID to DIN Media ID mappings
 - `data/dinmedia-metadata-cache.json` - Cached titles, status, dates from DIN Media
 
+#### Validation Gaps (Known Limitations)
+
+The DIN Media SSOT approach has limitations:
+
+1. **ISO standards without DIN Media mapping** - Cannot be validated for withdrawn status
+   - Build script warns: "X ISO standard(s) without DIN Media mapping"
+   - These standards need manual review when adding to config
+
+2. **No automatic ISO.org validation** - Pipeline doesn't check:
+   - If ISO standard exists
+   - If ISO standard is withdrawn (stage codes)
+   - If ISO standard is in fastener category (ICS 21.060.xx)
+
+3. **Manual config entry** - `standards-config.json` accepts any ID without validation
+
+**Mitigation:** Unit tests in `standards-validation.test.ts` catch known invalid standards.
+
+**Future:** See `docs/plan-standards-validation-pipeline.md` for planned improvements.
+
 ### SonarCloud API
 
 Pobieranie metryk projektu (wymaga tokena SONAR_TOKEN):

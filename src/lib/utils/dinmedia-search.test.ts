@@ -1,10 +1,10 @@
 /**
  * DIN Media Search Utilities Tests (TDD)
  *
- * Phase 3 revised: DIN Media as single source of truth for all standards.
  * Tests for search query generation and standard ID extraction.
+ * Updated for standards-config.json v2 structure.
  *
- * @see docs/plan-standards-validation-pipeline.md
+ * @see docs/plan-standards-config-migration.md
  */
 
 import { describe, it, expect } from 'vitest';
@@ -67,14 +67,13 @@ describe('standardIdToSearchQuery', () => {
 	});
 });
 
-describe('extractStandardIdsFromConfig', () => {
-	it('should extract ISO IDs from crossref section', () => {
+describe('extractStandardIdsFromConfig (v2 structure)', () => {
+	it('should extract ISO IDs from iso section', () => {
 		const config = {
-			crossref: {
-				iso4762: { din: ['912'] },
-				iso7380: { din: ['9427'] }
-			},
-			dinOnly: {}
+			iso: {
+				'4762': { din: ['912'] },
+				'7380': { din: ['9427'] }
+			}
 		};
 
 		const ids = extractStandardIdsFromConfig(config);
@@ -82,12 +81,11 @@ describe('extractStandardIdsFromConfig', () => {
 		expect(ids).toContain('iso7380');
 	});
 
-	it('should extract DIN IDs from dinOnly section', () => {
+	it('should extract DIN IDs from din section', () => {
 		const config = {
-			crossref: {},
-			dinOnly: {
-				din912: { description: 'Test' },
-				din7991: { description: 'Test' }
+			din: {
+				'912': {},
+				'7991': { withdrawn: true }
 			}
 		};
 
@@ -98,11 +96,11 @@ describe('extractStandardIdsFromConfig', () => {
 
 	it('should combine IDs from both sections', () => {
 		const config = {
-			crossref: {
-				iso4762: { din: ['912'] }
+			iso: {
+				'4762': { din: ['912'] }
 			},
-			dinOnly: {
-				din125: { description: 'Washers' }
+			din: {
+				'125': {}
 			}
 		};
 
@@ -114,8 +112,8 @@ describe('extractStandardIdsFromConfig', () => {
 
 	it('should return lowercase IDs', () => {
 		const config = {
-			crossref: { ISO4762: { din: ['912'] } },
-			dinOnly: { DIN912: { description: 'Test' } }
+			iso: { '4762': {} },
+			din: { '912': {} }
 		};
 
 		const ids = extractStandardIdsFromConfig(config);
@@ -123,9 +121,30 @@ describe('extractStandardIdsFromConfig', () => {
 	});
 
 	it('should handle empty config', () => {
-		const config = { crossref: {}, dinOnly: {} };
+		const config = {};
 		const ids = extractStandardIdsFromConfig(config);
 		expect(ids).toHaveLength(0);
+	});
+
+	it('should handle empty sections', () => {
+		const config = { iso: {}, din: {} };
+		const ids = extractStandardIdsFromConfig(config);
+		expect(ids).toHaveLength(0);
+	});
+
+	it('should extract IDs from future systems (ansi, pn, gb, jis)', () => {
+		const config = {
+			ansi: { '123': {} },
+			pn: { '456': {} },
+			gb: { '789': {} },
+			jis: { '101': {} }
+		};
+
+		const ids = extractStandardIdsFromConfig(config);
+		expect(ids).toContain('ansi123');
+		expect(ids).toContain('pn456');
+		expect(ids).toContain('gb789');
+		expect(ids).toContain('jis101');
 	});
 });
 

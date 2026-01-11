@@ -16,7 +16,9 @@
 	import CoffeeIcon from '@lucide/svelte/icons/coffee';
 	import SendIcon from '@lucide/svelte/icons/send';
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
-	import WhatsNewCard from '$lib/components/whats-new/whats-new-card.svelte';
+	import WhatsNewModal from '$lib/components/whats-new/whats-new-modal.svelte';
+	import WhatsNewButton from '$lib/components/whats-new/whats-new-button.svelte';
+	import RecommendedProducts from '$lib/components/affiliate/recommended-products.svelte';
 
 	let { data } = $props();
 	import {
@@ -47,6 +49,7 @@
 	let showStandard = $state(true);
 	let showHardwareImage = $state(true);
 	let showQRCode = $state(false);
+	let whatsNewModalOpen = $state(false);
 
 	let labelMode = $state('fastener');
 	let measurementSystem: 'metric' | 'imperial' = $state('metric');
@@ -418,7 +421,7 @@
 <section
 	class="relative bg-gradient-to-r from-[#005c97] to-[#0c4a6e] px-4 py-6 text-white lg:px-8 lg:pt-12 lg:pb-24"
 >
-	<div class="absolute inset-0 bg-black/10"></div>
+	<div class="pointer-events-none absolute inset-0 bg-black/10"></div>
 	<div class="absolute -top-32 -right-32 hidden h-64 w-64 rounded-full bg-white/5 lg:block"></div>
 	<div class="absolute -bottom-24 -left-24 hidden h-48 w-48 rounded-full bg-white/5 lg:block"></div>
 
@@ -483,10 +486,11 @@
 			</div>
 
 			<div class="flex gap-2 lg:flex-col lg:gap-3">
+				<WhatsNewButton onclick={() => (whatsNewModalOpen = true)} />
 				<a
 					href="https://www.buymeacoffee.com/kamilpajak"
 					target="_blank"
-					class="inline-flex min-h-[44px] flex-1 transform cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-medium shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-600 hover:shadow-xl lg:flex-none lg:px-6 lg:py-3 lg:text-base"
+					class="inline-flex min-h-[44px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-medium shadow-lg transition-colors hover:bg-amber-600 lg:flex-none lg:px-6 lg:py-3 lg:text-base"
 				>
 					<CoffeeIcon class="h-4 w-4 lg:h-5 lg:w-5" />
 					<span class="sm:hidden">Support</span>
@@ -911,7 +915,7 @@
 						</Card.Content>
 					</Card.Root>
 
-					<WhatsNewCard changelog={data.changelog} appVersion={data.appVersion} />
+					<RecommendedProducts />
 				</div>
 			</div>
 		</Tabs.Content>
@@ -921,3 +925,9 @@
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
+
+<WhatsNewModal
+	bind:open={whatsNewModalOpen}
+	onClose={() => (whatsNewModalOpen = false)}
+	changelog={data.changelog}
+/>

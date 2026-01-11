@@ -115,7 +115,7 @@ jobs:
 
   sonar:
     runs-on: ubuntu-latest
-    needs: validate
+    # Run independently - has its own unit tests with coverage
     timeout-minutes: 10
 
     steps:

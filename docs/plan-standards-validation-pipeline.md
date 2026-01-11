@@ -122,10 +122,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
       - run: pnpm install
-      - run: pnpm validate-config
-      - run: pnpm generate-dinmedia-mappings
-      - run: pnpm scrape-dinmedia
-      - run: pnpm build-standards:strict
+      - run: pnpm standards:validate
+      - run: pnpm standards:resolve
+      - run: pnpm standards:fetch
+      - run: pnpm standards:build:strict
 ```
 
 ## Implementation Phases
@@ -220,16 +220,22 @@ jobs:
 2. GitHub issue auto-creation on validation failure
 3. ADR documentation for validation architecture
 
-## New pnpm Scripts
+## pnpm Scripts
 
 ```json
 {
-	"validate-config": "node scripts/validate-standards-config.js",
-	"validate-all": "pnpm validate-config && pnpm scrape-dinmedia",
-	"build-standards": "node scripts/build-all-standards.js",
-	"build-standards:strict": "node scripts/build-all-standards.js --strict"
+	"standards:validate": "node scripts/standards-validate.js",
+	"standards:resolve": "node scripts/standards-resolve.js",
+	"standards:fetch": "node scripts/standards-fetch.js",
+	"standards:fetch:force": "node scripts/standards-fetch.js --force",
+	"standards:build": "node scripts/standards-build.js",
+	"standards:build:strict": "node scripts/standards-build.js --strict",
+	"standards:refresh": "pnpm standards:fetch && pnpm standards:build",
+	"standards:add": "pnpm standards:validate && pnpm standards:resolve && pnpm standards:fetch && pnpm standards:build"
 }
 ```
+
+Pipeline: `validate` → `resolve` → `fetch` → `build`
 
 ## Success Criteria
 

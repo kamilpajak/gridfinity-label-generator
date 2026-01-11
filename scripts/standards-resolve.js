@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Generate DIN Media Mappings Script
+ * Standards Resolve Script
  *
- * Searches dinmedia.de for each standard in standards-config.json
- * and saves the dinMediaId mapping for later metadata scraping.
+ * Resolves standard IDs to DIN Media page IDs by searching dinmedia.de.
+ * Part of pipeline: validate → resolve → fetch → build
  *
  * DIN Media is the Single Source of Truth for both DIN and ISO standards.
  * ISO standards are searched as "EN ISO xxxx" (European harmonized versions).
@@ -11,7 +11,7 @@
  * Uses Playwright for JavaScript-rendered search results.
  *
  * Usage:
- *   node scripts/generate-dinmedia-mappings.js [--force] [--limit=N] [--delay=MS]
+ *   pnpm standards:resolve [--force] [--limit=N] [--delay=MS]
  *
  * Options:
  *   --force     Re-search all standards, even if already mapped

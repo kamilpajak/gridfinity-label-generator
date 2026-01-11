@@ -56,17 +56,17 @@ This project uses **pnpm** as the package manager. All commands should use `pnpm
 DIN Media (dinmedia.de) is the **Single Source of Truth** for standard descriptions.
 
 ```bash
-# One-time: Generate mappings (standard ID → DIN Media ID)
-pnpm generate-dinmedia-mappings
+# Pipeline: validate → resolve → fetch → build
+pnpm standards:validate        # Validate standards-config.json
+pnpm standards:resolve         # Resolve standard IDs → DIN Media IDs
+pnpm standards:fetch           # Fetch metadata (cached 30 days)
+pnpm standards:fetch:force     # Force re-fetch all metadata
+pnpm standards:build           # Build standards-generated.ts
+pnpm standards:build:strict    # Fail on unexpected withdrawn standards
 
-# Scrape metadata (incremental, skips cached entries < 30 days)
-pnpm scrape-dinmedia
-
-# Force re-scrape all metadata
-pnpm scrape-dinmedia:force
-
-# Build standards with DIN Media descriptions
-pnpm build-standards
+# Convenience scripts
+pnpm standards:refresh         # fetch + build (update cache and rebuild)
+pnpm standards:add             # Full pipeline for adding new standards
 ```
 
 Data files:

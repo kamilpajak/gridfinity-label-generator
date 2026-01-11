@@ -1,14 +1,21 @@
 #!/usr/bin/env node
 
 /**
- * Validate Standards Config Script
+ * Standards Validate Script
  *
  * Validates the structure and content of standards-config.json.
- * Part of Phase 2 of the standards validation pipeline.
+ * Part of pipeline: validate → resolve → fetch → build
+ *
+ * Checks:
+ * - JSON structure (crossref, dinOnly sections)
+ * - ID format (iso####, din####)
+ * - No duplicates between sections
+ * - Cross-reference consistency
+ * - Status field values (CURRENT, WITHDRAWN)
+ * - ReplacedBy references exist
  *
  * Usage:
- *   pnpm validate-config
- *   node scripts/validate-standards-config.js
+ *   pnpm standards:validate
  *
  * Exit codes:
  *   0 - Validation passed

@@ -15,7 +15,7 @@ import {
 	isWithdrawn,
 	type StandardSystem,
 	type StandardEntry,
-	type StandardsConfigV2
+	type StandardsConfig
 } from './standards-config';
 
 describe('standards-config', () => {
@@ -97,7 +97,7 @@ describe('standards-config', () => {
 
 	describe('extractAllStandardIds', () => {
 		it('extracts IDs from ISO section', () => {
-			const config: StandardsConfigV2 = {
+			const config: StandardsConfig = {
 				iso: {
 					'4762': { din: ['912'] },
 					'4017': { din: ['933'] }
@@ -112,7 +112,7 @@ describe('standards-config', () => {
 		});
 
 		it('extracts IDs from DIN section', () => {
-			const config: StandardsConfigV2 = {
+			const config: StandardsConfig = {
 				din: {
 					'95': {},
 					'127': { withdrawn: true }
@@ -127,7 +127,7 @@ describe('standards-config', () => {
 		});
 
 		it('extracts IDs from multiple sections', () => {
-			const config: StandardsConfigV2 = {
+			const config: StandardsConfig = {
 				iso: {
 					'4762': { din: ['912'] }
 				},
@@ -144,12 +144,12 @@ describe('standards-config', () => {
 		});
 
 		it('handles empty config', () => {
-			const config: StandardsConfigV2 = {};
+			const config: StandardsConfig = {};
 			expect(extractAllStandardIds(config)).toEqual([]);
 		});
 
 		it('handles empty sections', () => {
-			const config: StandardsConfigV2 = {
+			const config: StandardsConfig = {
 				iso: {},
 				din: {}
 			};
@@ -157,7 +157,7 @@ describe('standards-config', () => {
 		});
 
 		it('extracts IDs from future systems', () => {
-			const config: StandardsConfigV2 = {
+			const config: StandardsConfig = {
 				ansi: { '123': {} },
 				pn: { '456': {} },
 				gb: { '789': {} },
@@ -174,7 +174,7 @@ describe('standards-config', () => {
 	});
 
 	describe('getStandardEntry', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			iso: {
 				'4762': { din: ['912'] },
 				'1051': { din: ['660'], withdrawn: true }
@@ -219,7 +219,7 @@ describe('standards-config', () => {
 	});
 
 	describe('isWithdrawn', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			iso: {
 				'4762': { din: ['912'] },
 				'1051': { din: ['660'], withdrawn: true }
@@ -266,8 +266,8 @@ describe('standards-config', () => {
 			expect(entry.withdrawn).toBe(true);
 		});
 
-		it('StandardsConfigV2 type allows system sections', () => {
-			const config: StandardsConfigV2 = {
+		it('StandardsConfig type allows system sections', () => {
+			const config: StandardsConfig = {
 				iso: { '4762': {} },
 				din: { '912': {} },
 				ansi: { '123': {} }

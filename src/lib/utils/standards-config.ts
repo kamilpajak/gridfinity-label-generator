@@ -59,7 +59,7 @@ export interface StandardEntry {
 }
 
 /**
- * Standards config v2 structure.
+ * Standards config structure.
  *
  * Each top-level key is a system (iso, din, etc.) containing a map of
  * standard numbers to their entries.
@@ -76,7 +76,7 @@ export interface StandardEntry {
  *   }
  * }
  */
-export interface StandardsConfigV2 {
+export interface StandardsConfig {
 	iso?: Record<string, StandardEntry>;
 	din?: Record<string, StandardEntry>;
 	ansi?: Record<string, StandardEntry>;
@@ -141,7 +141,7 @@ export function buildStandardId(system: StandardSystem, number: string): string 
  * extractAllStandardIds({ iso: { "4762": {} }, din: { "912": {} } })
  * // ["iso4762", "din912"]
  */
-export function extractAllStandardIds(config: StandardsConfigV2): string[] {
+export function extractAllStandardIds(config: StandardsConfig): string[] {
 	const ids: string[] = [];
 
 	for (const system of VALID_SYSTEMS) {
@@ -168,7 +168,7 @@ export function extractAllStandardIds(config: StandardsConfigV2): string[] {
  * getStandardEntry(config, "iso9999") // undefined
  */
 export function getStandardEntry(
-	config: StandardsConfigV2,
+	config: StandardsConfig,
 	fullId: string
 ): StandardEntry | undefined {
 	const parsed = parseStandardId(fullId);
@@ -191,7 +191,7 @@ export function getStandardEntry(
  * isWithdrawn(config, "iso4762") // false
  * isWithdrawn(config, "iso9999") // false (not found)
  */
-export function isWithdrawn(config: StandardsConfigV2, fullId: string): boolean {
+export function isWithdrawn(config: StandardsConfig, fullId: string): boolean {
 	const entry = getStandardEntry(config, fullId);
 	return entry?.withdrawn === true;
 }

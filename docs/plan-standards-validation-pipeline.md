@@ -189,13 +189,16 @@ jobs:
 3. ~~Document validation gaps - Update CLAUDE.md~~
 4. Added TDD tests in `src/lib/data/standards-validation.test.ts`
 
-### Phase 2: Input Validation
+### Phase 2: Input Validation [COMPLETED]
 
 **Priority:** High
+**Status:** Done (2026-01-11)
 
-1. Create `scripts/validate-standards-config.js`
-2. Add to CI - Run on every PR to standards-config.json
-3. Add pre-commit hook (optional)
+1. ~~Create `scripts/validate-standards-config.js`~~ - validates structure, ID format, duplicates, cross-refs
+2. ~~Add TDD tests~~ - `src/lib/utils/config-validator.test.ts` (25 tests)
+3. ~~Add pnpm script~~ - `pnpm validate-config`
+4. Add to CI - Run on every PR to standards-config.json (TODO)
+5. Add pre-commit hook (optional) (TODO)
 
 ### Phase 3: ISO Validation
 
@@ -228,9 +231,14 @@ jobs:
 
 ## Success Criteria
 
-- [ ] No invalid standards can enter standards-generated.ts
-- [ ] Weekly automated validation catches withdrawn standards
-- [ ] ICS category validation rejects non-fastener standards
+- [x] Config structure validation (Phase 2)
+- [x] ID format validation (Phase 2)
+- [x] Duplicate detection (Phase 2)
+- [x] Cross-reference validation (Phase 2)
+- [x] Build warnings for unmapped ISO standards (Phase 1)
+- [ ] No invalid standards can enter standards-generated.ts (Phase 3)
+- [ ] Weekly automated validation catches withdrawn standards (Phase 3)
+- [ ] ICS category validation rejects non-fastener standards (Phase 3)
 - [ ] Clear error messages identify exactly what's wrong
 - [ ] CI fails fast on validation errors
 - [ ] Minimal manual intervention required

@@ -21,6 +21,7 @@
 		"scrape-images": "node scripts/download-images.js",
 		"analyze-images": "node scripts/analyze-aspect-ratios.mjs",
 		"build-standards": "node scripts/build-all-standards.js",
+		"validate-config": "node scripts/validate-standards-config.js",
 		"validate-images": "node scripts/validate-images.js",
 		"generate-dinmedia-mappings": "node scripts/generate-dinmedia-mappings.js",
 		"scrape-dinmedia": "node scripts/scrape-dinmedia-metadata.js",

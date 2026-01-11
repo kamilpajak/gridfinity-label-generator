@@ -6,6 +6,7 @@
 	import BatchControls from './batch-controls.svelte';
 	import BatchLabelList from './batch-label-list.svelte';
 	import DownloadIcon from '@lucide/svelte/icons/download';
+	import RecommendedProducts from '$lib/components/affiliate/recommended-products.svelte';
 
 	let batchState = $derived($batchStore);
 	let canExport = $derived(batchState.labels.length > 0);
@@ -104,5 +105,7 @@
 				{/if}
 			</Card.Content>
 		</Card.Root>
+
+		<RecommendedProducts />
 	</div>
 </div>

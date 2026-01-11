@@ -19,7 +19,7 @@
 		{
 			dot: 'bg-purple-500',
 			ring: 'ring-purple-100',
-			border: 'border-purple-200',
+			border: 'border-purple-100',
 			line: 'border-purple-200',
 			bg: 'bg-gradient-to-br from-purple-50 to-blue-50',
 			badge: 'bg-purple-500 text-white'

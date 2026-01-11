@@ -104,6 +104,64 @@ export function validateStandardNumber(number: string): ValidationResult {
 }
 
 /**
+ * Validate a cross-reference array (helper to reduce cognitive complexity)
+ */
+function validateCrossRefArray(
+	prefix: string,
+	crossRefSystem: string,
+	crossRefs: unknown
+): string[] {
+	const errors: string[] = [];
+
+	if (!Array.isArray(crossRefs)) {
+		errors.push(`${prefix}.${crossRefSystem}: must be an array`);
+		return errors;
+	}
+
+	for (const code of crossRefs) {
+		if (typeof code !== 'string' || !/^\d+$/.test(code)) {
+			errors.push(
+				`${prefix}.${crossRefSystem}: Invalid cross-ref code "${code}" (must be numeric string)`
+			);
+		}
+	}
+
+	return errors;
+}
+
+/**
+ * Validate a single entry in a system section (helper to reduce cognitive complexity)
+ */
+function validateSectionEntry(system: string, number: string, entry: unknown): string[] {
+	const errors: string[] = [];
+	const prefix = `${system}.${number}`;
+
+	// Validate standard number format
+	const numberResult = validateStandardNumber(number);
+	if (!numberResult.valid) {
+		errors.push(`${prefix}: ${numberResult.errors[0]}`);
+		return errors;
+	}
+
+	// Validate entry is an object
+	if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+		errors.push(`${prefix}: Entry must be an object`);
+		return errors;
+	}
+
+	const entryObj = entry as Record<string, unknown>;
+
+	// Validate cross-reference arrays
+	for (const crossRefSystem of CROSSREF_SYSTEMS) {
+		if (crossRefSystem in entryObj) {
+			errors.push(...validateCrossRefArray(prefix, crossRefSystem, entryObj[crossRefSystem]));
+		}
+	}
+
+	return errors;
+}
+
+/**
  * Validate a single system section
  */
 export function validateSystemSection(
@@ -113,41 +171,7 @@ export function validateSystemSection(
 	const errors: string[] = [];
 
 	for (const [number, entry] of Object.entries(section)) {
-		// Validate standard number format
-		const numberResult = validateStandardNumber(number);
-		if (!numberResult.valid) {
-			errors.push(`${system}.${number}: ${numberResult.errors[0]}`);
-			continue;
-		}
-
-		// Validate entry is an object
-		if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
-			errors.push(`${system}.${number}: Entry must be an object`);
-			continue;
-		}
-
-		const entryObj = entry as Record<string, unknown>;
-
-		// Validate cross-reference arrays
-		for (const crossRefSystem of CROSSREF_SYSTEMS) {
-			if (crossRefSystem in entryObj) {
-				const crossRefs = entryObj[crossRefSystem];
-
-				if (!Array.isArray(crossRefs)) {
-					errors.push(`${system}.${number}.${crossRefSystem}: must be an array`);
-					continue;
-				}
-
-				// Validate each cross-ref code is numeric string
-				for (const code of crossRefs) {
-					if (typeof code !== 'string' || !/^\d+$/.test(code)) {
-						errors.push(
-							`${system}.${number}.${crossRefSystem}: Invalid cross-ref code "${code}" (must be numeric string)`
-						);
-					}
-				}
-			}
-		}
+		errors.push(...validateSectionEntry(system, number, entry));
 	}
 
 	return { valid: errors.length === 0, errors };
@@ -165,55 +189,72 @@ export function validateNoDuplicateCrossRefs(config: StandardsConfigV2): Validat
 }
 
 /**
+ * Build set of all standard IDs in config (helper to reduce cognitive complexity)
+ */
+function buildAllStandardIds(config: StandardsConfigV2): Set<string> {
+	const allIds = new Set<string>();
+	for (const system of VALID_SYSTEMS) {
+		const section = config[system];
+		if (!section) continue;
+		for (const number of Object.keys(section)) {
+			allIds.add(`${system}${number}`);
+		}
+	}
+	return allIds;
+}
+
+/**
+ * Validate withdrawn/replacedBy for a single entry (helper to reduce cognitive complexity)
+ */
+function validateEntryWithdrawnStatus(
+	fullId: string,
+	entry: StandardEntry,
+	allIds: Set<string>
+): { errors: string[]; warnings: string[] } {
+	const errors: string[] = [];
+	const warnings: string[] = [];
+
+	// Validate withdrawn field
+	if ('withdrawn' in entry && entry.withdrawn !== undefined) {
+		if (typeof entry.withdrawn !== 'boolean') {
+			errors.push(`${fullId}: "withdrawn" must be a boolean`);
+		}
+	}
+
+	// Validate replacedBy field
+	if ('replacedBy' in entry && entry.replacedBy !== undefined) {
+		const parsed = parseStandardId(entry.replacedBy);
+		if (!parsed) {
+			errors.push(`${fullId}: Invalid replacedBy format "${entry.replacedBy}"`);
+		} else if (!allIds.has(entry.replacedBy)) {
+			errors.push(`${fullId}: replacedBy references non-existent standard "${entry.replacedBy}"`);
+		}
+	}
+
+	// Warn if withdrawn but no replacedBy
+	if (entry.withdrawn === true && !entry.replacedBy) {
+		warnings.push(`${fullId}: withdrawn with no replacement specified`);
+	}
+
+	return { errors, warnings };
+}
+
+/**
  * Validate withdrawn fields and replacedBy references
  */
 export function validateWithdrawnFields(config: StandardsConfigV2): ValidationResult {
 	const errors: string[] = [];
 	const warnings: string[] = [];
+	const allIds = buildAllStandardIds(config);
 
-	// Build set of all valid standard IDs for replacedBy validation
-	const allIds = new Set<string>();
-	for (const system of VALID_SYSTEMS) {
-		const section = config[system];
-		if (section) {
-			for (const number of Object.keys(section)) {
-				allIds.add(`${system}${number}`);
-			}
-		}
-	}
-
-	// Validate each entry
 	for (const system of VALID_SYSTEMS) {
 		const section = config[system];
 		if (!section) continue;
 
 		for (const [number, entry] of Object.entries(section)) {
-			const fullId = `${system}${number}`;
-
-			// Validate withdrawn field
-			if ('withdrawn' in entry && entry.withdrawn !== undefined) {
-				if (typeof entry.withdrawn !== 'boolean') {
-					errors.push(`${fullId}: "withdrawn" must be a boolean`);
-				}
-			}
-
-			// Validate replacedBy field
-			if ('replacedBy' in entry && entry.replacedBy !== undefined) {
-				const replacedBy = entry.replacedBy;
-
-				// Check format
-				const parsed = parseStandardId(replacedBy);
-				if (!parsed) {
-					errors.push(`${fullId}: Invalid replacedBy format "${replacedBy}"`);
-				} else if (!allIds.has(replacedBy)) {
-					errors.push(`${fullId}: replacedBy references non-existent standard "${replacedBy}"`);
-				}
-			}
-
-			// Warn if withdrawn but no replacedBy
-			if (entry.withdrawn === true && !entry.replacedBy) {
-				warnings.push(`${fullId}: withdrawn with no replacement specified`);
-			}
+			const result = validateEntryWithdrawnStatus(`${system}${number}`, entry, allIds);
+			errors.push(...result.errors);
+			warnings.push(...result.warnings);
 		}
 	}
 

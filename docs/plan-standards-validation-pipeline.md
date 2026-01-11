@@ -30,8 +30,8 @@ The current DIN Media SSOT approach cannot detect:
            v                                         v
   dinmedia-id-mappings.json               +---------------------+
            |                              | Layer 2: External   |
-           v                              | +- validate-iso.js  |<-- iso.org
-  dinmedia-metadata-cache.json            | +- scrape-dinmedia  |<-- dinmedia.de
+           v                              | DIN Media SSOT      |<-- dinmedia.de
+  dinmedia-metadata-cache.json            | (DIN + EN ISO)      |
            |                              +----------+----------+
            | (partial validation)                    |
            v                                         v
@@ -62,93 +62,48 @@ The current DIN Media SSOT approach cannot detect:
 
 ### Layer 2: External Validation (Periodic)
 
-#### ISO Validation
-
-**Script:** `scripts/validate-iso-standards.js` (NEW)
+**Script:** `scripts/generate-dinmedia-mappings.js` + `scripts/scrape-dinmedia-metadata.js`
 
 **When:** Weekly CI job or manual trigger
 
-**Data source:** ISO Online Browsing Platform (OBP) - iso.org/obp
+**Data source:** DIN Media (dinmedia.de) - Single Source of Truth for both DIN and ISO
+
+**Key insight:** ISO standards are available on DIN Media as "DIN EN ISO xxxx" (European harmonized versions).
 
 **Checks:**
 
-- ISO standard exists
-- ISO standard is not withdrawn (stage code)
-- ISO standard is in fastener category (ICS 21.060.xx)
+- Standard exists in DIN Media
+- Standard is not withdrawn
+- Provides authoritative titles and metadata
 
-**Output:** `data/iso-validation-cache.json`
-
-#### DIN Media Validation
-
-**Script:** `scripts/scrape-dinmedia-metadata.js` (EXISTING)
-
-**Enhancement:** Already provides withdrawn status detection
+**Output:** `data/dinmedia-id-mappings.json`, `data/dinmedia-metadata-cache.json`
 
 ### Layer 3: Build-time Validation
 
-**Script:** `scripts/build-all-standards.js` (EXISTING, enhanced)
+**Script:** `scripts/build-all-standards.js` (with `--strict` mode)
 
 **Checks:**
 
-- Reads validation caches (ISO + DIN Media)
-- Fails build if any standard is:
-  - `WITHDRAWN` (from DIN Media or ISO cache)
-  - `NOT_FOUND` (doesn't exist)
-  - `WRONG_CATEGORY` (not fastener-related)
+- Reads DIN Media metadata cache
+- Fails build if any standard is `WITHDRAWN`
+- Warns about unmapped standards (cannot validate)
 - Generates validation report
 
 ## Technical Details
 
-### ISO.org Data Access
+### DIN Media as Single Source of Truth
 
-**Approach:** Playwright-based scraping (similar to DIN Media)
+**Why not ISO.org?**
 
-- URL pattern: `https://www.iso.org/standard/{id}.html`
-- Rate limit: 1-2 requests/second
-- Caching: 30-day validity for current standards, 7-day for withdrawn
+1. **Legal concerns:** ISO.org robots.txt explicitly blocks AI bots and has strict copyright terms
+2. **DIN Media has ISO data:** European harmonized standards (DIN EN ISO) are available
+3. **Simpler architecture:** One scraper instead of two
+4. **Proven approach:** DIN Media scraping already works in production
 
-### ISO Validation Cache Structure
+**Search strategy:**
 
-```json
-{
-	"_meta": { "version": "1.0", "lastUpdate": "2026-01-11T..." },
-	"iso4762": {
-		"exists": true,
-		"status": "PUBLISHED",
-		"stageCode": "90.93",
-		"title": "Hexagon socket head cap screws",
-		"icsCode": "21.060.10",
-		"isFastener": true,
-		"fetchedAt": "2026-01-11T...",
-		"url": "https://www.iso.org/standard/..."
-	},
-	"iso1581": {
-		"exists": false,
-		"status": "NOT_FOUND",
-		"fetchedAt": "2026-01-11T..."
-	}
-}
-```
-
-### ICS Category Validation
-
-**Fastener-related ICS codes (valid):**
-
-| Code      | Description               |
-| --------- | ------------------------- |
-| 21.060.10 | Bolts, screws, studs      |
-| 21.060.20 | Nuts                      |
-| 21.060.30 | Washers, locking elements |
-| 21.060.40 | Rivets                    |
-| 21.060.50 | Pins, nails               |
-| 21.060.70 | Threaded inserts          |
-
-**Non-fastener codes (reject):**
-
-| Code      | Description         |
-| --------- | ------------------- |
-| 53.020.30 | Lifting equipment   |
-| 23.040.xx | Pipeline components |
+- DIN standards: Search for `"DIN 912"`
+- ISO standards: Search for `"EN ISO 4762"` (European adoption)
 
 ### CI Integration
 
@@ -165,16 +120,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
       - run: pnpm install
-      - run: pnpm validate-iso
+      - run: pnpm validate-config
+      - run: pnpm generate-dinmedia-mappings
       - run: pnpm scrape-dinmedia
-      - run: pnpm build-standards --strict
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: validation-report
-          path: data/*-validation-*.json
+      - run: pnpm build-standards:strict
 ```
 
 ## Implementation Phases
@@ -200,14 +151,32 @@ jobs:
 4. Add to CI - Run on every PR to standards-config.json (TODO)
 5. Add pre-commit hook (optional) (TODO)
 
-### Phase 3: ISO Validation
+### Phase 3: DIN Media Enhanced Validation [COMPLETED - REVISED]
 
 **Priority:** Medium-High
+**Status:** Done (2026-01-11)
 
-1. Create `scripts/lib/iso-utils.js` - Playwright-based ISO.org scraper
-2. Create `scripts/validate-iso-standards.js` - Main validation script
-3. Enhance `scripts/build-all-standards.js` - Add `--strict` mode
-4. Create weekly CI workflow
+**Original plan:** ISO.org scraping was planned but abandoned due to legal concerns.
+
+**Revised approach:** DIN Media as single source of truth for both DIN and ISO standards.
+
+1. ~~Enhance `scripts/generate-dinmedia-mappings.js`~~:
+   - Source: `standards-config.json` (not just image)
+   - Search: `"EN ISO xxxx"` for ISO standards
+   - TDD tests: `src/lib/utils/dinmedia-search.test.ts` (22 tests)
+
+2. ~~Enhance `scripts/build-all-standards.js`~~:
+   - `--strict` mode fails on withdrawn standards
+   - Uses DIN Media data only (no ISO.org)
+
+3. ~~Create weekly CI workflow~~ - `.github/workflows/validate-standards.yml`
+
+**Removed (legal concerns):**
+
+- ~~`scripts/lib/iso-utils.js`~~ - ISO.org scraper
+- ~~`scripts/validate-iso-standards.js`~~ - ISO validation script
+- ~~`src/lib/utils/iso-validator.ts`~~ - ISO validation module
+- ~~`src/lib/utils/iso-scraper.ts`~~ - ISO scraper utilities
 
 ### Phase 4: Full Integration
 
@@ -222,8 +191,7 @@ jobs:
 ```json
 {
 	"validate-config": "node scripts/validate-standards-config.js",
-	"validate-iso": "node scripts/validate-iso-standards.js",
-	"validate-all": "pnpm validate-config && pnpm validate-iso && pnpm scrape-dinmedia",
+	"validate-all": "pnpm validate-config && pnpm scrape-dinmedia",
 	"build-standards": "node scripts/build-all-standards.js",
 	"build-standards:strict": "node scripts/build-all-standards.js --strict"
 }
@@ -236,16 +204,25 @@ jobs:
 - [x] Duplicate detection (Phase 2)
 - [x] Cross-reference validation (Phase 2)
 - [x] Build warnings for unmapped ISO standards (Phase 1)
-- [ ] No invalid standards can enter standards-generated.ts (Phase 3)
-- [ ] Weekly automated validation catches withdrawn standards (Phase 3)
-- [ ] ICS category validation rejects non-fastener standards (Phase 3)
-- [ ] Clear error messages identify exactly what's wrong
-- [ ] CI fails fast on validation errors
-- [ ] Minimal manual intervention required
+- [x] No withdrawn standards can enter standards-generated.ts (Phase 3 - `--strict` mode)
+- [x] Weekly automated validation catches withdrawn standards (Phase 3 - CI workflow)
+- [x] Clear error messages identify exactly what's wrong
+- [x] CI fails fast on validation errors
+- [ ] ICS category validation (deferred - requires ISO.org access)
+- [ ] Minimal manual intervention required (Phase 4 - GitHub issue auto-creation)
+
+## Limitations
+
+Due to legal concerns with ISO.org scraping, the following validations are NOT automated:
+
+1. **ICS category validation** - Cannot verify if ISO standard is in fastener category
+2. **ISO existence validation** - Cannot verify if ISO standard number exists
+3. **Unmapped ISO standards** - ~50% of ISO standards have no DIN Media mapping
+
+**Mitigation:** Manual review required when adding new ISO standards without DIN equivalents.
 
 ## References
 
 - [Issue #37: Remove 5 invalid standards from config](https://github.com/kamilpajak/gridfinity-label-generator/issues/37)
 - [ADR-001: SonarCloud Duplication Exclusions](./adr/001-sonarcloud-duplication-exclusions.md)
-- [ISO Online Browsing Platform](https://www.iso.org/obp)
 - [DIN Media](https://www.dinmedia.de)

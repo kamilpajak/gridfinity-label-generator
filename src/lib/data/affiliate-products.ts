@@ -86,3 +86,40 @@ export const AMAZON_STORE_ID = 'gridfinitylab-20';
  */
 export const AFFILIATE_DISCLOSURE =
 	'As an Amazon Associate, we earn from qualifying purchases at no extra cost to you. Prices may vary.';
+
+/**
+ * Get products filtered by category.
+ */
+export function getProductsByCategory(category: AffiliateProduct['category']): AffiliateProduct[] {
+	return affiliateProducts.filter((p) => p.category === category);
+}
+
+/**
+ * Icon name mapping for product IDs.
+ * Used by UI components to display appropriate icons.
+ */
+export type ProductIconName = 'magnet' | 'printer' | 'disc' | 'star';
+
+/**
+ * Get icon name for a product ID.
+ */
+export function getProductIconName(productId: string): ProductIconName {
+	switch (productId) {
+		case 'magnets_6x2':
+			return 'magnet';
+		case 'brother_pte560bt':
+		case 'brother_ptp710bt':
+			return 'printer';
+		case 'tze231_tape':
+			return 'disc';
+		default:
+			return 'star';
+	}
+}
+
+/**
+ * Check if a product has a valid affiliate link.
+ */
+export function hasValidAffiliateLink(product: AffiliateProduct): boolean {
+	return product.affiliateLink !== null && product.affiliateLink.startsWith('https://');
+}

@@ -8,15 +8,16 @@
 	import Info from '@lucide/svelte/icons/info';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import {
-		affiliateProducts,
 		AFFILIATE_DISCLOSURE,
+		getProductsByCategory,
+		getProductIconName,
 		type AffiliateProduct
 	} from '$lib/data/affiliate-products';
 	import { trackEvent } from '$lib/matomo';
 
-	// Group products by category
-	const printers = affiliateProducts.filter((p) => p.category === 'printer');
-	const accessories = affiliateProducts.filter((p) => p.category === 'accessory');
+	// Group products by category using shared utility
+	const printers = getProductsByCategory('printer');
+	const accessories = getProductsByCategory('accessory');
 
 	/**
 	 * Track affiliate link click in Matomo.
@@ -29,14 +30,13 @@
 	 * Get icon component for product based on ID.
 	 */
 	function getProductIcon(productId: string) {
-		switch (productId) {
-			case 'magnets_6x2':
+		const iconName = getProductIconName(productId);
+		switch (iconName) {
+			case 'magnet':
 				return Magnet;
-			case 'brother_pte560bt':
+			case 'printer':
 				return Printer;
-			case 'brother_ptp710bt':
-				return Printer;
-			case 'tze231_tape':
+			case 'disc':
 				return Disc;
 			default:
 				return Star;

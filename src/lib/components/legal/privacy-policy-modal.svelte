@@ -7,7 +7,6 @@
 	import Lock from '@lucide/svelte/icons/lock';
 	import Mail from '@lucide/svelte/icons/mail';
 	import Info from '@lucide/svelte/icons/info';
-	import { AFFILIATE_DISCLOSURE } from '$lib/data/affiliate-products';
 	import ModalWrapper from '$lib/components/shared/modal-wrapper.svelte';
 
 	interface Props {
@@ -111,7 +110,7 @@
 				<div class="rounded-lg border border-amber-200 bg-amber-50 p-4">
 					<p class="text-sm text-amber-800">
 						<Info class="mr-1 inline h-4 w-4" />
-						{AFFILIATE_DISCLOSURE}
+						As an Amazon Associate, we earn from qualifying purchases at no extra cost to you.
 					</p>
 				</div>
 			</div>

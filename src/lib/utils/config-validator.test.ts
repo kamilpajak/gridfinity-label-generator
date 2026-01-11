@@ -11,6 +11,7 @@ import {
 	validateIdFormat,
 	validateNoDuplicates,
 	validateCrossReferences,
+	validateStatusFields,
 	validateConfig,
 	type ValidationResult,
 	type StandardsConfig
@@ -255,5 +256,112 @@ describe('ValidationResult type', () => {
 		expect(result).toHaveProperty('valid');
 		expect(result).toHaveProperty('errors');
 		expect(Array.isArray(result.errors)).toBe(true);
+	});
+});
+
+describe('validateStatusFields (Phase 4: Semantic Status)', () => {
+	it('should pass when no status field is present', () => {
+		const config: StandardsConfig = {
+			crossref: { iso4762: { din: ['912'] } },
+			dinOnly: { din125: { description: 'Flat washers' } }
+		};
+		const result = validateStatusFields(config);
+		expect(result.valid).toBe(true);
+		expect(result.errors).toHaveLength(0);
+	});
+
+	it('should pass for valid status CURRENT', () => {
+		const config: StandardsConfig = {
+			crossref: {},
+			dinOnly: {
+				din125: { description: 'Flat washers', status: 'CURRENT' }
+			}
+		};
+		const result = validateStatusFields(config);
+		expect(result.valid).toBe(true);
+	});
+
+	it('should pass for valid status WITHDRAWN', () => {
+		const config: StandardsConfig = {
+			crossref: {},
+			dinOnly: {
+				din127: { description: 'Spring lock washers', status: 'WITHDRAWN' }
+			}
+		};
+		const result = validateStatusFields(config);
+		expect(result.valid).toBe(true);
+	});
+
+	it('should fail for invalid status value', () => {
+		const config = {
+			crossref: {},
+			dinOnly: {
+				din127: { description: 'Test', status: 'INVALID' }
+			}
+		} as unknown as StandardsConfig;
+		const result = validateStatusFields(config);
+		expect(result.valid).toBe(false);
+		expect(result.errors.some((e) => e.includes('Invalid status'))).toBe(true);
+	});
+
+	it('should pass when replacedBy references existing standard in crossref', () => {
+		const config: StandardsConfig = {
+			crossref: { iso7090: { din: ['125'] } },
+			dinOnly: {
+				din127: { description: 'Spring lock washers', status: 'WITHDRAWN', replacedBy: 'iso7090' }
+			}
+		};
+		const result = validateStatusFields(config);
+		expect(result.valid).toBe(true);
+	});
+
+	it('should pass when replacedBy references existing standard in dinOnly', () => {
+		const config: StandardsConfig = {
+			crossref: {},
+			dinOnly: {
+				din127: { description: 'Old washers', status: 'WITHDRAWN', replacedBy: 'din128' },
+				din128: { description: 'New washers' }
+			}
+		};
+		const result = validateStatusFields(config);
+		expect(result.valid).toBe(true);
+	});
+
+	it('should fail when replacedBy references non-existent standard', () => {
+		const config: StandardsConfig = {
+			crossref: {},
+			dinOnly: {
+				din127: { description: 'Test', status: 'WITHDRAWN', replacedBy: 'iso99999' }
+			}
+		};
+		const result = validateStatusFields(config);
+		expect(result.valid).toBe(false);
+		expect(result.errors.some((e) => e.includes('references non-existent'))).toBe(true);
+	});
+
+	it('should warn when WITHDRAWN status has no replacedBy', () => {
+		const config: StandardsConfig = {
+			crossref: {},
+			dinOnly: {
+				din935: { description: 'Castle nuts', status: 'WITHDRAWN' }
+			}
+		};
+		const result = validateStatusFields(config);
+		// This should pass but generate a warning (not an error)
+		expect(result.valid).toBe(true);
+		expect(result.warnings).toBeDefined();
+		expect(result.warnings?.some((w) => w.includes('no replacement'))).toBe(true);
+	});
+
+	it('should validate status in crossref entries too', () => {
+		const config = {
+			crossref: {
+				iso4762: { din: ['912'], status: 'INVALID' }
+			},
+			dinOnly: {}
+		} as unknown as StandardsConfig;
+		const result = validateStatusFields(config);
+		expect(result.valid).toBe(false);
+		expect(result.errors.some((e) => e.includes('Invalid status'))).toBe(true);
 	});
 });

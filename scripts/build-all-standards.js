@@ -94,7 +94,7 @@ function getDinMediaDescription(standardId, dinMediaData, fallbackDescription) {
  * @param {Object} dinMediaData - { mappings, cache } from loadDinMediaData
  * @returns {boolean} True if withdrawn
  */
-function isWithdrawn(standardId, dinMediaData) {
+function isWithdrawnInDinMedia(standardId, dinMediaData) {
 	if (!dinMediaData) return false;
 
 	const baseId = standardId.replace(/[a-z]$/i, '').toLowerCase();
@@ -103,6 +103,15 @@ function isWithdrawn(standardId, dinMediaData) {
 
 	const metadata = dinMediaData.cache[mapping.dinMediaId];
 	return metadata?.status === 'WITHDRAWN';
+}
+
+/**
+ * Check if a standard is marked as WITHDRAWN in config
+ * @param {Object} configEntry - Entry from standards-config.json
+ * @returns {boolean} True if status is WITHDRAWN
+ */
+function isWithdrawnInConfig(configEntry) {
+	return configEntry?.status === 'WITHDRAWN';
 }
 
 /**
@@ -251,7 +260,8 @@ async function buildStandards() {
 
 	// Process ISO standards from crossref
 	console.log('\n📚 Processing ISO standards from crossref...');
-	const withdrawnISO = [];
+	const acknowledgedWithdrawnISO = []; // Marked as WITHDRAWN in config
+	const unexpectedWithdrawnISO = []; // WITHDRAWN in DIN Media but not marked in config
 	const unmappedISO = [];
 
 	const processedISO = Object.entries(config.crossref).map(([id, crossref]) => {
@@ -265,9 +275,14 @@ async function buildStandards() {
 		addDesignationSystem(designations, crossref, 'ANSI');
 		addDesignationSystem(designations, crossref, 'PN');
 
-		// Check if withdrawn
-		if (isWithdrawn(id, dinMediaData)) {
-			withdrawnISO.push(id);
+		// Check withdrawn status
+		const markedWithdrawn = isWithdrawnInConfig(crossref);
+		const dinMediaWithdrawn = isWithdrawnInDinMedia(id, dinMediaData);
+
+		if (markedWithdrawn) {
+			acknowledgedWithdrawnISO.push(id);
+		} else if (dinMediaWithdrawn) {
+			unexpectedWithdrawnISO.push(id);
 		}
 
 		// Track unmapped ISO standards (cannot be validated)
@@ -296,8 +311,15 @@ async function buildStandards() {
 	});
 
 	console.log(`   Found ${processedISO.length} ISO standards`);
-	if (withdrawnISO.length > 0) {
-		console.log(`   ⚠️  ${withdrawnISO.length} withdrawn: ${withdrawnISO.join(', ')}`);
+	if (acknowledgedWithdrawnISO.length > 0) {
+		console.log(
+			`   ℹ️  ${acknowledgedWithdrawnISO.length} acknowledged WITHDRAWN (marked in config)`
+		);
+	}
+	if (unexpectedWithdrawnISO.length > 0) {
+		console.log(
+			`   ⚠️  ${unexpectedWithdrawnISO.length} unexpected withdrawn: ${unexpectedWithdrawnISO.join(', ')}`
+		);
 	}
 	if (unmappedISO.length > 0) {
 		console.log(
@@ -305,30 +327,34 @@ async function buildStandards() {
 		);
 	}
 
-	// STRICT MODE: Fail if any withdrawn standards found
-	if (STRICT_MODE && withdrawnISO.length > 0) {
+	// STRICT MODE: Only fail on UNEXPECTED withdrawn standards (not marked in config)
+	if (STRICT_MODE && unexpectedWithdrawnISO.length > 0) {
 		console.log('\n❌ STRICT MODE VALIDATION FAILED!\n');
-		console.log('   Withdrawn ISO standards found:\n');
-		for (const id of withdrawnISO) {
-			console.log(`   • ${id}: WITHDRAWN (from DIN Media)`);
+		console.log('   Unexpected withdrawn ISO standards found:\n');
+		for (const id of unexpectedWithdrawnISO) {
+			console.log(`   • ${id}: WITHDRAWN in DIN Media but not marked in config`);
 		}
-		console.log(
-			'\n   Remove these standards from standards-config.json or update DIN Media cache.\n'
-		);
+		console.log('\n   Add "status": "WITHDRAWN" to these entries in standards-config.json.\n');
 		process.exit(1);
 	}
 
 	// Process DIN-only standards
 	console.log('🔩 Processing DIN-only standards...');
-	const withdrawnDIN = [];
+	const acknowledgedWithdrawnDIN = []; // Marked as WITHDRAWN in config
+	const unexpectedWithdrawnDIN = []; // WITHDRAWN in DIN Media but not marked in config
 
 	const dinStandards = Object.entries(config.dinOnly).map(([id, dinConfig]) => {
 		const dinNumber = id.replace('din', '');
 		const designations = [{ system: 'DIN', code: dinNumber }];
 
-		// Check if withdrawn
-		if (isWithdrawn(id, dinMediaData)) {
-			withdrawnDIN.push(id);
+		// Check withdrawn status
+		const markedWithdrawn = isWithdrawnInConfig(dinConfig);
+		const dinMediaWithdrawn = isWithdrawnInDinMedia(id, dinMediaData);
+
+		if (markedWithdrawn) {
+			acknowledgedWithdrawnDIN.push(id);
+		} else if (dinMediaWithdrawn) {
+			unexpectedWithdrawnDIN.push(id);
 		}
 
 		// Get description from DIN Media (SSOT) or fallback to config
@@ -349,29 +375,36 @@ async function buildStandards() {
 	});
 
 	console.log(`   Found ${dinStandards.length} DIN-only standards`);
-	if (withdrawnDIN.length > 0) {
+	if (acknowledgedWithdrawnDIN.length > 0) {
 		console.log(
-			`   ⚠️  ${withdrawnDIN.length} withdrawn: ${withdrawnDIN.slice(0, 10).join(', ')}${withdrawnDIN.length > 10 ? '...' : ''}`
+			`   ℹ️  ${acknowledgedWithdrawnDIN.length} acknowledged WITHDRAWN (marked in config)`
+		);
+	}
+	if (unexpectedWithdrawnDIN.length > 0) {
+		console.log(
+			`   ⚠️  ${unexpectedWithdrawnDIN.length} unexpected withdrawn: ${unexpectedWithdrawnDIN.slice(0, 10).join(', ')}${unexpectedWithdrawnDIN.length > 10 ? '...' : ''}`
 		);
 	}
 
-	// STRICT MODE: Fail if any withdrawn DIN standards found
-	if (STRICT_MODE && withdrawnDIN.length > 0) {
+	// STRICT MODE: Only fail on UNEXPECTED withdrawn standards
+	if (STRICT_MODE && unexpectedWithdrawnDIN.length > 0) {
 		console.log('\n❌ STRICT MODE VALIDATION FAILED!\n');
-		console.log('   Withdrawn DIN standards found:\n');
-		for (const id of withdrawnDIN) {
-			console.log(`   • ${id}: WITHDRAWN (from DIN Media)`);
+		console.log('   Unexpected withdrawn DIN standards found:\n');
+		for (const id of unexpectedWithdrawnDIN) {
+			console.log(`   • ${id}: WITHDRAWN in DIN Media but not marked in config`);
 		}
-		console.log(
-			'\n   Remove these standards from standards-config.json or update DIN Media cache.\n'
-		);
+		console.log('\n   Add "status": "WITHDRAWN" to these entries in standards-config.json.\n');
 		process.exit(1);
 	}
 
 	// STRICT MODE: Summary
 	if (STRICT_MODE) {
+		const totalWithdrawn = acknowledgedWithdrawnISO.length + acknowledgedWithdrawnDIN.length;
 		const totalMapped = processedISO.length - unmappedISO.length + dinStandards.length;
-		console.log(`\n   ✅ STRICT: All ${totalMapped} mapped standards are valid (not withdrawn)`);
+		console.log(`\n   ✅ STRICT: All ${totalMapped} mapped standards validated`);
+		if (totalWithdrawn > 0) {
+			console.log(`   ℹ️  ${totalWithdrawn} standards marked as WITHDRAWN (acknowledged)`);
+		}
 		if (unmappedISO.length > 0) {
 			console.log(
 				`   ⚠️  ${unmappedISO.length} ISO standards without DIN Media mapping - cannot validate`

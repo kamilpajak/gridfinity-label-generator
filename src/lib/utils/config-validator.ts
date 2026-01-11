@@ -8,26 +8,36 @@
  */
 
 /**
+ * Valid status values for standards
+ */
+export type StandardStatus = 'CURRENT' | 'WITHDRAWN';
+
+/**
  * Result of a validation operation
  */
 export interface ValidationResult {
 	valid: boolean;
 	errors: string[];
+	warnings?: string[];
 }
 
 /**
  * Expected structure of a crossref entry
  */
-interface CrossrefEntry {
+export interface CrossrefEntry {
 	din: string[];
+	status?: StandardStatus;
+	replacedBy?: string;
 	[key: string]: unknown;
 }
 
 /**
  * Expected structure of a dinOnly entry
  */
-interface DinOnlyEntry {
+export interface DinOnlyEntry {
 	description: string;
+	status?: StandardStatus;
+	replacedBy?: string;
 	[key: string]: unknown;
 }
 
@@ -150,6 +160,67 @@ export function validateCrossReferences(config: StandardsConfig): ValidationResu
 }
 
 /**
+ * Valid status values
+ */
+const VALID_STATUSES: StandardStatus[] = ['CURRENT', 'WITHDRAWN'];
+
+/**
+ * Validate status and replacedBy fields in config entries
+ */
+export function validateStatusFields(config: StandardsConfig): ValidationResult {
+	const errors: string[] = [];
+	const warnings: string[] = [];
+
+	// Get all valid standard IDs for replacedBy validation
+	const allIds = new Set([
+		...Object.keys(config.crossref || {}),
+		...Object.keys(config.dinOnly || {})
+	]);
+
+	// Helper to validate a single entry
+	const validateEntry = (id: string, entry: CrossrefEntry | DinOnlyEntry) => {
+		// Validate status if present
+		if ('status' in entry && entry.status !== undefined) {
+			if (!VALID_STATUSES.includes(entry.status as StandardStatus)) {
+				errors.push(
+					`Entry "${id}": Invalid status "${entry.status}" (must be CURRENT or WITHDRAWN)`
+				);
+			}
+		}
+
+		// Validate replacedBy if present
+		if ('replacedBy' in entry && entry.replacedBy !== undefined) {
+			if (!allIds.has(entry.replacedBy)) {
+				errors.push(
+					`Entry "${id}": replacedBy references non-existent standard "${entry.replacedBy}"`
+				);
+			}
+		}
+
+		// Warn if WITHDRAWN but no replacedBy
+		if (entry.status === 'WITHDRAWN' && !entry.replacedBy) {
+			warnings.push(`Entry "${id}": WITHDRAWN status with no replacement specified`);
+		}
+	};
+
+	// Validate crossref entries
+	for (const [id, entry] of Object.entries(config.crossref || {})) {
+		validateEntry(id, entry);
+	}
+
+	// Validate dinOnly entries
+	for (const [id, entry] of Object.entries(config.dinOnly || {})) {
+		validateEntry(id, entry);
+	}
+
+	return {
+		valid: errors.length === 0,
+		errors,
+		warnings: warnings.length > 0 ? warnings : undefined
+	};
+}
+
+/**
  * Run all validations on the config
  */
 export function validateConfig(config: unknown): ValidationResult {
@@ -181,5 +252,13 @@ export function validateConfig(config: unknown): ValidationResult {
 	const crossrefResult = validateCrossReferences(cfg);
 	allErrors.push(...crossrefResult.errors);
 
-	return { valid: allErrors.length === 0, errors: allErrors };
+	// Step 5: Validate status fields (Phase 4)
+	const statusResult = validateStatusFields(cfg);
+	allErrors.push(...statusResult.errors);
+
+	return {
+		valid: allErrors.length === 0,
+		errors: allErrors,
+		warnings: statusResult.warnings
+	};
 }

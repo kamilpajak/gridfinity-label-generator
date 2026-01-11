@@ -178,9 +178,43 @@ jobs:
 - ~~`src/lib/utils/iso-validator.ts`~~ - ISO validation module
 - ~~`src/lib/utils/iso-scraper.ts`~~ - ISO scraper utilities
 
-### Phase 4: Full Integration
+### Phase 4: Semantic Status for Withdrawn Standards [COMPLETED]
 
-**Priority:** Medium
+**Priority:** High
+**Status:** Done (2026-01-11)
+
+**Problem:** 26 DIN standards are marked as WITHDRAWN by DIN Media, but are still widely manufactured and used.
+
+**Solution:** Add semantic `status` and `replacedBy` fields to config schema.
+
+1. ~~Update config schema~~ - Add `status` (CURRENT/WITHDRAWN) and `replacedBy` fields
+2. ~~Update config-validator~~ - Validate new fields with TDD (9 new tests)
+3. ~~Update standards-config.json~~ - Add status to 26 withdrawn standards
+4. ~~Update build script~~ - Handle withdrawn gracefully (acknowledged vs unexpected)
+
+**Config schema:**
+
+```json
+{
+	"dinOnly": {
+		"din127": {
+			"description": "Spring lock washers",
+			"status": "WITHDRAWN",
+			"replacedBy": "iso7090"
+		}
+	}
+}
+```
+
+**CI behavior:**
+
+- `status: WITHDRAWN` with `replacedBy` → OK (info)
+- `status: WITHDRAWN` without `replacedBy` → warning
+- Unknown standard → fail
+
+### Phase 5: Full Integration
+
+**Priority:** Low
 
 1. Unified validation report (HTML + JSON)
 2. GitHub issue auto-creation on validation failure

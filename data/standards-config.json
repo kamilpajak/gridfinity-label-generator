@@ -315,7 +315,8 @@
 	},
 	"dinOnly": {
 		"din93": {
-			"description": "Tab washers with long tab"
+			"description": "Tab washers with long tab",
+			"status": "WITHDRAWN"
 		},
 		"din95": {
 			"description": "Slotted countersunk flat head wood screws"
@@ -330,10 +331,12 @@
 			"description": "Cross recessed countersunk head wood screws"
 		},
 		"din127": {
-			"description": "Spring lock washers, Type A"
+			"description": "Spring lock washers, Type A",
+			"status": "WITHDRAWN"
 		},
 		"din128": {
-			"description": "Curved spring lock washers, Type B"
+			"description": "Curved spring lock washers, Type B",
+			"status": "WITHDRAWN"
 		},
 		"din137": {
 			"description": "Wave spring washers, Type A"
@@ -357,7 +360,8 @@
 			"description": "Pipe nuts"
 		},
 		"din432": {
-			"description": "Tab washers with nose"
+			"description": "Tab washers with nose",
+			"status": "WITHDRAWN"
 		},
 		"din434": {
 			"description": "Square taper washers for U-sections"
@@ -375,7 +379,8 @@
 			"description": "Tab washers with 2 tabs"
 		},
 		"din463": {
-			"description": "Tab washers with long tab and wing"
+			"description": "Tab washers with long tab and wing",
+			"status": "WITHDRAWN"
 		},
 		"din464": {
 			"description": "Knurled thumb screws, high type"
@@ -402,7 +407,8 @@
 			"description": "Square head bolts with short thread"
 		},
 		"din508": {
-			"description": "T-slot stones"
+			"description": "T-slot stones",
+			"status": "WITHDRAWN"
 		},
 		"din546": {
 			"description": "Round nuts with set pin holes in side"
@@ -441,7 +447,8 @@
 			"description": "Cup head square neck bolts"
 		},
 		"din610": {
-			"description": "Countersunk head rivets"
+			"description": "Countersunk head rivets",
+			"status": "WITHDRAWN"
 		},
 		"din653": {
 			"description": "Knurled head screws"
@@ -459,13 +466,16 @@
 			"description": "Square weld nuts"
 		},
 		"din935": {
-			"description": "Hexagon castle nuts"
+			"description": "Hexagon castle nuts",
+			"status": "WITHDRAWN"
 		},
 		"din936": {
-			"description": "Hexagon thin nuts"
+			"description": "Hexagon thin nuts",
+			"status": "WITHDRAWN"
 		},
 		"din937": {
-			"description": "Hexagon crown nuts"
+			"description": "Hexagon crown nuts",
+			"status": "WITHDRAWN"
 		},
 		"din979": {
 			"description": "Hexagon thin nuts with collar"
@@ -504,7 +514,8 @@
 			"description": "Slotted headless screws with shank"
 		},
 		"din2093": {
-			"description": "Disc springs"
+			"description": "Disc springs",
+			"status": "WITHDRAWN"
 		},
 		"din2510": {
 			"description": "DIN 2510 fastener"
@@ -516,7 +527,8 @@
 			"description": "Washers for HV bolts"
 		},
 		"din6319": {
-			"description": "Spherical washers, conical seats"
+			"description": "Spherical washers, conical seats",
+			"status": "WITHDRAWN"
 		},
 		"din6330": {
 			"description": "Hexagon nuts for structural steel bolting"
@@ -534,19 +546,24 @@
 			"description": "Conical spring washers for bolted connections"
 		},
 		"din6797": {
-			"description": "Countersunk serrated lock washers, Type A"
+			"description": "Countersunk serrated lock washers, Type A",
+			"status": "WITHDRAWN"
 		},
 		"din6798": {
-			"description": "Serrated lock washers, Type J"
+			"description": "Serrated lock washers, Type J",
+			"status": "WITHDRAWN"
 		},
 		"din6914": {
-			"description": "Hexagon socket button head screws with collar"
+			"description": "Hexagon socket button head screws with collar",
+			"status": "WITHDRAWN"
 		},
 		"din6915": {
-			"description": "Hexagon socket set screws with dog point and collar"
+			"description": "Hexagon socket set screws with dog point and collar",
+			"status": "WITHDRAWN"
 		},
 		"din6916": {
-			"description": "Plain washers for high-strength structural bolting (HV)"
+			"description": "Plain washers for high-strength structural bolting (HV)",
+			"status": "WITHDRAWN"
 		},
 		"din6917": {
 			"description": "Square taper washers for I-sections"
@@ -555,16 +572,20 @@
 			"description": "Hexagon socket head cap screws with collar"
 		},
 		"din6923": {
-			"description": "Hexagon flange nuts"
+			"description": "Hexagon flange nuts",
+			"status": "WITHDRAWN"
 		},
 		"din6925": {
-			"description": "Prevailing torque type hexagon nuts with flange"
+			"description": "Prevailing torque type hexagon nuts with flange",
+			"status": "WITHDRAWN"
 		},
 		"din6926": {
-			"description": "Prevailing torque type hexagon flange nuts"
+			"description": "Prevailing torque type hexagon flange nuts",
+			"status": "WITHDRAWN"
 		},
 		"din6927": {
-			"description": "Prevailing torque type all-metal hexagon flange nuts"
+			"description": "Prevailing torque type all-metal hexagon flange nuts",
+			"status": "WITHDRAWN"
 		},
 		"din7349": {
 			"description": "Shim rings"
@@ -582,7 +603,8 @@
 			"description": "Cross recessed countersunk head drilling screws"
 		},
 		"din7980": {
-			"description": "Lock washers for cheese head screws"
+			"description": "Lock washers for cheese head screws",
+			"status": "WITHDRAWN"
 		},
 		"din7984": {
 			"description": "Hexagon socket low head cap screws"
@@ -591,10 +613,13 @@
 			"description": "Hexagon socket set screws with flat point and brass tip"
 		},
 		"din7991": {
-			"description": "Hexagon socket countersunk flat head screws"
+			"description": "Hexagon socket countersunk flat head screws",
+			"status": "WITHDRAWN",
+			"replacedBy": "iso10642"
 		},
 		"din7999": {
-			"description": "Threaded studs"
+			"description": "Threaded studs",
+			"status": "WITHDRAWN"
 		},
 		"din11014": {
 			"description": "Hexagon head bolts with flange"
@@ -606,13 +631,15 @@
 			"description": "Stud bolts for flanges"
 		},
 		"din22424": {
-			"description": "Parallel pins with internal thread"
+			"description": "Parallel pins with internal thread",
+			"status": "WITHDRAWN"
 		},
 		"din25193": {
 			"description": "Railway screws"
 		},
 		"din25201": {
-			"description": "Wedge locking washers"
+			"description": "Wedge locking washers",
+			"status": "WITHDRAWN"
 		},
 		"din34817": {
 			"description": "Spring steel disc washers"

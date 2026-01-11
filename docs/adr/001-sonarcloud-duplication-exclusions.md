@@ -14,6 +14,7 @@ SonarCloud Quality Gate was failing due to code duplication at 15.2%, exceeding 
 
 - `src/lib/components/whats-new/*.svelte` - What's New modal with changelog entries
 - `src/lib/components/legal/*.svelte` - Privacy Policy modal with policy sections
+- `src/lib/components/shared/modal-wrapper.svelte` - Shared modal wrapper component
 
 ### Refactoring Already Performed
 
@@ -40,7 +41,7 @@ Despite these efforts, duplication remained at 15.2% due to the inherent similar
 Use `sonar.cpd.exclusions` to exclude specific content-heavy Svelte components from Copy-Paste Detection (CPD):
 
 ```properties
-sonar.cpd.exclusions=...,**/whats-new/**/*.svelte,**/legal/**/*.svelte
+sonar.cpd.exclusions=...,**/whats-new/**/*.svelte,**/legal/**/*.svelte,**/shared/modal-wrapper.svelte
 ```
 
 ## Rationale

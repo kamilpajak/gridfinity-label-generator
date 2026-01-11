@@ -26,6 +26,24 @@
 		"url": "https://www.dinmedia.de/en/standard/din-7993/506947",
 		"fetchedAt": "2026-01-06T22:29:40.414Z"
 	},
+	"507320": {
+		"designation": "DIN 11014:1968-07",
+		"titleEn": "Agricultural equipment; countersunk double-nip bolts, sinkings, metric thread, finish",
+		"status": "CURRENT",
+		"publicationDate": "1968-07",
+		"dinMediaId": "507320",
+		"url": "https://www.dinmedia.de/en/standard/din-11014/507320",
+		"fetchedAt": "2026-01-11T20:02:23.638Z"
+	},
+	"532803": {
+		"designation": "DIN 7341:1977-07",
+		"titleEn": "Rivet Pins",
+		"status": "CURRENT",
+		"publicationDate": "1977-07",
+		"dinMediaId": "532803",
+		"url": "https://www.dinmedia.de/en/standard/din-7341/532803",
+		"fetchedAt": "2026-01-11T20:02:19.367Z"
+	},
 	"673811": {
 		"designation": "DIN 15237:1980-01",
 		"titleEn": "Continuous mechanical handling equipment; seating screws and cupped washers for the attachment of components to belts",
@@ -43,6 +61,15 @@
 		"dinMediaId": "678813",
 		"url": "https://www.dinmedia.de/en/standard/din-462/678813",
 		"fetchedAt": "2026-01-06T22:25:18.026Z"
+	},
+	"680543": {
+		"designation": "DIN 792:1976-03",
+		"titleEn": "Cylindrical counter sunk screws",
+		"status": "CURRENT",
+		"publicationDate": "1976-03",
+		"dinMediaId": "680543",
+		"url": "https://www.dinmedia.de/en/standard/din-792/680543",
+		"fetchedAt": "2026-01-11T20:01:03.146Z"
 	},
 	"689902": {
 		"designation": "DIN 1804:1971-03",
@@ -169,6 +196,15 @@
 		"dinMediaId": "737169",
 		"url": "https://www.dinmedia.de/en/standard/iso-299/737169",
 		"fetchedAt": "2026-01-06T22:11:58.116Z"
+	},
+	"763066": {
+		"designation": "DIN 70952:1976-05",
+		"titleEn": "Locking plates for groove nuts DIN 70852",
+		"status": "CURRENT",
+		"publicationDate": "1976-05",
+		"dinMediaId": "763066",
+		"url": "https://www.dinmedia.de/en/standard/din-70952/763066",
+		"fetchedAt": "2026-01-11T20:02:41.892Z"
 	},
 	"885037": {
 		"designation": "DIN 6304:1981-01",
@@ -341,6 +377,15 @@
 		"url": "https://www.dinmedia.de/en/standard/din-7344/1457515",
 		"fetchedAt": "2026-01-06T22:28:11.318Z"
 	},
+	"1479041": {
+		"designation": "DIN 6917:1989-10",
+		"titleEn": "Square taper washers for high-strength structural bolting of steel I sections",
+		"status": "CURRENT",
+		"publicationDate": "1989-10",
+		"dinMediaId": "1479041",
+		"url": "https://www.dinmedia.de/en/standard/din-6917/1479041",
+		"fetchedAt": "2026-01-11T20:01:54.770Z"
+	},
 	"1481964": {
 		"designation": "DIN 7977:1977-02",
 		"titleEn": "Taper Pins with Thread Ends and Constant Point Lengths",
@@ -368,6 +413,15 @@
 		"url": "https://www.dinmedia.de/en/standard/din-7979/1482099",
 		"fetchedAt": "2026-01-06T22:27:55.878Z"
 	},
+	"1493983": {
+		"designation": "DIN 21346:1989-11",
+		"titleEn": "Square head bolts for shaft guides",
+		"status": "CURRENT",
+		"publicationDate": "1989-11",
+		"dinMediaId": "1493983",
+		"url": "https://www.dinmedia.de/en/standard/din-21346/1493983",
+		"fetchedAt": "2026-01-11T20:02:29.010Z"
+	},
 	"1513410": {
 		"designation": "DIN 7500:1978-10",
 		"titleEn": "Thread rolling screws for metric ISO thread",
@@ -377,6 +431,15 @@
 		"url": "https://www.dinmedia.de/en/standard/din-7500/1513410",
 		"fetchedAt": "2026-01-06T22:27:32.808Z"
 	},
+	"1535015": {
+		"designation": "DIN 6918:1990-04",
+		"titleEn": "Square taper washers for high-strength structual bolting of steel channel sections",
+		"status": "CURRENT",
+		"publicationDate": "1990-04",
+		"dinMediaId": "1535015",
+		"url": "https://www.dinmedia.de/en/standard/din-6918/1535015",
+		"fetchedAt": "2026-01-11T20:01:58.295Z"
+	},
 	"1682507": {
 		"designation": "DIN 22424:1955-04",
 		"titleEn": "Firedamp-proof and explosion-proof instruments; three-square bolts",
@@ -385,6 +448,15 @@
 		"dinMediaId": "1682507",
 		"url": "https://www.dinmedia.de/en/standard/din-22424/1682507",
 		"fetchedAt": "2026-01-06T22:18:04.320Z"
+	},
+	"1728268": {
+		"designation": "DIN 7337:1991-08",
+		"titleEn": "Break mandrel blind rivets",
+		"status": "WITHDRAWN",
+		"publicationDate": "1991-08",
+		"dinMediaId": "1728268",
+		"url": "https://www.dinmedia.de/en/standard/din-7337/1728268",
+		"fetchedAt": "2026-01-11T20:02:02.130Z"
 	},
 	"1835005": {
 		"designation": "DIN 1474:1978-11",
@@ -475,6 +547,24 @@
 		"dinMediaId": "2370631",
 		"url": "https://www.dinmedia.de/en/standard/din-128/2370631",
 		"fetchedAt": "2026-01-06T22:24:24.113Z"
+	},
+	"2416191": {
+		"designation": "DIN EN 20105-A02:1994-10",
+		"titleEn": "Textiles - Tests for colour fastness - Part A02: Grey scale for assessing change in colour (ISO 105-A02:1993); German version EN 20105-A02:1994",
+		"status": "CURRENT",
+		"publicationDate": "1994-10",
+		"dinMediaId": "2416191",
+		"url": "https://www.dinmedia.de/en/standard/din-en-20105-a02/2416191",
+		"fetchedAt": "2026-01-11T20:01:32.409Z"
+	},
+	"2458634": {
+		"designation": "DIN 564:1995-02",
+		"titleEn": "Hexagon head set screws with small hexagon and half dog point and flat cone point",
+		"status": "CURRENT",
+		"publicationDate": "1995-02",
+		"dinMediaId": "2458634",
+		"url": "https://www.dinmedia.de/en/standard/din-564/2458634",
+		"fetchedAt": "2026-01-11T20:00:46.262Z"
 	},
 	"2580738": {
 		"designation": "DIN 7504:1995-09",
@@ -575,6 +665,15 @@
 		"url": "https://www.dinmedia.de/en/standard/din-964/2888850",
 		"fetchedAt": "2026-01-06T22:27:08.512Z"
 	},
+	"3038882": {
+		"designation": "DIN 911:1987-03",
+		"titleEn": "Hexagon socket screw keys (allen keys)",
+		"status": "WITHDRAWN",
+		"publicationDate": "1987-03",
+		"dinMediaId": "3038882",
+		"url": "https://www.dinmedia.de/en/standard/din-911/3038882",
+		"fetchedAt": "2026-01-11T20:01:08.812Z"
+	},
 	"3074633": {
 		"designation": "DIN 7980:1987-10",
 		"titleEn": "Spring lock washers with spuare ends for cheese head screws",
@@ -601,6 +700,24 @@
 		"dinMediaId": "3360470",
 		"url": "https://www.dinmedia.de/en/standard/din-en-iso-8742/3360470",
 		"fetchedAt": "2026-01-06T22:14:45.885Z"
+	},
+	"3360492": {
+		"designation": "DIN EN ISO 1234:1998-02",
+		"titleEn": "Split pins (ISO 1234:1997); German version EN ISO 1234:1997",
+		"status": "CURRENT",
+		"publicationDate": "1998-02",
+		"dinMediaId": "3360492",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-1234/3360492",
+		"fetchedAt": "2026-01-11T19:54:52.272Z"
+	},
+	"3361069": {
+		"designation": "DIN EN ISO 8733:1998-03",
+		"titleEn": "Parallel pins with internal thread, of unhardened and austenitic stainless steel (ISO 8733:1997); German version EN ISO 8733:1997",
+		"status": "CURRENT",
+		"publicationDate": "1998-03",
+		"dinMediaId": "3361069",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-8733/3361069",
+		"fetchedAt": "2026-01-11T19:57:30.254Z"
 	},
 	"3507549": {
 		"designation": "ISO 2338:1997-11",
@@ -845,6 +962,24 @@
 		"url": "https://www.dinmedia.de/en/standard/din-934/7381044",
 		"fetchedAt": "2026-01-06T22:19:18.112Z"
 	},
+	"23670852": {
+		"designation": "DIN EN ISO 15483:2000-02",
+		"titleEn": "Cross recessed raised countersunk head drilling screws with tapping screw thread (ISO 15483:1999); German version EN ISO 15483:1999",
+		"status": "CURRENT",
+		"publicationDate": "2000-02",
+		"dinMediaId": "23670852",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15483/23670852",
+		"fetchedAt": "2026-01-11T19:59:04.860Z"
+	},
+	"23671980": {
+		"designation": "DIN EN ISO 10669:1999-11",
+		"titleEn": "Plain washers for tapping screw and washer assemblies - Normal and large series - Product grade A (ISO 10669:1999); German version EN ISO 10669:1999",
+		"status": "CURRENT",
+		"publicationDate": "1999-11",
+		"dinMediaId": "23671980",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-10669/23671980",
+		"fetchedAt": "2026-01-11T19:58:09.771Z"
+	},
 	"25334161": {
 		"designation": "ISO 15481:1999-08",
 		"titleEn": "Cross recessed pan head drilling screws with tapping screw thread",
@@ -871,6 +1006,15 @@
 		"dinMediaId": "34242692",
 		"url": "https://www.dinmedia.de/en/standard/din-en-iso-7093-2/34242692",
 		"fetchedAt": "2026-01-06T22:13:05.808Z"
+	},
+	"34243245": {
+		"designation": "DIN EN ISO 7090:2000-11",
+		"titleEn": "Plain washers, chamfered - Normal series, Product grade A (ISO 7090:2000); German version EN ISO 7090:2000",
+		"status": "CURRENT",
+		"publicationDate": "2000-11",
+		"dinMediaId": "34243245",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-7090/34243245",
+		"fetchedAt": "2026-01-11T19:56:32.983Z"
 	},
 	"34334832": {
 		"designation": "ISO 7089:2000-06",
@@ -908,6 +1052,24 @@
 		"url": "https://www.dinmedia.de/en/standard/iso-7094/34535874",
 		"fetchedAt": "2026-01-06T22:13:10.140Z"
 	},
+	"39478530": {
+		"designation": "DIN EN ISO 15973:2001-08",
+		"titleEn": "Closed end blind rivets with break pull mandrel and protruding head - AlA/St (ISO 15973:2000); German version EN ISO 15973:2000",
+		"status": "CURRENT",
+		"publicationDate": "2001-08",
+		"dinMediaId": "39478530",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15973/39478530",
+		"fetchedAt": "2026-01-11T19:59:09.197Z"
+	},
+	"39478702": {
+		"designation": "DIN EN ISO 15974:2001-08",
+		"titleEn": "Closed end blind rivets with break pull mandrel and countersunk head - AlA/St (ISO 15974:2000); German version EN ISO 15974:2000",
+		"status": "CURRENT",
+		"publicationDate": "2001-08",
+		"dinMediaId": "39478702",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15974/39478702",
+		"fetchedAt": "2026-01-11T19:59:13.152Z"
+	},
 	"39910272": {
 		"designation": "DIN 7603:2001-05",
 		"titleEn": "Sealing rings",
@@ -925,6 +1087,96 @@
 		"dinMediaId": "47866548",
 		"url": "https://www.dinmedia.de/en/standard/din-6305/47866548",
 		"fetchedAt": "2026-01-06T22:22:40.449Z"
+	},
+	"57580888": {
+		"designation": "DIN EN ISO 15975:2003-04",
+		"titleEn": "Closed end blind rivets with break pull mandrel and protruding head - Al/AlA (ISO 15975:2002); German version EN ISO 15975:2002",
+		"status": "CURRENT",
+		"publicationDate": "2003-04",
+		"dinMediaId": "57580888",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15975/57580888",
+		"fetchedAt": "2026-01-11T19:59:17.486Z"
+	},
+	"57581056": {
+		"designation": "DIN EN ISO 15976:2003-04",
+		"titleEn": "Closed end blind rivets with break pull mandrel and protruding head - St/St (ISO 15976:2002); German version EN ISO 15976:2002",
+		"status": "CURRENT",
+		"publicationDate": "2003-04",
+		"dinMediaId": "57581056",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15976/57581056",
+		"fetchedAt": "2026-01-11T19:59:21.771Z"
+	},
+	"57581577": {
+		"designation": "DIN EN ISO 15978:2003-04",
+		"titleEn": "Open end blind rivets with break pull mandrel and countersunk head - AlA/St (ISO 15978:2002); German version EN ISO 15978:2002",
+		"status": "CURRENT",
+		"publicationDate": "2003-04",
+		"dinMediaId": "57581577",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15978/57581577",
+		"fetchedAt": "2026-01-11T19:59:35.113Z"
+	},
+	"57581708": {
+		"designation": "DIN EN ISO 15979:2003-04",
+		"titleEn": "Open end blind rivets with break pull mandrel and protruding head - St/St (ISO 15979:2002); German version EN ISO 15979:2002",
+		"status": "CURRENT",
+		"publicationDate": "2003-04",
+		"dinMediaId": "57581708",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15979/57581708",
+		"fetchedAt": "2026-01-11T19:59:38.638Z"
+	},
+	"57581787": {
+		"designation": "DIN EN ISO 15980:2003-04",
+		"titleEn": "Open end blind rivets with break pull mandrel and countersunk head - St/St (ISO 15980:2002); German version EN ISO 15980:2002",
+		"status": "CURRENT",
+		"publicationDate": "2003-04",
+		"dinMediaId": "57581787",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15980/57581787",
+		"fetchedAt": "2026-01-11T19:59:43.835Z"
+	},
+	"57581821": {
+		"designation": "DIN EN ISO 15981:2003-04",
+		"titleEn": "Open end blind rivets with break pull mandrel and protruding head - AlA/AlA (ISO 15981:2002); German version EN ISO 15981:2002",
+		"status": "CURRENT",
+		"publicationDate": "2003-04",
+		"dinMediaId": "57581821",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15981/57581821",
+		"fetchedAt": "2026-01-11T19:59:49.184Z"
+	},
+	"57581858": {
+		"designation": "DIN EN ISO 15982:2003-04",
+		"titleEn": "Open end blind rivets with break pull mandrel and countersunk head - AlA/AlA (ISO 15982:2002); German version EN ISO 15982:2002",
+		"status": "CURRENT",
+		"publicationDate": "2003-04",
+		"dinMediaId": "57581858",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15982/57581858",
+		"fetchedAt": "2026-01-11T19:59:53.371Z"
+	},
+	"57582428": {
+		"designation": "DIN EN ISO 15983:2003-04",
+		"titleEn": "Open end blind rivets with break pull mandrel and protruding head - A2/A2 (ISO 15983:2002); German version EN ISO 15983:2002",
+		"status": "CURRENT",
+		"publicationDate": "2003-04",
+		"dinMediaId": "57582428",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15983/57582428",
+		"fetchedAt": "2026-01-11T19:59:57.208Z"
+	},
+	"57582455": {
+		"designation": "DIN EN ISO 15984:2003-04",
+		"titleEn": "Open end blind rivets with break pull mandrel and countersunk head - A2/A2 (ISO 15984:2002); German version EN ISO 15984:2002",
+		"status": "CURRENT",
+		"publicationDate": "2003-04",
+		"dinMediaId": "57582455",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15984/57582455",
+		"fetchedAt": "2026-01-11T20:00:00.998Z"
+	},
+	"57582549": {
+		"designation": "DIN EN ISO 16585:2003-04",
+		"titleEn": "Closed end blind rivets with break pull mandrel and protruding head - A2/SSt (ISO 16585:2002); German version EN ISO 16585:2002",
+		"status": "CURRENT",
+		"publicationDate": "2003-04",
+		"dinMediaId": "57582549",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-16585/57582549",
+		"fetchedAt": "2026-01-11T20:00:07.739Z"
 	},
 	"61614719": {
 		"designation": "DIN 6331:2003-04",
@@ -944,6 +1196,78 @@
 		"url": "https://www.dinmedia.de/en/standard/din-6330/61614931",
 		"fetchedAt": "2026-01-06T22:19:23.119Z"
 	},
+	"62637736": {
+		"designation": "DIN 25193:2003-06",
+		"titleEn": "Railway vehicles - Mushroom head anchor screws with metric ISO thread - Class C",
+		"status": "CURRENT",
+		"publicationDate": "2003-06",
+		"dinMediaId": "62637736",
+		"url": "https://www.dinmedia.de/en/standard/din-25193/62637736",
+		"fetchedAt": "2026-01-11T20:02:33.525Z"
+	},
+	"67390451": {
+		"designation": "DIN EN ISO 4029:2004-05",
+		"titleEn": "Hexagon socket set screws with cup point (ISO 4029:2003); German version EN ISO 4029:2003",
+		"status": "CURRENT",
+		"publicationDate": "2004-05",
+		"dinMediaId": "67390451",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-4029/67390451",
+		"fetchedAt": "2026-01-11T19:56:04.827Z"
+	},
+	"67390484": {
+		"designation": "DIN EN ISO 4028:2004-05",
+		"titleEn": "Hexagon socket set screws with dog point (ISO 4028:2003); German version EN ISO 4028:2003",
+		"status": "CURRENT",
+		"publicationDate": "2004-05",
+		"dinMediaId": "67390484",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-4028/67390484",
+		"fetchedAt": "2026-01-11T19:55:54.783Z"
+	},
+	"67390503": {
+		"designation": "DIN EN ISO 4027:2004-05",
+		"titleEn": "Hexagon socket set screws with cone point (ISO 4027:2003); German version EN ISO 4027:2003",
+		"status": "CURRENT",
+		"publicationDate": "2004-05",
+		"dinMediaId": "67390503",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-4027/67390503",
+		"fetchedAt": "2026-01-11T19:55:49.669Z"
+	},
+	"67390521": {
+		"designation": "DIN EN ISO 4026:2004-05",
+		"titleEn": "Hexagon socket set screws with flat point (ISO 4026:2003); German version EN ISO 4026:2003",
+		"status": "CURRENT",
+		"publicationDate": "2004-05",
+		"dinMediaId": "67390521",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-4026/67390521",
+		"fetchedAt": "2026-01-11T19:55:45.365Z"
+	},
+	"67414751": {
+		"designation": "DIN EN ISO 23429:2004-05",
+		"titleEn": "Gauging of hexagon sockets (ISO 23429:2004); German version EN ISO 23429:2004",
+		"status": "CURRENT",
+		"publicationDate": "2004-05",
+		"dinMediaId": "67414751",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-23429/67414751",
+		"fetchedAt": "2026-01-11T20:00:16.208Z"
+	},
+	"67414804": {
+		"designation": "DIN EN ISO 2342:2004-05",
+		"titleEn": "Slotted headless screws with shank (ISO 2342:2003); German version EN ISO 2342:2003",
+		"status": "CURRENT",
+		"publicationDate": "2004-05",
+		"dinMediaId": "67414804",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-2342/67414804",
+		"fetchedAt": "2026-01-11T19:55:15.579Z"
+	},
+	"71274657": {
+		"designation": "DIN 25201-3:2004-06",
+		"titleEn": "Design guide for railway vehicles and their components - Bolted joints - Part 3: Design - Electrical application",
+		"status": "CURRENT",
+		"publicationDate": "2004-06",
+		"dinMediaId": "71274657",
+		"url": "https://www.dinmedia.de/en/standard/din-25201-3/71274657",
+		"fetchedAt": "2026-01-11T19:55:25.216Z"
+	},
 	"71808601": {
 		"designation": "ISO 4762:2004-03",
 		"titleEn": "Hexagon socket head cap screws",
@@ -961,6 +1285,15 @@
 		"dinMediaId": "73223328",
 		"url": "https://www.dinmedia.de/en/standard/din-508/73223328",
 		"fetchedAt": "2026-01-06T22:22:15.384Z"
+	},
+	"75936680": {
+		"designation": "DIN EN ISO 15065:2005-05",
+		"titleEn": "Countersinks for countersunk head screws with head configuration in accordance with ISO 7721 (ISO 15065:2005); German version EN ISO 15065:2005",
+		"status": "CURRENT",
+		"publicationDate": "2005-05",
+		"dinMediaId": "75936680",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15065/75936680",
+		"fetchedAt": "2026-01-11T19:54:48.153Z"
 	},
 	"76374386": {
 		"designation": "DIN 787:2005-02",
@@ -989,6 +1322,15 @@
 		"url": "https://www.dinmedia.de/en/standard/din-653/76988422",
 		"fetchedAt": "2026-01-06T22:17:46.688Z"
 	},
+	"77536392": {
+		"designation": "DIN 1478:2005-09",
+		"titleEn": "Turnbuckles made from steel tubes or round steel bars",
+		"status": "CURRENT",
+		"publicationDate": "2005-09",
+		"dinMediaId": "77536392",
+		"url": "https://www.dinmedia.de/en/standard/din-1478/77536392",
+		"fetchedAt": "2026-01-11T20:01:23.126Z"
+	},
 	"77536633": {
 		"designation": "DIN 1479:2005-09",
 		"titleEn": "Hexagon turnbuckles",
@@ -997,6 +1339,15 @@
 		"dinMediaId": "77536633",
 		"url": "https://www.dinmedia.de/en/standard/din-1479/77536633",
 		"fetchedAt": "2026-01-06T22:21:48.790Z"
+	},
+	"77536766": {
+		"designation": "DIN 1480:2005-09",
+		"titleEn": "Forged turnbuckles, (open type)",
+		"status": "CURRENT",
+		"publicationDate": "2005-09",
+		"dinMediaId": "77536766",
+		"url": "https://www.dinmedia.de/en/standard/din-1480/77536766",
+		"fetchedAt": "2026-01-11T20:01:27.862Z"
 	},
 	"80724833": {
 		"designation": "DIN 7643:2005-07",
@@ -1015,6 +1366,15 @@
 		"dinMediaId": "90026465",
 		"url": "https://www.dinmedia.de/en/standard/din-6916/90026465",
 		"fetchedAt": "2026-01-06T22:23:23.404Z"
+	},
+	"94519464": {
+		"designation": "DIN EN ISO 8751:2007-07",
+		"titleEn": "Spring-type straight pins - Coiled, light duty (ISO 8751:2007); German version EN ISO 8751:2007",
+		"status": "CURRENT",
+		"publicationDate": "2007-07",
+		"dinMediaId": "94519464",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-8751/94519464",
+		"fetchedAt": "2026-01-11T19:57:37.628Z"
 	},
 	"95360204": {
 		"designation": "DIN 464:2007-01",
@@ -1106,6 +1466,24 @@
 		"url": "https://www.dinmedia.de/en/standard/din-981/116123795",
 		"fetchedAt": "2026-01-06T22:21:54.832Z"
 	},
+	"116941898": {
+		"designation": "DIN EN ISO 10673:2009-10",
+		"titleEn": "Plain washers for screw and washer assemblies - Small, normal and large series - Product grade A (ISO 10673:2009); German version EN ISO 10673:2009",
+		"status": "CURRENT",
+		"publicationDate": "2009-10",
+		"dinMediaId": "116941898",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-10673/116941898",
+		"fetchedAt": "2026-01-11T19:58:13.696Z"
+	},
+	"116941934": {
+		"designation": "DIN EN ISO 10644:2009-10",
+		"titleEn": "Screw and washer assemblies made of steel with plain washers - Washer hardness classes 200 HV and 300 HV (ISO 10644:2009); German version EN ISO 10644:2009",
+		"status": "CURRENT",
+		"publicationDate": "2009-10",
+		"dinMediaId": "116941934",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-10644/116941934",
+		"fetchedAt": "2026-01-11T19:58:05.544Z"
+	},
 	"118002171": {
 		"designation": "DIN 7349:2009-08",
 		"titleEn": "Plain washers for bolts with heavy clamping sleeves",
@@ -1114,6 +1492,15 @@
 		"dinMediaId": "118002171",
 		"url": "https://www.dinmedia.de/en/standard/din-7349/118002171",
 		"fetchedAt": "2026-01-06T22:23:39.399Z"
+	},
+	"118048555": {
+		"designation": "DIN 1441:2009-08",
+		"titleEn": "Washers for clevis pins - Product grade C",
+		"status": "CURRENT",
+		"publicationDate": "2009-08",
+		"dinMediaId": "118048555",
+		"url": "https://www.dinmedia.de/en/standard/din-1441/118048555",
+		"fetchedAt": "2026-01-11T20:01:17.092Z"
 	},
 	"118048617": {
 		"designation": "DIN 6796:2009-08",
@@ -1160,6 +1547,15 @@
 		"url": "https://www.dinmedia.de/en/standard/din-607/132135162",
 		"fetchedAt": "2026-01-06T22:18:31.177Z"
 	},
+	"132135433": {
+		"designation": "DIN 608:2010-09",
+		"titleEn": "Flat countersunk head square neck bolts with short square",
+		"status": "CURRENT",
+		"publicationDate": "2010-09",
+		"dinMediaId": "132135433",
+		"url": "https://www.dinmedia.de/en/standard/din-608/132135433",
+		"fetchedAt": "2026-01-11T20:00:58.968Z"
+	},
 	"132182757": {
 		"designation": "DIN 529:2010-09",
 		"titleEn": "Masonry and foundation bolts",
@@ -1168,6 +1564,78 @@
 		"dinMediaId": "132182757",
 		"url": "https://www.dinmedia.de/en/standard/din-529/132182757",
 		"fetchedAt": "2026-01-06T22:19:03.480Z"
+	},
+	"132993753": {
+		"designation": "DIN EN ISO 12474:2011-01",
+		"titleEn": "Hexagon socket head cap screws with metric fine pitch thread (ISO 12474:2010); German version EN ISO 12474:2010",
+		"status": "CURRENT",
+		"publicationDate": "2011-01",
+		"dinMediaId": "132993753",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-12474/132993753",
+		"fetchedAt": "2026-01-11T19:58:23.192Z"
+	},
+	"134239292": {
+		"designation": "DIN 5903-2:2011-01",
+		"titleEn": "Fish bolts - Part 2: With square head",
+		"status": "CURRENT",
+		"publicationDate": "2011-01",
+		"dinMediaId": "134239292",
+		"url": "https://www.dinmedia.de/en/standard/din-5903-2/134239292",
+		"fetchedAt": "2026-01-11T20:01:49.443Z"
+	},
+	"135439395": {
+		"designation": "DIN 101:2011-02",
+		"titleEn": "Rivets - Technical specifications",
+		"status": "CURRENT",
+		"publicationDate": "2011-02",
+		"dinMediaId": "135439395",
+		"url": "https://www.dinmedia.de/en/standard/din-101/135439395",
+		"fetchedAt": "2026-01-11T20:00:26.055Z"
+	},
+	"135476056": {
+		"designation": "DIN 7338:2011-03",
+		"titleEn": "Rivets for brake linings and clutch linings",
+		"status": "CURRENT",
+		"publicationDate": "2011-03",
+		"dinMediaId": "135476056",
+		"url": "https://www.dinmedia.de/en/standard/din-7338/135476056",
+		"fetchedAt": "2026-01-11T20:02:06.274Z"
+	},
+	"135476263": {
+		"designation": "DIN 7339:2011-02",
+		"titleEn": "Hollow rivets, one piece, drawn from strip",
+		"status": "CURRENT",
+		"publicationDate": "2011-02",
+		"dinMediaId": "135476263",
+		"url": "https://www.dinmedia.de/en/standard/din-7339/135476263",
+		"fetchedAt": "2026-01-11T20:02:11.697Z"
+	},
+	"135476377": {
+		"designation": "DIN 7340:2011-03",
+		"titleEn": "Tubular rivets cut from the tube",
+		"status": "CURRENT",
+		"publicationDate": "2011-03",
+		"dinMediaId": "135476377",
+		"url": "https://www.dinmedia.de/en/standard/din-7340/135476377",
+		"fetchedAt": "2026-01-11T20:02:15.689Z"
+	},
+	"137241337": {
+		"designation": "DIN EN ISO 15977:2011-02",
+		"titleEn": "Open end blind rivets with break pull mandrel and protruding head - AlA/St (ISO 15977:2002); German version EN ISO 15977:2002",
+		"status": "CURRENT",
+		"publicationDate": "2011-02",
+		"dinMediaId": "137241337",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-15977/137241337",
+		"fetchedAt": "2026-01-11T19:59:31.018Z"
+	},
+	"138095106": {
+		"designation": "DIN 5406:2011-04",
+		"titleEn": "Rolling bearings - Lockwashers; Safety plate, Lockclip",
+		"status": "CURRENT",
+		"publicationDate": "2011-04",
+		"dinMediaId": "138095106",
+		"url": "https://www.dinmedia.de/en/standard/din-5406/138095106",
+		"fetchedAt": "2026-01-11T20:01:40.002Z"
 	},
 	"138166354": {
 		"designation": "DIN 471:2011-04",
@@ -1178,6 +1646,33 @@
 		"url": "https://www.dinmedia.de/en/standard/din-471/138166354",
 		"fetchedAt": "2026-01-06T22:29:25.048Z"
 	},
+	"139344711": {
+		"designation": "DIN EN ISO 1481:2011-10",
+		"titleEn": "Slotted pan head tapping screws (ISO 1481:2011); German version EN ISO 1481:2011",
+		"status": "CURRENT",
+		"publicationDate": "2011-10",
+		"dinMediaId": "139344711",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-1481/139344711",
+		"fetchedAt": "2026-01-11T19:55:00.909Z"
+	},
+	"139344738": {
+		"designation": "DIN EN ISO 1482:2011-10",
+		"titleEn": "Slotted countersunk (flat) head tapping screws (ISO 1482:2011); German version EN ISO 1482:2011",
+		"status": "CURRENT",
+		"publicationDate": "2011-10",
+		"dinMediaId": "139344738",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-1482/139344738",
+		"fetchedAt": "2026-01-11T19:55:06.330Z"
+	},
+	"139344759": {
+		"designation": "DIN EN ISO 1483:2011-10",
+		"titleEn": "Slotted raised countersunk (oval) head tapping screws (ISO 1483:2011); German version EN ISO 1483:2011",
+		"status": "CURRENT",
+		"publicationDate": "2011-10",
+		"dinMediaId": "139344759",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-1483/139344759",
+		"fetchedAt": "2026-01-11T19:55:11.128Z"
+	},
 	"139394495": {
 		"designation": "DIN 5417:2011-06",
 		"titleEn": "Securing parts for rolling bearings - Snap rings for bearings with ring groove",
@@ -1186,6 +1681,33 @@
 		"dinMediaId": "139394495",
 		"url": "https://www.dinmedia.de/en/standard/din-5417/139394495",
 		"fetchedAt": "2026-01-06T22:29:45.719Z"
+	},
+	"139718341": {
+		"designation": "DIN EN ISO 14585:2011-05",
+		"titleEn": "Hexalobular socket pan head tapping screws (ISO 14585:2011); German version EN ISO 14585:2011",
+		"status": "CURRENT",
+		"publicationDate": "2011-05",
+		"dinMediaId": "139718341",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-14585/139718341",
+		"fetchedAt": "2026-01-11T19:58:46.153Z"
+	},
+	"139718359": {
+		"designation": "DIN EN ISO 14586:2011-05",
+		"titleEn": "Hexalobular socket countersunk head tapping screws (ISO 14586:2011); German version EN ISO 14586:2011",
+		"status": "CURRENT",
+		"publicationDate": "2011-05",
+		"dinMediaId": "139718359",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-14586/139718359",
+		"fetchedAt": "2026-01-11T19:58:51.272Z"
+	},
+	"139718378": {
+		"designation": "DIN EN ISO 14587:2011-05",
+		"titleEn": "Hexalobular socket raised countersunk (oval) head tapping screws (ISO 14587:2011); German version EN ISO 14587:2011",
+		"status": "CURRENT",
+		"publicationDate": "2011-05",
+		"dinMediaId": "139718378",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-14587/139718378",
+		"fetchedAt": "2026-01-11T19:58:55.626Z"
 	},
 	"140721430": {
 		"designation": "ISO 14580:2011-03",
@@ -1204,6 +1726,42 @@
 		"dinMediaId": "140721444",
 		"url": "https://www.dinmedia.de/en/standard/iso-14583/140721444",
 		"fetchedAt": "2026-01-06T22:11:03.380Z"
+	},
+	"140785276": {
+		"designation": "DIN EN ISO 14579:2011-06",
+		"titleEn": "Hexalobular socket head cap screws (ISO 14579:2011); German version EN ISO 14579:2011",
+		"status": "CURRENT",
+		"publicationDate": "2011-06",
+		"dinMediaId": "140785276",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-14579/140785276",
+		"fetchedAt": "2026-01-11T19:58:27.632Z"
+	},
+	"140785506": {
+		"designation": "DIN EN ISO 14584:2011-06",
+		"titleEn": "Hexalobular socket raised countersunk head screws (ISO 14584:2011); German version EN ISO 14584:2011",
+		"status": "CURRENT",
+		"publicationDate": "2011-06",
+		"dinMediaId": "140785506",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-14584/140785506",
+		"fetchedAt": "2026-01-11T19:58:40.479Z"
+	},
+	"141611430": {
+		"designation": "DIN EN ISO 10510:2011-07",
+		"titleEn": "Tapping screw and washer assemblies with plain washers (ISO 10510:2011); German version EN ISO 10510:2011",
+		"status": "CURRENT",
+		"publicationDate": "2011-07",
+		"dinMediaId": "141611430",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-10510/141611430",
+		"fetchedAt": "2026-01-11T19:57:49.511Z"
+	},
+	"141612233": {
+		"designation": "DIN EN ISO 7048:2011-07",
+		"titleEn": "Cross-recessed cheese head screws (ISO 7048:2011); German version EN ISO 7048:2011",
+		"status": "CURRENT",
+		"publicationDate": "2011-07",
+		"dinMediaId": "141612233",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-7048/141612233",
+		"fetchedAt": "2026-01-11T19:56:28.349Z"
 	},
 	"144749583": {
 		"designation": "ISO 1207:2011-08",
@@ -1349,6 +1907,15 @@
 		"url": "https://www.dinmedia.de/en/standard/iso-7044/164911932",
 		"fetchedAt": "2026-01-06T22:12:38.282Z"
 	},
+	"170842476": {
+		"designation": "DIN 78:2013-04",
+		"titleEn": "Protrusions of bolt ends",
+		"status": "CURRENT",
+		"publicationDate": "2013-04",
+		"dinMediaId": "170842476",
+		"url": "https://www.dinmedia.de/en/standard/din-78/170842476",
+		"fetchedAt": "2026-01-11T20:00:22.255Z"
+	},
 	"178383710": {
 		"designation": "DIN 431:2013-05",
 		"titleEn": "Pipe nuts with thread according to DIN EN ISO 228-1",
@@ -1394,6 +1961,24 @@
 		"url": "https://www.dinmedia.de/en/standard/din-986/186932096",
 		"fetchedAt": "2026-01-06T22:20:04.414Z"
 	},
+	"187307676": {
+		"designation": "DIN 20000-4:2013-08",
+		"titleEn": "Application of construction products in structures - Part 4: Prefabricated structural members assembled with punched metal plate fasteners according to DIN EN 14250:2010-05",
+		"status": "CURRENT",
+		"publicationDate": "2013-08",
+		"dinMediaId": "187307676",
+		"url": "https://www.dinmedia.de/en/standard/din-20000-4/187307676",
+		"fetchedAt": "2026-01-11T20:01:12.992Z"
+	},
+	"187901144": {
+		"designation": "DIN EN ISO 14582:2014-02",
+		"titleEn": "Fasteners - Hexalobular socket countersunk head screws, high head (ISO 14582:2013); German version EN ISO 14582:2013",
+		"status": "CURRENT",
+		"publicationDate": "2014-02",
+		"dinMediaId": "187901144",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-14582/187901144",
+		"fetchedAt": "2026-01-11T19:58:36.222Z"
+	},
 	"194677746": {
 		"designation": "DIN 928:2013-12",
 		"titleEn": "Square weld nuts",
@@ -1412,6 +1997,33 @@
 		"url": "https://www.dinmedia.de/en/standard/din-929/194678780",
 		"fetchedAt": "2026-01-06T22:20:56.099Z"
 	},
+	"197659835": {
+		"designation": "DIN EN ISO 8494:2014-03",
+		"titleEn": "Metallic materials - Tube - Flanging test (ISO 8494:2013); German version EN ISO 8494:2013",
+		"status": "CURRENT",
+		"publicationDate": "2014-03",
+		"dinMediaId": "197659835",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-8494/197659835",
+		"fetchedAt": "2026-01-11T19:59:01.049Z"
+	},
+	"208405442": {
+		"designation": "DIN EN ISO 21670:2014-09",
+		"titleEn": "Fasteners - Hexagon weld nuts with flange (ISO 21670:2014); German version EN ISO 21670:2014",
+		"status": "CURRENT",
+		"publicationDate": "2014-09",
+		"dinMediaId": "208405442",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-21670/208405442",
+		"fetchedAt": "2026-01-11T20:00:11.984Z"
+	},
+	"248752681": {
+		"designation": "NF G52-012:2016-01-16",
+		"titleEn": "NF EN ISO 3380:2016-01-16",
+		"status": "CURRENT",
+		"publicationDate": "2016-01-16",
+		"dinMediaId": "248752681",
+		"url": "https://www.dinmedia.de/en/standard/nf-g52-012/248752681",
+		"fetchedAt": "2026-01-11T19:57:42.774Z"
+	},
 	"256854264": {
 		"designation": "DIN 478:2016-08",
 		"titleEn": "Square head bolts with collar",
@@ -1420,6 +2032,24 @@
 		"dinMediaId": "256854264",
 		"url": "https://www.dinmedia.de/en/standard/din-478/256854264",
 		"fetchedAt": "2026-01-06T22:17:33.009Z"
+	},
+	"256855109": {
+		"designation": "DIN 479:2016-08",
+		"titleEn": "Square head bolts with short dog point",
+		"status": "CURRENT",
+		"publicationDate": "2016-08",
+		"dinMediaId": "256855109",
+		"url": "https://www.dinmedia.de/en/standard/din-479/256855109",
+		"fetchedAt": "2026-01-11T20:00:30.629Z"
+	},
+	"256859142": {
+		"designation": "DIN 480:2016-08",
+		"titleEn": "Square head bolts with collar and short dog point with rounded end",
+		"status": "CURRENT",
+		"publicationDate": "2016-08",
+		"dinMediaId": "256859142",
+		"url": "https://www.dinmedia.de/en/standard/din-480/256859142",
+		"fetchedAt": "2026-01-11T20:00:42.880Z"
 	},
 	"263644532": {
 		"designation": "DIN 315:2016-12",
@@ -1528,6 +2158,15 @@
 		"dinMediaId": "267609142",
 		"url": "https://www.dinmedia.de/en/standard/din-444/267609142",
 		"fetchedAt": "2026-01-06T22:17:27.226Z"
+	},
+	"267900213": {
+		"designation": "DIN 34817:2017-04",
+		"titleEn": "Weld screws with metric thread",
+		"status": "CURRENT",
+		"publicationDate": "2017-04",
+		"dinMediaId": "267900213",
+		"url": "https://www.dinmedia.de/en/standard/din-34817/267900213",
+		"fetchedAt": "2026-01-11T20:02:37.796Z"
 	},
 	"272672464": {
 		"designation": "DIN 80701:2017-06",
@@ -1664,6 +2303,15 @@
 		"url": "https://www.dinmedia.de/en/standard/din-983/320675262",
 		"fetchedAt": "2026-01-06T22:30:03.108Z"
 	},
+	"323996812": {
+		"designation": "SN EN ISO 17059:2020-04",
+		"titleEn": "Oilseeds - Extraction of oil and preparation of methyl esters of triglyceride fatty acids for analysis by gas chromatography (Rapid method) (ISO 17059:2019)",
+		"status": "CURRENT",
+		"publicationDate": "2020-04",
+		"dinMediaId": "323996812",
+		"url": "https://www.dinmedia.de/en/standard/sn-en-iso-17059/323996812",
+		"fetchedAt": "2026-01-11T19:55:20.767Z"
+	},
 	"331996195": {
 		"designation": "DIN 6912:2021-03",
 		"titleEn": "Hexagon socket head cap screws with reduced loadability - Low head, with centre",
@@ -1681,6 +2329,24 @@
 		"dinMediaId": "332154762",
 		"url": "https://www.dinmedia.de/en/standard/din-2510-7/332154762",
 		"fetchedAt": "2026-01-06T22:17:13.264Z"
+	},
+	"342492726": {
+		"designation": "DIN EN ISO 4016:2022-10",
+		"titleEn": "Fasteners - Hexagon head bolts - Product grade C (ISO 4016:2022); German version EN ISO 4016:2022",
+		"status": "CURRENT",
+		"publicationDate": "2022-10",
+		"dinMediaId": "342492726",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-4016/342492726",
+		"fetchedAt": "2026-01-11T19:55:34.752Z"
+	},
+	"342493179": {
+		"designation": "DIN EN ISO 4018:2022-10",
+		"titleEn": "Fasteners - Hexagon head screws - Product grade C (ISO 4018:2022); German version EN ISO 4018:2022",
+		"status": "CURRENT",
+		"publicationDate": "2022-10",
+		"dinMediaId": "342493179",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-4018/342493179",
+		"fetchedAt": "2026-01-11T19:55:39.145Z"
 	},
 	"344873180": {
 		"designation": "DIN 917:2021-11",
@@ -1745,6 +2411,15 @@
 		"url": "https://www.dinmedia.de/en/standard/iso-4014/356927584",
 		"fetchedAt": "2026-01-06T22:11:13.211Z"
 	},
+	"363730847": {
+		"designation": "DIN EN ISO 14581:2023-04",
+		"titleEn": "Fasteners - Hexalobular socket countersunk flat head screws (common head style) with reduced loadability (ISO 14581:2022); German version EN ISO 14581:2023",
+		"status": "CURRENT",
+		"publicationDate": "2023-04",
+		"dinMediaId": "363730847",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-14581/363730847",
+		"fetchedAt": "2026-01-11T19:58:32.146Z"
+	},
 	"363730886": {
 		"designation": "DIN EN ISO 7380-1:2023-04",
 		"titleEn": "Fasteners - Button head screws with reduced loadability - Part 1: Hexagon socket button head screws (ISO 7380-1:2022); German version EN ISO 7380-1:2023",
@@ -1772,6 +2447,60 @@
 		"url": "https://www.dinmedia.de/en/standard/iso-4035/372581412",
 		"fetchedAt": "2026-01-06T22:12:08.147Z"
 	},
+	"372988604": {
+		"designation": "DIN EN ISO 4033:2023-12",
+		"titleEn": "Fasteners - Hexagon high nuts (style 2) (ISO 4033:2023); German version EN ISO 4033:2023",
+		"status": "CURRENT",
+		"publicationDate": "2023-12",
+		"dinMediaId": "372988604",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-4033/372988604",
+		"fetchedAt": "2026-01-11T19:56:09.900Z"
+	},
+	"372988653": {
+		"designation": "DIN EN ISO 8673:2023-12",
+		"titleEn": "Fasteners - Hexagon regular nuts (style 1), with fine pitch thread (ISO 8673:2023); German version EN ISO 8673:2023",
+		"status": "CURRENT",
+		"publicationDate": "2023-12",
+		"dinMediaId": "372988653",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-8673/372988653",
+		"fetchedAt": "2026-01-11T19:57:14.350Z"
+	},
+	"372988686": {
+		"designation": "DIN EN ISO 8674:2023-12",
+		"titleEn": "Fasteners - Hexagon high nuts (style 2), with fine pitch thread (ISO 8674:2023); German version EN ISO 8674:2023",
+		"status": "CURRENT",
+		"publicationDate": "2023-12",
+		"dinMediaId": "372988686",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-8674/372988686",
+		"fetchedAt": "2026-01-11T19:57:19.458Z"
+	},
+	"372989135": {
+		"designation": "DIN EN ISO 8675:2023-12",
+		"titleEn": "Fasteners - Hexagon thin nuts (style 0), with fine pitch thread (ISO 8675:2023); German version EN ISO 8675:2023",
+		"status": "CURRENT",
+		"publicationDate": "2023-12",
+		"dinMediaId": "372989135",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-8675/372989135",
+		"fetchedAt": "2026-01-11T19:57:26.233Z"
+	},
+	"376535123": {
+		"designation": "DIN 582:2024-05",
+		"titleEn": "Lifting eye nuts",
+		"status": "CURRENT",
+		"publicationDate": "2024-05",
+		"dinMediaId": "376535123",
+		"url": "https://www.dinmedia.de/en/standard/din-582/376535123",
+		"fetchedAt": "2026-01-11T20:00:55.156Z"
+	},
+	"376535165": {
+		"designation": "DIN 580:2024-05",
+		"titleEn": "Lifting eye bolts",
+		"status": "CURRENT",
+		"publicationDate": "2024-05",
+		"dinMediaId": "376535165",
+		"url": "https://www.dinmedia.de/en/standard/din-580/376535165",
+		"fetchedAt": "2026-01-11T20:00:50.833Z"
+	},
 	"376535192": {
 		"designation": "DIN 923:2024-06",
 		"titleEn": "Slotted pan head screws with shoulder",
@@ -1789,6 +2518,42 @@
 		"dinMediaId": "376535307",
 		"url": "https://www.dinmedia.de/en/standard/din-546/376535307",
 		"fetchedAt": "2026-01-06T22:22:24.376Z"
+	},
+	"382166467": {
+		"designation": "DIN EN ISO 4766:2024-10",
+		"titleEn": "Fasteners - Slotted set screws with flat point (ISO 4766:2024); German version EN ISO 4766:2024",
+		"status": "CURRENT",
+		"publicationDate": "2024-10",
+		"dinMediaId": "382166467",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-4766/382166467",
+		"fetchedAt": "2026-01-11T19:56:14.554Z"
+	},
+	"382166494": {
+		"designation": "DIN EN ISO 7434:2024-10",
+		"titleEn": "Fasteners - Slotted set screws with cone point (ISO 7434:2024); German version EN ISO 7434:2024",
+		"status": "CURRENT",
+		"publicationDate": "2024-10",
+		"dinMediaId": "382166494",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-7434/382166494",
+		"fetchedAt": "2026-01-11T19:56:38.604Z"
+	},
+	"382166525": {
+		"designation": "DIN EN ISO 7435:2024-10",
+		"titleEn": "Fasteners - Slotted set screws with dog point (ISO 7435:2024); German version EN ISO 7435:2024",
+		"status": "CURRENT",
+		"publicationDate": "2024-10",
+		"dinMediaId": "382166525",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-7435/382166525",
+		"fetchedAt": "2026-01-11T19:56:43.254Z"
+	},
+	"382166593": {
+		"designation": "DIN EN ISO 7436:2024-10",
+		"titleEn": "Fasteners - Slotted set screws with cup point (ISO 7436:2024); German version EN ISO 7436:2024",
+		"status": "CURRENT",
+		"publicationDate": "2024-10",
+		"dinMediaId": "382166593",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-7436/382166593",
+		"fetchedAt": "2026-01-11T19:56:55.756Z"
 	},
 	"382424329": {
 		"designation": "DIN 467:2024-11",
@@ -1997,6 +2762,51 @@
 		"url": "https://www.dinmedia.de/en/standard/iso-7042/393223513",
 		"fetchedAt": "2026-01-06T22:12:28.552Z"
 	},
+	"393414293": {
+		"designation": "DIN EN ISO 7719:2025-09",
+		"titleEn": "Fasteners - Prevailing torque hexagon nuts - Regular nuts (all metal) (ISO 7719:2025); German version EN ISO 7719:2025",
+		"status": "CURRENT",
+		"publicationDate": "2025-09",
+		"dinMediaId": "393414293",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-7719/393414293",
+		"fetchedAt": "2026-01-11T19:57:02.633Z"
+	},
+	"393414313": {
+		"designation": "DIN EN ISO 7041:2025-09",
+		"titleEn": "Fasteners - Prevailing torque hexagon nuts - High nuts (with non-metallic insert) (ISO 7041:2025); German version EN ISO 7041:2025",
+		"status": "CURRENT",
+		"publicationDate": "2025-09",
+		"dinMediaId": "393414313",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-7041/393414313",
+		"fetchedAt": "2026-01-11T19:56:21.462Z"
+	},
+	"393702868": {
+		"designation": "DIN EN ISO 10512:2025-09",
+		"titleEn": "Fasteners - Prevailing torque hexagon nuts - Regular nuts (with non-metallic insert), with fine pitch thread (ISO 10512:2025); German version EN ISO 10512:2025",
+		"status": "CURRENT",
+		"publicationDate": "2025-09",
+		"dinMediaId": "393702868",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-10512/393702868",
+		"fetchedAt": "2026-01-11T19:57:55.117Z"
+	},
+	"393702902": {
+		"designation": "DIN EN ISO 10513:2025-09",
+		"titleEn": "Fasteners - Prevailing torque hexagon nuts - High nuts (all metal), with fine pitch thread (ISO 10513:2025); German version EN ISO 10513:2025",
+		"status": "CURRENT",
+		"publicationDate": "2025-09",
+		"dinMediaId": "393702902",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-10513/393702902",
+		"fetchedAt": "2026-01-11T19:57:59.983Z"
+	},
+	"393702957": {
+		"designation": "DIN EN ISO 7720:2025-09",
+		"titleEn": "Fasteners - Prevailing torque hexagon nuts - High nuts (all metal) with slot(s) (ISO 7720:2025); German version EN ISO 7720:2025",
+		"status": "CURRENT",
+		"publicationDate": "2025-09",
+		"dinMediaId": "393702957",
+		"url": "https://www.dinmedia.de/en/standard/din-en-iso-7720/393702957",
+		"fetchedAt": "2026-01-11T19:57:07.377Z"
+	},
 	"395215057": {
 		"designation": "DIN 988:2025-12",
 		"titleEn": "Shim rings and supporting rings",
@@ -2017,6 +2827,6 @@
 	},
 	"_meta": {
 		"version": "1.0",
-		"lastUpdate": "2026-01-06T22:31:20.932Z"
+		"lastUpdate": "2026-01-11T20:02:43.451Z"
 	}
 }

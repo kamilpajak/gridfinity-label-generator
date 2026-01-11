@@ -51,28 +51,84 @@ This project uses **pnpm** as the package manager. All commands should use `pnpm
 - `pnpm lint` - Check code formatting and ESLint rules
 - `pnpm format` - Auto-format code with Prettier
 
-### Standards Data (DIN Media Integration)
+### Standards Data
 
-DIN Media (dinmedia.de) is the **Single Source of Truth** for standard descriptions.
+This project uses two **Single Sources of Truth (SSOT)** for standards data:
+
+#### SSOT 1: Reyher PDF (Cross-references)
+
+**File:** `docs/Reyher_2019-EN_Technische_Informationen_ks.pdf`
+
+The Reyher "Standards Conversion" PDF is the authoritative source for:
+
+- **DIN ↔ ISO mappings** (cross-references between standard systems)
+- Which DIN standards correspond to which ISO standards
+- Table 1: DIN → ISO conversions
+- Table 2: ISO → DIN conversions
+
+When adding or modifying cross-references in `standards-config.json`, always verify against this PDF.
+
+#### SSOT 2: DIN Media (Metadata)
+
+**Website:** [dinmedia.de](https://dinmedia.de)
+
+DIN Media is the authoritative source for:
+
+- **Standard titles** (German and English)
+- **Withdrawn status** (current vs withdrawn)
+- **Replacement standards** (replacedBy)
+- **Publication dates**
+
+#### Pipeline Commands
 
 ```bash
-# One-time: Generate mappings (standard ID → DIN Media ID)
-pnpm generate-dinmedia-mappings
+# Pipeline: validate → resolve → fetch → build
+pnpm standards:validate        # Validate standards-config.json
+pnpm standards:resolve         # Resolve standard IDs → DIN Media IDs
+pnpm standards:fetch           # Fetch metadata (cached 30 days)
+pnpm standards:fetch:force     # Force re-fetch all metadata
+pnpm standards:build           # Build standards-generated.ts
+pnpm standards:build:strict    # Fail on unexpected withdrawn standards
 
-# Scrape metadata (incremental, skips cached entries < 30 days)
-pnpm scrape-dinmedia
-
-# Force re-scrape all metadata
-pnpm scrape-dinmedia:force
-
-# Build standards with DIN Media descriptions
-pnpm build-standards
+# Convenience scripts
+pnpm standards:refresh         # fetch + build (update cache and rebuild)
+pnpm standards:add             # Full pipeline for adding new standards
 ```
 
-Data files:
+#### Data Files
 
-- `data/dinmedia-id-mappings.json` - Standard ID to DIN Media ID mappings
-- `data/dinmedia-metadata-cache.json` - Cached titles, status, dates from DIN Media
+| File                                | SSOT       | Purpose                           |
+| ----------------------------------- | ---------- | --------------------------------- |
+| `data/standards-config.json`        | Reyher PDF | Cross-references (din/iso arrays) |
+| `data/dinmedia-id-mappings.json`    | DIN Media  | Standard ID → DIN Media ID        |
+| `data/dinmedia-metadata-cache.json` | DIN Media  | Titles, status, dates             |
+| `docs/Reyher_2019-EN_*.pdf`         | -          | Reference document                |
+
+#### Config Structure
+
+```json
+{
+	"iso": { "4762": { "din": ["912"] } },
+	"din": { "912": { "iso": ["4762", "12474"] }, "127": { "withdrawn": true } }
+}
+```
+
+#### Validation Gaps (Known Limitations)
+
+1. **ISO standards without DIN Media mapping** - Cannot be validated for withdrawn status
+   - Build script warns: "X ISO standard(s) without DIN Media mapping"
+   - These standards need manual review when adding to config
+
+2. **No automatic ISO.org validation** - Pipeline doesn't check:
+   - If ISO standard exists
+   - If ISO standard is withdrawn (stage codes)
+   - If ISO standard is in fastener category (ICS 21.060.xx)
+
+3. **Manual config entry** - `standards-config.json` accepts any ID without validation
+
+**Mitigation:** Unit tests in `standards-validation.test.ts` catch known invalid standards.
+
+**Future:** See `docs/plan-standards-validation-pipeline.md` for planned improvements.
 
 ### SonarCloud API
 

@@ -1,14 +1,17 @@
 #!/usr/bin/env node
 /**
- * Generate DIN Media Mappings Script
+ * Standards Resolve Script
  *
- * Searches dinmedia.de for each standard in image-mappings.json
- * and saves the dinMediaId mapping for later metadata scraping.
+ * Resolves standard IDs to DIN Media page IDs by searching dinmedia.de.
+ * Part of pipeline: validate → resolve → fetch → build
+ *
+ * DIN Media is the Single Source of Truth for both DIN and ISO standards.
+ * ISO standards are searched as "EN ISO xxxx" (European harmonized versions).
  *
  * Uses Playwright for JavaScript-rendered search results.
  *
  * Usage:
- *   node scripts/generate-dinmedia-mappings.js [--force] [--limit=N] [--delay=MS]
+ *   pnpm standards:resolve [--force] [--limit=N] [--delay=MS]
  *
  * Options:
  *   --force     Re-search all standards, even if already mapped
@@ -32,7 +35,14 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const MAPPINGS_FILE = path.join(__dirname, '../data/image-mappings.json');
+// Primary source: standards-config.json (all standards we want to validate)
+const CONFIG_FILE = path.join(__dirname, '../data/standards-config.json');
+
+// Valid standard systems
+// NOTE: Keep in sync with src/lib/utils/standards-config.ts
+const VALID_SYSTEMS = ['iso', 'din', 'ansi', 'pn', 'gb', 'jis'];
+// Secondary source: image mappings (for backwards compatibility and additional standards)
+const image_FILE = path.join(__dirname, '../data/image-mappings.json');
 const OUTPUT_FILE = path.join(__dirname, '../data/dinmedia-id-mappings.json');
 const REPORT_FILE = path.join(__dirname, '../data/dinmedia-mappings-report.json');
 
@@ -41,9 +51,13 @@ const { force: FORCE, limit: LIMIT, delay: REQUEST_DELAY_MS } = parseCliArgs(pro
 
 /**
  * Convert standard ID to search query
+ *
+ * DIN standards: din912 -> "DIN 912"
+ * ISO standards: iso4762 -> "EN ISO 4762" (European harmonized version)
+ *
  * Examples:
  *   din912 -> "DIN 912"
- *   iso4762 -> "ISO 4762"
+ *   iso4762 -> "EN ISO 4762"
  *   din7504k -> "DIN 7504"  (remove variant suffix)
  */
 function standardIdToSearchQuery(id) {
@@ -53,11 +67,19 @@ function standardIdToSearchQuery(id) {
 		return null;
 	}
 
-	const prefix = match[1].toUpperCase();
+	const prefix = match[1].toLowerCase();
 	const number = match[2];
 	// Ignore variant suffix (k, m, o, p, etc.) - search for base standard
 
-	return `${prefix} ${number}`;
+	if (prefix === 'din') {
+		return `DIN ${number}`;
+	} else if (prefix === 'iso') {
+		// Search for European harmonized version: "EN ISO xxxx"
+		// DIN Media has ISO standards as "DIN EN ISO xxxx"
+		return `EN ISO ${number}`;
+	}
+
+	return null;
 }
 
 /**
@@ -84,18 +106,35 @@ async function searchDinMedia(page, query) {
 		// Look for standard links: /de/norm/din-912/68034695 or /en/standard/...
 		const links = document.querySelectorAll('a[href*="/norm/"], a[href*="/standard/"]');
 
-		// Create a normalized version of the query for matching (e.g., "DIN 912" -> "din-912")
+		// Create a normalized version of the query for matching
+		// "DIN 912" -> "din-912"
+		// "EN ISO 4762" -> "en-iso-4762"
 		const normalizedQuery = searchQuery.toLowerCase().replace(/\s+/g, '-');
+
+		// For ISO standards, also try matching "din-en-iso-xxxx" pattern
+		const isIsoSearch = searchQuery.startsWith('EN ISO');
+		const isoNumber = isIsoSearch ? searchQuery.replace('EN ISO ', '') : null;
 
 		for (const link of links) {
 			const href = link.getAttribute('href') || '';
 			// Match ID at end of URL
 			const match = href.match(/\/(\d+)$/);
 			if (match) {
-				// Check if the URL contains our standard (e.g., /din-912/ not /din-en-912/)
 				const urlLower = href.toLowerCase();
-				// Exact match: URL should contain /din-912/ not /din-en-912/ or /din-9123/
-				if (urlLower.includes(`/${normalizedQuery}/`)) {
+
+				// For ISO standards, match patterns like /din-en-iso-4762/ or /en-iso-4762/
+				if (isIsoSearch && isoNumber) {
+					if (
+						urlLower.includes(`/din-en-iso-${isoNumber}/`) ||
+						urlLower.includes(`/en-iso-${isoNumber}/`) ||
+						urlLower.includes(`/iso-${isoNumber}/`)
+					) {
+						return match[1];
+					}
+				}
+
+				// For DIN standards, exact match: /din-912/ not /din-en-912/
+				if (!isIsoSearch && urlLower.includes(`/${normalizedQuery}/`)) {
 					return match[1];
 				}
 			}
@@ -136,6 +175,38 @@ async function saveMappings(mappings) {
 }
 
 /**
+ * Load standard IDs from standards-config.json
+ */
+async function loadStandardIdsFromConfig() {
+	const config = JSON.parse(await fs.readFile(CONFIG_FILE, 'utf-8'));
+	const ids = [];
+
+	// Extract from all system sections (iso, din, ansi, pn, gb, jis)
+	for (const system of VALID_SYSTEMS) {
+		const section = config[system];
+		if (section) {
+			for (const number of Object.keys(section)) {
+				ids.push(`${system}${number}`.toLowerCase());
+			}
+		}
+	}
+
+	return ids;
+}
+
+/**
+ * Load standard IDs from image-mappings.json (for backwards compatibility)
+ */
+async function loadStandardIdsFromimage() {
+	try {
+		const imageMappings = JSON.parse(await fs.readFile(image_FILE, 'utf-8'));
+		return Object.keys(imageMappings).map((id) => id.toLowerCase());
+	} catch {
+		return [];
+	}
+}
+
+/**
  * Main function
  */
 async function main() {
@@ -148,11 +219,17 @@ async function main() {
 	}
 	console.log('');
 
-	// Load image mappings
-	console.log('Loading image mappings...');
-	const imageMappings = JSON.parse(await fs.readFile(MAPPINGS_FILE, 'utf-8'));
-	const standardIds = Object.keys(imageMappings);
-	console.log(`Found ${standardIds.length} standards\n`);
+	// Load standards from both sources
+	console.log('Loading standards from config...');
+	const configIds = await loadStandardIdsFromConfig();
+	console.log(`  standards-config.json: ${configIds.length} standards`);
+
+	const imageIds = await loadStandardIdsFromimage();
+	console.log(`  image-mappings.json: ${imageIds.length} standards`);
+
+	// Combine and deduplicate
+	const standardIds = [...new Set([...configIds, ...imageIds])];
+	console.log(`  Combined (unique): ${standardIds.length} standards\n`);
 
 	// Load existing dinmedia mappings
 	const existingMappings = FORCE ? {} : await loadExistingMappings();

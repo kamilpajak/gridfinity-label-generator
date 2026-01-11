@@ -1123,5 +1123,460 @@
 		"dinMediaId": "1838416",
 		"searchQuery": "DIN 1476",
 		"originalId": "din1476"
+	},
+	"iso1051": {
+		"dinMediaId": "75936680",
+		"searchQuery": "EN ISO 1051",
+		"originalId": "iso1051"
+	},
+	"iso1234": {
+		"dinMediaId": "3360492",
+		"searchQuery": "EN ISO 1234",
+		"originalId": "iso1234"
+	},
+	"iso1481": {
+		"dinMediaId": "139344711",
+		"searchQuery": "EN ISO 1481",
+		"originalId": "iso1481"
+	},
+	"iso1482": {
+		"dinMediaId": "139344738",
+		"searchQuery": "EN ISO 1482",
+		"originalId": "iso1482"
+	},
+	"iso1483": {
+		"dinMediaId": "139344759",
+		"searchQuery": "EN ISO 1483",
+		"originalId": "iso1483"
+	},
+	"iso2342": {
+		"dinMediaId": "67414804",
+		"searchQuery": "EN ISO 2342",
+		"originalId": "iso2342"
+	},
+	"iso3220": {
+		"dinMediaId": "323996812",
+		"searchQuery": "EN ISO 3220",
+		"originalId": "iso3220"
+	},
+	"iso3506": {
+		"dinMediaId": "71274657",
+		"searchQuery": "EN ISO 3506",
+		"originalId": "iso3506"
+	},
+	"iso4016": {
+		"dinMediaId": "342492726",
+		"searchQuery": "EN ISO 4016",
+		"originalId": "iso4016"
+	},
+	"iso4018": {
+		"dinMediaId": "342493179",
+		"searchQuery": "EN ISO 4018",
+		"originalId": "iso4018"
+	},
+	"iso4026": {
+		"dinMediaId": "67390521",
+		"searchQuery": "EN ISO 4026",
+		"originalId": "iso4026"
+	},
+	"iso4027": {
+		"dinMediaId": "67390503",
+		"searchQuery": "EN ISO 4027",
+		"originalId": "iso4027"
+	},
+	"iso4028": {
+		"dinMediaId": "67390484",
+		"searchQuery": "EN ISO 4028",
+		"originalId": "iso4028"
+	},
+	"iso4029": {
+		"dinMediaId": "67390451",
+		"searchQuery": "EN ISO 4029",
+		"originalId": "iso4029"
+	},
+	"iso4033": {
+		"dinMediaId": "372988604",
+		"searchQuery": "EN ISO 4033",
+		"originalId": "iso4033"
+	},
+	"iso4766": {
+		"dinMediaId": "382166467",
+		"searchQuery": "EN ISO 4766",
+		"originalId": "iso4766"
+	},
+	"iso7041": {
+		"dinMediaId": "393414313",
+		"searchQuery": "EN ISO 7041",
+		"originalId": "iso7041"
+	},
+	"iso7048": {
+		"dinMediaId": "141612233",
+		"searchQuery": "EN ISO 7048",
+		"originalId": "iso7048"
+	},
+	"iso7090": {
+		"dinMediaId": "34243245",
+		"searchQuery": "EN ISO 7090",
+		"originalId": "iso7090"
+	},
+	"iso7434": {
+		"dinMediaId": "382166494",
+		"searchQuery": "EN ISO 7434",
+		"originalId": "iso7434"
+	},
+	"iso7435": {
+		"dinMediaId": "382166525",
+		"searchQuery": "EN ISO 7435",
+		"originalId": "iso7435"
+	},
+	"iso7436": {
+		"dinMediaId": "382166593",
+		"searchQuery": "EN ISO 7436",
+		"originalId": "iso7436"
+	},
+	"iso7719": {
+		"dinMediaId": "393414293",
+		"searchQuery": "EN ISO 7719",
+		"originalId": "iso7719"
+	},
+	"iso7720": {
+		"dinMediaId": "393702957",
+		"searchQuery": "EN ISO 7720",
+		"originalId": "iso7720"
+	},
+	"iso8673": {
+		"dinMediaId": "372988653",
+		"searchQuery": "EN ISO 8673",
+		"originalId": "iso8673"
+	},
+	"iso8674": {
+		"dinMediaId": "372988686",
+		"searchQuery": "EN ISO 8674",
+		"originalId": "iso8674"
+	},
+	"iso8675": {
+		"dinMediaId": "372989135",
+		"searchQuery": "EN ISO 8675",
+		"originalId": "iso8675"
+	},
+	"iso8733": {
+		"dinMediaId": "3361069",
+		"searchQuery": "EN ISO 8733",
+		"originalId": "iso8733"
+	},
+	"iso8751": {
+		"dinMediaId": "94519464",
+		"searchQuery": "EN ISO 8751",
+		"originalId": "iso8751"
+	},
+	"iso10509": {
+		"dinMediaId": "248752681",
+		"searchQuery": "EN ISO 10509",
+		"originalId": "iso10509"
+	},
+	"iso10510": {
+		"dinMediaId": "141611430",
+		"searchQuery": "EN ISO 10510",
+		"originalId": "iso10510"
+	},
+	"iso10512": {
+		"dinMediaId": "393702868",
+		"searchQuery": "EN ISO 10512",
+		"originalId": "iso10512"
+	},
+	"iso10513": {
+		"dinMediaId": "393702902",
+		"searchQuery": "EN ISO 10513",
+		"originalId": "iso10513"
+	},
+	"iso10644": {
+		"dinMediaId": "116941934",
+		"searchQuery": "EN ISO 10644",
+		"originalId": "iso10644"
+	},
+	"iso10669": {
+		"dinMediaId": "23671980",
+		"searchQuery": "EN ISO 10669",
+		"originalId": "iso10669"
+	},
+	"iso10673": {
+		"dinMediaId": "116941898",
+		"searchQuery": "EN ISO 10673",
+		"originalId": "iso10673"
+	},
+	"iso12474": {
+		"dinMediaId": "132993753",
+		"searchQuery": "EN ISO 12474",
+		"originalId": "iso12474"
+	},
+	"iso14579": {
+		"dinMediaId": "140785276",
+		"searchQuery": "EN ISO 14579",
+		"originalId": "iso14579"
+	},
+	"iso14581": {
+		"dinMediaId": "363730847",
+		"searchQuery": "EN ISO 14581",
+		"originalId": "iso14581"
+	},
+	"iso14582": {
+		"dinMediaId": "187901144",
+		"searchQuery": "EN ISO 14582",
+		"originalId": "iso14582"
+	},
+	"iso14584": {
+		"dinMediaId": "140785506",
+		"searchQuery": "EN ISO 14584",
+		"originalId": "iso14584"
+	},
+	"iso14585": {
+		"dinMediaId": "139718341",
+		"searchQuery": "EN ISO 14585",
+		"originalId": "iso14585"
+	},
+	"iso14586": {
+		"dinMediaId": "139718359",
+		"searchQuery": "EN ISO 14586",
+		"originalId": "iso14586"
+	},
+	"iso14587": {
+		"dinMediaId": "139718378",
+		"searchQuery": "EN ISO 14587",
+		"originalId": "iso14587"
+	},
+	"iso15071": {
+		"dinMediaId": "197659835",
+		"searchQuery": "EN ISO 15071",
+		"originalId": "iso15071"
+	},
+	"iso15072": {
+		"dinMediaId": "197659835",
+		"searchQuery": "EN ISO 15072",
+		"originalId": "iso15072"
+	},
+	"iso15483": {
+		"dinMediaId": "23670852",
+		"searchQuery": "EN ISO 15483",
+		"originalId": "iso15483"
+	},
+	"iso15973": {
+		"dinMediaId": "39478530",
+		"searchQuery": "EN ISO 15973",
+		"originalId": "iso15973"
+	},
+	"iso15974": {
+		"dinMediaId": "39478702",
+		"searchQuery": "EN ISO 15974",
+		"originalId": "iso15974"
+	},
+	"iso15975": {
+		"dinMediaId": "57580888",
+		"searchQuery": "EN ISO 15975",
+		"originalId": "iso15975"
+	},
+	"iso15976": {
+		"dinMediaId": "57581056",
+		"searchQuery": "EN ISO 15976",
+		"originalId": "iso15976"
+	},
+	"iso15977": {
+		"dinMediaId": "137241337",
+		"searchQuery": "EN ISO 15977",
+		"originalId": "iso15977"
+	},
+	"iso15978": {
+		"dinMediaId": "57581577",
+		"searchQuery": "EN ISO 15978",
+		"originalId": "iso15978"
+	},
+	"iso15979": {
+		"dinMediaId": "57581708",
+		"searchQuery": "EN ISO 15979",
+		"originalId": "iso15979"
+	},
+	"iso15980": {
+		"dinMediaId": "57581787",
+		"searchQuery": "EN ISO 15980",
+		"originalId": "iso15980"
+	},
+	"iso15981": {
+		"dinMediaId": "57581821",
+		"searchQuery": "EN ISO 15981",
+		"originalId": "iso15981"
+	},
+	"iso15982": {
+		"dinMediaId": "57581858",
+		"searchQuery": "EN ISO 15982",
+		"originalId": "iso15982"
+	},
+	"iso15983": {
+		"dinMediaId": "57582428",
+		"searchQuery": "EN ISO 15983",
+		"originalId": "iso15983"
+	},
+	"iso15984": {
+		"dinMediaId": "57582455",
+		"searchQuery": "EN ISO 15984",
+		"originalId": "iso15984"
+	},
+	"iso16585": {
+		"dinMediaId": "57582549",
+		"searchQuery": "EN ISO 16585",
+		"originalId": "iso16585"
+	},
+	"iso21670": {
+		"dinMediaId": "208405442",
+		"searchQuery": "EN ISO 21670",
+		"originalId": "iso21670"
+	},
+	"iso23429": {
+		"dinMediaId": "67414751",
+		"searchQuery": "EN ISO 23429",
+		"originalId": "iso23429"
+	},
+	"din78": {
+		"dinMediaId": "170842476",
+		"searchQuery": "DIN 78",
+		"originalId": "din78"
+	},
+	"din101": {
+		"dinMediaId": "135439395",
+		"searchQuery": "DIN 101",
+		"originalId": "din101"
+	},
+	"din479": {
+		"dinMediaId": "256855109",
+		"searchQuery": "DIN 479",
+		"originalId": "din479"
+	},
+	"din480": {
+		"dinMediaId": "256859142",
+		"searchQuery": "DIN 480",
+		"originalId": "din480"
+	},
+	"din564": {
+		"dinMediaId": "2458634",
+		"searchQuery": "DIN 564",
+		"originalId": "din564"
+	},
+	"din580": {
+		"dinMediaId": "376535165",
+		"searchQuery": "DIN 580",
+		"originalId": "din580"
+	},
+	"din582": {
+		"dinMediaId": "376535123",
+		"searchQuery": "DIN 582",
+		"originalId": "din582"
+	},
+	"din608": {
+		"dinMediaId": "132135433",
+		"searchQuery": "DIN 608",
+		"originalId": "din608"
+	},
+	"din792": {
+		"dinMediaId": "680543",
+		"searchQuery": "DIN 792",
+		"originalId": "din792"
+	},
+	"din911": {
+		"dinMediaId": "3038882",
+		"searchQuery": "DIN 911",
+		"originalId": "din911"
+	},
+	"din1052": {
+		"dinMediaId": "187307676",
+		"searchQuery": "DIN 1052",
+		"originalId": "din1052"
+	},
+	"din1441": {
+		"dinMediaId": "118048555",
+		"searchQuery": "DIN 1441",
+		"originalId": "din1441"
+	},
+	"din1478": {
+		"dinMediaId": "77536392",
+		"searchQuery": "DIN 1478",
+		"originalId": "din1478"
+	},
+	"din1480": {
+		"dinMediaId": "77536766",
+		"searchQuery": "DIN 1480",
+		"originalId": "din1480"
+	},
+	"din3027": {
+		"dinMediaId": "2416191",
+		"searchQuery": "DIN 3027",
+		"originalId": "din3027"
+	},
+	"din5406": {
+		"dinMediaId": "138095106",
+		"searchQuery": "DIN 5406",
+		"originalId": "din5406"
+	},
+	"din5903": {
+		"dinMediaId": "134239292",
+		"searchQuery": "DIN 5903",
+		"originalId": "din5903"
+	},
+	"din6917": {
+		"dinMediaId": "1479041",
+		"searchQuery": "DIN 6917",
+		"originalId": "din6917"
+	},
+	"din6918": {
+		"dinMediaId": "1535015",
+		"searchQuery": "DIN 6918",
+		"originalId": "din6918"
+	},
+	"din7337": {
+		"dinMediaId": "1728268",
+		"searchQuery": "DIN 7337",
+		"originalId": "din7337"
+	},
+	"din7338": {
+		"dinMediaId": "135476056",
+		"searchQuery": "DIN 7338",
+		"originalId": "din7338"
+	},
+	"din7339": {
+		"dinMediaId": "135476263",
+		"searchQuery": "DIN 7339",
+		"originalId": "din7339"
+	},
+	"din7340": {
+		"dinMediaId": "135476377",
+		"searchQuery": "DIN 7340",
+		"originalId": "din7340"
+	},
+	"din7341": {
+		"dinMediaId": "532803",
+		"searchQuery": "DIN 7341",
+		"originalId": "din7341"
+	},
+	"din11014": {
+		"dinMediaId": "507320",
+		"searchQuery": "DIN 11014",
+		"originalId": "din11014"
+	},
+	"din21346": {
+		"dinMediaId": "1493983",
+		"searchQuery": "DIN 21346",
+		"originalId": "din21346"
+	},
+	"din25193": {
+		"dinMediaId": "62637736",
+		"searchQuery": "DIN 25193",
+		"originalId": "din25193"
+	},
+	"din34817": {
+		"dinMediaId": "267900213",
+		"searchQuery": "DIN 34817",
+		"originalId": "din34817"
+	},
+	"din70952": {
+		"dinMediaId": "763066",
+		"searchQuery": "DIN 70952",
+		"originalId": "din70952"
 	}
 }

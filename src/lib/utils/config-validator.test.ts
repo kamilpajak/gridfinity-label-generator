@@ -12,7 +12,8 @@ import {
 	validateNoDuplicates,
 	validateCrossReferences,
 	validateConfig,
-	type ValidationResult
+	type ValidationResult,
+	type StandardsConfig
 } from './config-validator';
 
 describe('validateConfigStructure', () => {
@@ -175,24 +176,26 @@ describe('validateCrossReferences', () => {
 	});
 
 	it('should fail if din property is not an array', () => {
+		// Intentionally invalid data for testing validation
 		const config = {
 			crossref: {
 				iso4762: { din: '912' }
 			},
 			dinOnly: {}
-		};
+		} as unknown as StandardsConfig;
 		const result = validateCrossReferences(config);
 		expect(result.valid).toBe(false);
 		expect(result.errors.some((e) => e.includes('must be an array'))).toBe(true);
 	});
 
 	it('should fail if din property is missing', () => {
+		// Intentionally invalid data for testing validation
 		const config = {
 			crossref: {
 				iso4762: {}
 			},
 			dinOnly: {}
-		};
+		} as unknown as StandardsConfig;
 		const result = validateCrossReferences(config);
 		expect(result.valid).toBe(false);
 		expect(result.errors.some((e) => e.includes('missing din property'))).toBe(true);

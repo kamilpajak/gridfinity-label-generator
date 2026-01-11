@@ -210,35 +210,3 @@
 		</div>
 	</div>
 {/if}
-
-<style>
-	.custom-scrollbar::-webkit-scrollbar {
-		width: 4px;
-	}
-	.custom-scrollbar::-webkit-scrollbar-track {
-		background: #f1f5f9;
-	}
-	.custom-scrollbar::-webkit-scrollbar-thumb {
-		background: #cbd5e1;
-		border-radius: 4px;
-	}
-	.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-		background: #94a3b8;
-	}
-
-	@keyframes sparkle {
-		0%,
-		100% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		50% {
-			opacity: 0.6;
-			transform: scale(1.15);
-		}
-	}
-
-	:global(.animate-sparkle) {
-		animation: sparkle 2s ease-in-out infinite;
-	}
-</style>

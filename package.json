@@ -29,6 +29,7 @@
 		"standards:build:strict": "node scripts/standards-build.js --strict",
 		"standards:refresh": "pnpm standards:fetch && pnpm standards:build",
 		"standards:add": "pnpm standards:validate && pnpm standards:resolve && pnpm standards:fetch && pnpm standards:build",
+		"build-standards": "pnpm standards:validate && pnpm standards:build",
 		"check-changelog": "node scripts/check-changelog.js",
 		"release": "node scripts/release.js",
 		"release:dry-run": "node scripts/release.js --dry-run",

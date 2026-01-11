@@ -11,9 +11,11 @@ import {
 	parseStandardId,
 	VALID_SYSTEMS,
 	type StandardSystem,
-	type StandardEntry,
-	type StandardsConfigV2
+	type StandardEntry
 } from './standards-config';
+
+// Re-export types from standards-config for backwards compatibility
+export type { StandardEntry, StandardsConfigV2 } from './standards-config';
 
 /**
  * Cross-reference systems (systems that can appear as cross-ref keys)
@@ -36,10 +38,8 @@ export interface ValidationResult {
 }
 
 /**
- * Re-export types from standards-config for backwards compatibility.
- * StandardEntry is the canonical type (StandardEntryV2 is an alias).
+ * StandardEntryV2 is an alias for StandardEntry (backwards compatibility)
  */
-export type { StandardEntry, StandardsConfigV2 };
 export type StandardEntryV2 = StandardEntry;
 
 /**

@@ -25,21 +25,3 @@
 		</span>
 	{/if}
 </button>
-
-<style>
-	@keyframes sparkle {
-		0%,
-		100% {
-			opacity: 1;
-			transform: scale(1);
-		}
-		50% {
-			opacity: 0.6;
-			transform: scale(1.15);
-		}
-	}
-
-	:global(.animate-sparkle) {
-		animation: sparkle 2s ease-in-out infinite;
-	}
-</style>

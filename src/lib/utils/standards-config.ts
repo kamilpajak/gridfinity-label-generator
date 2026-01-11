@@ -103,7 +103,7 @@ export function parseStandardId(fullId: string): { system: StandardSystem; numbe
 		return null;
 	}
 
-	const match = fullId.match(STANDARD_ID_PATTERN);
+	const match = STANDARD_ID_PATTERN.exec(fullId);
 	if (!match) {
 		return null;
 	}

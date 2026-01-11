@@ -13,6 +13,11 @@
 import { extractAllStandardIds, type StandardsConfigV2 } from './standards-config';
 
 /**
+ * Pattern for parsing standard IDs in search queries
+ */
+const SEARCH_ID_PATTERN = /^(din|iso)(\d+)([a-z])?$/i;
+
+/**
  * Check if a standard ID is an ISO standard
  *
  * @param id - Standard ID (e.g., "iso4762", "din912")
@@ -47,7 +52,7 @@ export function standardIdToSearchQuery(id: string): string | null {
 	if (!id || typeof id !== 'string') return null;
 
 	// Extract prefix (din, iso) and number
-	const match = id.toLowerCase().match(/^(din|iso)(\d+)([a-z])?$/i);
+	const match = SEARCH_ID_PATTERN.exec(id.toLowerCase());
 	if (!match) return null;
 
 	const prefix = match[1].toLowerCase();

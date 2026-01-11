@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 
 /**
- * Unified Standards Builder
+ * Standards Build Script
  *
- * This script processes all standards data in a single pipeline:
+ * Builds the final TypeScript module from all data sources.
+ * Part of pipeline: validate → resolve → fetch → build
+ *
+ * Data flow:
  * 1. Loads standards configuration (crossref for ISO, dinOnly for DIN)
  * 2. Loads DIN Media metadata cache (SSOT for descriptions)
  * 3. Loads image image mappings (SSOT for images)
@@ -11,27 +14,18 @@
  * 5. Processes DIN-only standards
  * 6. Generates final TypeScript module
  *
- * Purpose:
- * - Single script for entire build process
- * - No intermediate files needed
- * - Processes everything in memory
- *
  * Usage:
- *   pnpm build-standards
- *   pnpm build-standards:strict  # Fail if ISO validation cache has invalid standards
- *   # or
- *   node scripts/build-all-standards.js [--strict]
+ *   pnpm standards:build          # Normal build
+ *   pnpm standards:build:strict   # Fail on unexpected withdrawn standards
  *
  * Options:
- *   --strict  Fail build if any ISO standard is invalid (withdrawn, not found, wrong category)
- *             Requires data/iso-validation-cache.json from validate-iso script
+ *   --strict  Fail if any standard is withdrawn but not marked in config
  *
  * Input:
  *   data/standards-config.json - Standards list (crossref, dinOnly)
  *   data/image-mappings.json - Image mappings from image
  *   data/dinmedia-id-mappings.json - Standard ID → DIN Media ID mappings
  *   data/dinmedia-metadata-cache.json - Cached metadata from DIN Media (SSOT)
- *   data/iso-validation-cache.json - ISO.org validation cache (optional, required for --strict)
  *
  * Output:
  *   src/lib/data/standards-generated.ts - TypeScript module with all standards

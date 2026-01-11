@@ -42,20 +42,20 @@ jobs:
 
       # Layer 1: Input validation (structure, IDs, duplicates, cross-refs)
       - name: Validate standards config
-        run: pnpm validate-config
+        run: pnpm standards:validate
 
       # Layer 2: External validation (DIN Media - Single Source of Truth)
-      - name: Generate DIN Media mappings
-        run: pnpm generate-dinmedia-mappings
+      - name: Resolve DIN Media IDs
+        run: pnpm standards:resolve
         continue-on-error: true
 
-      - name: Scrape DIN Media metadata
-        run: pnpm scrape-dinmedia
+      - name: Fetch DIN Media metadata
+        run: pnpm standards:fetch
         continue-on-error: true
 
       # Layer 3: Build-time validation (fail on withdrawn standards)
       - name: Build standards (strict mode)
-        run: pnpm build-standards:strict
+        run: pnpm standards:build:strict
         continue-on-error: true
 
       # Upload validation reports

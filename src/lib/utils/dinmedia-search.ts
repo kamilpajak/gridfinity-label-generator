@@ -10,7 +10,7 @@
  * @see docs/plan-standards-validation-pipeline.md
  */
 
-import { extractAllStandardIds, type StandardsConfigV2 } from './standards-config';
+import { extractAllStandardIds, type StandardsConfig } from './standards-config';
 
 /**
  * Pattern for parsing standard IDs in search queries
@@ -79,6 +79,6 @@ export function standardIdToSearchQuery(id: string): string | null {
  * @param config - Standards config v2 object
  * @returns Array of standard IDs (lowercase)
  */
-export function extractStandardIdsFromConfig(config: StandardsConfigV2): string[] {
+export function extractStandardIdsFromConfig(config: StandardsConfig): string[] {
 	return extractAllStandardIds(config);
 }

@@ -16,7 +16,7 @@ import {
 	validateWithdrawnFields,
 	validateConfig,
 	type ValidationResult,
-	type StandardsConfigV2
+	type StandardsConfig
 } from './config-validator';
 
 describe('validateConfigStructure', () => {
@@ -202,7 +202,7 @@ describe('validateSystemSection', () => {
 
 describe('validateNoDuplicateCrossRefs', () => {
 	it('should pass when no duplicate cross-refs exist', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			iso: { '4762': { din: ['912'] } },
 			din: { '95': {} }
 		};
@@ -211,7 +211,7 @@ describe('validateNoDuplicateCrossRefs', () => {
 	});
 
 	it('should pass when cross-ref points to existing entry', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			iso: { '4762': { din: ['912'] } },
 			din: { '912': {} }
 		};
@@ -220,7 +220,7 @@ describe('validateNoDuplicateCrossRefs', () => {
 	});
 
 	it('should warn when cross-ref points to non-existent entry', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			iso: { '4762': { din: ['99999'] } },
 			din: {}
 		};
@@ -232,7 +232,7 @@ describe('validateNoDuplicateCrossRefs', () => {
 
 describe('validateWithdrawnFields', () => {
 	it('should pass when no withdrawn field is present', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			iso: { '4762': { din: ['912'] } },
 			din: { '95': {} }
 		};
@@ -242,7 +242,7 @@ describe('validateWithdrawnFields', () => {
 	});
 
 	it('should pass for valid withdrawn: true', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			din: { '127': { withdrawn: true } }
 		};
 		const result = validateWithdrawnFields(config);
@@ -252,14 +252,14 @@ describe('validateWithdrawnFields', () => {
 	it('should fail for withdrawn with non-boolean value', () => {
 		const config = {
 			din: { '127': { withdrawn: 'yes' } }
-		} as unknown as StandardsConfigV2;
+		} as unknown as StandardsConfig;
 		const result = validateWithdrawnFields(config);
 		expect(result.valid).toBe(false);
 		expect(result.errors.some((e) => e.includes('must be a boolean'))).toBe(true);
 	});
 
 	it('should pass when replacedBy references existing standard', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			iso: { '10642': {} },
 			din: { '7991': { withdrawn: true, replacedBy: 'iso10642' } }
 		};
@@ -268,7 +268,7 @@ describe('validateWithdrawnFields', () => {
 	});
 
 	it('should fail when replacedBy references non-existent standard', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			din: { '7991': { withdrawn: true, replacedBy: 'iso99999' } }
 		};
 		const result = validateWithdrawnFields(config);
@@ -277,7 +277,7 @@ describe('validateWithdrawnFields', () => {
 	});
 
 	it('should fail when replacedBy has invalid format', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			din: { '7991': { withdrawn: true, replacedBy: 'invalid' } }
 		};
 		const result = validateWithdrawnFields(config);
@@ -286,7 +286,7 @@ describe('validateWithdrawnFields', () => {
 	});
 
 	it('should warn when withdrawn has no replacedBy', () => {
-		const config: StandardsConfigV2 = {
+		const config: StandardsConfig = {
 			din: { '127': { withdrawn: true } }
 		};
 		const result = validateWithdrawnFields(config);

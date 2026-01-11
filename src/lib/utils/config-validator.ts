@@ -11,11 +11,12 @@ import {
 	parseStandardId,
 	VALID_SYSTEMS,
 	type StandardSystem,
-	type StandardEntry
+	type StandardEntry,
+	type StandardsConfig
 } from './standards-config';
 
-// Re-export types from standards-config for backwards compatibility
-export type { StandardEntry, StandardsConfigV2 } from './standards-config';
+// Re-export types from standards-config
+export type { StandardEntry, StandardsConfig } from './standards-config';
 
 /**
  * Cross-reference systems (systems that can appear as cross-ref keys)
@@ -182,7 +183,7 @@ export function validateSystemSection(
  * (Currently just passes - cross-refs to unlisted standards are allowed)
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function validateNoDuplicateCrossRefs(config: StandardsConfigV2): ValidationResult {
+export function validateNoDuplicateCrossRefs(config: StandardsConfig): ValidationResult {
 	// Cross-refs to standards not in config are allowed
 	// This is just a placeholder for potential future validation
 	return { valid: true, errors: [] };
@@ -191,7 +192,7 @@ export function validateNoDuplicateCrossRefs(config: StandardsConfigV2): Validat
 /**
  * Build set of all standard IDs in config (helper to reduce cognitive complexity)
  */
-function buildAllStandardIds(config: StandardsConfigV2): Set<string> {
+function buildAllStandardIds(config: StandardsConfig): Set<string> {
 	const allIds = new Set<string>();
 	for (const system of VALID_SYSTEMS) {
 		const section = config[system];
@@ -242,7 +243,7 @@ function validateEntryWithdrawnStatus(
 /**
  * Validate withdrawn fields and replacedBy references
  */
-export function validateWithdrawnFields(config: StandardsConfigV2): ValidationResult {
+export function validateWithdrawnFields(config: StandardsConfig): ValidationResult {
 	const errors: string[] = [];
 	const warnings: string[] = [];
 	const allIds = buildAllStandardIds(config);
@@ -288,7 +289,7 @@ export function validateConfig(config: unknown): ValidationResult {
 		};
 	}
 
-	const cfg = config as StandardsConfigV2;
+	const cfg = config as StandardsConfig;
 
 	// Step 2: Validate each system section
 	for (const system of VALID_SYSTEMS) {

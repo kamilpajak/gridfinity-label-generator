@@ -9,6 +9,7 @@
 	import Mail from '@lucide/svelte/icons/mail';
 	import Info from '@lucide/svelte/icons/info';
 	import { AFFILIATE_DISCLOSURE } from '$lib/data/affiliate-products';
+	import { createEscapeHandler, createBackdropClickHandler } from '$lib/utils/modal-utils';
 
 	interface Props {
 		open: boolean;
@@ -17,17 +18,8 @@
 
 	let { open = $bindable(), onClose }: Props = $props();
 
-	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') {
-			onClose();
-		}
-	}
-
-	function handleBackdropClick(e: MouseEvent) {
-		if (e.target === e.currentTarget) {
-			onClose();
-		}
-	}
+	const handleKeydown = createEscapeHandler(onClose);
+	const handleBackdropClick = createBackdropClickHandler(onClose);
 </script>
 
 <svelte:window onkeydown={handleKeydown} />

@@ -97,6 +97,20 @@ function isWithdrawn(standardId, dinMediaData) {
 }
 
 /**
+ * Check if a standard has a DIN Media mapping
+ * Standards without mappings cannot be validated for withdrawn status
+ * @param {string} standardId - Standard ID
+ * @param {Object} dinMediaData - { mappings, cache } from loadDinMediaData
+ * @returns {boolean} True if mapping exists
+ */
+function hasDinMediaMapping(standardId, dinMediaData) {
+	if (!dinMediaData) return false;
+
+	const baseId = standardId.replace(/[a-z]$/i, '').toLowerCase();
+	return !!(dinMediaData.mappings[baseId] || dinMediaData.mappings[standardId]);
+}
+
+/**
  * Check if an image file exists in the static directory
  * @param {string} imagePath - Path like "/images/standards/din_965.png"
  * @returns {boolean} True if file exists
@@ -219,6 +233,7 @@ async function buildStandards() {
 	// Process ISO standards from crossref
 	console.log('\n📚 Processing ISO standards from crossref...');
 	const withdrawnISO = [];
+	const unmappedISO = [];
 
 	const processedISO = Object.entries(config.crossref).map(([id, crossref]) => {
 		const isoNumber = id.replace('iso', '');
@@ -234,6 +249,11 @@ async function buildStandards() {
 		// Check if withdrawn
 		if (isWithdrawn(id, dinMediaData)) {
 			withdrawnISO.push(id);
+		}
+
+		// Track unmapped ISO standards (cannot be validated)
+		if (!hasDinMediaMapping(id, dinMediaData)) {
+			unmappedISO.push(id);
 		}
 
 		// Build standard object
@@ -259,6 +279,11 @@ async function buildStandards() {
 	console.log(`   Found ${processedISO.length} ISO standards`);
 	if (withdrawnISO.length > 0) {
 		console.log(`   ⚠️  ${withdrawnISO.length} withdrawn: ${withdrawnISO.join(', ')}`);
+	}
+	if (unmappedISO.length > 0) {
+		console.log(
+			`   ⚠️  ${unmappedISO.length} ISO standard(s) without DIN Media mapping (cannot validate): ${unmappedISO.slice(0, 10).join(', ')}${unmappedISO.length > 10 ? '...' : ''}`
+		);
 	}
 
 	// Process DIN-only standards

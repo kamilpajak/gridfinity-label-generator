@@ -1,6 +1,5 @@
-import { type Page } from '@playwright/test';
+import { type Page, expect } from '@playwright/test';
 import { BaseCanvas } from '../components/BaseCanvas';
-import { waitForCanvasStable } from '../../utils/wait-helpers';
 
 /**
  * Single label preview component
@@ -13,6 +12,10 @@ export class SingleLabelPreview extends BaseCanvas {
 
 	/**
 	 * Wait for label to be rendered after data change
+	 *
+	 * Uses event-driven approach with data-render-status attribute
+	 * instead of polling canvas pixel data for stability.
+	 * This is much faster (~50ms vs ~400ms per check).
 	 */
 	async waitForLabelRender() {
 		// First check if canvas is visible or if we're showing placeholder
@@ -20,7 +23,6 @@ export class SingleLabelPreview extends BaseCanvas {
 
 		if (canvasCount === 0) {
 			// No canvas, wait for placeholder to be visible
-			// Use data-testid for stable selection
 			await this.page.getByTestId('label-preview-placeholder').waitFor({
 				state: 'visible',
 				timeout: 5000
@@ -28,36 +30,15 @@ export class SingleLabelPreview extends BaseCanvas {
 			return;
 		}
 
-		// Canvas exists, wait for it to be ready
-		await this.waitForReady();
-
-		// Wait for layout calculation to complete
+		// Canvas exists, wait for it to be attached
 		await this.canvas.waitFor({
 			state: 'attached',
 			timeout: 5000
 		});
 
-		// Wait for rendering to complete using data attributes
-		await this.page
-			.waitForFunction(
-				() => {
-					const canvas = document.querySelector('[data-testid="label-preview-canvas"]');
-					if (!canvas) return false;
-
-					// Check if layout is ready and not currently rendering
-					const layoutReady = canvas.getAttribute('data-layout-ready') === 'true';
-					const notRendering = canvas.getAttribute('data-rendering') === 'false';
-
-					return layoutReady && notRendering;
-				},
-				{ timeout: 5000 }
-			)
-			.catch(() => {
-				// If data attributes are not working, fall back to canvas stability check
-			});
-
-		// Wait for canvas content to stabilize (using default selector with data-testid)
-		await waitForCanvasStable(this.page, undefined, { optional: true, timeout: 8000 });
+		// Wait for render status to become "stable" using the new event-driven approach
+		// This replaces the expensive polling-based waitForCanvasStable
+		await expect(this.canvas).toHaveAttribute('data-render-status', 'stable', { timeout: 8000 });
 	}
 
 	/**

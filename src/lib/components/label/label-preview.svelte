@@ -198,6 +198,18 @@
 
 	let isRendering = $state(false);
 
+	// Compute render status for e2e tests (event-driven stability detection)
+	// Replaces polling-based canvas stability checks with instant attribute checks
+	const renderStatus = $derived<'idle' | 'rendering' | 'stable'>(
+		!hasContent
+			? 'idle'
+			: isCalculatingLayout || isRendering
+				? 'rendering'
+				: layout !== null
+					? 'stable'
+					: 'rendering' // Default to rendering if layout is null but has content
+	);
+
 	// Render to canvas whenever dependencies change
 	$effect(() => {
 		// Explicitly track dependencies to ensure re-render when they change
@@ -342,8 +354,7 @@
 				bind:this={canvasRef}
 				class="h-full w-full bg-white shadow-lg"
 				style="image-rendering: crisp-edges;"
-				data-layout-ready={!isCalculatingLayout && layout !== null}
-				data-rendering={isRendering}
+				data-render-status={renderStatus}
 				data-testid="label-preview-canvas"
 				data-primary-text={primaryText || ''}
 				data-secondary-text={fullSecondaryText || ''}

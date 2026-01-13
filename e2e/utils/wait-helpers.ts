@@ -1,70 +1,5 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { CANVAS_TRANSLATE_MM, QR_CODE_SIZE_MM, CANVAS_MARGIN_MM } from './canvas-geometry';
-
-/**
- * Wait for canvas to be stable (no ongoing renders)
- * @param page - Playwright page object
- * @param selector - Canvas selector (default: 'canvas')
- * @param options - Wait options
- */
-export async function waitForCanvasStable(
-	page: Page,
-	selector: string = '[data-testid="label-preview-canvas"]',
-	options: { timeout?: number; pollInterval?: number; optional?: boolean } = {}
-) {
-	const { timeout = 5000, pollInterval = 100, optional = false } = options;
-
-	// First check if canvas exists
-	const canvasExists = (await page.locator(selector).count()) > 0;
-	if (!canvasExists && optional) {
-		return; // Canvas doesn't exist and that's OK
-	}
-
-	await page.waitForFunction(
-		({ selector, pollInterval }) => {
-			return new Promise((resolve) => {
-				const canvas = document.querySelector(selector) as HTMLCanvasElement;
-				if (!canvas) {
-					resolve(false);
-					return;
-				}
-
-				let lastImageData: string | null = null;
-				let stableCount = 0;
-				const requiredStableChecks = 3;
-
-				const checkStability = () => {
-					const ctx = canvas.getContext('2d');
-					if (!ctx) {
-						resolve(false);
-						return;
-					}
-
-					// Get a sample of the canvas content
-					const imageData = ctx.getImageData(0, 0, 50, 50).data;
-					const currentData = Array.from(imageData).join(',');
-
-					if (lastImageData === currentData) {
-						stableCount++;
-						if (stableCount >= requiredStableChecks) {
-							resolve(true);
-							return;
-						}
-					} else {
-						stableCount = 0;
-					}
-
-					lastImageData = currentData;
-					setTimeout(checkStability, pollInterval);
-				};
-
-				checkStability();
-			});
-		},
-		{ selector, pollInterval },
-		{ timeout, polling: 'raf' }
-	);
-}
 
 /**
  * Wait for all images on the page to be loaded
@@ -134,30 +69,14 @@ export async function waitForQRCodeRender(
 	page: Page,
 	options: { timeout?: number; labelWidth?: number } = {}
 ) {
-	const { timeout = 10000, labelWidth = 35 } = options;
+	const { timeout = 5000, labelWidth = 35 } = options;
 
-	// First ensure canvas exists
-	await page.getByTestId('label-preview-canvas').waitFor({ state: 'visible', timeout });
+	// First ensure canvas exists and is stable using event-driven approach
+	const canvas = page.getByTestId('label-preview-canvas');
+	await canvas.waitFor({ state: 'visible', timeout });
+	await expect(canvas).toHaveAttribute('data-render-status', 'stable', { timeout });
 
-	// Wait for rendering to complete
-	await page
-		.waitForFunction(
-			() => {
-				const canvas = document.querySelector('[data-testid="label-preview-canvas"]');
-				if (!canvas) return false;
-
-				// Check data attributes to ensure rendering is complete
-				const isLayoutReady = canvas.getAttribute('data-layout-ready') === 'true';
-				const isNotRendering = canvas.getAttribute('data-rendering') === 'false';
-
-				return isLayoutReady && isNotRendering;
-			},
-			{ timeout: timeout / 2 }
-		)
-		.catch(() => {
-			// If data attributes are not available, continue anyway
-		});
-
+	// Then verify QR code pixels are actually rendered
 	await page.waitForFunction(
 		({ labelWidth, translateMM, qrSizeMM, marginMM }) => {
 			const canvas = document.querySelector('canvas') as HTMLCanvasElement;

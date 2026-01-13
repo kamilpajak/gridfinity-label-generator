@@ -15,7 +15,7 @@ import { SingleModePage } from './pages/single-mode/SingleModePage';
 
 test.describe('Printable Area Boundaries', () => {
 	test('content stays within printable area after randomized form changes', async ({ page }) => {
-		test.setTimeout(30000); // 30 seconds should be more than enough for this test
+		// Uses global timeout from playwright.config.ts (60s on CI, 30s locally)
 		const labelPage = new SingleModePage(page);
 		await labelPage.goto();
 

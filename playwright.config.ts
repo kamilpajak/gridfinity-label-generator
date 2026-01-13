@@ -1,14 +1,21 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
+	// Enable parallel test execution for faster CI runs
+	fullyParallel: true,
+	// Use 4 workers on CI (preview server is lightweight), auto-detect locally
+	workers: process.env.CI ? 4 : undefined,
+
 	webServer: {
-		// Use dev server instead of preview for testing
-		// This ensures hot reload and proper module loading
-		command: 'pnpm dev',
-		port: 5173,
+		// CI: use optimized preview build (less CPU/RAM, faster responses)
+		// Local: use dev server for hot reload during development
+		command: process.env.CI ? 'pnpm preview' : 'pnpm dev',
+		port: process.env.CI ? 4173 : 5173,
 		reuseExistingServer: !process.env.CI
 	},
 	testDir: 'e2e',
+	// Increase timeout for heavy tests (canvas rendering, randomized inputs)
+	timeout: process.env.CI ? 60000 : 30000,
 
 	// Set default viewport size for all tests
 	use: {

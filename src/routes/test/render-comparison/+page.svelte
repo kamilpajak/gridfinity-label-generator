@@ -138,6 +138,10 @@
 	}
 </script>
 
+<svelte:head>
+	<meta name="robots" content="noindex, nofollow" />
+</svelte:head>
+
 <div data-testid="render-comparison-page">
 	<h1>Render Comparison Test Page</h1>
 	<p data-testid="status">{status}</p>

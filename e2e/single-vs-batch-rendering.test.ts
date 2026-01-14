@@ -14,7 +14,7 @@ test.describe('Single vs Batch Mode Rendering', () => {
 		page
 	}) => {
 		// Navigate to test page that renders both modes
-		await page.goto('/test/render-comparison');
+		await page.goto('/e2e/render-comparison');
 
 		// Wait for rendering to complete (status changes from "Ready" to "Rendered successfully")
 		await page.waitForFunction(

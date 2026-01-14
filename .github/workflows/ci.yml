@@ -71,9 +71,13 @@ jobs:
 
       - name: Build application
         run: pnpm build
+        env:
+          PUBLIC_ALLOW_E2E_PAGES: 'true'
 
       - name: E2E tests
         run: pnpm test:e2e --project=chromium
+        env:
+          PUBLIC_ALLOW_E2E_PAGES: 'true'
 
       - name: Upload E2E results
         if: always()

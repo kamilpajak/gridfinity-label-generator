@@ -3,6 +3,6 @@ import { error } from '@sveltejs/kit';
 
 export function load() {
 	if (!dev) {
-		error(404, 'Not found');
+		error(404, 'Not Found');
 	}
 }

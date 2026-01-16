@@ -32,7 +32,8 @@ export const affiliateProducts: AffiliateProduct[] = [
 	{
 		id: 'brother_pte560bt',
 		name: 'Brother PT-E560BT',
-		description: 'Industrial label printer with Bluetooth and auto-cutter.',
+		description:
+			"I use this whenever I'm setting up new Gridfinity bins or updating my workshop labels.\nIt's reliable and fast.",
 		priceDisplay: '$239.84',
 		affiliateLink: 'https://amzn.to/4qjqcWr',
 		image: null,
@@ -43,7 +44,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 	{
 		id: 'brother_ptp710bt',
 		name: 'Brother P-touch CUBE Plus',
-		description: 'Compact Bluetooth label printer. Great for home and office.',
+		description: 'Compact Bluetooth label printer.\nGreat for home and small Gridfinity projects.',
 		priceDisplay: '$99.98',
 		affiliateLink: 'https://amzn.to/4jBHF9R',
 		image: null,
@@ -55,7 +56,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 	{
 		id: 'tze231_tape',
 		name: 'Brother TZe-231 Tape',
-		description: '12mm black on white. Laminated for durability.',
+		description: "12mm black on white.\nProven durability – won't fade or peel.",
 		priceDisplay: '$27.45',
 		affiliateLink: 'https://amzn.to/4suZgVb',
 		image: null,
@@ -66,7 +67,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 	{
 		id: 'magnets_6x2',
 		name: 'Neodymium Magnets 6x2mm',
-		description: 'Precise 6x2mm dimensions. Perfect for Gridfinity bins.',
+		description: 'Precise 6x2mm dimensions.\nPerfect for Gridfinity bins.',
 		priceDisplay: '$13.99',
 		affiliateLink: 'https://amzn.to/49lx7XC',
 		image: null,

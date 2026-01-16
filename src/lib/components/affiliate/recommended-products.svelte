@@ -85,7 +85,7 @@
 						<ExternalLink class="ml-1 inline h-3 w-3 opacity-0 group-hover:opacity-50" />
 					{/if}
 				</h5>
-				<p class="mb-2 line-clamp-2 text-xs text-slate-500">
+				<p class="mb-2 line-clamp-3 text-xs whitespace-pre-line text-slate-500">
 					{product.description}
 				</p>
 				<div class="flex items-center justify-between">

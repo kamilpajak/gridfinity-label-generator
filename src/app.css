@@ -147,6 +147,23 @@
 	animation: sparkle 2s ease-in-out infinite;
 }
 
+/* Subtle pulse animation for NEW badge */
+@keyframes subtle-pulse {
+	0%,
+	100% {
+		transform: scale(1);
+		opacity: 1;
+	}
+	50% {
+		transform: scale(1.05);
+		opacity: 0.9;
+	}
+}
+
+.animate-subtle-pulse {
+	animation: subtle-pulse 1.5s ease-in-out infinite;
+}
+
 /* Custom scrollbar for modals */
 .custom-scrollbar::-webkit-scrollbar {
 	width: 4px;

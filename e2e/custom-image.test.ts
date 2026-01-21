@@ -266,8 +266,16 @@ test.describe('Custom Image - Persistence', () => {
 		const imageUploader = batchPage.getImageUploader(0);
 		await imageUploader.uploadAndWaitForPreview(testPngPath);
 
-		// Wait for localStorage save (debounced 500ms)
-		await page.waitForTimeout(1000);
+		// Wait for localStorage save (debounced 500ms + image encoding + state save)
+		await expect
+			.poll(
+				async () => {
+					const stored = await page.evaluate(() => localStorage.getItem('gridscribe_batch_v1'));
+					return stored?.includes('data:image/') ?? false;
+				},
+				{ timeout: 5000 }
+			)
+			.toBe(true);
 
 		// Reload page
 		await page.reload();

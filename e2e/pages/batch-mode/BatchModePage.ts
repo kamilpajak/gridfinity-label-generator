@@ -3,43 +3,47 @@ import { BasePage } from '../base/BasePage';
 import { NavigationTabs } from '../components/NavigationTabs';
 import { ExportSection } from '../components/ExportSection';
 import { ImageUploaderComponent } from '../components/ImageUploader';
+import { LabelSizeToggle } from '../components/LabelSizeToggle';
+import type { LabelSize } from '../../types/page-objects';
 
 /**
  * Page object for Batch Mode
  * Handles all interactions specific to creating multiple labels in batch
  */
 export class BatchModePage extends BasePage {
-	// Components
+	// Composed Components
 	readonly navigation: NavigationTabs;
 	readonly exportSection: ExportSection;
-
-	// Tape height selection
-	readonly tapeHeight9mm: Locator;
-	readonly tapeHeight12mm: Locator;
+	readonly tapeHeightToggle: LabelSizeToggle;
 
 	// Label management
 	readonly addLabelButton: Locator;
 	readonly progressText: Locator;
 
+	// Legacy locators (kept for backward compatibility)
+	readonly tapeHeight9mm: Locator;
+	readonly tapeHeight12mm: Locator;
+
 	constructor(page: Page) {
 		super(page);
 
-		// Initialize components
+		// Initialize composed components
 		this.navigation = new NavigationTabs(page);
 		this.exportSection = new ExportSection(page);
+		this.tapeHeightToggle = new LabelSizeToggle(page, 'tape-height');
 
-		// Initialize locators - use data-testid for stability
-		this.tapeHeight9mm = page.getByTestId('tape-height-9mm');
-		this.tapeHeight12mm = page.getByTestId('tape-height-12mm');
-
+		// Initialize locators
 		this.addLabelButton = page.getByTestId('add-label-button');
 		this.progressText = page.getByTestId('batch-progress-text');
+
+		// Legacy locators (delegated to component)
+		this.tapeHeight9mm = this.tapeHeightToggle.button9mm;
+		this.tapeHeight12mm = this.tapeHeightToggle.button12mm;
 	}
 
 	// Override goto to ensure page is fully ready
 	async goto() {
 		await this.page.goto('/');
-		// Wait for page to be fully loaded
 		await this.page.waitForLoadState('domcontentloaded');
 		await this.page.waitForLoadState('networkidle');
 		// Switch to batch mode
@@ -49,64 +53,36 @@ export class BatchModePage extends BasePage {
 		await expect(this.addLabelButton).toBeEnabled();
 	}
 
-	// Tape height methods
-	async selectTapeHeight(height: '9mm' | '12mm') {
-		// Check if already selected to avoid unnecessary clicks
-		if (await this.isTapeHeightSelected(height)) {
-			return;
-		}
+	// ============================================
+	// Tape Height Methods (delegated to component)
+	// ============================================
 
-		const button = height === '9mm' ? this.tapeHeight9mm : this.tapeHeight12mm;
-		await button.click();
-
-		// Wait for the button to be selected (ToggleGroupItem uses data-state)
-		await this.page
-			.waitForFunction(
-				({ buttonText }) => {
-					const button = Array.from(
-						document.querySelectorAll('[data-testid="tape-height-toggle"] button')
-					).find((el) => el.textContent?.includes(buttonText));
-					return button?.getAttribute('data-state') === 'on';
-				},
-				{ buttonText: height },
-				{ timeout: 2000 }
-			)
-			.catch(() => {
-				// Fallback if data-state is not available
-			});
-
-		// Give UI time to update
-		await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+	async selectTapeHeight(height: LabelSize) {
+		await this.tapeHeightToggle.select(height);
 	}
 
-	async isTapeHeightSelected(height: '9mm' | '12mm'): Promise<boolean> {
-		const button = height === '9mm' ? this.tapeHeight9mm : this.tapeHeight12mm;
-		// ToggleGroupItem uses data-state="on" when selected
-		const state = await button.getAttribute('data-state');
-		return state === 'on';
+	async isTapeHeightSelected(height: LabelSize): Promise<boolean> {
+		return this.tapeHeightToggle.isSelected(height);
 	}
 
-	async getSelectedTapeHeight(): Promise<'9mm' | '12mm' | null> {
-		if (await this.isTapeHeightSelected('9mm')) return '9mm';
-		if (await this.isTapeHeightSelected('12mm')) return '12mm';
-		return null;
+	async getSelectedTapeHeight(): Promise<LabelSize | null> {
+		return this.tapeHeightToggle.getSelected();
 	}
 
-	// Label management methods
+	// ============================================
+	// Label Management Methods
+	// ============================================
+
 	async addLabel() {
-		// Wait for button to be enabled (not disabled)
 		await this.addLabelButton.waitFor({ state: 'visible' });
 
-		// Check if button is enabled
 		const isDisabled = await this.addLabelButton.isDisabled();
 		if (isDisabled) {
 			throw new Error('Cannot add label: maximum labels reached');
 		}
 
 		await this.addLabelButton.click();
-
-		// Wait for the new label to appear in the DOM
-		await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+		await this.waitForUiUpdate();
 	}
 
 	async canAddLabel(): Promise<boolean> {
@@ -129,7 +105,10 @@ export class BatchModePage extends BasePage {
 		return match ? parseInt(match[1], 10) : 0;
 	}
 
-	// Label row methods
+	// ============================================
+	// Label Row Methods
+	// ============================================
+
 	getLabelRow(index: number): Locator {
 		return this.page.getByTestId(`batch-label-row-${index}`);
 	}
@@ -141,18 +120,19 @@ export class BatchModePage extends BasePage {
 	async duplicateLabel(index: number) {
 		const duplicateButton = this.page.getByTestId(`duplicate-label-button-${index}`);
 		await duplicateButton.click();
-		// Wait for the new label to appear
-		await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+		await this.waitForUiUpdate();
 	}
 
 	async deleteLabel(index: number) {
 		const deleteButton = this.page.getByTestId(`delete-label-button-${index}`);
 		await deleteButton.click();
-		// Wait for the label to be removed
-		await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+		await this.waitForUiUpdate();
 	}
 
-	// Label mode methods
+	// ============================================
+	// Label Mode Methods
+	// ============================================
+
 	/**
 	 * Switch label mode between Hardware and General Item
 	 * @param index - Label index (0-based)
@@ -163,9 +143,12 @@ export class BatchModePage extends BasePage {
 		const buttonText = mode === 'general' ? 'General Item' : 'Hardware';
 		const button = modeToggle.locator(`button:has-text("${buttonText}")`);
 		await button.click();
-		// Wait for UI to update
-		await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+		await this.waitForUiUpdate();
 	}
+
+	// ============================================
+	// Component Accessors
+	// ============================================
 
 	/**
 	 * Get ImageUploader component for a specific label

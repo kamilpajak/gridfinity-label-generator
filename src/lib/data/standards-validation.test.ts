@@ -58,6 +58,41 @@ describe('Invalid standards removal (Issue #37)', () => {
 	});
 });
 
+/**
+ * Invalid cross-references identified through verification
+ * These ISO↔DIN mappings are INCORRECT and should not exist.
+ */
+const INVALID_CROSS_REFERENCES = [
+	{
+		isoId: 'iso14580',
+		invalidDin: '34823',
+		reason:
+			'ISO 14580 = Hexalobular socket cheese head screws (Torx). ' +
+			'DIN 34823 = Raised countersunk head screws with 12-point socket (XZN). ' +
+			'Different head shape AND drive type. No DIN predecessor exists for ISO 14580.'
+	}
+];
+
+describe('Invalid cross-references (verified against sources)', () => {
+	it.each(INVALID_CROSS_REFERENCES)(
+		'$isoId should NOT have DIN $invalidDin as cross-reference',
+		({ isoId, invalidDin }) => {
+			const standard = getStandardById(isoId);
+
+			if (!standard) {
+				// Standard doesn't exist - that's fine, no invalid cross-ref possible
+				return;
+			}
+
+			const hasBadCrossRef = standard.designations.some(
+				(d) => d.system === 'DIN' && d.code === invalidDin
+			);
+
+			expect(hasBadCrossRef).toBe(false);
+		}
+	);
+});
+
 describe('Standards config cross-reference validation', () => {
 	it('every ISO standard should have at least one DIN cross-reference', () => {
 		const isoStandards = standards.filter((s) => s.id.startsWith('iso'));

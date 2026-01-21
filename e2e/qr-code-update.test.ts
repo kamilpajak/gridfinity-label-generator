@@ -89,7 +89,6 @@ test.describe('QR Code Updates', () => {
 
 		// Wait for canvas to re-render without QR code
 		await labelPage.preview.waitForLabelRender();
-		await page.waitForTimeout(500);
 
 		// Get QR area pixels AFTER disabling
 		const qrPixelsAfter = await labelPage.preview.getQRCodePixels();

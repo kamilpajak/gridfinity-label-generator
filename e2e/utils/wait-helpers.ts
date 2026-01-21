@@ -1,5 +1,10 @@
 import { Page, expect } from '@playwright/test';
-import { CANVAS_TRANSLATE_MM, QR_CODE_SIZE_MM, CANVAS_MARGIN_MM } from './canvas-geometry';
+import {
+	CANVAS_TRANSLATE_MM,
+	QR_CODE_SIZE_MM,
+	CANVAS_MARGIN_MM,
+	QR_DETECTION_THRESHOLD
+} from './canvas-geometry';
 
 /**
  * Wait for all images on the page to be loaded
@@ -78,7 +83,7 @@ export async function waitForQRCodeRender(
 
 	// Then verify QR code pixels are actually rendered
 	await page.waitForFunction(
-		({ labelWidth, translateMM, qrSizeMM, marginMM }) => {
+		({ labelWidth, translateMM, qrSizeMM, marginMM, detectionThreshold }) => {
 			const canvas = document.querySelector('canvas') as HTMLCanvasElement;
 			if (!canvas) return false;
 
@@ -121,14 +126,15 @@ export async function waitForQRCodeRender(
 				}
 			}
 
-			// If at least 30% of points are non-white, QR is rendered
-			return nonWhiteCount >= Math.floor(samplePoints.length * 0.3);
+			// If enough points are non-white, QR is rendered
+			return nonWhiteCount >= Math.floor(samplePoints.length * detectionThreshold);
 		},
 		{
 			labelWidth,
 			translateMM: CANVAS_TRANSLATE_MM,
 			qrSizeMM: QR_CODE_SIZE_MM,
-			marginMM: CANVAS_MARGIN_MM
+			marginMM: CANVAS_MARGIN_MM,
+			detectionThreshold: QR_DETECTION_THRESHOLD
 		},
 		{ timeout }
 	);

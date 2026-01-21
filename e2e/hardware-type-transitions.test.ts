@@ -137,6 +137,9 @@ test.describe('Hardware Type Transitions - Length Field Behavior', () => {
 	});
 
 	test('should handle rapid switching between different hardware types', async () => {
+		// Triple timeout for CI environments with limited resources
+		test.slow();
+
 		// Select M6 thread size
 		await labelPage.selectThreadSize('M6');
 
@@ -155,9 +158,16 @@ test.describe('Hardware Type Transitions - Length Field Behavior', () => {
 		// Enter initial length value
 		await labelPage.fillLength('20');
 
-		for (const hardware of hardwareTypes) {
+		const testStart = Date.now();
+		for (const [index, hardware] of hardwareTypes.entries()) {
+			const iterStart = Date.now();
+			console.log(
+				`[${index}/${hardwareTypes.length}] Selecting ${hardware.type}: ${hardware.search}`
+			);
+
 			// Select hardware
 			await labelPage.selectHardwareByName(hardware.search, hardware.name);
+			console.log(`[${index}] Selection complete in ${Date.now() - iterStart}ms`);
 
 			// Verify length field state
 			if (hardware.lengthEnabled) {
@@ -190,6 +200,9 @@ test.describe('Hardware Type Transitions - Length Field Behavior', () => {
 				// Should show only M6 for nuts and washers (no length)
 				await expect(canvas).toHaveAttribute('data-primary-text', 'M6');
 			}
+
+			console.log(`[${index}] Iteration complete in ${Date.now() - iterStart}ms`);
 		}
+		console.log(`All ${hardwareTypes.length} iterations complete in ${Date.now() - testStart}ms`);
 	});
 });

@@ -1,8 +1,8 @@
 # Analiza Feedbacku Użytkowników
 
-> Data analizy: 2026-01-06
-> Liczba odpowiedzi: 43
-> Średnia ocena: 4.5/5 (53% ocen 5/5, 42% ocen 4/5)
+> Data analizy: 2026-01-20
+> Liczba odpowiedzi: 44
+> Średnia ocena: 4.5/5 (55% ocen 5/5, 41% ocen 4/5, 5% ocen 3/5)
 
 ## Podsumowanie
 
@@ -59,19 +59,21 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 
 **Najczęściej żądane - status (zweryfikowane przez search):**
 
-| Standard            | W bazie  | Obrazek | Search test                           |
-| ------------------- | -------- | ------- | ------------------------------------- |
-| DIN 7985 / ISO 7045 | ✅       | ✅      | `7985` → ✅ znajduje                  |
-| DIN 965             | ✅       | ✅      | `965` → ✅ znajduje                   |
-| DIN 7997            | ✅       | ✅      | `7997` → ✅ obrazek dodany            |
-| DIN 916             | ❌       | ❌      | `916` → 0 wyników (ISO 4029 wycofane) |
-| DIN 6916            | ✅       | ✅      | `6916` → ✅ washer (naprawione!)      |
-| Torx heads          | ❌       | ❌      | `torx` → 0 wyników                    |
-| Grub screw          | ❌ alias | -       | `grub` → 0 wyników                    |
+| Standard            | W bazie  | Obrazek | Search test                                  |
+| ------------------- | -------- | ------- | -------------------------------------------- |
+| DIN 7985 / ISO 7045 | ✅       | ✅      | `7985` → ✅ znajduje                         |
+| DIN 965             | ✅       | ✅      | `965` → ✅ znajduje                          |
+| DIN 7997            | ✅       | ✅      | `7997` → ✅ obrazek dodany                   |
+| DIN 916             | ❌       | ❌      | `916` → 0 wyników (ISO 4029 wycofane)        |
+| DIN 6916            | ✅       | ✅      | `6916` → ✅ washer (naprawione!)             |
+| Torx heads          | ❌       | ❌      | `torx` → 0 wyników                           |
+| Grub screw          | ❌ alias | -       | `grub` → 0 wyników                           |
+| Hex nut             | ❌ alias | -       | `hex nut` → 0 wyników (wymaga "hexagon nut") |
 
 **Wnioski z analizy search:**
 
-- Search **działa poprawnie** - problem to brakujące dane
+- Search **działa poprawnie** - problem to brakujące dane i zbyt dokładne dopasowanie
+- **Nowy feedback:** Użytkownicy oczekują mniej precyzyjnego wyszukiwania (np. "hex nut" zamiast "hexagon nut")
 - ~~DIN 6916 ≠ DIN 916~~ ✅ NAPRAWIONE - DIN 6916 teraz poprawnie jako washer
 - DIN 916 (set screw) = ISO 4029 - standard wycofany, brak w bazie ISO
 - Brak aliasów: "grub screw" = "set screw", "torx" = "hexalobular"
@@ -80,7 +82,7 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 
 1. ~~Dodać obrazek dla DIN 7997~~ ✅ DONE (scraper fix)
 2. ~~Naprawić DIN 6916 klasyfikację~~ ✅ DONE (było screw → teraz washer)
-3. Rozważyć aliasy w search (grub→set screw, torx→hexalobular)
+3. Rozważyć aliasy i fuzzy search (grub→set screw, torx→hexalobular, hex nut→hexagon nut)
 
 ---
 
@@ -189,6 +191,20 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 
 ---
 
+#### 10. Wyższe Etykiety (nowe zgłoszenie)
+
+**Problem:** Użytkownicy potrzebują znacznie wyższych etykiet niż obecny limit
+
+**Cytat:**
+
+> "Please allow taller labels. I am looking to make 1.5"x4" labels - otherwise this generator is exactly what I'm looking for."
+
+**Wymiar:** 1.5" × 4" ≈ 38mm × 101mm
+
+**Status:** Do oceny - wymaga analizy wpływu na layout
+
+---
+
 #### ~~10. Rozmiary ST dla Self-Tapping~~ ✅ DONE
 
 **Problem:** Self-tapping screws używały tej samej listy rozmiarów co metryczne (M3, M4...).
@@ -227,9 +243,9 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 
 | Element                 | Użycie      |
 | ----------------------- | ----------- |
-| Tekst (rozmiary, opisy) | 98% (42/43) |
-| Obrazy                  | 95% (41/43) |
-| Kody QR                 | 14% (6/43)  |
+| Tekst (rozmiary, opisy) | 98% (43/44) |
+| Obrazy                  | 95% (42/44) |
+| Kody QR                 | 14% (6/44)  |
 
 ## Popularne Rozmiary Etykiet
 
@@ -241,7 +257,7 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 | 37×9mm  | 3      |
 | 35×9mm  | 2      |
 
-**Średnie:** 40.2mm × 13mm
+**Średnie:** 41.8mm × 13.7mm
 
 ---
 
@@ -254,6 +270,8 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 > "This is a fantastic tool, thank you for creating it. It's really a great offering to the gridfinity community."
 
 > "I'll buy you a coffee!"
+
+> "This generator is exactly what I'm looking for."
 
 ---
 
@@ -285,9 +303,9 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 ## Metryki Sukcesu
 
 - **Ocena:** 4.5/5 (bardzo dobra)
-- **Problemy z rozmiarem:** tylko 8% użytkowników
+- **Problemy z rozmiarem:** 11% użytkowników (wzrost z 8%)
 - **Powtarzające się żądania:** ~~Thread pitch~~ ✅, więcej standardów, batch improvements
 
 Aplikacja jest dobrze przyjmowana. Główny focus powinien być na poprawie discoverability istniejących funkcji i dodaniu aliasów search (grub→set screw, torx→hexalobular).
 
-> **Ostatnia aktualizacja:** 2026-01-07 - ThreadSizeSystem z obsługą wood screws (TDD, Option B)
+> **Ostatnia aktualizacja:** 2026-01-20 - Dodano 1 nową odpowiedź, zaktualizowano statystyki i wnioski dot. search (fuzzy matching)

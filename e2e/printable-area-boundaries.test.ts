@@ -113,14 +113,14 @@ test.describe('Printable Area Boundaries', () => {
 				el.setAttribute('aria-valuenow', '35');
 				el.dispatchEvent(new Event('input', { bubbles: true }));
 			});
-			await page.waitForTimeout(100);
+			await labelPage.preview.waitForLabelRender();
 			await verifyAfterAction('setting minimum width (35mm)');
 			// Test maximum width (100mm)
 			await widthSlider.evaluate((el: HTMLElement) => {
 				el.setAttribute('aria-valuenow', '100');
 				el.dispatchEvent(new Event('input', { bubbles: true }));
 			});
-			await page.waitForTimeout(100);
+			await labelPage.preview.waitForLabelRender();
 			await verifyAfterAction('setting maximum width (100mm)');
 		};
 

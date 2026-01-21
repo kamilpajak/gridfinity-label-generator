@@ -38,4 +38,12 @@ export abstract class BasePage {
 	async takeScreenshot(name: string) {
 		await this.page.screenshot({ path: `screenshots/${name}.png` });
 	}
+
+	/**
+	 * Wait for the next animation frame, allowing the UI to update.
+	 * Use this after actions that trigger DOM changes to ensure updates are processed.
+	 */
+	async waitForUiUpdate() {
+		await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+	}
 }

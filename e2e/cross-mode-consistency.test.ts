@@ -46,16 +46,9 @@ test.describe('Cross-Mode Consistency', () => {
 		const batchHardwareImageDisabled = await batchHardwareImageSwitch.isDisabled();
 		const batchQrDisabled = await batchQrSwitch.isDisabled();
 
-		// Find showReference switch in batch mode (doesn't have unique testid with index)
-		const batchRow = page.getByTestId('batch-label-row-0');
-		const allSwitches = await batchRow.locator('button[role="switch"]').all();
-
-		// showReference is typically the first switch in fastener mode
-		let batchStandardRefDisabled = false;
-		if (allSwitches.length >= 3) {
-			// First switch should be showReference
-			batchStandardRefDisabled = await allSwitches[0].isDisabled();
-		}
+		// Get standard reference switch by data-testid
+		const batchStandardRefSwitch = page.getByTestId('standard-reference-switch-0');
+		const batchStandardRefDisabled = await batchStandardRefSwitch.isDisabled();
 
 		// CONSISTENCY CHECK: disabled states must match
 		expect(singleHardwareImageDisabled, 'Hardware Image disabled state should match').toBe(
@@ -193,23 +186,14 @@ test.describe('Cross-Mode Consistency', () => {
 		// Wait for label row to be fully rendered
 		await expect(page.getByTestId('batch-label-row-0')).toBeVisible();
 
-		// Get batch mode defaults
-		const batchRow = page.getByTestId('batch-label-row-0');
-		const allSwitches = await batchRow.locator('button[role="switch"]').all();
+		// Get batch mode defaults using data-testid selectors
+		const batchStandardRefSwitch = page.getByTestId('standard-reference-switch-0');
+		const batchHardwareImageSwitch = page.getByTestId('hardware-image-switch-0');
+		const batchQrSwitch = page.getByTestId('qr-code-switch-0');
 
-		// Assuming order: showReference, showImage, showQRCode
-		const batchStandardRefChecked =
-			allSwitches.length >= 1
-				? (await allSwitches[0].getAttribute('data-state')) === 'checked'
-				: false;
-		const batchHardwareImageChecked =
-			allSwitches.length >= 2
-				? (await allSwitches[1].getAttribute('data-state')) === 'checked'
-				: false;
-		const batchQrChecked =
-			allSwitches.length >= 3
-				? (await allSwitches[2].getAttribute('data-state')) === 'checked'
-				: false;
+		const batchStandardRefChecked = await batchStandardRefSwitch.isChecked();
+		const batchHardwareImageChecked = await batchHardwareImageSwitch.isChecked();
+		const batchQrChecked = await batchQrSwitch.isChecked();
 
 		// CONSISTENCY CHECK: defaults should match
 		expect(singleHardwareImageChecked, 'Hardware Image default should match').toBe(

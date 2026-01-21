@@ -2,20 +2,16 @@ import { type Page, type Locator } from '@playwright/test';
 
 /**
  * Navigation tabs component for switching between Single and Batch modes
- * Currently prepared for future implementation when Batch mode is added
  */
 export class NavigationTabs {
 	private page: Page;
 
-	// Tab locators - will be implemented when tabs are added to UI
 	readonly singleModeTab: Locator;
 	readonly batchModeTab: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 
-		// TODO: Update these selectors when tabs are implemented in the UI
-		// For now, using placeholder selectors that will need to be updated
 		this.singleModeTab = page.getByRole('tab', { name: 'Single Label' });
 		this.batchModeTab = page.getByRole('tab', { name: 'Batch Mode' });
 	}

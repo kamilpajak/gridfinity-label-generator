@@ -698,7 +698,11 @@
 				<div class="flex flex-col space-y-2">
 					<div class="flex items-center justify-between">
 						<div class="text-sm font-medium">{UI_TEXT.settings.standardReference.title}</div>
-						<Switch bind:checked={showReference} disabled={standardReferenceDisabled} />
+						<Switch
+							bind:checked={showReference}
+							disabled={standardReferenceDisabled}
+							data-testid="standard-reference-switch-{index}"
+						/>
 					</div>
 					<div class="text-xs text-muted-foreground">
 						{standardReferenceDisabled

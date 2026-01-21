@@ -4,6 +4,56 @@ import { join } from 'path';
 import { generatedStandards } from './standards-generated';
 import { searchStandards } from './standards';
 
+describe('Fuzzy Search - Aliases', () => {
+	it('should find "hexagon nut" when searching "hex nut"', () => {
+		const results = searchStandards('hex nut');
+
+		expect(results.length).toBeGreaterThan(0);
+		expect(results.some((s) => s.description.toLowerCase().includes('hexagon'))).toBe(true);
+	});
+
+	it('should find "set screw" when searching "grub screw"', () => {
+		const results = searchStandards('grub screw');
+
+		expect(results.length).toBeGreaterThan(0);
+		expect(results.some((s) => s.description.toLowerCase().includes('set screw'))).toBe(true);
+	});
+
+	it('should find "hexalobular" when searching "torx"', () => {
+		const results = searchStandards('torx');
+
+		expect(results.length).toBeGreaterThan(0);
+		expect(results.some((s) => s.description.toLowerCase().includes('hexalobular'))).toBe(true);
+	});
+
+	it('should find "socket" when searching "allen"', () => {
+		const results = searchStandards('allen');
+
+		expect(results.length).toBeGreaterThan(0);
+		expect(results.some((s) => s.description.toLowerCase().includes('socket'))).toBe(true);
+	});
+
+	it('should find standards with word tokenization ("socket cap" matches "socket head cap")', () => {
+		const results = searchStandards('socket cap');
+
+		expect(results.length).toBeGreaterThan(0);
+		expect(
+			results.some(
+				(s) =>
+					s.description.toLowerCase().includes('socket') &&
+					s.description.toLowerCase().includes('cap')
+			)
+		).toBe(true);
+	});
+
+	it('should match partial words in multi-word queries', () => {
+		// "flat head" should match "Countersunk flat head screw"
+		const results = searchStandards('flat head');
+
+		expect(results.length).toBeGreaterThan(0);
+	});
+});
+
 describe('Standards Image Validation', () => {
 	it('should have valid image paths for all standards with images', () => {
 		const standardsWithImages = generatedStandards.filter((s) => s.image);
@@ -102,14 +152,21 @@ describe('Standards Search', () => {
 
 	it('should find standards by description', () => {
 		// Search for "socket head" should find socket head standards
+		// With symmetric aliases, this also matches via "cap" (cap screw) synonym
 		const results = searchStandards('socket head');
 
 		expect(results.length).toBeGreaterThan(0);
 
-		// All results should contain "socket head" in description
-		results.forEach((std) => {
-			expect(std.description.toLowerCase()).toContain('socket');
+		// At least one result should be a socket/allen head standard
+		const hasSocketHeadResult = results.some((std) => {
+			const desc = std.description.toLowerCase();
+			return (
+				(desc.includes('socket') && desc.includes('head')) ||
+				(desc.includes('allen') && desc.includes('head'))
+			);
 		});
+
+		expect(hasSocketHeadResult).toBe(true);
 	});
 
 	it('should find standards by full designation', () => {

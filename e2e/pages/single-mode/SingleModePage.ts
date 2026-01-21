@@ -4,39 +4,41 @@ import { NavigationTabs } from '../components/NavigationTabs';
 import { ExportSection } from '../components/ExportSection';
 import { SingleLabelPreview } from '../components/SingleLabelPreview';
 import { ImageUploaderComponent } from '../components/ImageUploader';
+import { LabelSizeToggle } from '../components/LabelSizeToggle';
+import { HardwareSelector } from '../components/HardwareSelector';
+import { QRCodeSection } from '../components/QRCodeSection';
+import { ThreadSizeSelector } from '../components/ThreadSizeSelector';
+import type {
+	LabelSize,
+	LabelMode,
+	UnitSystem,
+	CreateLabelOptions
+} from '../../types/page-objects';
 
 /**
  * Page object for Single Label mode
  * Handles all interactions specific to creating individual labels
  */
 export class SingleModePage extends BasePage {
-	// Components
+	// Composed Components
 	readonly navigation: NavigationTabs;
 	readonly exportSection: ExportSection;
 	readonly preview: SingleLabelPreview;
+	readonly labelSizeToggle: LabelSizeToggle;
+	readonly hardwareSelector: HardwareSelector;
+	readonly qrCodeSection: QRCodeSection;
+	readonly threadSizeSelector: ThreadSizeSelector;
 
 	// Page title
 	readonly title: Locator;
-
-	// Label size selection
-	readonly labelSize9mm: Locator;
-	readonly labelSize12mm: Locator;
 
 	// Text inputs
 	readonly primaryTextInput: Locator;
 	readonly secondaryTextInput: Locator;
 
-	// Hardware standard selection
-	readonly hardwareSelectButton: Locator;
-	readonly hardwareSearchInput: Locator;
-
-	// Toggle switches
+	// Toggle switches (non-QR)
 	readonly hardwareImageSwitch: Locator;
-	readonly qrCodeSwitch: Locator;
 	readonly standardReferenceSwitch: Locator;
-
-	// QR Code input
-	readonly qrCodeUrlInput: Locator;
 
 	// Unit selection
 	readonly metricButton: Locator;
@@ -61,120 +63,106 @@ export class SingleModePage extends BasePage {
 	// Clear button
 	readonly clearButton: Locator;
 
+	// Legacy locators (kept for backward compatibility)
+	readonly labelSize9mm: Locator;
+	readonly labelSize12mm: Locator;
+	readonly hardwareSelectButton: Locator;
+	readonly hardwareSearchInput: Locator;
+	readonly hardwareSearchResults: Locator;
+	readonly qrCodeSwitch: Locator;
+	readonly qrCodeUrlInput: Locator;
+
 	constructor(page: Page) {
 		super(page);
 
-		// Initialize components
+		// Initialize preview first (needed by other components)
+		this.preview = new SingleLabelPreview(page);
+
+		// Initialize composed components with callbacks
 		this.navigation = new NavigationTabs(page);
 		this.exportSection = new ExportSection(page);
-		this.preview = new SingleLabelPreview(page);
+		this.labelSizeToggle = new LabelSizeToggle(page, 'label-height');
+		this.hardwareSelector = new HardwareSelector(page, () => this.preview.waitForLabelRender());
+		this.qrCodeSection = new QRCodeSection(page, () => this.preview.waitForLabelRender());
+		this.threadSizeSelector = new ThreadSizeSelector(page, () => this.preview.waitForLabelRender());
 
 		// Initialize locators
 		this.title = page.locator('h1');
 
-		// Label size selection - use data-testid for stability
-		this.labelSize9mm = page.getByTestId('label-height-toggle').getByText('9mm');
-		this.labelSize12mm = page.getByTestId('label-height-toggle').getByText('12mm');
-
-		// Text inputs - use data-testid for stability
+		// Text inputs
 		this.primaryTextInput = page.getByTestId('primary-text-input');
 		this.secondaryTextInput = page.getByTestId('secondary-text-input');
 
-		// Hardware selection - use data-testid for stability
-		this.hardwareSelectButton = page.getByTestId('hardware-select');
-		this.hardwareSearchInput = page.getByPlaceholder('Search standards...');
-
-		// Switches - use data-testid for reliability
+		// Switches (non-QR)
 		this.hardwareImageSwitch = page.getByTestId('hardware-image-switch');
-		this.qrCodeSwitch = page.getByTestId('qr-code-switch');
 		this.standardReferenceSwitch = page.getByTestId('standard-reference-switch');
 
-		// QR URL input - use data-testid for stability
-		this.qrCodeUrlInput = page.getByTestId('qr-code-url-input');
-
-		// Unit selection - use data-testid for stability
+		// Unit selection
 		this.metricButton = page.getByTestId('metric-button');
 		this.imperialButton = page.getByTestId('imperial-button');
 
-		// Thread size, pitch, and length - use data-testid for stability
-		this.threadSizeButton = page.getByTestId('thread-size-select');
-		this.pitchSelect = page.getByTestId('pitch-select');
-		this.lengthInput = page.getByTestId('length-input');
+		// Thread size, pitch, and length (delegated to component)
+		this.threadSizeButton = this.threadSizeSelector.threadSizeButton;
+		this.pitchSelect = this.threadSizeSelector.pitchSelect;
+		this.lengthInput = this.threadSizeSelector.lengthInput;
 
-		// Optional note input - use data-testid for stability
+		// Optional note input
 		this.optionalNoteInput = page.getByTestId('optional-note-input');
 
-		// Mode selection - use data-testid for direct and reliable selection
+		// Mode selection
 		this.fastenerModeButton = page.getByTestId('mode-fastener');
 		this.generalItemModeButton = page.getByTestId('mode-general');
 
-		// Label dimensions - use data-testid for slider
+		// Label dimensions
 		this.labelWidthSlider = page
 			.getByTestId('label-height-toggle')
 			.locator('..')
 			.getByRole('slider');
 		this.labelWidthValue = page.locator('text=/\\d+mm/').last();
 
-		// Clear button - use data-testid for stability
+		// Clear button
 		this.clearButton = page.getByTestId('clear-button');
+
+		// Legacy locators (delegated to components but kept for backward compatibility)
+		this.labelSize9mm = this.labelSizeToggle.button9mm;
+		this.labelSize12mm = this.labelSizeToggle.button12mm;
+		this.hardwareSelectButton = this.hardwareSelector.button;
+		this.hardwareSearchInput = this.hardwareSelector.searchInput;
+		this.hardwareSearchResults = this.hardwareSelector.searchResults;
+		this.qrCodeSwitch = this.qrCodeSection.switch;
+		this.qrCodeUrlInput = this.qrCodeSection.urlInput;
 	}
 
 	// Override goto to ensure page is fully ready
 	async goto() {
 		await this.page.goto('/');
-		// Wait for page to be fully loaded
 		await this.page.waitForLoadState('domcontentloaded');
 		await this.page.waitForLoadState('networkidle');
-		// Wait for critical elements to be visible and ready
 		await this.page.waitForSelector('[data-testid="label-mode-toggle"]', { state: 'visible' });
-		// Wait for the main toggle to be enabled, ensuring hydration is complete
 		await expect(this.fastenerModeButton).toBeEnabled();
 	}
 
-	// Label size methods
-	async selectLabelSize(size: '9mm' | '12mm') {
-		// Check if already selected to avoid unnecessary clicks
-		if (await this.isLabelSizeSelected(size)) {
-			return;
-		}
+	// ============================================
+	// Label Size Methods (delegated to component)
+	// ============================================
 
-		const button = size === '9mm' ? this.labelSize9mm : this.labelSize12mm;
-		await button.click();
-
-		// Wait for the button to be selected (ToggleGroupItem uses data-state)
-		await this.page
-			.waitForFunction(
-				({ buttonText }) => {
-					const button = Array.from(
-						document.querySelectorAll('[data-testid="label-height-toggle"] button')
-					).find((el) => el.textContent?.includes(buttonText));
-					return button?.getAttribute('data-state') === 'on';
-				},
-				{ buttonText: size },
-				{ timeout: 2000 }
-			)
-			.catch(() => {
-				// Fallback if data-state is not available
-			});
-
-		// Give UI time to update
-		await this.page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+	async selectLabelSize(size: LabelSize) {
+		await this.labelSizeToggle.select(size);
+		await this.waitForUiUpdate();
 	}
 
-	async isLabelSizeSelected(size: '9mm' | '12mm'): Promise<boolean> {
-		const button = size === '9mm' ? this.labelSize9mm : this.labelSize12mm;
-		// ToggleGroupItem uses data-state="on" when selected
-		const state = await button.getAttribute('data-state');
-		return state === 'on';
+	async isLabelSizeSelected(size: LabelSize): Promise<boolean> {
+		return this.labelSizeToggle.isSelected(size);
 	}
 
-	async getSelectedLabelSize(): Promise<'9mm' | '12mm' | null> {
-		if (await this.isLabelSizeSelected('9mm')) return '9mm';
-		if (await this.isLabelSizeSelected('12mm')) return '12mm';
-		return null;
+	async getSelectedLabelSize(): Promise<LabelSize | null> {
+		return this.labelSizeToggle.getSelected();
 	}
 
-	// Text input methods
+	// ============================================
+	// Text Input Methods
+	// ============================================
+
 	async fillLabelData(primary: string, secondary: string) {
 		await this.fillPrimaryText(primary);
 		await this.fillSecondaryText(secondary);
@@ -182,13 +170,11 @@ export class SingleModePage extends BasePage {
 
 	async fillPrimaryText(text: string) {
 		await this.primaryTextInput.fill(text);
-		// Now wait for render (handles both canvas and placeholder states)
 		await this.preview.waitForLabelRender();
 	}
 
 	async fillSecondaryText(text: string) {
 		await this.secondaryTextInput.fill(text);
-		// Now wait for render (handles both canvas and placeholder states)
 		await this.preview.waitForLabelRender();
 	}
 
@@ -200,34 +186,26 @@ export class SingleModePage extends BasePage {
 		return await this.secondaryTextInput.inputValue();
 	}
 
-	// Hardware selection methods
+	// ============================================
+	// Hardware Selection Methods (delegated to component)
+	// ============================================
+
 	async selectHardware(searchTerm: string) {
-		await this.hardwareSelectButton.click();
-		await this.hardwareSearchInput.waitFor({ state: 'visible' });
-		await this.hardwareSearchInput.fill(searchTerm);
-		// Wait for search results to appear
-		await this.page.locator('[data-slot="command-item"]').first().waitFor({ state: 'visible' });
-		// Click on the first matching item in the Command dropdown
-		await this.page.locator('[data-slot="command-item"]').first().click();
-		await this.preview.waitForLabelRender();
+		await this.hardwareSelector.select(searchTerm);
 	}
 
 	async selectHardwareByName(searchTerm: string, namePattern: RegExp) {
-		await this.hardwareSelectButton.click();
-		await this.hardwareSearchInput.waitFor({ state: 'visible' });
-		await this.hardwareSearchInput.fill(searchTerm);
-		// Wait for search results to appear
-		await this.page.locator('[data-slot="command-item"]').first().waitFor({ state: 'visible' });
-		// Click on the matching item by name pattern
-		await this.page.getByRole('option', { name: namePattern }).first().click();
-		await this.preview.waitForLabelRender();
+		await this.hardwareSelector.selectByName(searchTerm, namePattern);
 	}
 
 	async getSelectedHardwareText(): Promise<string | null> {
-		return await this.hardwareSelectButton.textContent();
+		return this.hardwareSelector.getSelectedText();
 	}
 
-	// Toggle methods
+	// ============================================
+	// Toggle Methods
+	// ============================================
+
 	async toggleHardwareImage() {
 		await this.hardwareImageSwitch.click();
 		await this.preview.waitForLabelRender();
@@ -237,40 +215,31 @@ export class SingleModePage extends BasePage {
 		return await this.hardwareImageSwitch.isChecked();
 	}
 
+	// ============================================
+	// QR Code Methods (delegated to component)
+	// ============================================
+
 	async toggleQRCode() {
-		// Check the switch state before clicking
-		const wasCheckedBefore = await this.qrCodeSwitch.isChecked();
-
-		// Use data-testid for reliable selection
-		await this.qrCodeSwitch.click();
-
-		// Wait for the switch state to change and input to reflect the new state
-		if (wasCheckedBefore) {
-			// When toggling off, wait for switch to be unchecked and input to be disabled
-			await expect(this.qrCodeSwitch).not.toBeChecked();
-			await expect(this.qrCodeUrlInput).toBeDisabled();
-		} else {
-			// When toggling on, wait for switch to be checked and input to be enabled
-			await expect(this.qrCodeSwitch).toBeChecked();
-			await expect(this.qrCodeUrlInput).toBeEnabled();
-		}
+		await this.qrCodeSection.toggle();
 	}
 
 	async isQRCodeEnabled(): Promise<boolean> {
-		return await this.qrCodeSwitch.isChecked();
+		return this.qrCodeSection.isEnabled();
 	}
 
 	async fillQRCodeUrl(url: string) {
-		await this.qrCodeUrlInput.fill(url);
-		await this.preview.waitForLabelRender();
+		await this.qrCodeSection.fillUrl(url);
 	}
 
 	async getQRCodeUrl(): Promise<string> {
-		return await this.qrCodeUrlInput.inputValue();
+		return this.qrCodeSection.getUrl();
 	}
 
-	// Unit selection methods
-	async selectUnits(unit: 'metric' | 'imperial') {
+	// ============================================
+	// Unit Selection Methods
+	// ============================================
+
+	async selectUnits(unit: UnitSystem) {
 		if (unit === 'metric') {
 			await this.metricButton.click();
 		} else {
@@ -278,81 +247,74 @@ export class SingleModePage extends BasePage {
 		}
 	}
 
-	async isUnitSelected(unit: 'metric' | 'imperial'): Promise<boolean> {
+	async isUnitSelected(unit: UnitSystem): Promise<boolean> {
 		const button = unit === 'metric' ? this.metricButton : this.imperialButton;
-		// ToggleGroupItem uses data-state="on" when selected
 		const state = await button.getAttribute('data-state');
 		return state === 'on';
 	}
 
-	async getSelectedUnit(): Promise<'metric' | 'imperial' | null> {
+	async getSelectedUnit(): Promise<UnitSystem | null> {
 		if (await this.isUnitSelected('metric')) return 'metric';
 		if (await this.isUnitSelected('imperial')) return 'imperial';
 		return null;
 	}
 
-	// Thread size, pitch, and length methods
+	// ============================================
+	// Thread Size, Pitch, and Length Methods (delegated to component)
+	// ============================================
+
 	async selectThreadSize(size: string) {
-		await this.threadSizeButton.click();
-		await this.page.getByRole('option', { name: size }).click();
+		await this.threadSizeSelector.selectThreadSize(size);
 	}
 
 	async openThreadSizeDropdown() {
-		await this.threadSizeButton.click();
-		await this.page.getByRole('option').first().waitFor({ state: 'visible' });
+		await this.threadSizeSelector.openDropdown();
 	}
 
 	async getAvailableThreadSizes(): Promise<string[]> {
-		const options = this.page.getByRole('option');
-		const count = await options.count();
-		const sizes: string[] = [];
-		for (let i = 0; i < count; i++) {
-			const text = await options.nth(i).textContent();
-			if (text) sizes.push(text.trim());
-		}
-		return sizes;
+		return this.threadSizeSelector.getAvailableSizes();
 	}
 
 	async hasThreadSize(size: string): Promise<boolean> {
-		const option = this.page.getByRole('option', { name: size, exact: true });
-		return (await option.count()) > 0;
+		return this.threadSizeSelector.hasSize(size);
 	}
 
 	getThreadSizeOption(size: string) {
-		return this.page.getByRole('option', { name: size, exact: true });
+		return this.threadSizeSelector.getOption(size);
 	}
 
 	async selectPitch(pitch: string) {
-		await this.pitchSelect.click();
-		await this.page.getByRole('option', { name: pitch }).click();
-		await this.preview.waitForLabelRender();
+		await this.threadSizeSelector.selectPitch(pitch);
 	}
 
 	async getPitchValue(): Promise<string> {
-		return (await this.pitchSelect.textContent()) || '';
+		return this.threadSizeSelector.getPitchValue();
 	}
 
 	async isPitchFieldEnabled(): Promise<boolean> {
-		return await this.pitchSelect.isEnabled();
+		return this.threadSizeSelector.isPitchEnabled();
 	}
 
 	async fillLength(length: string) {
-		await this.lengthInput.fill(length);
+		await this.threadSizeSelector.fillLength(length);
 	}
 
 	async getLengthValue(): Promise<string> {
-		return await this.lengthInput.inputValue();
+		return this.threadSizeSelector.getLengthValue();
 	}
 
 	async isLengthFieldEnabled(): Promise<boolean> {
-		return await this.lengthInput.isEnabled();
+		return this.threadSizeSelector.isLengthEnabled();
 	}
 
 	async getLengthPlaceholder(): Promise<string | null> {
-		return await this.lengthInput.getAttribute('placeholder');
+		return this.threadSizeSelector.getLengthPlaceholder();
 	}
 
-	// Optional note methods
+	// ============================================
+	// Optional Note Methods
+	// ============================================
+
 	async fillOptionalNote(note: string) {
 		await this.optionalNoteInput.fill(note);
 		await this.preview.waitForLabelRender();
@@ -362,25 +324,23 @@ export class SingleModePage extends BasePage {
 		return await this.optionalNoteInput.inputValue();
 	}
 
-	// Mode selection methods
-	async selectMode(mode: 'fastener' | 'general') {
-		// Simplified - always click the mode button to ensure we're in the right state
+	// ============================================
+	// Mode Selection Methods
+	// ============================================
+
+	async selectMode(mode: LabelMode) {
 		if (mode === 'fastener') {
 			await this.fastenerModeButton.click();
-			// In fastener mode, wait for thread size button to be visible
 			await this.threadSizeButton.waitFor({ state: 'visible', timeout: 10000 });
 		} else {
 			await this.generalItemModeButton.click();
-			// In general mode, wait for primary text input to be visible
 			await this.primaryTextInput.waitFor({ state: 'visible', timeout: 10000 });
 		}
-		// Give UI time to update by waiting for the preview to be ready
 		await this.preview.waitForReady();
 	}
 
-	async isMode(mode: 'fastener' | 'general'): Promise<boolean> {
+	async isMode(mode: LabelMode): Promise<boolean> {
 		const button = mode === 'fastener' ? this.fastenerModeButton : this.generalItemModeButton;
-		// ToggleGroupItem uses data-state="on" when selected
 		const state = await button.getAttribute('data-state');
 		return state === 'on';
 	}
@@ -394,9 +354,11 @@ export class SingleModePage extends BasePage {
 		}
 	}
 
-	// Label width methods
+	// ============================================
+	// Label Width Methods
+	// ============================================
+
 	async setLabelWidth(width: number) {
-		// Slider range is 35-100mm
 		await this.labelWidthSlider.fill(width.toString());
 		await this.preview.waitForLabelRender();
 	}
@@ -410,11 +372,18 @@ export class SingleModePage extends BasePage {
 		return (await this.labelWidthValue.textContent()) || '';
 	}
 
-	// Clear form method
+	// ============================================
+	// Clear Form Method
+	// ============================================
+
 	async clearForm() {
 		await this.clearButton.click();
 		await this.preview.waitForReady();
 	}
+
+	// ============================================
+	// Image Uploader
+	// ============================================
 
 	/**
 	 * Get ImageUploader component for single mode
@@ -424,16 +393,11 @@ export class SingleModePage extends BasePage {
 		return new ImageUploaderComponent(this.page, 'single');
 	}
 
-	// Complete label creation helper
-	async createCompleteLabel(options: {
-		size: '9mm' | '12mm';
-		primaryText: string;
-		secondaryText: string;
-		hardware?: string;
-		qrUrl?: string;
-		unit?: 'metric' | 'imperial';
-		mode?: 'fastener' | 'general';
-	}) {
+	// ============================================
+	// Complete Label Creation Helper
+	// ============================================
+
+	async createCompleteLabel(options: CreateLabelOptions) {
 		// Set mode (default to general for direct text input)
 		await this.selectMode(options.mode || 'general');
 
@@ -457,9 +421,7 @@ export class SingleModePage extends BasePage {
 
 		// Add QR code if URL provided
 		if (options.qrUrl) {
-			if (!(await this.isQRCodeEnabled())) {
-				await this.toggleQRCode();
-			}
+			await this.qrCodeSection.enable();
 			await this.fillQRCodeUrl(options.qrUrl);
 		}
 

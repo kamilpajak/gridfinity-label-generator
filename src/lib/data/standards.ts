@@ -84,6 +84,7 @@ export interface ISODINStandard {
  * Import generated standards
  */
 import { generatedStandards } from './standards-generated';
+import { fuzzyMatchDescription } from '../utils/search-aliases';
 
 /**
  * Main standards array - generated from build pipeline
@@ -175,7 +176,7 @@ export function searchStandards(query: string): ISODINStandard[] {
 			des.code.toLowerCase().includes(normalizedQuery)
 		);
 
-		// Search in description
+		// Search in description (exact substring match)
 		const matchesDescription = std.description.toLowerCase().includes(normalizedQuery);
 
 		// Search in the combined designation string (e.g., "ISO 4762", "DIN 912")
@@ -183,7 +184,10 @@ export function searchStandards(query: string): ISODINStandard[] {
 			`${des.system} ${des.code}`.toLowerCase().includes(normalizedQuery)
 		);
 
-		return matchesDesignation || matchesDescription || matchesFullDesignation;
+		// Fuzzy search in description (aliases + word tokenization)
+		const matchesFuzzy = fuzzyMatchDescription(normalizedQuery, std.description);
+
+		return matchesDesignation || matchesDescription || matchesFullDesignation || matchesFuzzy;
 	});
 
 	// Sort by relevance (most relevant first)

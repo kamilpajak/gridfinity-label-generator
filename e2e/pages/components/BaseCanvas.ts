@@ -1,9 +1,6 @@
 import { type Page, type Locator } from '@playwright/test';
-import {
-	CANVAS_TRANSLATE_MM,
-	QR_CODE_SIZE_MM,
-	CANVAS_MARGIN_MM
-} from '../../utils/canvas-geometry';
+import { GUIDELINE_COLOR_RGB } from '../../utils/canvas-geometry';
+import { QRCodeValidator, type QRCodePixelData } from '../../utils/QRCodeValidator';
 
 /**
  * Base canvas component for label preview
@@ -103,13 +100,9 @@ export class BaseCanvas {
 	 * Verify that all content stays within the printable area boundaries
 	 * Checks if margin areas contain only white pixels or guide lines
 	 * @param labelWidth - Physical label width in mm (default: 35)
-	 * @param labelHeight - Physical label height in mm (default: 12)
 	 * @returns true if content is within bounds, false if content spills into margins
 	 */
-	async verifyContentWithinPrintableArea(
-		labelWidth: number = 35,
-		labelHeight: number = 12
-	): Promise<boolean> {
+	async verifyContentWithinPrintableArea(labelWidth: number = 35): Promise<boolean> {
 		// First check if canvas is visible
 		const canvasVisible = await this.canvas.isVisible().catch(() => false);
 		if (!canvasVisible) {
@@ -118,7 +111,7 @@ export class BaseCanvas {
 		}
 
 		return await this.page.evaluate(
-			({ labelW }) => {
+			({ labelW, guidelineColor }) => {
 				const canvas = document.querySelector('canvas');
 				if (!canvas) return true;
 
@@ -135,10 +128,11 @@ export class BaseCanvas {
 				};
 
 				// Helper to check if a pixel has content (is not white or a guideline)
-				function hasContent(r, g, b, a) {
+				function hasContent(r: number, g: number, b: number, a: number) {
 					if (a < 50) return false; // Mostly transparent is not content
 					if (r > 250 && g > 250 && b > 250) return false; // White background
-					if (r === 243 && g === 244 && b === 246) return false; // Gray guideline
+					if (r === guidelineColor.r && g === guidelineColor.g && b === guidelineColor.b)
+						return false; // Gray guideline
 					return true;
 				}
 
@@ -177,7 +171,7 @@ export class BaseCanvas {
 					maxY <= printableArea.bottom + tolerance
 				);
 			},
-			{ labelW: labelWidth, labelH: labelHeight }
+			{ labelW: labelWidth, guidelineColor: GUIDELINE_COLOR_RGB }
 		);
 	}
 
@@ -185,61 +179,10 @@ export class BaseCanvas {
 	 * Get QR code area pixels for comparison
 	 * @param labelWidth - Physical label width in mm (default: 35)
 	 * @returns Object with pixel data and QR code position/size
+	 * @deprecated Use QRCodeValidator.getPixels() directly for new code
 	 */
-	async getQRCodePixels(labelWidth: number = 35): Promise<{
-		pixels: number[];
-		qrX: number;
-		qrY: number;
-		qrSize: number;
-		canvasWidth: number;
-		canvasHeight: number;
-	}> {
-		return await this.page.evaluate(
-			({ width, translateMM, qrSizeMM, marginMM }) => {
-				const canvas = document.querySelector('canvas');
-				if (!canvas) throw new Error('Canvas not found');
-
-				const ctx = canvas.getContext('2d');
-				if (!ctx) throw new Error('Could not get canvas context');
-
-				// Calculate QR code bounds from shared constants
-				const scale = canvas.width / width;
-				const translateOffset = {
-					x: Math.round(translateMM.x * scale),
-					y: Math.round(translateMM.y * scale)
-				};
-				const qrSize = Math.round(qrSizeMM * scale);
-				const margin = Math.round(marginMM * scale);
-				const qrX = canvas.width - margin - qrSize - translateOffset.x;
-				const qrY = margin + translateOffset.y;
-
-				// Get image data for QR code area
-				const imageData = ctx.getImageData(qrX, qrY, qrSize, qrSize);
-
-				// Convert to simple array for comparison
-				// Sample every 10th pixel to reduce data size
-				const pixels: number[] = [];
-				for (let i = 0; i < imageData.data.length; i += 40) {
-					// Every 10th pixel (4 bytes per pixel)
-					pixels.push(imageData.data[i]); // Red channel only
-				}
-
-				return {
-					pixels,
-					qrX,
-					qrY,
-					qrSize,
-					canvasWidth: canvas.width,
-					canvasHeight: canvas.height
-				};
-			},
-			{
-				width: labelWidth,
-				translateMM: CANVAS_TRANSLATE_MM,
-				qrSizeMM: QR_CODE_SIZE_MM,
-				marginMM: CANVAS_MARGIN_MM
-			}
-		);
+	async getQRCodePixels(labelWidth: number = 35): Promise<QRCodePixelData> {
+		return QRCodeValidator.getPixels(this.page, labelWidth);
 	}
 
 	/**
@@ -247,19 +190,9 @@ export class BaseCanvas {
 	 * @param pixels1 - First pixel array
 	 * @param pixels2 - Second pixel array
 	 * @returns Percentage of pixels that are different (0-100)
+	 * @deprecated Use QRCodeValidator.comparePixels() directly for new code
 	 */
 	compareQRCodePixels(pixels1: number[], pixels2: number[]): number {
-		if (pixels1.length !== pixels2.length) {
-			throw new Error('Pixel arrays must have the same length');
-		}
-
-		let differentPixels = 0;
-		for (let i = 0; i < pixels1.length; i++) {
-			if (pixels1[i] !== pixels2[i]) {
-				differentPixels++;
-			}
-		}
-
-		return (differentPixels / pixels1.length) * 100;
+		return QRCodeValidator.comparePixels(pixels1, pixels2);
 	}
 }

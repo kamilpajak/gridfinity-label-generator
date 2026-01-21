@@ -4,6 +4,7 @@
 	import { formatDesignations } from '$lib/data/standards';
 	import { UI_TEXT } from '$lib/constants/ui-text';
 	import StandardImage from './standard-image.svelte';
+	import { fuzzyMatchDescription } from '$lib/utils/search-aliases';
 
 	interface Props {
 		/** Array of standards to search through */
@@ -18,7 +19,7 @@
 
 	/**
 	 * Custom filter function for standards search that prioritizes exact and substring matches
-	 * over fuzzy matching for more precise technical specification search
+	 * and supports fuzzy matching with aliases (hex→hexagon, torx→hexalobular, etc.)
 	 */
 	function exactAndSubstringFilter(value: string, search: string, keywords?: string[]): number {
 		if (!search) return 1;
@@ -52,6 +53,10 @@
 				// Contains as substring = medium priority
 				else if (text.includes(searchLower)) {
 					score = 0.7;
+				}
+				// Fuzzy match with aliases (hex→hexagon, torx→hexalobular, etc.)
+				else if (fuzzyMatchDescription(searchLower, text)) {
+					score = 0.6;
 				}
 			}
 

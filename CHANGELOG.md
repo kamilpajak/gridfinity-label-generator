@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.0] - 2026-01-21
+
+### Added
+
+- Smart Search: Find hardware standards using common terms like "hex nut", "allen", "torx", or "phillips" - the search automatically expands to official terminology (hexagon, socket, hexalobular, cross-recessed).
+- Typo Tolerance: Search now handles minor spelling mistakes, so "hexagn" still finds "hexagon" and "philips" finds "phillips".
+
 ## [2.8.0] - 2026-01-09
 
 ### Improved

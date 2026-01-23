@@ -30,3 +30,9 @@ export const EXPECTED_CANVAS_SIZES: Record<LabelSize, { width: number; height: n
 
 /** Tolerance in pixels for dimension comparison (accounts for DPI variance) */
 export const DIMENSION_TOLERANCE_PX = 10;
+
+/** Label width slider range (35-100mm) */
+export const LABEL_WIDTH_SLIDER_RANGE = {
+	min: 35,
+	max: 100
+} as const;

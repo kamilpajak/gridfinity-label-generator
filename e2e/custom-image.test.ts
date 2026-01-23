@@ -1,6 +1,7 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { BatchModePage } from './pages/batch-mode/BatchModePage';
 import { SingleModePage } from './pages/single-mode/SingleModePage';
+import type { ImageUploaderComponent } from './pages/components/ImageUploader';
 import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -121,127 +122,148 @@ function ensureTestFiles() {
 	return { pngPath, svgPath, txtPath };
 }
 
-test.describe('Custom Image - Upload', () => {
-	let testPngPath: string;
-	let testSvgPath: string;
-	let testTxtPath: string;
+// ============================================
+// MODE CONFIGURATION FOR DATA-DRIVEN TESTS
+// ============================================
 
-	test.beforeAll(() => {
-		const paths = ensureTestFiles();
-		testPngPath = paths.pngPath;
-		testSvgPath = paths.svgPath;
-		testTxtPath = paths.txtPath;
+interface ModeConfig {
+	name: string;
+	setupFor12mm: (page: Page) => Promise<ImageUploaderComponent>;
+	setupFor9mm: (page: Page) => Promise<ImageUploaderComponent>;
+	switchTo12mm: (page: Page) => Promise<void>;
+}
+
+const modes: ModeConfig[] = [
+	{
+		name: 'Single Mode',
+		setupFor12mm: async (page: Page) => {
+			const singlePage = new SingleModePage(page);
+			await singlePage.goto();
+			await singlePage.selectLabelSize('12mm');
+			await singlePage.selectMode('general');
+			return singlePage.getImageUploader();
+		},
+		setupFor9mm: async (page: Page) => {
+			const singlePage = new SingleModePage(page);
+			await singlePage.goto();
+			await singlePage.selectLabelSize('9mm');
+			await singlePage.selectMode('general');
+			return singlePage.getImageUploader();
+		},
+		switchTo12mm: async (page: Page) => {
+			const singlePage = new SingleModePage(page);
+			await singlePage.selectLabelSize('12mm');
+		}
+	},
+	{
+		name: 'Batch Mode',
+		setupFor12mm: async (page: Page) => {
+			const batchPage = new BatchModePage(page);
+			await batchPage.goto();
+			await batchPage.selectTapeHeight('12mm');
+			await batchPage.addLabel();
+			await batchPage.waitForLabel(0);
+			await batchPage.switchLabelMode(0, 'general');
+			return batchPage.getImageUploader(0);
+		},
+		setupFor9mm: async (page: Page) => {
+			const batchPage = new BatchModePage(page);
+			await batchPage.goto();
+			await batchPage.selectTapeHeight('9mm');
+			await batchPage.addLabel();
+			await batchPage.waitForLabel(0);
+			await batchPage.switchLabelMode(0, 'general');
+			return batchPage.getImageUploader(0);
+		},
+		switchTo12mm: async (page: Page) => {
+			const batchPage = new BatchModePage(page);
+			await batchPage.selectTapeHeight('12mm');
+		}
+	}
+];
+
+// ============================================
+// SHARED TESTS (run for both Single and Batch Mode)
+// ============================================
+
+for (const mode of modes) {
+	test.describe(`Custom Image - ${mode.name} Upload`, () => {
+		let testPngPath: string;
+		let testSvgPath: string;
+		let testTxtPath: string;
+
+		test.beforeAll(() => {
+			const paths = ensureTestFiles();
+			testPngPath = paths.pngPath;
+			testSvgPath = paths.svgPath;
+			testTxtPath = paths.txtPath;
+		});
+
+		test('should show image preview after file upload', async ({ page }) => {
+			const imageUploader = await mode.setupFor12mm(page);
+
+			await imageUploader.expectDropzoneVisible();
+			await imageUploader.uploadFile(testPngPath);
+			await imageUploader.waitForPreview();
+			await imageUploader.expectThumbnailVisible();
+			await imageUploader.expectFilenameContains('test-image.png');
+		});
+
+		test('should show error for invalid file type', async ({ page }) => {
+			const imageUploader = await mode.setupFor12mm(page);
+
+			await imageUploader.uploadFile(testTxtPath);
+			await imageUploader.waitForError();
+			const errorMessage = await imageUploader.getErrorMessage();
+			expect(errorMessage).toMatch(/invalid|not supported|type/i);
+		});
+
+		test('should upload SVG file successfully', async ({ page }) => {
+			const imageUploader = await mode.setupFor12mm(page);
+
+			await imageUploader.uploadAndWaitForPreview(testSvgPath);
+			await imageUploader.expectFilenameContains('test-image.svg');
+		});
 	});
 
-	test('should show image preview after file upload via input', async ({ page }) => {
-		const batchPage = new BatchModePage(page);
-		await batchPage.goto();
+	test.describe(`Custom Image - ${mode.name} Preview Controls`, () => {
+		let testPngPath: string;
 
-		// Ensure 12mm tape (required for custom images)
-		await batchPage.selectTapeHeight('12mm');
+		test.beforeAll(() => {
+			const paths = ensureTestFiles();
+			testPngPath = paths.pngPath;
+		});
 
-		// Add a general mode label
-		await batchPage.addLabel();
-		await batchPage.waitForLabel(0);
+		test('should remove image when clicking remove button', async ({ page }) => {
+			const imageUploader = await mode.setupFor12mm(page);
 
-		// Switch to general mode
-		await batchPage.switchLabelMode(0, 'general');
-
-		// Get image uploader component
-		const imageUploader = batchPage.getImageUploader(0);
-
-		// Wait for the image uploader to appear
-		await imageUploader.expectDropzoneVisible();
-
-		// Upload image via file input
-		await imageUploader.uploadFile(testPngPath);
-
-		// Wait for preview to appear
-		await imageUploader.waitForPreview();
-
-		// Check thumbnail is displayed
-		await imageUploader.expectThumbnailVisible();
-
-		// Check filename is displayed
-		await imageUploader.expectFilenameContains('test-image.png');
+			await imageUploader.uploadAndWaitForPreview(testPngPath);
+			await imageUploader.removeImage();
+			await imageUploader.expectNoImage();
+		});
 	});
 
-	test('should show error for invalid file type', async ({ page }) => {
-		const batchPage = new BatchModePage(page);
-		await batchPage.goto();
-		await batchPage.selectTapeHeight('12mm');
-		await batchPage.addLabel();
-		await batchPage.waitForLabel(0);
+	test.describe(`Custom Image - ${mode.name} 9mm Tape Restriction`, () => {
+		test('should not show image uploader for 9mm tape', async ({ page }) => {
+			const imageUploader = await mode.setupFor9mm(page);
+			expect(await imageUploader.isVisible()).toBe(false);
+		});
 
-		// Switch to general mode
-		await batchPage.switchLabelMode(0, 'general');
+		test('should show image uploader when switching from 9mm to 12mm', async ({ page }) => {
+			const imageUploader = await mode.setupFor9mm(page);
+			expect(await imageUploader.isVisible()).toBe(false);
 
-		// Get image uploader component
-		const imageUploader = batchPage.getImageUploader(0);
-
-		// Try to upload invalid file
-		await imageUploader.uploadFile(testTxtPath);
-
-		// Error message should appear
-		await imageUploader.waitForError();
-		const errorMessage = await imageUploader.getErrorMessage();
-		expect(errorMessage).toMatch(/invalid|not supported|type/i);
+			await mode.switchTo12mm(page);
+			await imageUploader.expectDropzoneVisible();
+		});
 	});
+}
 
-	test('should upload SVG file successfully', async ({ page }) => {
-		const batchPage = new BatchModePage(page);
-		await batchPage.goto();
-		await batchPage.selectTapeHeight('12mm');
-		await batchPage.addLabel();
-		await batchPage.waitForLabel(0);
+// ============================================
+// BATCH MODE SPECIFIC TESTS (Persistence)
+// ============================================
 
-		// Switch to general mode
-		await batchPage.switchLabelMode(0, 'general');
-
-		// Get image uploader component
-		const imageUploader = batchPage.getImageUploader(0);
-
-		// Upload SVG and wait for preview
-		await imageUploader.uploadAndWaitForPreview(testSvgPath);
-
-		// Verify filename
-		await imageUploader.expectFilenameContains('test-image.svg');
-	});
-});
-
-test.describe('Custom Image - Preview Controls', () => {
-	let testPngPath: string;
-
-	test.beforeAll(() => {
-		const paths = ensureTestFiles();
-		testPngPath = paths.pngPath;
-	});
-
-	test('should remove image when clicking remove button', async ({ page }) => {
-		const batchPage = new BatchModePage(page);
-		await batchPage.goto();
-		await batchPage.selectTapeHeight('12mm');
-		await batchPage.addLabel();
-		await batchPage.waitForLabel(0);
-
-		// Switch to general mode
-		await batchPage.switchLabelMode(0, 'general');
-
-		// Get image uploader component
-		const imageUploader = batchPage.getImageUploader(0);
-
-		// Upload image and wait for preview
-		await imageUploader.uploadAndWaitForPreview(testPngPath);
-
-		// Remove image
-		await imageUploader.removeImage();
-
-		// Preview should disappear, dropzone should reappear
-		await imageUploader.expectNoImage();
-	});
-});
-
-test.describe('Custom Image - Persistence', () => {
+test.describe('Custom Image - Batch Mode Persistence', () => {
 	let testPngPath: string;
 
 	test.beforeAll(() => {
@@ -319,191 +341,5 @@ test.describe('Custom Image - Persistence', () => {
 		// Original should still have the image (deep copy, not shared reference)
 		await imageUploader0.expectPreviewVisible();
 		await imageUploader1.expectDropzoneVisible();
-	});
-});
-
-test.describe('Custom Image - 9mm Tape Restriction', () => {
-	test('should not show image uploader for 9mm tape', async ({ page }) => {
-		const batchPage = new BatchModePage(page);
-		await batchPage.goto();
-
-		// Select 9mm tape
-		await batchPage.selectTapeHeight('9mm');
-
-		await batchPage.addLabel();
-		await batchPage.waitForLabel(0);
-
-		// Switch to general mode
-		await batchPage.switchLabelMode(0, 'general');
-
-		// Image uploader should NOT be visible for 9mm tape
-		const imageUploader = batchPage.getImageUploader(0);
-		expect(await imageUploader.isVisible()).toBe(false);
-	});
-
-	test('should show image uploader when switching from 9mm to 12mm', async ({ page }) => {
-		const batchPage = new BatchModePage(page);
-		await batchPage.goto();
-
-		// Start with 9mm
-		await batchPage.selectTapeHeight('9mm');
-		await batchPage.addLabel();
-		await batchPage.waitForLabel(0);
-
-		// Switch to general mode
-		await batchPage.switchLabelMode(0, 'general');
-
-		// No uploader for 9mm
-		const imageUploader = batchPage.getImageUploader(0);
-		expect(await imageUploader.isVisible()).toBe(false);
-
-		// Switch to 12mm
-		await batchPage.selectTapeHeight('12mm');
-
-		// Uploader should now be visible
-		await imageUploader.expectDropzoneVisible();
-	});
-});
-
-// ============================================
-// SINGLE MODE TESTS
-// ============================================
-
-test.describe('Custom Image - Single Mode Upload', () => {
-	let testPngPath: string;
-	let testSvgPath: string;
-	let testTxtPath: string;
-
-	test.beforeAll(() => {
-		const paths = ensureTestFiles();
-		testPngPath = paths.pngPath;
-		testSvgPath = paths.svgPath;
-		testTxtPath = paths.txtPath;
-	});
-
-	test('should show image preview after file upload', async ({ page }) => {
-		const singlePage = new SingleModePage(page);
-		await singlePage.goto();
-
-		// Ensure 12mm tape (required for custom images)
-		await singlePage.selectLabelSize('12mm');
-
-		// Switch to general mode
-		await singlePage.selectMode('general');
-
-		// Get image uploader component
-		const imageUploader = singlePage.getImageUploader();
-
-		// Wait for the image uploader to appear
-		await imageUploader.expectDropzoneVisible();
-
-		// Upload image via file input
-		await imageUploader.uploadFile(testPngPath);
-
-		// Wait for preview to appear
-		await imageUploader.waitForPreview();
-
-		// Check thumbnail is displayed
-		await imageUploader.expectThumbnailVisible();
-
-		// Check filename is displayed
-		await imageUploader.expectFilenameContains('test-image.png');
-	});
-
-	test('should show error for invalid file type', async ({ page }) => {
-		const singlePage = new SingleModePage(page);
-		await singlePage.goto();
-		await singlePage.selectLabelSize('12mm');
-		await singlePage.selectMode('general');
-
-		const imageUploader = singlePage.getImageUploader();
-
-		// Try to upload invalid file
-		await imageUploader.uploadFile(testTxtPath);
-
-		// Error message should appear
-		await imageUploader.waitForError();
-		const errorMessage = await imageUploader.getErrorMessage();
-		expect(errorMessage).toMatch(/invalid|not supported|type/i);
-	});
-
-	test('should upload SVG file successfully', async ({ page }) => {
-		const singlePage = new SingleModePage(page);
-		await singlePage.goto();
-		await singlePage.selectLabelSize('12mm');
-		await singlePage.selectMode('general');
-
-		const imageUploader = singlePage.getImageUploader();
-
-		// Upload SVG and wait for preview
-		await imageUploader.uploadAndWaitForPreview(testSvgPath);
-
-		// Verify filename
-		await imageUploader.expectFilenameContains('test-image.svg');
-	});
-});
-
-test.describe('Custom Image - Single Mode Preview Controls', () => {
-	let testPngPath: string;
-
-	test.beforeAll(() => {
-		const paths = ensureTestFiles();
-		testPngPath = paths.pngPath;
-	});
-
-	test('should remove image when clicking remove button', async ({ page }) => {
-		const singlePage = new SingleModePage(page);
-		await singlePage.goto();
-		await singlePage.selectLabelSize('12mm');
-		await singlePage.selectMode('general');
-
-		const imageUploader = singlePage.getImageUploader();
-
-		// Upload image and wait for preview
-		await imageUploader.uploadAndWaitForPreview(testPngPath);
-
-		// Remove image
-		await imageUploader.removeImage();
-
-		// Preview should disappear, dropzone should reappear
-		await imageUploader.expectNoImage();
-	});
-});
-
-test.describe('Custom Image - Single Mode 9mm Tape Restriction', () => {
-	test('should not show image uploader for 9mm tape', async ({ page }) => {
-		const singlePage = new SingleModePage(page);
-		await singlePage.goto();
-
-		// Select 9mm tape
-		await singlePage.selectLabelSize('9mm');
-
-		// Switch to general mode
-		await singlePage.selectMode('general');
-
-		// Image uploader should NOT be visible for 9mm tape
-		const imageUploader = singlePage.getImageUploader();
-		expect(await imageUploader.isVisible()).toBe(false);
-	});
-
-	test('should show image uploader when switching from 9mm to 12mm', async ({ page }) => {
-		const singlePage = new SingleModePage(page);
-		await singlePage.goto();
-
-		// Start with 9mm
-		await singlePage.selectLabelSize('9mm');
-
-		// Switch to general mode
-		await singlePage.selectMode('general');
-
-		// No uploader for 9mm
-		const imageUploader = singlePage.getImageUploader();
-		expect(await imageUploader.isVisible()).toBe(false);
-
-		// Switch to 12mm
-		await singlePage.selectLabelSize('12mm');
-
-		// Uploader should now be visible
-		await imageUploader.expectDropzoneVisible();
 	});
 });

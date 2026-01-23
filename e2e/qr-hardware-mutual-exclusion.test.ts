@@ -10,6 +10,8 @@
 import { test, expect } from '@playwright/test';
 import { SingleModePage } from './pages/single-mode/SingleModePage';
 import { BatchModePage } from './pages/batch-mode/BatchModePage';
+import { setSliderValue } from './utils/slider-helpers';
+import { LABEL_WIDTH_SLIDER_RANGE } from './types/page-objects';
 
 test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 	test.describe('Single Mode', () => {
@@ -26,8 +28,7 @@ test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 			await singlePage.setLabelWidth(40);
 		});
 
-		// Known issue: These tests timeout in e2e environment but functionality works correctly in manual testing
-		test.skip('should disable QR Code when Hardware Icon is enabled on narrow label', async () => {
+		test('should disable QR Code when Hardware Icon is enabled on narrow label', async () => {
 			// Enable Hardware Icon first
 			if (!(await singlePage.isHardwareImageEnabled())) {
 				await singlePage.toggleHardwareImage();
@@ -44,7 +45,7 @@ test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 			await expect(singlePage.hardwareImageSwitch).not.toBeChecked();
 		});
 
-		test.skip('should disable Hardware Icon when QR Code is enabled on narrow label', async () => {
+		test('should disable Hardware Icon when QR Code is enabled on narrow label', async () => {
 			// Enable QR Code first
 			if (!(await singlePage.isQRCodeEnabled())) {
 				await singlePage.toggleQRCode();
@@ -61,7 +62,7 @@ test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 			await expect(singlePage.qrCodeSwitch).not.toBeChecked();
 		});
 
-		test.skip('should allow both features on wide label (≥50mm)', async () => {
+		test('should allow both features on wide label (≥50mm)', async () => {
 			// Set label width to 50mm (at threshold)
 			await singlePage.setLabelWidth(50);
 
@@ -82,7 +83,7 @@ test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 			await expect(singlePage.qrCodeSwitch).toBeChecked();
 		});
 
-		test.skip('should disable QR Code when width reduced below 50mm with both enabled', async () => {
+		test('should disable QR Code when width reduced below 50mm with both enabled', async () => {
 			// Start with width ≥50mm
 			await singlePage.setLabelWidth(50);
 
@@ -115,27 +116,21 @@ test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 			await batchPage.selectTapeHeight('12mm');
 		});
 
-		test.skip('should enforce mutual exclusion in batch label row', async ({ page }) => {
+		test('should enforce mutual exclusion in batch label row', async ({ page }) => {
 			// Add a label
 			await batchPage.addLabel();
 			await batchPage.waitForLabel(0);
 
-			// Get switches for the first label
+			// Get elements for the first label
+			const widthSlider = page.getByTestId('width-slider-0');
 			const hardwareSwitch = page.getByTestId('hardware-image-switch-0');
 			const qrSwitch = page.getByTestId('qr-code-switch-0');
+			const standardSelect = page.getByTestId('batch-hardware-select-0');
 
-			// Set width to 40mm (< 50mm) using testid
-			await page.evaluate(() => {
-				const slider = document.querySelector('[data-testid="width-slider-0"]');
-				if (slider) {
-					slider.setAttribute('aria-valuenow', '40');
-					slider.dispatchEvent(new Event('input', { bubbles: true }));
-					slider.dispatchEvent(new Event('change', { bubbles: true }));
-				}
-			});
+			// Set width to 40mm (< 50mm) using click
+			await setSliderValue(widthSlider, 40, LABEL_WIDTH_SLIDER_RANGE);
 
 			// Select a standard with hardware image
-			const standardSelect = page.getByTestId('hardware-select-0');
 			await standardSelect.click();
 			await page
 				.getByRole('option', { name: /ISO 4762/ })
@@ -143,15 +138,13 @@ test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 				.click();
 
 			// Enable Hardware Icon first
-			const isHardwareEnabled = await hardwareSwitch.isChecked();
-			if (!isHardwareEnabled) {
+			if (!(await hardwareSwitch.isChecked())) {
 				await hardwareSwitch.click();
 			}
 			await expect(hardwareSwitch).toBeChecked();
 
 			// Try to enable QR Code
-			const isQREnabled = await qrSwitch.isChecked();
-			if (!isQREnabled) {
+			if (!(await qrSwitch.isChecked())) {
 				await qrSwitch.click();
 			}
 
@@ -160,27 +153,21 @@ test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 			await expect(hardwareSwitch).not.toBeChecked();
 		});
 
-		test.skip('should allow both features on wide label in batch mode', async ({ page }) => {
+		test('should allow both features on wide label in batch mode', async ({ page }) => {
 			// Add a label
 			await batchPage.addLabel();
 			await batchPage.waitForLabel(0);
 
-			// Get switches for the first label
+			// Get elements for the first label
+			const widthSlider = page.getByTestId('width-slider-0');
 			const hardwareSwitch = page.getByTestId('hardware-image-switch-0');
 			const qrSwitch = page.getByTestId('qr-code-switch-0');
+			const standardSelect = page.getByTestId('batch-hardware-select-0');
 
-			// Set width to 50mm (at threshold)
-			await page.evaluate(() => {
-				const slider = document.querySelector('[data-testid="width-slider-0"]');
-				if (slider) {
-					slider.setAttribute('aria-valuenow', '50');
-					slider.dispatchEvent(new Event('input', { bubbles: true }));
-					slider.dispatchEvent(new Event('change', { bubbles: true }));
-				}
-			});
+			// Set width to 50mm (at threshold) using click
+			await setSliderValue(widthSlider, 50, LABEL_WIDTH_SLIDER_RANGE);
 
 			// Select a standard with hardware image
-			const standardSelect = page.getByTestId('hardware-select-0');
 			await standardSelect.click();
 			await page
 				.getByRole('option', { name: /ISO 4762/ })
@@ -188,15 +175,13 @@ test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 				.click();
 
 			// Enable Hardware Icon
-			const isHardwareEnabled = await hardwareSwitch.isChecked();
-			if (!isHardwareEnabled) {
+			if (!(await hardwareSwitch.isChecked())) {
 				await hardwareSwitch.click();
 			}
 			await expect(hardwareSwitch).toBeChecked();
 
 			// Enable QR Code
-			const isQREnabled = await qrSwitch.isChecked();
-			if (!isQREnabled) {
+			if (!(await qrSwitch.isChecked())) {
 				await qrSwitch.click();
 			}
 			await expect(qrSwitch).toBeChecked();
@@ -206,27 +191,21 @@ test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 			await expect(qrSwitch).toBeChecked();
 		});
 
-		test.skip('should disable QR Code when width reduced in batch mode', async ({ page }) => {
+		test('should disable QR Code when width reduced in batch mode', async ({ page }) => {
 			// Add a label
 			await batchPage.addLabel();
 			await batchPage.waitForLabel(0);
 
-			// Get switches for the first label
+			// Get elements for the first label
+			const widthSlider = page.getByTestId('width-slider-0');
 			const hardwareSwitch = page.getByTestId('hardware-image-switch-0');
 			const qrSwitch = page.getByTestId('qr-code-switch-0');
+			const standardSelect = page.getByTestId('batch-hardware-select-0');
 
-			// Start with width ≥50mm
-			await page.evaluate(() => {
-				const slider = document.querySelector('[data-testid="width-slider-0"]');
-				if (slider) {
-					slider.setAttribute('aria-valuenow', '50');
-					slider.dispatchEvent(new Event('input', { bubbles: true }));
-					slider.dispatchEvent(new Event('change', { bubbles: true }));
-				}
-			});
+			// Start with width ≥50mm using click
+			await setSliderValue(widthSlider, 50, LABEL_WIDTH_SLIDER_RANGE);
 
 			// Select a standard with hardware image
-			const standardSelect = page.getByTestId('hardware-select-0');
 			await standardSelect.click();
 			await page
 				.getByRole('option', { name: /ISO 4762/ })
@@ -234,26 +213,17 @@ test.describe('QR Code and Hardware Icon Mutual Exclusion', () => {
 				.click();
 
 			// Enable both
-			const isHardwareEnabled = await hardwareSwitch.isChecked();
-			if (!isHardwareEnabled) {
+			if (!(await hardwareSwitch.isChecked())) {
 				await hardwareSwitch.click();
 			}
-			const isQREnabled = await qrSwitch.isChecked();
-			if (!isQREnabled) {
+			if (!(await qrSwitch.isChecked())) {
 				await qrSwitch.click();
 			}
 			await expect(hardwareSwitch).toBeChecked();
 			await expect(qrSwitch).toBeChecked();
 
 			// Reduce width below 50mm
-			await page.evaluate(() => {
-				const slider = document.querySelector('[data-testid="width-slider-0"]');
-				if (slider) {
-					slider.setAttribute('aria-valuenow', '45');
-					slider.dispatchEvent(new Event('input', { bubbles: true }));
-					slider.dispatchEvent(new Event('change', { bubbles: true }));
-				}
-			});
+			await setSliderValue(widthSlider, 45, LABEL_WIDTH_SLIDER_RANGE);
 
 			// QR Code should be disabled, Hardware Icon should remain
 			await expect(hardwareSwitch).toBeChecked();

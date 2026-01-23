@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { SingleModePage } from './pages/single-mode/SingleModePage';
+import { setSliderValue } from './utils/slider-helpers';
+import { LABEL_WIDTH_SLIDER_RANGE } from './types/page-objects';
 
 /**
  * TODO: Possible improvements for this test suite:
@@ -83,11 +85,8 @@ test.describe('Printable Area Boundaries', () => {
 
 			// Set width to 50mm to allow both hardware image and QR code
 			// (UI constraint: labelWidth < 50 disables one when both are active)
-			const widthSlider = page.locator('[role="slider"]');
-			await widthSlider.evaluate((el: HTMLElement) => {
-				el.setAttribute('aria-valuenow', '50');
-				el.dispatchEvent(new Event('input', { bubbles: true }));
-			});
+			const widthSlider = page.getByTestId('label-width-slider');
+			await setSliderValue(widthSlider, 50, LABEL_WIDTH_SLIDER_RANGE);
 			await verifyAfterAction('setting width to 50mm for QR code + hardware test');
 
 			const standardSwitch = page.getByTestId('standard-reference-switch');
@@ -107,19 +106,13 @@ test.describe('Printable Area Boundaries', () => {
 			await labelPage.fillPrimaryText('M8');
 			await labelPage.fillSecondaryText('');
 
-			const widthSlider = page.locator('[role="slider"]');
+			const widthSlider = page.getByTestId('label-width-slider');
 			// Test minimum width (35mm)
-			await widthSlider.evaluate((el: HTMLElement) => {
-				el.setAttribute('aria-valuenow', '35');
-				el.dispatchEvent(new Event('input', { bubbles: true }));
-			});
+			await setSliderValue(widthSlider, 35, LABEL_WIDTH_SLIDER_RANGE);
 			await labelPage.preview.waitForLabelRender();
 			await verifyAfterAction('setting minimum width (35mm)');
 			// Test maximum width (100mm)
-			await widthSlider.evaluate((el: HTMLElement) => {
-				el.setAttribute('aria-valuenow', '100');
-				el.dispatchEvent(new Event('input', { bubbles: true }));
-			});
+			await setSliderValue(widthSlider, 100, LABEL_WIDTH_SLIDER_RANGE);
 			await labelPage.preview.waitForLabelRender();
 			await verifyAfterAction('setting maximum width (100mm)');
 		};

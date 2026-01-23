@@ -166,6 +166,7 @@
 					max={100}
 					step={1}
 					class="w-full"
+					data-testid="label-width-slider"
 				/>
 			</div>
 		</div>

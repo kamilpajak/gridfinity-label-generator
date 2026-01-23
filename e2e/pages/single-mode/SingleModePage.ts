@@ -8,12 +8,14 @@ import { LabelSizeToggle } from '../components/LabelSizeToggle';
 import { HardwareSelector } from '../components/HardwareSelector';
 import { QRCodeSection } from '../components/QRCodeSection';
 import { ThreadSizeSelector } from '../components/ThreadSizeSelector';
-import type {
-	LabelSize,
-	LabelMode,
-	UnitSystem,
-	CreateLabelOptions
+import {
+	LABEL_WIDTH_SLIDER_RANGE,
+	type LabelSize,
+	type LabelMode,
+	type UnitSystem,
+	type CreateLabelOptions
 } from '../../types/page-objects';
+import { setSliderValue } from '../../utils/slider-helpers';
 
 /**
  * Page object for Single Label mode
@@ -114,10 +116,7 @@ export class SingleModePage extends BasePage {
 		this.generalItemModeButton = page.getByTestId('mode-general');
 
 		// Label dimensions
-		this.labelWidthSlider = page
-			.getByTestId('label-height-toggle')
-			.locator('..')
-			.getByRole('slider');
+		this.labelWidthSlider = page.getByTestId('label-width-slider');
 		this.labelWidthValue = page.locator('text=/\\d+mm/').last();
 
 		// Clear button
@@ -359,7 +358,7 @@ export class SingleModePage extends BasePage {
 	// ============================================
 
 	async setLabelWidth(width: number) {
-		await this.labelWidthSlider.fill(width.toString());
+		await setSliderValue(this.labelWidthSlider, width, LABEL_WIDTH_SLIDER_RANGE);
 		await this.preview.waitForLabelRender();
 	}
 

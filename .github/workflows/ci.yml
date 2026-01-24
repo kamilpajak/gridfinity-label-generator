@@ -79,6 +79,15 @@ jobs:
         env:
           PUBLIC_ALLOW_E2E_PAGES: 'true'
 
+      - name: Analyze test failures with Heisenberg
+        if: failure()
+        uses: kamilpajak/heisenberg@v1
+        with:
+          playwright-report: playwright-report/results.json
+          ai-analysis: true
+          ai-provider: gemini
+          google-api-key: ${{ secrets.GOOGLE_API_KEY }}
+
       - name: Upload E2E results
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

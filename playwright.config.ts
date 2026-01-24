@@ -6,6 +6,12 @@ export default defineConfig({
 	// Use 4 workers on CI (preview server is lightweight), auto-detect locally
 	workers: process.env.CI ? 4 : undefined,
 
+	// Configure reporters
+	reporter: [
+		['html', { outputFolder: 'playwright-report' }],
+		['json', { outputFile: 'playwright-report/results.json' }]
+	],
+
 	webServer: {
 		// CI: use optimized preview build (less CPU/RAM, faster responses)
 		// Local: use dev server for hot reload during development

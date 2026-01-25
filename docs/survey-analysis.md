@@ -1,8 +1,8 @@
 # Analiza Feedbacku Użytkowników
 
-> Data analizy: 2026-01-20
-> Liczba odpowiedzi: 44
-> Średnia ocena: 4.5/5 (55% ocen 5/5, 41% ocen 4/5, 5% ocen 3/5)
+> Data analizy: 2026-01-25
+> Liczba odpowiedzi: 46
+> Średnia ocena: 4.5/5 (52% ocen 5/5, 43% ocen 4/5, 4% ocen 3/5)
 
 ## Podsumowanie
 
@@ -66,6 +66,7 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 | DIN 7997            | ✅       | ✅      | `7997` → ✅ obrazek dodany                   |
 | DIN 916             | ❌       | ❌      | `916` → 0 wyników (ISO 4029 wycofane)        |
 | DIN 6916            | ✅       | ✅      | `6916` → ✅ washer (naprawione!)             |
+| ISO 14580           | ✅       | ⚠️ BUG  | `14580` → ✅ ale obrazek hex zamiast Torx    |
 | Torx heads          | ❌       | ❌      | `torx` → 0 wyników                           |
 | Grub screw          | ❌ alias | -       | `grub` → 0 wyników                           |
 | Hex nut             | ❌ alias | -       | `hex nut` → 0 wyników (wymaga "hexagon nut") |
@@ -179,15 +180,20 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 
 ---
 
-#### 9. Szerokość Etykiety < 35mm (edge case)
+#### 9. Szerokość Etykiety < 35mm (6 zgłoszeń!)
 
-**Problem:** Niektórzy użytkownicy chcą jeszcze mniejsze etykiety (20mm)
+**Problem:** Wielu użytkowników chce mniejsze etykiety (20-30mm)
 
-**Cytat:**
+**Cytaty (z pola "Inne" w pytaniu o problemy z rozmiarem):**
 
+> "Just smaller widths"
+> "37mm is too large, label making program add 2mm of margin so i need to cut them smaller"
+> "i sometimes want half bin label."
+> "Minimum width was too long (I use 30 mm usually)"
+> "i'd love to have it go down to 20mm length"
 > "Could you allow the label width to be 20mm?"
 
-**Status:** Min 35mm już zaimplementowane. 20mm wymaga oceny czy layout działa
+**Status:** Min 35mm już zaimplementowane. **6/8 odpowiedzi "Inne" dotyczy tego problemu** - wymaga ponownej oceny priorytetu
 
 ---
 
@@ -224,6 +230,41 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 
 ---
 
+### 🐛 Zgłoszone Bugi
+
+#### Bug: Tekst obcięty przy rozmiarze 12×35
+
+**Cytat:**
+
+> "When set to 12x35 the PNG generated clips off the right side of the text"
+> "the text is cut off on the right side: https://share.cleanshot.com/TXPsgLXFq4yWXqHplFg0"
+
+**Status:** Do zbadania - problem z renderowaniem tekstu przy małych rozmiarach
+
+---
+
+#### Bug: ISO 14580 - błędny obrazek (hex zamiast Torx)
+
+**Cytat:**
+
+> "Iso 14580 shows the picture of a hex screw but actually it should be Torx"
+
+**Analiza:** Potwierdzone - `data/image-mappings.json` mapuje ISO 14580 na `din_7984.png` (hex socket), a powinien być Torx (hexalobular).
+
+**Status:** Do naprawy - wymaga utworzenia obrazka Torx
+
+---
+
+#### UX: Niski kontrast zaznaczonych opcji
+
+**Cytat:**
+
+> "for me its hard to identify the selected options, the contrast is too low"
+
+**Status:** Do oceny - sprawdzić accessibility (WCAG contrast ratio)
+
+---
+
 ### 🟢 Niski Priorytet / Nice-to-Have
 
 | Funkcja                 | Opis                              |
@@ -243,21 +284,24 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 
 | Element                 | Użycie      |
 | ----------------------- | ----------- |
-| Tekst (rozmiary, opisy) | 98% (43/44) |
-| Obrazy                  | 95% (42/44) |
-| Kody QR                 | 14% (6/44)  |
+| Tekst (rozmiary, opisy) | 98% (45/46) |
+| Obrazy                  | 96% (44/46) |
+| Kody QR                 | 13% (6/46)  |
 
 ## Popularne Rozmiary Etykiet
 
-| Rozmiar | Liczba |
-| ------- | ------ |
-| 55×12mm | 5      |
-| 35×12mm | 5      |
-| 36×12mm | 3      |
-| 37×9mm  | 3      |
-| 35×9mm  | 2      |
+| Rozmiar  | Liczba |
+| -------- | ------ |
+| 35×12mm  | 6      |
+| 55×12mm  | 5      |
+| 36×12mm  | 3      |
+| 37×9mm   | 3      |
+| 30×12mm  | 2      |
+| 38×13mm  | 2      |
+| 100×50mm | 2      |
+| 35×9mm   | 2      |
 
-**Średnie:** 41.8mm × 13.7mm
+**Średnie:** 41.4mm × 13.6mm
 
 ---
 
@@ -308,4 +352,4 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 
 Aplikacja jest dobrze przyjmowana. Główny focus powinien być na poprawie discoverability istniejących funkcji i dodaniu aliasów search (grub→set screw, torx→hexalobular).
 
-> **Ostatnia aktualizacja:** 2026-01-20 - Dodano 1 nową odpowiedź, zaktualizowano statystyki i wnioski dot. search (fuzzy matching)
+> **Ostatnia aktualizacja:** 2026-01-25 - Zaktualizowano statystyki (44→46), dodano sekcję bugów (ISO 14580, tekst obcięty, kontrast UI), rozszerzono analizę szerokości etykiet (6 zgłoszeń)

@@ -302,11 +302,11 @@ function aggregateYesNo(responses, columnIndex) {
 	let yes = 0;
 	let no = 0;
 	let other = 0;
+	const otherResponses = [];
 
 	responses.forEach((row) => {
-		const value = String(row[columnIndex] || '')
-			.trim()
-			.toLowerCase();
+		const rawValue = String(row[columnIndex] || '').trim();
+		const value = rawValue.toLowerCase();
 		if (!value) return;
 
 		if (value.includes('yes') || value.includes('tak') || value === 'y') {
@@ -315,14 +315,16 @@ function aggregateYesNo(responses, columnIndex) {
 			no++;
 		} else {
 			other++;
+			otherResponses.push(rawValue);
 		}
 	});
 
 	const total = yes + no;
 	return {
-		yes: yes,
-		no: no,
-		other: other,
+		yes,
+		no,
+		other,
+		otherResponses,
 		yesPercentage: total > 0 ? Math.round((yes / total) * 100) : 0
 	};
 }

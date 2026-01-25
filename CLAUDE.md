@@ -149,7 +149,7 @@ curl -s -u "${SONAR_TOKEN}:" "https://sonarcloud.io/api/issues/search?componentK
 Pobieranie zagregowanych odpowiedzi z ankiety (Google Apps Script):
 
 ```bash
-curl -sL "https://script.google.com/macros/s/AKfycbyL0LqpRfKP5knbd5jaMbLkQum0CsPItqMvsrkOh1o290nxWOBq-ejFiSyEfIcPU-EMkA/exec"
+curl -sL "https://script.google.com/macros/s/AKfycbwONjLlojIlD9sSZ4R_7qDBMladUNxGOuA-U0YIoROghmfZEgmpy07v0x6EWJbhm0GC6w/exec"
 ```
 
 Flaga `-L` podąża za redirectami (Google Apps Script zwraca 302).

@@ -253,15 +253,27 @@
 		}
 	});
 
-	// Reset Standard Reference and Hardware Image when switching to General Item mode
+	// Reset Standard Reference and Hardware Image based on mode
 	$effect(() => {
 		if (labelMode === 'general') {
+			// General Item mode: disable hardware-related options
 			untrack(() => {
 				if (showStandard) {
 					showStandard = false;
 				}
 				if (showHardwareImage) {
 					showHardwareImage = false;
+				}
+			});
+		} else if (labelMode === 'fastener') {
+			// Fastener mode: restore default values (both enabled)
+			// But respect 9mm constraint - hardware image not supported on 9mm labels
+			untrack(() => {
+				if (!showStandard) {
+					showStandard = true;
+				}
+				if (!showHardwareImage && labelHeight !== '9') {
+					showHardwareImage = true;
 				}
 			});
 		}

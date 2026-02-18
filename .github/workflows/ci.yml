@@ -79,14 +79,15 @@ jobs:
         env:
           PUBLIC_ALLOW_E2E_PAGES: 'true'
 
-      - name: Analyze test failures with Heisenberg
-        if: failure()
-        uses: kamilpajak/heisenberg@v0.2.2
-        with:
-          playwright-report: playwright-report/results.json
-          ai-analysis: true
-          ai-provider: gemini
-          google-api-key: ${{ secrets.GOOGLE_API_KEY }}
+      # TODO: Re-enable after fixing heisenberg Dockerfile (NOSONAR comment breaks FROM)
+      # - name: Analyze test failures with Heisenberg
+      #   if: failure()
+      #   uses: kamilpajak/heisenberg@v0.2.2
+      #   with:
+      #     playwright-report: playwright-report/results.json
+      #     ai-analysis: true
+      #     ai-provider: gemini
+      #     google-api-key: ${{ secrets.GOOGLE_API_KEY }}
 
       - name: Upload E2E results
         if: always()

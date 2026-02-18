@@ -256,7 +256,7 @@
 				// Additional check for TypeScript
 				if (!canvasRef || !layout) return;
 
-				isRendering = true;
+				// Note: isRendering is set synchronously before RAF to prevent race conditions
 
 				// Clear canvas immediately to prevent artifacts from aborted renders
 				const ctx = canvasRef.getContext('2d');
@@ -269,7 +269,7 @@
 
 				try {
 					// Check if aborted before starting render
-					if (signal?.aborted) {
+					if (signal.aborted) {
 						return;
 					}
 
@@ -310,15 +310,24 @@
 					}
 					console.error('Failed to render label:', error);
 				} finally {
-					isRendering = false;
+					// Only reset if we haven't been superseded by a new render
+					if (!signal.aborted) {
+						isRendering = false;
+					}
 				}
 			};
 
+			// Set rendering flag synchronously to prevent race conditions in tests
+			// that wait for renderStatus='stable' before capturing canvas
+			isRendering = true;
+
 			// Add small delay to ensure DOM is ready and prevent rapid fire renders
 			requestAnimationFrame(() => {
-				if (!signal?.aborted) {
+				if (!signal.aborted) {
 					render();
 				}
+				// Note: No else branch needed. If aborted, a new effect already set
+				// isRendering = true, so resetting it here would clobber that state.
 			});
 		}
 	});

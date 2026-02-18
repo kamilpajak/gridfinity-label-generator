@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.1] - 2026-02-18
+
+### Fixed
+
+- Text Clipping: Fixed an issue where text was cut off on the right side when exporting small labels with long text.
+
 ## [2.9.0] - 2026-01-21
 
 ### Added

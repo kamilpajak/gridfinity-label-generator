@@ -421,8 +421,8 @@ async function validateHorizontalFit(
 	hasSecondaryText: boolean,
 	availableWidth: number
 ): Promise<{ primaryFontSize: number; secondaryFontSize: number }> {
-	if (mode === 'ONE_LINE') {
-		// ONE_LINE: Check both texts side by side with spacing
+	if (mode === 'ONE_LINE' || mode === 'IMAGE_HORIZONTAL') {
+		// ONE_LINE and IMAGE_HORIZONTAL: Check both texts side by side with spacing
 		const primaryWidth = await measureText(primaryText, 'Noto Sans', primaryFontSize, '900');
 		const secondaryWidth = hasSecondaryText
 			? await measureText(secondaryText, 'Oswald', secondaryFontSize, '300')
@@ -437,9 +437,9 @@ async function validateHorizontalFit(
 			};
 		}
 	}
-	// For TWO_LINE and IMAGE_HORIZONTAL modes:
+	// For TWO_LINE mode:
 	// Fonts are already independently optimized by calculateSplitHalfFontSizes
-	// No additional validation needed - each font was calculated to fit its zone
+	// Each line has its own width constraint
 
 	return { primaryFontSize, secondaryFontSize };
 }

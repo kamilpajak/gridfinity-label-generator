@@ -42,6 +42,15 @@
 				secondaryText: '100µF 25V',
 				width: 35,
 				qrCode: 'https://example.com'
+			},
+			{
+				mode: 'fastener',
+				measurementSystem: 'metric',
+				threadSize: 'M2.5',
+				length: 30,
+				width: 35,
+				standard: 'ISO 14580',
+				note: 'Regression: text clipping bug'
 			}
 		]
 	};

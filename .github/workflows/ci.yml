@@ -81,7 +81,7 @@ jobs:
 
       - name: Analyze test failures with Heisenberg
         if: failure()
-        uses: kamilpajak/heisenberg@v1
+        uses: kamilpajak/heisenberg@v0.2.2
         with:
           playwright-report: playwright-report/results.json
           ai-analysis: true

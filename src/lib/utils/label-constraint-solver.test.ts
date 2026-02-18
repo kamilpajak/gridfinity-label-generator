@@ -872,7 +872,7 @@ describe('label-constraint-solver', () => {
 					printableWidth: 31,
 					printableHeight: 10
 				},
-				primaryText: 'M2.5×30', // Long text that could overflow
+				primaryText: 'M2.5 × 30', // Long text that could overflow
 				secondaryText: 'ISO 14580',
 				showHardwareImage: true,
 				hardwareImageAspectRatio: 4.5, // Wide image triggers IMAGE_HORIZONTAL

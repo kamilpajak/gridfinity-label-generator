@@ -690,14 +690,14 @@
 				class:wide={!isNarrow}
 				role="button"
 				tabindex="0"
-				on:mouseenter={() => (hoveredIndex = i)}
-				on:mouseleave={() => (hoveredIndex = null)}
-				on:focus={() => (hoveredIndex = i)}
-				on:blur={() => (hoveredIndex = null)}
+				onmouseenter={() => (hoveredIndex = i)}
+				onmouseleave={() => (hoveredIndex = null)}
+				onfocus={() => (hoveredIndex = i)}
+				onblur={() => (hoveredIndex = null)}
 			>
 				<div class="label-header">
 					<span class="label-size">{result.config.labelWidth}×{result.config.labelHeight}mm</span>
-					<button class="export-btn" on:click={() => exportAsPng(result)}>Export PNG</button>
+					<button class="export-btn" onclick={() => exportAsPng(result)}>Export PNG</button>
 				</div>
 
 				<div class="canvas-wrapper">

@@ -862,6 +862,38 @@ describe('label-constraint-solver', () => {
 			expect(result.layoutMode).toMatch(/^(ONE_LINE|TWO_LINE)$/);
 		});
 
+		it('should scale down text when it exceeds available width (regression: text clipping)', async () => {
+			// Regression test for bug: text was clipped on right side in exported PNG
+			// because validateHorizontalFit didn't check IMAGE_HORIZONTAL mode
+			const input: SolverInput = {
+				dimensions: {
+					width: 35,
+					height: 12,
+					printableWidth: 31,
+					printableHeight: 10
+				},
+				primaryText: 'M2.5×30', // Long text that could overflow
+				secondaryText: 'ISO 14580',
+				showHardwareImage: true,
+				hardwareImageAspectRatio: 4.5, // Wide image triggers IMAGE_HORIZONTAL
+				showQRCode: false,
+				showStandard: true
+			};
+
+			const result = await solveLabelLayout(input);
+
+			expect(result.layoutMode).toBe('IMAGE_HORIZONTAL');
+
+			// Calculate actual text widths with returned font sizes
+			// Mock returns 2mm per character
+			const primaryWidth = input.primaryText.length * 2 * (result.primaryFontSize / 10);
+			const secondaryWidth = input.secondaryText.length * 2 * (result.secondaryFontSize / 10);
+			const combinedWidth = primaryWidth + 0.5 + secondaryWidth; // 0.5 = MIN_SPACING
+
+			// Combined text width should not exceed available width (textClipWidth)
+			expect(combinedWidth).toBeLessThanOrEqual(result.textClipWidth + 0.1); // Small tolerance
+		});
+
 		it('should work with QR code in IMAGE_HORIZONTAL mode', async () => {
 			const input: SolverInput = {
 				dimensions: {

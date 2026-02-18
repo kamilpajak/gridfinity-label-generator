@@ -348,11 +348,110 @@
 				length: '',
 				standardName: 'DIN 582'
 			}
+		},
+
+		// 5. Bug Report: ISO 14580 (Torx) - Text Clipping Test
+		{
+			narrow: {
+				name: 'ISO 14580 - Torx M2.5×30 (Bug Report)',
+				labelMode: 'fastener',
+				labelWidth: 35,
+				labelHeight: 12,
+				showImage: true,
+				showQR: false,
+				showStandard: true,
+				threadSize: 'M2.5',
+				length: '30',
+				standardName: 'ISO 14580'
+			},
+			wide: {
+				name: 'ISO 14580 - Torx M2.5×30 (Bug Report)',
+				labelMode: 'fastener',
+				labelWidth: 55,
+				labelHeight: 12,
+				showImage: true,
+				showQR: false,
+				showStandard: true,
+				threadSize: 'M2.5',
+				length: '30',
+				standardName: 'ISO 14580'
+			}
 		}
 	];
 
 	let results: TestResult[] = [];
 	let hoveredIndex: number | null = null;
+
+	// Export function to reproduce the exact export behavior
+	async function exportAsPng(result: TestResult) {
+		const config = result.config;
+		const printableWidth = config.labelWidth - 4;
+		const printableHeight = config.labelHeight - 2;
+		const dpi = 360;
+		const scale = dpi / 25.4; // Same as label-exporter.ts
+
+		// Create canvas with exact export dimensions
+		const exportCanvas = document.createElement('canvas');
+		exportCanvas.width = Math.round(printableWidth * scale);
+		exportCanvas.height = Math.round(printableHeight * scale);
+
+		const primaryText = formatPrimaryText(
+			config.labelMode,
+			config.threadSize,
+			config.length,
+			config.primaryText || ''
+		);
+
+		let fullSecondaryText = '';
+		if (config.labelMode === 'general' && config.secondaryText) {
+			fullSecondaryText = config.secondaryText;
+		} else if (config.showStandard && result.standard) {
+			const primaryDesignation = result.standard.designations.find(
+				(d) => d.system === result.standard!.primarySystem
+			);
+			if (primaryDesignation) {
+				fullSecondaryText = `${primaryDesignation.system} ${primaryDesignation.code}`;
+			}
+		}
+		if (config.optionalNote) {
+			fullSecondaryText = fullSecondaryText
+				? `${fullSecondaryText} ${config.optionalNote}`
+				: config.optionalNote;
+		}
+
+		await renderLabelToCanvas({
+			canvas: exportCanvas,
+			dimensions: {
+				width: config.labelWidth,
+				height: config.labelHeight,
+				printableWidth,
+				printableHeight
+			},
+			layout: result.layout!,
+			content: {
+				primaryText,
+				secondaryText: fullSecondaryText,
+				standard: result.standard,
+				showHardwareImage: config.showImage,
+				showQRCode: config.showQR,
+				showStandard: config.showStandard,
+				qrCodeUrl: config.qrCodeUrl
+			},
+			scale,
+			showMargins: false
+		});
+
+		// Download
+		exportCanvas.toBlob((blob) => {
+			if (!blob) return;
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `${config.name.replace(/[^a-z0-9]/gi, '-')}-${config.labelWidth}x${config.labelHeight}.png`;
+			a.click();
+			URL.revokeObjectURL(url);
+		}, 'image/png');
+	}
 
 	async function generateLabel(config: TestCase): Promise<TestResult> {
 		const printableWidth = config.labelWidth - 4;
@@ -598,6 +697,7 @@
 			>
 				<div class="label-header">
 					<span class="label-size">{result.config.labelWidth}×{result.config.labelHeight}mm</span>
+					<button class="export-btn" on:click={() => exportAsPng(result)}>Export PNG</button>
 				</div>
 
 				<div class="canvas-wrapper">
@@ -815,6 +915,21 @@
 		font-size: 0.8rem;
 		color: #666;
 		font-weight: 500;
+	}
+
+	.export-btn {
+		font-size: 0.7rem;
+		padding: 0.25rem 0.5rem;
+		background: #333;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		margin-left: 0.5rem;
+	}
+
+	.export-btn:hover {
+		background: #555;
 	}
 
 	.canvas-wrapper {

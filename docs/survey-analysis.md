@@ -1,8 +1,8 @@
 # Analiza Feedbacku Użytkowników
 
-> Data analizy: 2026-01-25
-> Liczba odpowiedzi: 46
-> Średnia ocena: 4.5/5 (52% ocen 5/5, 43% ocen 4/5, 4% ocen 3/5)
+> Data analizy: 2026-02-18
+> Liczba odpowiedzi: 50
+> Średnia ocena: 4.5/5 (50% ocen 5/5, 46% ocen 4/5, 4% ocen 3/5)
 
 ## Podsumowanie
 
@@ -70,6 +70,9 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 | Torx heads          | ❌       | ❌      | `torx` → 0 wyników                           |
 | Grub screw          | ❌ alias | -       | `grub` → 0 wyników                           |
 | Hex nut             | ❌ alias | -       | `hex nut` → 0 wyników (wymaga "hexagon nut") |
+| Lock nut            | ❓       | ❓      | Zgłoszenie: "missing lock nut symbol"        |
+| Robertson/square    | ❌       | ❌      | Zgłoszenie: "square drive wood screws"       |
+| Dowel pins          | ❌       | ❌      | 2× zgłoszenia w ankiecie                     |
 
 **Wnioski z analizy search:**
 
@@ -84,6 +87,7 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 1. ~~Dodać obrazek dla DIN 7997~~ ✅ DONE (scraper fix)
 2. ~~Naprawić DIN 6916 klasyfikację~~ ✅ DONE (było screw → teraz washer)
 3. Rozważyć aliasy i fuzzy search (grub→set screw, torx→hexalobular, hex nut→hexagon nut)
+4. Zbadać: lock nut symbol, robertson/square drive, dowel pins
 
 ---
 
@@ -138,6 +142,31 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 > "Batch processing by default copying the previous selections"
 
 **Akcja:** Poprawić UX - bardziej widoczny przycisk duplicate lub domyślne kopiowanie
+
+---
+
+#### 5b. Batch Mode - Brak Podglądu i Użycie Ekranu
+
+**Problem:** Batch mode nie pokazuje podglądów obrazków i zajmuje za mało miejsca na ekranie
+
+**Cytat:**
+
+> "Batch mode does not show preview images and takes up like a quarter of the available screen space. Please let me use my screen to see as much as possible of the batch job."
+
+**Akcja:** Rozważyć dodanie podglądów miniatur i lepsze wykorzystanie przestrzeni ekranu
+
+---
+
+#### 5c. Serial Printing (Generowanie Serii)
+
+**Problem:** Użytkownicy chcą generować serie etykiet (np. M3 × 4, 6, 8, 12, 20mm) jednym kliknięciem
+
+**Cytaty:**
+
+> "serial printing of many sizes in one task"
+> "a mode with which one can generate a batch with minimal changes would be nice: User enters Standard, M3, lengths [4, 6, 8, 12, 20] and out come five labels"
+
+**Akcja:** Rozważyć tryb "quick batch" z wyborem zakresu długości
 
 ---
 
@@ -232,14 +261,18 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 
 ### 🐛 Zgłoszone Bugi
 
-#### Bug: Tekst obcięty przy rozmiarze 12×35
+#### ~~Bug: Tekst obcięty przy rozmiarze 12×35~~ ✅ NAPRAWIONE
 
 **Cytat:**
 
 > "When set to 12x35 the PNG generated clips off the right side of the text"
 > "the text is cut off on the right side: https://share.cleanshot.com/TXPsgLXFq4yWXqHplFg0"
 
-**Status:** Do zbadania - problem z renderowaniem tekstu przy małych rozmiarach
+**Root cause:** `validateHorizontalFit()` nie walidowała szerokości tekstu dla `IMAGE_HORIZONTAL` mode, co powodowało, że długi tekst (np. "M2.5×30") przekraczał dostępną szerokość i był obcinany przy eksporcie PNG.
+
+**Fix:** Dodano `IMAGE_HORIZONTAL` do warunku walidacji w `label-constraint-solver.ts:424`
+
+**Status:** ✅ Naprawione + test regresyjny
 
 ---
 
@@ -267,16 +300,19 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 
 ### 🟢 Niski Priorytet / Nice-to-Have
 
-| Funkcja                 | Opis                              |
-| ----------------------- | --------------------------------- |
-| Dark Mode               | Pojedyncze zgłoszenie             |
-| Nawigacja TAB           | Dostępność - nawigacja klawiaturą |
-| API do Bulk Requests    | Dla power userów                  |
-| Bulk Import z Excel/CSV | Generowanie z pliku               |
-| Etykiety Tylko Tekstowe | Dla nie-fastenerów                |
-| Pozycjonowanie QR Code  | QR w centrum etykiety             |
-| Pogrubione Ikony        | Ikony za jasne przy 12mm          |
-| Etykiety z Zakresem     | "M3 × 6-12mm"                     |
+| Funkcja                 | Opis                                                                                               |
+| ----------------------- | -------------------------------------------------------------------------------------------------- |
+| Dark Mode               | Pojedyncze zgłoszenie                                                                              |
+| Nawigacja TAB           | Dostępność - nawigacja klawiaturą                                                                  |
+| API do Bulk Requests    | Dla power userów                                                                                   |
+| Bulk Import z Excel/CSV | Generowanie z pliku                                                                                |
+| Etykiety Tylko Tekstowe | Dla nie-fastenerów                                                                                 |
+| Pozycjonowanie QR Code  | QR w centrum etykiety                                                                              |
+| Pogrubione Ikony        | Ikony za jasne przy 12mm                                                                           |
+| Etykiety z Zakresem     | "M3 × 6-12mm"                                                                                      |
+| Walidacja Formularza    | "Mark things in red if not filled out"                                                             |
+| Layout Opcje            | "Layout that emphasizes the text more than the image", "Option to only show the head of the screw" |
+| P-Touch Alignment       | "labels to line up with the cutlines when imported into p-touch editor"                            |
 
 ---
 
@@ -284,24 +320,25 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 
 | Element                 | Użycie      |
 | ----------------------- | ----------- |
-| Tekst (rozmiary, opisy) | 98% (45/46) |
-| Obrazy                  | 96% (44/46) |
-| Kody QR                 | 13% (6/46)  |
+| Tekst (rozmiary, opisy) | 98% (49/50) |
+| Obrazy                  | 92% (46/50) |
+| Kody QR                 | 14% (7/50)  |
 
 ## Popularne Rozmiary Etykiet
 
 | Rozmiar  | Liczba |
 | -------- | ------ |
-| 35×12mm  | 6      |
+| 35×12mm  | 7      |
 | 55×12mm  | 5      |
 | 36×12mm  | 3      |
 | 37×9mm   | 3      |
+| 35×9mm   | 3      |
 | 30×12mm  | 2      |
 | 38×13mm  | 2      |
+| 40×12mm  | 2      |
 | 100×50mm | 2      |
-| 35×9mm   | 2      |
 
-**Średnie:** 41.4mm × 13.6mm
+**Średnie:** 43.6mm × 15.4mm
 
 ---
 
@@ -316,6 +353,10 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 > "I'll buy you a coffee!"
 
 > "This generator is exactly what I'm looking for."
+
+> "I'm a user from Japan. Please take care and continue at your own pace."
+
+> "thanks for the nice web application, I tried it by myself https://hf-krechan.github.io/gf-label-generator/pr-6/ but it is hard to find nice looking vector graphics of the screws and nuts."
 
 ---
 
@@ -347,9 +388,9 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 ## Metryki Sukcesu
 
 - **Ocena:** 4.5/5 (bardzo dobra)
-- **Problemy z rozmiarem:** 11% użytkowników (wzrost z 8%)
-- **Powtarzające się żądania:** ~~Thread pitch~~ ✅, więcej standardów, batch improvements
+- **Problemy z rozmiarem:** 10% użytkowników
+- **Powtarzające się żądania:** ~~Thread pitch~~ ✅, więcej standardów, batch improvements, serial printing
 
 Aplikacja jest dobrze przyjmowana. Główny focus powinien być na poprawie discoverability istniejących funkcji i dodaniu aliasów search (grub→set screw, torx→hexalobular).
 
-> **Ostatnia aktualizacja:** 2026-01-25 - Zaktualizowano statystyki (44→46), dodano sekcję bugów (ISO 14580, tekst obcięty, kontrast UI), rozszerzono analizę szerokości etykiet (6 zgłoszeń)
+> **Ostatnia aktualizacja:** 2026-02-18 - Zaktualizowano statystyki (46→50), dodano brakujące zgłoszenia, naprawiono bug text clipping (IMAGE_HORIZONTAL validation)

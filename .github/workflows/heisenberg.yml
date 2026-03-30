@@ -1,0 +1,15 @@
+name: Analyze Failures
+
+on:
+  workflow_run:
+    workflows: ['CI']
+    types: [completed]
+
+jobs:
+  analyze:
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: kamilpajak/heisenberg@v0.3.0
+        with:
+          google-api-key: ${{ secrets.GOOGLE_API_KEY }}

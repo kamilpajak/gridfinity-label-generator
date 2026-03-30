@@ -86,8 +86,8 @@ describe('POST /api/shorten', () => {
 		});
 	});
 
-	// Skipped: Rate limits set to 100,000/hour (effectively disabled) until real usage data is collected
-	describe.skip('Rate Limiting', () => {
+	// Temporarily unskipped to verify Heisenberg CI failure analysis (issue #72)
+	describe('Rate Limiting', () => {
 		it('should allow requests within rate limit', async () => {
 			const context = createMockContext({ url: 'https://example.com' }, undefined, '2.2.2.2');
 

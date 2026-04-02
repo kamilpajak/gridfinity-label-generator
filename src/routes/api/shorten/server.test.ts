@@ -1,5 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Mock contexts don't match exact RequestEvent type signature */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+// Mock RateLimiter with low limits suitable for testing.
+// Production uses 100,000 requests/hour — tests need limits they can actually exhaust.
+// Server creates perUser first (100k), then global (100k).
+// We replace both with testable limits: perUser=20, global=180.
+vi.mock('$lib/utils/rate-limiter', async () => {
+	const actual =
+		await vi.importActual<typeof import('$lib/utils/rate-limiter')>('$lib/utils/rate-limiter');
+	const limits = [20, 180]; // perUser, global (by construction order)
+	let instanceCount = 0;
+	return {
+		...actual,
+		RateLimiter: class extends actual.RateLimiter {
+			constructor(config: { maxRequests: number; windowMs: number }) {
+				const testLimit = limits[instanceCount] ?? config.maxRequests;
+				instanceCount++;
+				super({ ...config, maxRequests: testLimit });
+			}
+		}
+	};
+});
+
 import { POST, _rateLimiters } from './+server';
 
 // Mock fetch for is.gd and TinyURL APIs

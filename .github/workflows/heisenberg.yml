@@ -14,7 +14,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: kamilpajak/heisenberg@v0.4.0
+      - uses: kamilpajak/heisenberg@v0.5.0
         with:
           google-api-key: ${{ secrets.GOOGLE_API_KEY }}
           run-id: ${{ github.event.workflow_run.id }}

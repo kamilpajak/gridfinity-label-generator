@@ -220,40 +220,37 @@ test.describe('Label Generator - Single Mode', () => {
 
 	// BUG: Disabled switches still affect layout calculations in General Item mode
 	// See: https://github.com/kamilpajak/gridscribe/issues/XXX (TODO: create issue)
-	test.fixme(
-		'should render General Item labels with correct font sizes (not constrained by disabled features)',
-		async () => {
-			// Switch to General Item mode
-			await labelPage.selectLabelMode('General Item');
+	test('should render General Item labels with correct font sizes (not constrained by disabled features)', async () => {
+		// Switch to General Item mode
+		await labelPage.selectLabelMode('General Item');
 
-			// Fill in simple text
-			await labelPage.fillPrimaryText('PRIMARY');
-			await labelPage.fillSecondaryText('SECONDARY');
+		// Fill in simple text
+		await labelPage.fillPrimaryText('PRIMARY');
+		await labelPage.fillSecondaryText('SECONDARY');
 
-			// Wait for preview to render
-			await labelPage.preview.waitForLabelRender();
+		// Wait for preview to render
+		await labelPage.preview.waitForLabelRender();
 
-			// Get canvas element
-			const canvas = labelPage.preview.canvas;
+		// Get canvas element
+		const canvas = labelPage.preview.canvas;
 
-			// Read font sizes from data attributes
-			const primaryFontSize = parseFloat(
-				(await canvas.getAttribute('data-primary-font-size')) || '0'
-			);
-			const secondaryFontSize = parseFloat(
-				(await canvas.getAttribute('data-secondary-font-size')) || '0'
-			);
+		// Read font sizes from data attributes
+		const primaryFontSize = parseFloat(
+			(await canvas.getAttribute('data-primary-font-size')) || '0'
+		);
+		const secondaryFontSize = parseFloat(
+			(await canvas.getAttribute('data-secondary-font-size')) || '0'
+		);
 
-			// Expected font sizes in General Item mode without hardware constraints:
-			// - Primary text: ~6.47mm (calculated from canvas data attributes)
-			// - Secondary text: ~5.74mm
-			// Current buggy behavior: primary ~4.18mm, secondary ~3.71mm
-			// Using slightly lower thresholds to account for rendering variance
-			const EXPECTED_MIN_PRIMARY_FONT_MM = 6.0;
-			const EXPECTED_MIN_SECONDARY_FONT_MM = 5.5;
+		// Expected font sizes in General Item mode without hardware constraints:
+		// - Primary text: ~6.47mm (calculated from canvas data attributes)
+		// - Secondary text: ~5.74mm
+		// Current buggy behavior: primary ~4.18mm, secondary ~3.71mm
+		// Using slightly lower thresholds to account for rendering variance
+		const EXPECTED_MIN_PRIMARY_FONT_MM = 6.0;
+		const EXPECTED_MIN_SECONDARY_FONT_MM = 5.5;
 
-			expect(primaryFontSize).toBeGreaterThanOrEqual(EXPECTED_MIN_PRIMARY_FONT_MM);
-			expect(secondaryFontSize).toBeGreaterThanOrEqual(EXPECTED_MIN_SECONDARY_FONT_MM);
-		}
-	);
+		expect(primaryFontSize).toBeGreaterThanOrEqual(EXPECTED_MIN_PRIMARY_FONT_MM);
+		expect(secondaryFontSize).toBeGreaterThanOrEqual(EXPECTED_MIN_SECONDARY_FONT_MM);
+	});
 });

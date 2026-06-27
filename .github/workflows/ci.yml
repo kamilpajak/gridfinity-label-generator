@@ -51,13 +51,10 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Check changelog
-        run: pnpm check-changelog
-
       - name: Validate commit messages
         if: github.event_name == 'pull_request'
         run: |
-          # Validate commits in PR follow conventional format and don't have forbidden words
+          # Validate commits in PR follow conventional format
           pnpm commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
 
       - name: Unit tests

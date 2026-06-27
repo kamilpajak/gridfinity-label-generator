@@ -161,7 +161,7 @@ jobs:
 **Revised approach:** DIN Media as single source of truth for both DIN and ISO standards.
 
 1. ~~Enhance `scripts/generate-dinmedia-mappings.js`~~:
-   - Source: `standards-config.json` (not just image)
+   - Source: `standards-config.json` (not just image mappings)
    - Search: `"EN ISO xxxx"` for ISO standards
    - TDD tests: `src/lib/utils/dinmedia-search.test.ts` (22 tests)
 

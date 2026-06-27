@@ -50,9 +50,7 @@ async function main() {
 	if (missing.length > 0) {
 		console.log('❌ Missing image files:\n');
 		missing.forEach((img) => console.log(`  ${img}`));
-		console.log(
-			`\n💡 Run scraper to download missing images or remove these standards from config`
-		);
+		console.log(`\n💡 Add the missing image files or remove these standards from config`);
 		process.exit(1);
 	} else {
 		console.log('✅ All images validated successfully!');

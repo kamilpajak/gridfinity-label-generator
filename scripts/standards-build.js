@@ -9,7 +9,7 @@
  * Data flow:
  * 1. Loads standards configuration v2 (iso, din sections)
  * 2. Loads DIN Media metadata cache (SSOT for descriptions)
- * 3. Loads image image mappings (SSOT for images)
+ * 3. Loads image mappings (SSOT for images)
  * 4. Processes ISO standards from iso section
  * 5. Processes DIN standards from din section
  * 6. Generates final TypeScript module
@@ -23,7 +23,7 @@
  *
  * Input:
  *   data/standards-config.json - Standards list (iso, din sections)
- *   data/image-mappings.json - Image mappings from image
+ *   data/image-mappings.json - Image mappings
  *   data/dinmedia-id-mappings.json - Standard ID → DIN Media ID mappings
  *   data/dinmedia-metadata-cache.json - Cached metadata from DIN Media (SSOT)
  *
@@ -175,7 +175,7 @@ function addDesignationSystem(designations, entry, systemName) {
  * Find and add image and hardwareType to standard object
  * @param {Object} standard - Standard object to add image to
  * @param {string} standardId - Standard ID for lookup in mappings
- * @param {Object} imageMappings - image image mappings (can be string or {image, hardwareType})
+ * @param {Object} imageMappings - Image mappings (can be string or {image, hardwareType})
  * @param {Array} designations - Designations array for auto-detection
  */
 function addImageToStandard(standard, standardId, imageMappings, designations) {
@@ -186,7 +186,7 @@ function addImageToStandard(standard, standardId, imageMappings, designations) {
 			standard.image = mapping;
 		} else if (mapping.image) {
 			standard.image = mapping.image;
-			// Prefer hardwareType from image scraper (more accurate than heuristics)
+			// Prefer hardwareType from image mappings (more accurate than heuristics)
 			if (mapping.hardwareType && !standard.hardwareType) {
 				standard.hardwareType = mapping.hardwareType;
 			}
@@ -228,11 +228,11 @@ async function buildStandards() {
 	const dinCount = Object.keys(config.din || {}).length;
 	console.log(`📋 Loaded config v2: ${isoCount} ISO standards, ${dinCount} DIN standards`);
 
-	// Load image image mappings (single source of truth for image mappings)
+	// Load image mappings (single source of truth for image mappings)
 	let imageMappings = {};
 	try {
 		imageMappings = JSON.parse(fs.readFileSync(imageMappingsFile, 'utf8'));
-		console.log(`🖼️  Loaded ${Object.keys(imageMappings).length} image mappings from image`);
+		console.log(`🖼️  Loaded ${Object.keys(imageMappings).length} image mappings`);
 	} catch {
 		console.log('🖼️  No image mappings found, continuing without them');
 	}

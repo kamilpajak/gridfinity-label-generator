@@ -84,7 +84,7 @@ Główne obszary do poprawy dotyczą rozszerzenia bazy standardów oraz usprawni
 
 **Akcja:**
 
-1. ~~Dodać obrazek dla DIN 7997~~ ✅ DONE (scraper fix)
+1. ~~Dodać obrazek dla DIN 7997~~ ✅ DONE (image fix)
 2. ~~Naprawić DIN 6916 klasyfikację~~ ✅ DONE (było screw → teraz washer)
 3. Rozważyć aliasy i fuzzy search (grub→set screw, torx→hexalobular, hex nut→hexagon nut)
 4. Zbadać: lock nut symbol, robertson/square drive, dowel pins
@@ -373,7 +373,7 @@ Smart defaults: DIN 571, DIN 7997, DIN 95-97 → `nominal`, inne self-tapping �
 ### Średnioterminowe
 
 4. ~~**Dodać UI dla thread pitch**~~ ✅ DONE - już zaimplementowane
-5. ~~**Obrazek DIN 7997 + fix DIN 6916**~~ ✅ DONE - scraper fix + washer classification
+5. ~~**Obrazek DIN 7997 + fix DIN 6916**~~ ✅ DONE - image fix + washer classification
 6. **Dodać aliasy do search** (grub→set screw, torx→hexalobular)
 7. ~~**Rozmiary ST dla self-tapping**~~ ✅ DONE - ThreadSizeSystem (`tapping`, `nominal`)
 

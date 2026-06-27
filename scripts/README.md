@@ -9,27 +9,26 @@ This directory contains scripts for processing and generating standards data wit
 │                      DATA SOURCES                               │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  example.com         supplier CAD           dinmedia.de             │
-│  (images PNG)       (images SVG)        (descriptions - SSOT)   │
-│      │                   │                    │                 │
-│      ▼                   ▼                    ▼                 │
-│  scrape-image-   process-supplier-   generate-dinmedia-         │
-│  images-all.js     svgs.js           mappings.js                │
-│      │                   │                    │                 │
-│      ▼                   │                    ▼                 │
-│  image-image-          │           scrape-dinmedia-           │
-│  mappings.json           │           metadata.js                │
-│      │                   │                    │                 │
-│      │                   ▼                    ▼                 │
-│      │             static/images/      dinmedia-id-mappings.json│
-│      │             standards/*.svg     dinmedia-metadata-       │
-│      │                   │             cache.json               │
-│      │                   │                    │                 │
-│      └───────────────────┴────────────────────┘                 │
+│       supplier CAD                     dinmedia.de                  │
+│       (images SVG)                  (descriptions - SSOT)        │
+│           │                              │                      │
+│           ▼                              ▼                      │
+│       process-supplier-           generate-dinmedia-              │
+│       svgs.js                    mappings.js                    │
+│           │                              │                      │
+│           │                              ▼                      │
+│           │                      scrape-dinmedia-              │
+│           │                      metadata.js                   │
+│           │                              │                      │
+│           ▼                              ▼                      │
+│     static/images/              dinmedia-id-mappings.json       │
+│     standards/*.svg             dinmedia-metadata-cache.json    │
+│           │                              │                      │
+│           └──────────────┬───────────────┘                     │
 │                          │                                      │
 │                          ▼                                      │
 │           build-all-standards.js ◄── standards-config.json      │
-│                          │                                      │
+│                          │            + image-mappings.json     │
 │                          ▼                                      │
 │           standards-generated.ts                                │
 │                          │                                      │
@@ -39,30 +38,15 @@ This directory contains scripts for processing and generating standards data wit
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+> PNG images for standards live in `static/images/standards/` and are mapped to
+> standards via `data/image-mappings.json`. SVG images take priority over PNG
+> when available.
+
 ## Scripts
-
-### Image Scraping
-
-#### download-images.js
-
-Scrapes product images from example.com categories.
-
-```bash
-pnpm scrape-images              # Production run
-pnpm scrape-images --dry-run    # Test run (no downloads)
-pnpm scrape-images --limit=5    # Limit per category
-```
-
-**Output:**
-
-- `static/images/standards/*.png` — Product images
-- `data/image-mappings.json` — Standard → image mappings (SSOT for images)
-
----
 
 ### supplier CAD Images
 
-High-quality SVG images from supplier CAD system. These replace lower-quality PNG images from image when available.
+High-quality SVG images from the supplier CAD system. These take priority over the bundled PNG images when available.
 
 #### Filename Pattern
 
@@ -247,16 +231,6 @@ pnpm analyze-images 1.5 2.0   # Search for specific ratios
 
 ### Release
 
-#### check-changelog.js
-
-Validates CHANGELOG.md before release.
-
-```bash
-pnpm check-changelog
-```
-
----
-
 #### release.js
 
 Automates version bumping and release creation.
@@ -271,7 +245,7 @@ pnpm release            # Create release
 | File                           | Purpose                            | SSOT for     |
 | ------------------------------ | ---------------------------------- | ------------ |
 | `standards-config.json`        | Standards list (crossref, dinOnly) | —            |
-| `image-mappings.json`  | Image paths                        | Images       |
+| `image-mappings.json`          | Image paths                        | Images       |
 | `dinmedia-id-mappings.json`    | Standard → DIN Media ID            | —            |
 | `dinmedia-metadata-cache.json` | Titles, status, dates              | Descriptions |
 
@@ -287,19 +261,16 @@ pnpm exec playwright install chromium
 ### Regular Workflow
 
 ```bash
-# 1. Scrape images (when needed)
-pnpm scrape-images
-
-# 2. Generate DIN Media mappings (one-time per new standard)
+# 1. Generate DIN Media mappings (one-time per new standard)
 pnpm generate-dinmedia-mappings
 
-# 3. Scrape metadata (refresh monthly)
+# 2. Scrape metadata (refresh monthly)
 pnpm scrape-dinmedia
 
-# 4. Build standards
+# 3. Build standards
 pnpm build-standards
 
-# 5. Validate
+# 4. Validate
 pnpm validate-images
 ```
 
@@ -327,7 +298,7 @@ pnpm validate-images
 
 ## Data Sources
 
-- **Images (PNG):** [example.com](https://example.com) (with authorization)
+- **Images (PNG):** bundled static assets in `static/images/standards/`
 - **Images (SVG):** supplier CAD system — high-quality vector images (priority over PNG)
 - **Descriptions:** [dinmedia.de](https://www.dinmedia.de) (Single Source of Truth)
 - **Cross-references:**

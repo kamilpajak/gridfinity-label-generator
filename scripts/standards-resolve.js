@@ -42,7 +42,7 @@ const CONFIG_FILE = path.join(__dirname, '../data/standards-config.json');
 // NOTE: Keep in sync with src/lib/utils/standards-config.ts
 const VALID_SYSTEMS = ['iso', 'din', 'ansi', 'pn', 'gb', 'jis'];
 // Secondary source: image mappings (for backwards compatibility and additional standards)
-const image_FILE = path.join(__dirname, '../data/image-mappings.json');
+const IMAGE_MAPPINGS_FILE = path.join(__dirname, '../data/image-mappings.json');
 const OUTPUT_FILE = path.join(__dirname, '../data/dinmedia-id-mappings.json');
 const REPORT_FILE = path.join(__dirname, '../data/dinmedia-mappings-report.json');
 
@@ -197,9 +197,9 @@ async function loadStandardIdsFromConfig() {
 /**
  * Load standard IDs from image-mappings.json (for backwards compatibility)
  */
-async function loadStandardIdsFromimage() {
+async function loadStandardIdsFromImageMappings() {
 	try {
-		const imageMappings = JSON.parse(await fs.readFile(image_FILE, 'utf-8'));
+		const imageMappings = JSON.parse(await fs.readFile(IMAGE_MAPPINGS_FILE, 'utf-8'));
 		return Object.keys(imageMappings).map((id) => id.toLowerCase());
 	} catch {
 		return [];
@@ -224,11 +224,11 @@ async function main() {
 	const configIds = await loadStandardIdsFromConfig();
 	console.log(`  standards-config.json: ${configIds.length} standards`);
 
-	const imageIds = await loadStandardIdsFromimage();
-	console.log(`  image-mappings.json: ${imageIds.length} standards`);
+	const imageMappingIds = await loadStandardIdsFromImageMappings();
+	console.log(`  image-mappings.json: ${imageMappingIds.length} standards`);
 
 	// Combine and deduplicate
-	const standardIds = [...new Set([...configIds, ...imageIds])];
+	const standardIds = [...new Set([...configIds, ...imageMappingIds])];
 	console.log(`  Combined (unique): ${standardIds.length} standards\n`);
 
 	// Load existing dinmedia mappings

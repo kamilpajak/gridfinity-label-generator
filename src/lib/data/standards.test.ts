@@ -190,7 +190,7 @@ describe('Standards Search', () => {
 		expect(lowerResults.length).toBe(mixedResults.length);
 	});
 
-	it('should find all scraped standards by their numeric codes', () => {
+	it('should find all standards by their numeric codes', () => {
 		const unsearchable: string[] = [];
 
 		generatedStandards.forEach((standard) => {

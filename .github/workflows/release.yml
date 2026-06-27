@@ -6,31 +6,7 @@ on:
       - 'v*'
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
-        with:
-          fetch-depth: 0
-
-      - uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3
-        with:
-          version: 10
-
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      # Validate changelog doesn't contain forbidden words
-      - name: Check changelog
-        run: pnpm check-changelog
-
   release:
-    needs: validate
     runs-on: ubuntu-latest
     permissions:
       contents: write

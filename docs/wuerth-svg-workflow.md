@@ -2,10 +2,10 @@
 
 ## Problem
 
-Current hardware images are scraped from manufacturer websites:
+The existing PNG hardware images have limitations:
 
-- Legal risk (copyright)
 - Inconsistent quality and style
+- Limited resolution (raster, not vector)
 - Missing coverage for many standards
 
 ## Solution
@@ -31,14 +31,14 @@ Würth offers direct 2D export in SVG format with full thread detail. No convers
 ### 2. Combine Views
 
 - [x] Create script to combine back + left views into single SVG
-- [x] Match image layout: `[side view] [head view]`
+- [x] Match existing PNG layout: `[side view] [head view]`
 - [x] Maintain proportions (scale left view to match back height)
 
 ### 3. Validation
 
 - [x] Würth 2D SVG has full thread detail
 - [x] Clean technical drawing style
-- [x] Combined SVG matches image format
+- [x] Combined SVG matches existing PNG format
 - [x] Test SVG in label preview component
 
 ### 4. SVG Priority Implementation
@@ -130,11 +130,11 @@ node scripts/combine-svg-views.js \
 
 ### Combine Script
 
-Würth exports views separately, but image images have combined layout. Script `scripts/combine-svg-views.js` merges back + left views:
+Würth exports views separately, but the existing PNG images have a combined layout. Script `scripts/combine-svg-views.js` merges back + left views:
 
 - Scales left view to match back height
 - Places views side by side with gap
-- Output matches image format: `[side] [head]`
+- Output matches existing PNG format: `[side] [head]`
 
 ### SVG Priority
 

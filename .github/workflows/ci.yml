@@ -160,6 +160,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
+      security-events: write
 
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
@@ -177,9 +181,22 @@ jobs:
         if: steps.dockerfile-check.outputs.exists == 'true'
         run: docker build -t gridscribe:test .
 
+      # Authenticate to ghcr.io so Trivy pulls its vulnerability DB without
+      # hitting anonymous rate limits (the DB lives at ghcr.io/aquasecurity/trivy-db).
+      - name: Log in to GitHub Container Registry
+        if: steps.dockerfile-check.outputs.exists == 'true'
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run Trivy vulnerability scanner
         if: steps.dockerfile-check.outputs.exists == 'true'
         uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # master
+        env:
+          # Authenticated GitHub API calls for the Trivy binary/DB downloads.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           image-ref: 'gridscribe:test'
           format: 'sarif'

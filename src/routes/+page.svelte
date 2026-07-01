@@ -15,6 +15,7 @@
 	import RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw';
 	import CoffeeIcon from '@lucide/svelte/icons/coffee';
 	import SendIcon from '@lucide/svelte/icons/send';
+	import GithubIcon from '@lucide/svelte/icons/github';
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 	import WhatsNewModal from '$lib/components/whats-new/whats-new-modal.svelte';
 	import WhatsNewButton from '$lib/components/whats-new/whats-new-button.svelte';
@@ -515,6 +516,16 @@
 					<SendIcon class="h-4 w-4 lg:h-5 lg:w-5" />
 					Feedback
 				</button>
+				<a
+					href="https://github.com/kamilpajak/gridfinity-label-generator"
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label="View source on GitHub"
+					class="inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2.5 text-sm font-medium backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/20 lg:flex-none lg:px-6 lg:py-3 lg:text-base"
+				>
+					<GithubIcon class="h-4 w-4 lg:h-5 lg:w-5" />
+					<span class="hidden sm:inline">GitHub</span>
+				</a>
 			</div>
 		</div>
 	</div>

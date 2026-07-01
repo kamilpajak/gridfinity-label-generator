@@ -9,7 +9,14 @@
  * (see .env.example). When unset, products render without a clickable link.
  */
 
+import { browser } from '$app/environment';
 import { env } from '$env/dynamic/public';
+
+/** Read a public affiliate env var, but only in the browser (dynamic public env
+ * cannot be accessed during prerendering). Returns null when unset/prerendered. */
+function affiliateEnv(key: string): string | null {
+	return browser ? env[key] || null : null;
+}
 
 export interface AffiliateProduct {
 	id: string;
@@ -41,7 +48,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 		description:
 			"I use this whenever I'm setting up new Gridfinity bins or updating my workshop labels.\nIt's reliable and fast.",
 		priceDisplay: '$239.84',
-		affiliateLink: env.PUBLIC_AFFILIATE_PTE560BT || null,
+		affiliateLink: affiliateEnv('PUBLIC_AFFILIATE_PTE560BT'),
 		image: null,
 		badge: '💎 My Top Pick',
 		rating: null,
@@ -52,7 +59,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 		name: 'Brother P-touch CUBE Plus',
 		description: 'Compact Bluetooth label printer.\nGreat for home and small Gridfinity projects.',
 		priceDisplay: '$99.98',
-		affiliateLink: env.PUBLIC_AFFILIATE_PTP710BT || null,
+		affiliateLink: affiliateEnv('PUBLIC_AFFILIATE_PTP710BT'),
 		image: null,
 		badge: '💰 Great Value',
 		rating: null,
@@ -64,7 +71,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 		name: 'Brother TZe-231 Tape',
 		description: "12mm black on white.\nProven durability – won't fade or peel.",
 		priceDisplay: '$27.45',
-		affiliateLink: env.PUBLIC_AFFILIATE_TZE231 || null,
+		affiliateLink: affiliateEnv('PUBLIC_AFFILIATE_TZE231'),
 		image: null,
 		badge: 'Best Seller',
 		rating: null,
@@ -75,7 +82,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 		name: 'Neodymium Magnets 6x2mm',
 		description: 'Precise 6x2mm dimensions.\nPerfect for Gridfinity bins.',
 		priceDisplay: '$13.99',
-		affiliateLink: env.PUBLIC_AFFILIATE_MAGNETS || null,
+		affiliateLink: affiliateEnv('PUBLIC_AFFILIATE_MAGNETS'),
 		image: null,
 		badge: null,
 		rating: null,
@@ -87,7 +94,7 @@ export const affiliateProducts: AffiliateProduct[] = [
  * Amazon Associates Store ID for tracking (injected from env; empty in the
  * public repo so forks do not ship the maintainer's affiliate tag).
  */
-export const AMAZON_STORE_ID = env.PUBLIC_AMAZON_STORE_ID || '';
+export const AMAZON_STORE_ID = browser ? env.PUBLIC_AMAZON_STORE_ID || '' : '';
 
 /**
  * Disclosure text required by Amazon Associates.

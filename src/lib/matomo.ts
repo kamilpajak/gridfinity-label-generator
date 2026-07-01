@@ -1,6 +1,6 @@
 /**
  * Matomo Analytics Integration (Privacy-focused, cookieless)
- * Provides type-safe Matomo tracking for SvelteKit with GDPR considerations
+ * Provides type-safe Matomo tracking for SvelteKit with GDPR considerations.
  */
 
 import { dev } from '$app/environment';

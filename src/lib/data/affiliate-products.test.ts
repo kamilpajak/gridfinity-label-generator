@@ -56,8 +56,8 @@ describe('affiliate-products', () => {
 	});
 
 	describe('AMAZON_STORE_ID', () => {
-		it('should be a valid store ID', () => {
-			expect(AMAZON_STORE_ID).toBe('gridfinitylab-20');
+		it('should be a string sourced from env (empty when unset)', () => {
+			expect(typeof AMAZON_STORE_ID).toBe('string');
 		});
 	});
 

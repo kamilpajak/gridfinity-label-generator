@@ -63,7 +63,7 @@ depends on local metadata cache files (`data/dinmedia-*.json`) that are **not
 committed** (git-ignored). Cross-references (DIN ↔ ISO mappings) are maintained by
 hand in `data/standards-config.json` from public references. Standard numbers and
 short titles are used only as factual identifiers; the standards themselves belong to
-their publishers (DIN, ISO) — see `THIRD-PARTY-NOTICES`.
+their publishers (DIN, ISO) — see `THIRD-PARTY-NOTICES.md`.
 
 #### Pipeline Commands (maintainer only)
 

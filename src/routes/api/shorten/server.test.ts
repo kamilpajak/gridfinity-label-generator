@@ -108,7 +108,6 @@ describe('POST /api/shorten', () => {
 		});
 	});
 
-	// Temporarily unskipped to verify Heisenberg CI failure analysis (issue #72)
 	describe('Rate Limiting', () => {
 		it('should allow requests within rate limit', async () => {
 			const context = createMockContext({ url: 'https://example.com' }, undefined, '2.2.2.2');

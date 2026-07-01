@@ -2,10 +2,10 @@
 	"name": "gridscribe",
 	"private": true,
 	"version": "2.9.1",
+	"license": "AGPL-3.0-only",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"prebuild": "pnpm standards:build",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "(svelte-kit sync || echo '') && (command -v husky >/dev/null 2>&1 && husky || echo 'Husky not found, skipping')",

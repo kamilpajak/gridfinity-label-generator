@@ -197,7 +197,7 @@ function downloadCanvasAsPng(canvas: HTMLCanvasElement, filename: string): Promi
 			// Use requestAnimationFrame to ensure the link is in the DOM and browser is ready
 			requestAnimationFrame(() => {
 				a.click();
-				a.remove();
+				document.body.removeChild(a);
 				URL.revokeObjectURL(url);
 				console.log('Download link clicked and cleaned up');
 				resolve();

@@ -53,56 +53,35 @@ This project uses **pnpm** as the package manager. All commands should use `pnpm
 
 ### Standards Data
 
-This project uses two **Single Sources of Truth (SSOT)** for standards data:
+**The committed `src/lib/data/standards-generated.ts` is the authoritative,
+shipped dataset.** Building the app does not regenerate it — `pnpm build` uses the
+committed file directly. Contributors do not need any external data to build or run
+the project.
 
-#### SSOT 1: supplier PDF (Cross-references)
+The pipeline below is a **maintainer-only** tool for refreshing standards data. It
+depends on local metadata cache files (`data/dinmedia-*.json`) that are **not
+committed** (git-ignored). Cross-references (DIN ↔ ISO mappings) are maintained by
+hand in `data/standards-config.json` from public references. Standard numbers and
+short titles are used only as factual identifiers; the standards themselves belong to
+their publishers (DIN, ISO) — see `THIRD-PARTY-NOTICES`.
 
-**File:** `docs/supplier_2019-EN_Technische_Informationen_ks.pdf`
-
-The supplier "Standards Conversion" PDF is the authoritative source for:
-
-- **DIN ↔ ISO mappings** (cross-references between standard systems)
-- Which DIN standards correspond to which ISO standards
-- Table 1: DIN → ISO conversions
-- Table 2: ISO → DIN conversions
-
-When adding or modifying cross-references in `standards-config.json`, always verify against this PDF.
-
-#### SSOT 2: DIN Media (Metadata)
-
-**Website:** [dinmedia.de](https://dinmedia.de)
-
-DIN Media is the authoritative source for:
-
-- **Standard titles** (German and English)
-- **Withdrawn status** (current vs withdrawn)
-- **Replacement standards** (replacedBy)
-- **Publication dates**
-
-#### Pipeline Commands
+#### Pipeline Commands (maintainer only)
 
 ```bash
-# Pipeline: validate → resolve → fetch → build
-pnpm standards:validate        # Validate standards-config.json
+# Pipeline: validate → resolve → fetch → build (needs local data/dinmedia-*.json)
+pnpm standards:validate        # Validate standards-config.json (no external data)
 pnpm standards:resolve         # Resolve standard IDs → DIN Media IDs
-pnpm standards:fetch           # Fetch metadata (cached 30 days)
-pnpm standards:fetch:force     # Force re-fetch all metadata
-pnpm standards:build           # Build standards-generated.ts
-pnpm standards:build:strict    # Fail on unexpected withdrawn standards
-
-# Convenience scripts
-pnpm standards:refresh         # fetch + build (update cache and rebuild)
-pnpm standards:add             # Full pipeline for adding new standards
+pnpm standards:fetch           # Fetch metadata into local cache
+pnpm standards:build           # Regenerate standards-generated.ts
 ```
 
 #### Data Files
 
-| File                                | SSOT       | Purpose                           |
-| ----------------------------------- | ---------- | --------------------------------- |
-| `data/standards-config.json`        | supplier PDF | Cross-references (din/iso arrays) |
-| `data/dinmedia-id-mappings.json`    | DIN Media  | Standard ID → DIN Media ID        |
-| `data/dinmedia-metadata-cache.json` | DIN Media  | Titles, status, dates             |
-| `docs/supplier_2019-EN_*.pdf`         | -          | Reference document                |
+| File                         | Committed? | Purpose                           |
+| ---------------------------- | ---------- | --------------------------------- |
+| `data/standards-config.json` | yes        | Cross-references (din/iso arrays) |
+| `data/image-mappings.json`   | yes        | Standard → image mappings         |
+| `data/dinmedia-*.json`       | no (local) | Maintainer metadata cache         |
 
 #### Config Structure
 

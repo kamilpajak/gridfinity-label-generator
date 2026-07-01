@@ -1,0 +1,85 @@
+name: Bug report
+description: Report a problem with the Gridfinity Label Generator
+title: '[Bug]: '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+
+        Before submitting, please [search existing issues](https://github.com/kamilpajak/gridfinity-label-generator/issues?q=is%3Aissue) to avoid duplicates.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what the bug is.
+      placeholder: When I generate a label for an M6 screw, the thread size is missing from the output.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the exact steps needed to trigger the bug.
+      placeholder: |
+        1. Go to gridfinitylabels.com
+        2. Select the "Fastener" label type
+        3. Choose "Screw" and enter "M6"
+        4. Click "Generate"
+        5. See the error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+      placeholder: The generated label should show the thread size "M6".
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened?
+      placeholder: The label was generated without any thread size.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      description: Which browser and version are you using?
+      placeholder: Chrome 126, Firefox 127, Safari 17.5, ...
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      description: Which operating system and version are you using?
+      placeholder: macOS 14.5, Windows 11, Ubuntu 24.04, iOS 17, Android 14, ...
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots or a screen recording to help explain the problem. You can paste or drag images directly into this field.
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here (console errors, label settings used, etc.).
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate.
+          required: true

@@ -81,3 +81,5 @@ backups/
 
 # Gemini
 .gemini-clipboard/
+# Maintainer-only standards metadata cache (not redistributed)
+data/dinmedia-*.json

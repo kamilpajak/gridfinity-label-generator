@@ -45,8 +45,7 @@ function doGet() {
 	} catch (error) {
 		return ContentService.createTextOutput(
 			JSON.stringify({
-				error: error.message,
-				stack: error.stack,
+				error: 'Internal error',
 				timestamp: new Date().toISOString()
 			})
 		).setMimeType(ContentService.MimeType.JSON);

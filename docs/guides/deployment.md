@@ -55,9 +55,9 @@ Docker images are automatically built and pushed when:
 
 **Image tags created:**
 
-- `ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest` (only from master)
-- `ghcr.io/YOUR_USERNAME/gridfinity-label-generator:sha-abc1234` (every commit)
-- `ghcr.io/YOUR_USERNAME/gridfinity-label-generator:pr-123` (pull requests)
+- `ghcr.io/kamilpajak/gridfinity-label-generator:latest` (only from master)
+- `ghcr.io/kamilpajak/gridfinity-label-generator:sha-abc1234` (every commit)
+- `ghcr.io/kamilpajak/gridfinity-label-generator:pr-123` (pull requests)
 
 **Verify builds:** Check [Actions tab](../../actions) after pushing to master.
 
@@ -65,7 +65,7 @@ Docker images are automatically built and pushed when:
 
 After first build, make the package public:
 
-1. Go to https://github.com/YOUR_USERNAME?tab=packages
+1. Go to https://github.com/kamilpajak?tab=packages
 2. Click on `gridfinity-label-generator` package
 3. Package settings → Change visibility → Public
 
@@ -86,10 +86,10 @@ docker stop gridscribe 2>/dev/null || true
 docker rm gridscribe 2>/dev/null || true
 
 # 3. Pull new image (using latest)
-docker pull ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
+docker pull ghcr.io/kamilpajak/gridfinity-label-generator:latest
 
 # 4. Record the SHA for rollback capability
-DEPLOYED_SHA=$(docker inspect ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest \
+DEPLOYED_SHA=$(docker inspect ghcr.io/kamilpajak/gridfinity-label-generator:latest \
   --format='{{index .RepoDigests 0}}' | cut -d'@' -f2 | cut -c1-12)
 echo "Deployed SHA: $DEPLOYED_SHA" >> ~/gridscribe-deployments.log
 echo "Deployed at: $(date)" >> ~/gridscribe-deployments.log
@@ -104,7 +104,7 @@ docker run -d \
   -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
   -e PUBLIC_MATOMO_SITE_ID=1 \
   --restart unless-stopped \
-  ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
+  ghcr.io/kamilpajak/gridfinity-label-generator:latest
 
 # 6. Health check
 sleep 5
@@ -128,10 +128,10 @@ Updates are automatic via GitHub Actions. Just merge to `master` and the image w
 
 ```bash
 # 1. Pull latest image
-docker pull ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
+docker pull ghcr.io/kamilpajak/gridfinity-label-generator:latest
 
 # 2. Record SHA before updating (for potential rollback)
-DEPLOYED_SHA=$(docker inspect ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest \
+DEPLOYED_SHA=$(docker inspect ghcr.io/kamilpajak/gridfinity-label-generator:latest \
   --format='{{index .RepoDigests 0}}' | cut -d'@' -f2 | cut -c1-12)
 echo "Updating to SHA: $DEPLOYED_SHA at $(date)" >> ~/gridscribe-deployments.log
 
@@ -149,7 +149,7 @@ docker run -d \
   -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
   -e PUBLIC_MATOMO_SITE_ID=1 \
   --restart unless-stopped \
-  ghcr.io/YOUR_USERNAME/gridfinity-label-generator:latest
+  ghcr.io/kamilpajak/gridfinity-label-generator:latest
 
 # 5. Verify deployment
 sleep 5
@@ -169,7 +169,7 @@ If a deployment fails, you can rollback to a previous version using SHA tags.
 cat ~/gridscribe-deployments.log
 
 # Or check GitHub Container Registry
-# Visit: https://github.com/YOUR_USERNAME/gridfinity-label-generator/pkgs/container/gridfinity-label-generator
+# Visit: https://github.com/kamilpajak/gridfinity-label-generator/pkgs/container/gridfinity-label-generator
 ```
 
 ### Rollback to specific SHA
@@ -179,7 +179,7 @@ cat ~/gridscribe-deployments.log
 TARGET_SHA="sha-abc1234"
 
 # Pull the specific version
-docker pull ghcr.io/YOUR_USERNAME/gridfinity-label-generator:$TARGET_SHA
+docker pull ghcr.io/kamilpajak/gridfinity-label-generator:$TARGET_SHA
 
 # Stop current container
 docker stop gridscribe
@@ -195,7 +195,7 @@ docker run -d \
   -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
   -e PUBLIC_MATOMO_SITE_ID=1 \
   --restart unless-stopped \
-  ghcr.io/YOUR_USERNAME/gridfinity-label-generator:$TARGET_SHA
+  ghcr.io/kamilpajak/gridfinity-label-generator:$TARGET_SHA
 
 # Verify
 curl -f http://localhost:8081 && echo "✅ Rollback successful"
@@ -212,7 +212,7 @@ PREVIOUS_SHA=$(grep "Deployed SHA" ~/gridscribe-deployments.log | tail -2 | head
 
 echo "Rolling back to: $PREVIOUS_SHA"
 
-docker pull ghcr.io/YOUR_USERNAME/gridfinity-label-generator:sha-$PREVIOUS_SHA
+docker pull ghcr.io/kamilpajak/gridfinity-label-generator:sha-$PREVIOUS_SHA
 docker stop gridscribe && docker rm gridscribe
 docker run -d --name gridscribe -p 8081:80 \
   -e NODE_ENV=production -e PORT=80 \
@@ -220,7 +220,7 @@ docker run -d --name gridscribe -p 8081:80 \
   -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
   -e PUBLIC_MATOMO_SITE_ID=1 \
   --restart unless-stopped \
-  ghcr.io/YOUR_USERNAME/gridfinity-label-generator:sha-$PREVIOUS_SHA
+  ghcr.io/kamilpajak/gridfinity-label-generator:sha-$PREVIOUS_SHA
 ```
 
 ---

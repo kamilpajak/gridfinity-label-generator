@@ -1,9 +1,15 @@
 /**
  * Affiliate products data for Amazon Associates integration.
- * Store ID: gridfinitylab-20
  *
- * Note: Affiliate links will be added later. For now, links are placeholders.
+ * Affiliate links and the Amazon store ID are NOT hard-coded here — they are
+ * injected at runtime from public environment variables so that forks/re-hosts
+ * of this open-source project do not ship the maintainer's affiliate tag
+ * (which would violate the Amazon Associates Operating Agreement). Set
+ * `PUBLIC_AFFILIATE_*` and `PUBLIC_AMAZON_STORE_ID` in your deployment env
+ * (see .env.example). When unset, products render without a clickable link.
  */
+
+import { env } from '$env/dynamic/public';
 
 export interface AffiliateProduct {
 	id: string;
@@ -35,7 +41,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 		description:
 			"I use this whenever I'm setting up new Gridfinity bins or updating my workshop labels.\nIt's reliable and fast.",
 		priceDisplay: '$239.84',
-		affiliateLink: 'https://amzn.to/4qjqcWr',
+		affiliateLink: env.PUBLIC_AFFILIATE_PTE560BT || null,
 		image: null,
 		badge: '💎 My Top Pick',
 		rating: null,
@@ -46,7 +52,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 		name: 'Brother P-touch CUBE Plus',
 		description: 'Compact Bluetooth label printer.\nGreat for home and small Gridfinity projects.',
 		priceDisplay: '$99.98',
-		affiliateLink: 'https://amzn.to/4jBHF9R',
+		affiliateLink: env.PUBLIC_AFFILIATE_PTP710BT || null,
 		image: null,
 		badge: '💰 Great Value',
 		rating: null,
@@ -58,7 +64,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 		name: 'Brother TZe-231 Tape',
 		description: "12mm black on white.\nProven durability – won't fade or peel.",
 		priceDisplay: '$27.45',
-		affiliateLink: 'https://amzn.to/4suZgVb',
+		affiliateLink: env.PUBLIC_AFFILIATE_TZE231 || null,
 		image: null,
 		badge: 'Best Seller',
 		rating: null,
@@ -69,7 +75,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 		name: 'Neodymium Magnets 6x2mm',
 		description: 'Precise 6x2mm dimensions.\nPerfect for Gridfinity bins.',
 		priceDisplay: '$13.99',
-		affiliateLink: 'https://amzn.to/49lx7XC',
+		affiliateLink: env.PUBLIC_AFFILIATE_MAGNETS || null,
 		image: null,
 		badge: null,
 		rating: null,
@@ -78,9 +84,10 @@ export const affiliateProducts: AffiliateProduct[] = [
 ];
 
 /**
- * Amazon Associates Store ID for tracking.
+ * Amazon Associates Store ID for tracking (injected from env; empty in the
+ * public repo so forks do not ship the maintainer's affiliate tag).
  */
-export const AMAZON_STORE_ID = 'gridfinitylab-20';
+export const AMAZON_STORE_ID = env.PUBLIC_AMAZON_STORE_ID || '';
 
 /**
  * Disclosure text required by Amazon Associates.

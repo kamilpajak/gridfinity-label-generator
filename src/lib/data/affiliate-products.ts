@@ -14,7 +14,7 @@ import { env } from '$env/dynamic/public';
 
 /** Read a public affiliate env var, but only in the browser (dynamic public env
  * cannot be accessed during prerendering). Returns null when unset/prerendered. */
-function affiliateEnv(key: string): string | null {
+function affiliateEnv(key: `PUBLIC_${string}`): string | null {
 	return browser ? env[key] || null : null;
 }
 

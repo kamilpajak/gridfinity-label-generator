@@ -6,114 +6,34 @@ This directory contains scripts for processing and generating standards data wit
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      DATA SOURCES                               │
+│              STANDARDS DATA (maintainer-only pipeline)          │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│       supplier CAD                     dinmedia.de                  │
-│       (images SVG)                  (descriptions - SSOT)        │
-│           │                              │                      │
-│           ▼                              ▼                      │
-│       process-supplier-           generate-dinmedia-              │
-│       svgs.js                    mappings.js                    │
-│           │                              │                      │
-│           │                              ▼                      │
-│           │                      scrape-dinmedia-              │
-│           │                      metadata.js                   │
-│           │                              │                      │
-│           ▼                              ▼                      │
-│     static/images/              dinmedia-id-mappings.json       │
-│     standards/*.svg             dinmedia-metadata-cache.json    │
-│           │                              │                      │
-│           └──────────────┬───────────────┘                     │
-│                          │                                      │
-│                          ▼                                      │
-│           build-all-standards.js ◄── standards-config.json      │
-│                          │            + image-mappings.json     │
-│                          ▼                                      │
-│           standards-generated.ts                                │
-│                          │                                      │
-│                          ▼                                      │
-│           validate-images.js                                    │
+│   dinmedia.de (descriptions)                                    │
+│        │                                                        │
+│        ▼                                                        │
+│   generate-dinmedia-mappings.js → scrape-dinmedia-metadata.js   │
+│        │                                                        │
+│        ▼                                                        │
+│   data/dinmedia-*.json  (local, git-ignored)                    │
+│        │                                                        │
+│        ▼                                                        │
+│   build-all-standards.js ◄── standards-config.json              │
+│        │                     + image-mappings.json              │
+│        ▼                                                        │
+│   src/lib/data/standards-generated.ts  (committed, shipped)     │
+│        │                                                        │
+│        ▼                                                        │
+│   validate-images.js                                            │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-> PNG images for standards live in `static/images/standards/` and are mapped to
-> standards via `data/image-mappings.json`. SVG images take priority over PNG
-> when available.
+> The committed `standards-generated.ts` is authoritative; the app builds from it
+> directly. PNG images live in `static/images/standards/` and are mapped via
+> `data/image-mappings.json`.
 
 ## Scripts
-
-### supplier CAD Images
-
-High-quality SVG images from the supplier CAD system. These take priority over the bundled PNG images when available.
-
-#### Filename Pattern
-
-supplier SVG files follow this naming convention:
-
-```
-supplier_WIS_{productId}_{standards}_{material}_{finish}_LOD_{lod}_{view}.svg
-```
-
-**Examples:**
-
-```
-supplier_WIS_008610_100_DIN_6912_steel_08.8_zinc_plated_LOD_High_1_BACK.svg
-supplier_WIS_009201665_DIN_931_bare_stainless_steel_A4_LOD_High_1_LEFT.svg
-supplier_WIS_01088__25_ISO_4762DIN_912_steel_10.9_zinc_plated_LOD_High_back.svg
-```
-
-**Components:**
-
-| Part        | Description                                         |
-| ----------- | --------------------------------------------------- |
-| `productId` | supplier product ID (may contain underscores)          |
-| `standards` | ISO/DIN codes (e.g., `DIN_6912`, `ISO_4762DIN_912`) |
-| `material`  | Material type (steel, stainless_steel, etc.)        |
-| `finish`    | Surface finish (zinc_plated, bare, etc.)            |
-| `lod`       | Level of detail (High, Medium, Low)                 |
-| `view`      | View angle: `BACK` (side) or `LEFT` (head)          |
-
-#### Parser Utility
-
-The filename parser is implemented in the main codebase:
-
-- **Location:** `src/lib/utils/supplier-filename-parser.ts`
-- **Tests:** `src/lib/utils/supplier-filename-parser.test.ts`
-
-**Exports:**
-
-- `parsesupplierFilename(filename)` — Extract standard info from filename
-- `matchsupplierToStandard(fileInfo)` — Match to internal standard ID (e.g., `iso4762`)
-- `groupsupplierFiles(filePaths)` — Group BACK + LEFT views into pairs
-- `generateTargetFilename(standardId)` — Generate output filename (e.g., `iso_4762.svg`)
-
-#### process-supplier-svgs.js (TODO)
-
-Processes supplier CAD SVG files into standard images.
-
-```bash
-pnpm process-supplier              # Process all SVGs in input directory
-pnpm process-supplier --dry-run    # Preview without writing files
-```
-
-**Input:** supplier SVG pairs (BACK + LEFT views) from `~/Downloads/` or specified directory
-
-**Output:** `static/images/standards/*.svg` — Combined/processed SVG files
-
-**Workflow:**
-
-1. Scan input directory for supplier SVG files
-2. Parse filenames to extract standard info
-3. Match to internal standard IDs
-4. Group BACK + LEFT view pairs
-5. Process SVGs (combine views, clean up, optimize)
-6. Output to `static/images/standards/` with standardized names
-
-**Note:** SVG images take priority over PNG in the label renderer (`resolveImageWithSvgPriority` in `label-renderer.ts`).
-
----
 
 ### DIN Media Integration
 
@@ -299,7 +219,6 @@ pnpm validate-images
 ## Data Sources
 
 - **Images (PNG):** bundled static assets in `static/images/standards/`
-- **Images (SVG):** supplier CAD system — high-quality vector images (priority over PNG)
 - **Descriptions:** [dinmedia.de](https://www.dinmedia.de) (Single Source of Truth)
 - **Cross-references:**
   - [Fuller Fasteners DIN-ISO crossover chart](https://fullerfasteners.com/tech/din-iso-en-crossover-chart/)

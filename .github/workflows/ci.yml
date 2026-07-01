@@ -7,7 +7,10 @@ on:
 
 permissions:
   contents: read
-  security-events: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   validate:
@@ -29,7 +32,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       # Cache Playwright browsers
       - name: Cache Playwright browsers
@@ -60,8 +63,8 @@ jobs:
       - name: Unit tests
         run: pnpm test:unit --run
 
-      - name: Build and validate standards
-        run: pnpm build-standards
+      - name: Validate standards config
+        run: pnpm standards:validate
 
       - name: Validate images
         run: pnpm validate-images
@@ -101,7 +104,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       # BLOCKING: Dependency audit (fails on vulnerabilities)
       - name: Security audit
@@ -116,6 +119,8 @@ jobs:
 
   sonar:
     runs-on: ubuntu-latest
+    # Skip on PRs from forks: they cannot access SONAR_TOKEN, so the scan would always fail.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     # Run independently - has its own unit tests with coverage
     timeout-minutes: 10
 
@@ -134,7 +139,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       # Cache Playwright browsers (shared with validate job)
       - name: Cache Playwright browsers

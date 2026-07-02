@@ -2,6 +2,7 @@
 	import { batchStore } from '$lib/stores/batch-store';
 	import BatchLabelRow from './batch-label-row.svelte';
 	import { tick } from 'svelte';
+	import ListIcon from '@lucide/svelte/icons/list';
 
 	const batchState = $derived($batchStore);
 	const labels = $derived(batchState.labels);
@@ -29,8 +30,16 @@
 </script>
 
 {#if labels.length === 0}
-	<div class="rounded-lg border border-dashed p-8 text-center">
-		<p class="text-muted-foreground">No labels yet. Click "Add Label" to get started.</p>
+	<div
+		class="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-800 bg-slate-900/50 p-8 text-center backdrop-blur"
+	>
+		<div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-800/50">
+			<ListIcon class="h-7 w-7 text-slate-600" />
+		</div>
+		<p class="text-lg font-bold text-slate-300">No labels in batch</p>
+		<p class="mt-2 text-sm text-slate-500">
+			Configure a label in the sidebar and click "Add Label"
+		</p>
 	</div>
 {:else}
 	<div class="max-h-[600px] space-y-4 overflow-y-auto" bind:this={containerRef}>

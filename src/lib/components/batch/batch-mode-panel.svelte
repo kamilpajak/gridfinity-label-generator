@@ -1,12 +1,14 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
 	import { Button } from '$lib/components/ui/button';
 	import { batchStore } from '$lib/stores/batch-store';
 	import { exportBatchTapeAsPNG } from '$lib/utils/batch-exporter';
 	import BatchControls from './batch-controls.svelte';
 	import BatchLabelList from './batch-label-list.svelte';
 	import DownloadIcon from '@lucide/svelte/icons/download';
-	import RecommendedProducts from '$lib/components/affiliate/recommended-products.svelte';
+
+	// Which slice of the batch UI to render: controls live in the sidebar,
+	// the label collection lives in the main area (mirrors the single-mode split).
+	let { view = 'main' }: { view?: 'sidebar' | 'main' } = $props();
 
 	let batchState = $derived($batchStore);
 	let canExport = $derived(batchState.labels.length > 0);
@@ -41,71 +43,60 @@
 	}
 </script>
 
-<div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-	<!-- Left Column: Label List -->
-	<div class="lg:col-span-2">
-		<Card.Root class="border-slate-200/50 shadow-xl">
-			<Card.Header>
-				<Card.Title>Labels</Card.Title>
-				<Card.Description>Manage your label collection</Card.Description>
-			</Card.Header>
-			<Card.Content>
-				<BatchLabelList />
-			</Card.Content>
-		</Card.Root>
-	</div>
-
-	<!-- Right Column: Batch Settings and Export -->
+{#if view === 'sidebar'}
 	<div class="space-y-6">
-		<Card.Root class="border-slate-200/50 shadow-xl">
-			<Card.Header>
-				<Card.Title>Batch Settings</Card.Title>
-				<Card.Description>Configure tape and manage batch</Card.Description>
-			</Card.Header>
-			<Card.Content class="space-y-4">
-				<BatchControls />
-			</Card.Content>
-		</Card.Root>
+		<!-- Batch Settings -->
+		<div>
+			<h2 class="mb-5 text-xs font-bold tracking-widest text-slate-400 uppercase">
+				Batch Settings
+			</h2>
+			<BatchControls />
+		</div>
 
-		<Card.Root class="border-slate-200/50 shadow-xl">
-			<Card.Header>
-				<Card.Title>Export</Card.Title>
-				<Card.Description>Export your labels as PNG</Card.Description>
-			</Card.Header>
-			<Card.Content>
-				<Button
-					onclick={handleExport}
-					disabled={!canExport || isExporting}
-					class="w-full gap-2"
-					variant="default"
+		<hr class="border-slate-800/60" />
+
+		<!-- Export -->
+		<div class="space-y-3">
+			<h3 class="text-[11px] font-bold tracking-wide text-slate-400 uppercase">Export</h3>
+			<Button
+				onclick={handleExport}
+				disabled={!canExport || isExporting}
+				class="w-full gap-2 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40"
+				variant="default"
+			>
+				<DownloadIcon class="h-4 w-4" />
+				{#if isExporting}
+					Exporting...
+				{:else}
+					Export Batch ({batchState.labels.length}
+					{batchState.labels.length === 1 ? 'label' : 'labels'})
+				{/if}
+			</Button>
+
+			{#if exportStatus}
+				<p
+					class="text-center text-sm {exportStatus.startsWith('✓')
+						? 'text-emerald-400'
+						: 'text-destructive'}"
 				>
-					<DownloadIcon class="h-4 w-4" />
-					{#if isExporting}
-						Exporting...
-					{:else}
-						Export Batch ({batchState.labels.length}
-						{batchState.labels.length === 1 ? 'label' : 'labels'})
-					{/if}
-				</Button>
+					{exportStatus}
+				</p>
+			{/if}
 
-				{#if exportStatus}
-					<p
-						class="mt-2 text-center text-sm {exportStatus.startsWith('✓')
-							? 'text-green-600'
-							: 'text-destructive'}"
-					>
-						{exportStatus}
-					</p>
-				{/if}
-
-				{#if !canExport}
-					<p class="mt-2 text-center text-xs text-muted-foreground">
-						Add at least one label to export
-					</p>
-				{/if}
-			</Card.Content>
-		</Card.Root>
-
-		<RecommendedProducts />
+			{#if !canExport}
+				<p class="text-center text-[10px] text-slate-500">Add at least one label to export</p>
+			{/if}
+		</div>
 	</div>
-</div>
+{:else}
+	<!-- Main: the label collection -->
+	<div class="mx-auto flex w-full max-w-2xl flex-col">
+		<div class="mb-6">
+			<h2 class="text-2xl font-black tracking-tight text-white">Batch Labels</h2>
+			<p class="mt-1 text-sm text-slate-400">
+				Manage and preview your label collection before exporting.
+			</p>
+		</div>
+		<BatchLabelList />
+	</div>
+{/if}

@@ -45,7 +45,9 @@
 <div class="space-y-4">
 	<!-- Tape Height Selector -->
 	<div>
-		<label class="mb-2 block text-sm font-medium">Tape Height</label>
+		<label class="mb-2 block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+			>Tape Height</label
+		>
 		<ToggleGroup
 			bind:value={tapeHeight}
 			variant="outline"
@@ -63,8 +65,8 @@
 	<!-- Progress Indicator -->
 	<div>
 		<div class="mb-2 flex items-center justify-between text-sm">
-			<span class="font-medium">Progress</span>
-			<span class="text-muted-foreground" data-testid="batch-progress-text"
+			<span class="font-bold text-slate-300">Progress</span>
+			<span class="font-mono text-xs text-cyan-400" data-testid="batch-progress-text"
 				>{labelCount} / {maxLabels} labels</span
 			>
 		</div>
@@ -80,7 +82,7 @@
 	<Button
 		onclick={handleAddLabel}
 		disabled={!canAddLabel}
-		class="w-full gap-2"
+		class="w-full gap-2 font-bold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40"
 		data-testid="add-label-button"
 	>
 		<PlusIcon class="h-4 w-4" />

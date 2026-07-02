@@ -1,5 +1,4 @@
 <script lang="ts">
-	import * as Card from '$lib/components/ui/card';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { Switch } from '$lib/components/ui/switch';
 	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
@@ -20,6 +19,7 @@
 	import WhatsNewModal from '$lib/components/whats-new/whats-new-modal.svelte';
 	import WhatsNewButton from '$lib/components/whats-new/whats-new-button.svelte';
 	import RecommendedProducts from '$lib/components/affiliate/recommended-products.svelte';
+	import PrivacyPolicyModal from '$lib/components/legal/privacy-policy-modal.svelte';
 
 	let { data } = $props();
 	import {
@@ -51,6 +51,10 @@
 	let showHardwareImage = $state(true);
 	let showQRCode = $state(false);
 	let whatsNewModalOpen = $state(false);
+	let privacyModalOpen = $state(false);
+
+	// Single vs. Batch mode (drives the sidebar toggle + main content pane)
+	let mode = $state('single');
 
 	let labelMode = $state('fastener');
 	let measurementSystem: 'metric' | 'imperial' = $state('metric');
@@ -425,501 +429,361 @@
 	<span class="text-muted-foreground">{text}</span>
 {/snippet}
 
+{#snippet requiredMark()}
+	<span class="ml-0.5 text-destructive" title="Required" aria-label="required">*</span>
+{/snippet}
+
 <svelte:head>
 	<title>Gridfinity Label Generator</title>
 	<meta name="description" content="Print-Ready Labels for Your Gridfinity System" />
 </svelte:head>
 
-<!-- Hero Section -->
-<section
-	class="relative bg-gradient-to-r from-[#005c97] to-[#0c4a6e] px-4 py-6 text-white lg:px-8 lg:pt-12 lg:pb-24"
+<!-- Dark two-pane workshop layout: sidebar (controls) + main (preview / batch) -->
+<Tabs.Root
+	bind:value={mode}
+	class="flex min-h-screen flex-col gap-0 bg-slate-950 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:42px_42px] text-slate-200 selection:bg-cyan-500/30 lg:flex-row"
 >
-	<div class="pointer-events-none absolute inset-0 bg-black/10"></div>
-	<div class="absolute -top-32 -right-32 hidden h-64 w-64 rounded-full bg-white/5 lg:block"></div>
-	<div class="absolute -bottom-24 -left-24 hidden h-48 w-48 rounded-full bg-white/5 lg:block"></div>
-
-	<div class="relative z-10 mx-auto max-w-7xl">
-		<div class="flex flex-col justify-between gap-4 lg:flex-row lg:items-start lg:gap-8">
-			<div class="text-center lg:text-left">
-				<h1 class="mb-1 text-2xl font-bold tracking-tight lg:mb-4 lg:text-5xl">
-					Gridfinity Label Generator
-				</h1>
-				<p class="text-sm leading-relaxed font-light text-blue-100 lg:mb-6 lg:text-xl">
-					Print-Ready Labels for Your Gridfinity System
-				</p>
+	<!-- LEFT SIDEBAR -->
+	<aside
+		class="custom-scrollbar order-1 w-full border-b border-slate-800/80 bg-slate-900/95 shadow-2xl backdrop-blur-xl lg:sticky lg:top-0 lg:h-screen lg:max-w-[340px] lg:shrink-0 lg:overflow-y-auto lg:border-r lg:border-b-0"
+	>
+		<!-- Header block -->
+		<div class="relative overflow-hidden border-b border-slate-800 bg-slate-950 p-6">
+			<div
+				class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-cyan-900/25 via-slate-950 to-slate-950"
+			></div>
+			<div class="relative space-y-4">
 				<div
-					class="hidden flex-wrap items-center justify-center gap-6 text-sm font-medium lg:flex lg:justify-start"
+					class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-amber-500 uppercase"
 				>
-					<div class="flex items-center gap-2">
-						<svg
-							class="h-5 w-5 text-emerald-400"
-							fill="currentColor"
-							viewBox="0 0 20 20"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-						<span>Easy Configuration</span>
-					</div>
-					<div class="flex items-center gap-2">
-						<svg
-							class="h-5 w-5 text-emerald-400"
-							fill="currentColor"
-							viewBox="0 0 20 20"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-						<span>Batch Processing</span>
-					</div>
-					<div class="flex items-center gap-2">
-						<svg
-							class="h-5 w-5 text-emerald-400"
-							fill="currentColor"
-							viewBox="0 0 20 20"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-						<span>Print Ready</span>
-					</div>
+					<span class="h-px w-6 bg-amber-500"></span>
+					Workshop-Grade Labels
 				</div>
-			</div>
-
-			<div class="flex gap-2 lg:flex-col lg:gap-3">
-				<WhatsNewButton onclick={() => (whatsNewModalOpen = true)} />
-				<a
-					href="https://www.buymeacoffee.com/kamilpajak"
-					target="_blank"
-					class="inline-flex min-h-[44px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg bg-amber-500 px-3 py-2.5 text-sm font-medium shadow-lg transition-colors hover:bg-amber-600 lg:flex-none lg:px-6 lg:py-3 lg:text-base"
-				>
-					<CoffeeIcon class="h-4 w-4 lg:h-5 lg:w-5" />
-					<span class="sm:hidden">Support</span>
-					<span class="hidden sm:inline">Buy me a Coffee</span>
-				</a>
-				<button
-					onclick={provideFeedback}
-					class="inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2.5 text-sm font-medium backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/20 lg:flex-none lg:px-6 lg:py-3 lg:text-base"
-				>
-					<SendIcon class="h-4 w-4 lg:h-5 lg:w-5" />
-					Feedback
-				</button>
-				<a
-					href="https://github.com/kamilpajak/gridfinity-label-generator"
-					target="_blank"
-					rel="noopener noreferrer"
-					aria-label="View source on GitHub"
-					class="inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2.5 text-sm font-medium backdrop-blur-sm transition-colors hover:border-white/30 hover:bg-white/20 lg:flex-none lg:px-6 lg:py-3 lg:text-base"
-				>
-					<GithubIcon class="h-4 w-4 lg:h-5 lg:w-5" />
-					<span class="hidden sm:inline">GitHub</span>
-				</a>
-			</div>
-		</div>
-	</div>
-</section>
-
-<div class="mx-auto max-w-7xl px-4 py-4 lg:-mt-16 lg:px-6 lg:pt-0 lg:pb-8">
-	<!-- Tabs Component -->
-	<Tabs.Root value="single" class="relative z-20 mx-auto w-full max-w-7xl">
-		<div class="mb-4 rounded-xl border border-slate-200/60 bg-white p-4 shadow-sm lg:mb-6 lg:p-5">
-			<div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-0">
-				<div class="text-center lg:text-left">
-					<h2 class="text-lg font-bold text-slate-800 lg:text-xl">Label Creator</h2>
-					<p class="mt-0.5 text-sm text-slate-500">Configure and generate your hardware labels.</p>
+				<h1 class="text-[34px] leading-[0.9] font-black tracking-tighter text-white uppercase">
+					Gridfinity <br />Label <br /><span class="text-cyan-400">Generator</span>
+				</h1>
+				<div>
+					<WhatsNewButton onclick={() => (whatsNewModalOpen = true)} />
 				</div>
-				<Tabs.List class="flex w-full rounded-lg bg-slate-100 p-1 lg:w-auto">
-					<Tabs.Trigger
-						value="single"
-						class="min-h-[44px] flex-1 rounded-md px-4 py-2.5 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:font-semibold data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=inactive]:text-slate-500 lg:flex-none"
-						>Single Label</Tabs.Trigger
-					>
-					<Tabs.Trigger
-						value="batch"
-						class="min-h-[44px] flex-1 rounded-md px-4 py-2.5 text-sm font-medium transition-all data-[state=active]:bg-white data-[state=active]:font-semibold data-[state=active]:text-slate-900 data-[state=active]:shadow-sm data-[state=inactive]:text-slate-500 lg:flex-none"
-						>Batch Mode</Tabs.Trigger
-					>
-				</Tabs.List>
 			</div>
 		</div>
 
-		<Tabs.Content value="single">
-			<div class="grid grid-cols-12 gap-4 lg:gap-6">
-				<div class="col-span-12 space-y-4 lg:col-span-8 lg:space-y-6">
-					<Card.Root class="border-slate-200/50 shadow-xl">
-						<Card.Header class="flex flex-row items-start justify-between space-y-0">
-							<div>
-								<Card.Title class="text-lg font-bold text-slate-800">Product Information</Card.Title
-								>
-								<Card.Description class="mt-1.5 hidden lg:block"
-									>Configure your hardware label details</Card.Description
-								>
-							</div>
-							<Button
-								variant="ghost"
-								size="sm"
-								onclick={clearForm}
-								class="gap-2 text-muted-foreground hover:text-foreground"
-								data-testid="clear-button"
+		<div class="space-y-8 p-6">
+			<!-- Mode toggle -->
+			<Tabs.List
+				class="flex h-auto w-full overflow-hidden rounded-xl border border-slate-700/50 bg-slate-950/50 p-1"
+			>
+				<Tabs.Trigger
+					value="single"
+					class="h-auto min-h-[44px] flex-1 rounded-lg px-4 py-2 text-xs font-bold text-slate-500 transition-all hover:text-slate-300 data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-slate-600 dark:text-slate-500 dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white"
+					>Single Label</Tabs.Trigger
+				>
+				<Tabs.Trigger
+					value="batch"
+					class="h-auto min-h-[44px] flex-1 rounded-lg px-4 py-2 text-xs font-bold text-slate-500 transition-all hover:text-slate-300 data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-slate-600 dark:text-slate-500 dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white"
+					>Batch Mode</Tabs.Trigger
+				>
+			</Tabs.List>
+
+			{#if mode === 'single'}
+				<!-- Product Information -->
+				<div class="space-y-5">
+					<div class="flex items-center justify-between">
+						<h2 class="text-xs font-bold tracking-widest text-slate-400 uppercase">
+							Product Information
+						</h2>
+						<Button
+							variant="ghost"
+							size="sm"
+							onclick={clearForm}
+							class="gap-1.5 text-[10px] font-bold tracking-wider text-slate-500 uppercase hover:bg-slate-800 hover:text-slate-300"
+							data-testid="clear-button"
+						>
+							<RotateCcwIcon class="h-3 w-3" />
+							{UI_TEXT.buttons.clear}
+						</Button>
+					</div>
+
+					<div class="space-y-5">
+						<div class="space-y-2">
+							<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.productType.label}</label
 							>
-								<RotateCcwIcon class="h-4 w-4" />
-								{UI_TEXT.buttons.clear}
-							</Button>
-						</Card.Header>
-						<Card.Content class="space-y-6">
-							<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-								<div class="space-y-2">
-									<label class="text-sm font-medium">{UI_TEXT.productType.label}</label>
-									<ToggleGroup
-										value={labelMode}
-										onValueChange={handleLabelModeChange}
-										variant="outline"
-										type="single"
-										size="default"
-										class="w-full"
-										data-testid="label-mode-toggle"
-									>
-										<ToggleGroupItem
-											value="fastener"
-											class="min-h-[44px] flex-1"
-											data-testid="mode-fastener">{UI_TEXT.productType.fastener}</ToggleGroupItem
-										>
-										<ToggleGroupItem
-											value="general"
-											class="min-h-[44px] flex-1"
-											data-testid="mode-general">{UI_TEXT.productType.generalItem}</ToggleGroupItem
-										>
-									</ToggleGroup>
-								</div>
+							<ToggleGroup
+								value={labelMode}
+								onValueChange={handleLabelModeChange}
+								variant="outline"
+								type="single"
+								size="default"
+								class="w-full"
+								data-testid="label-mode-toggle"
+							>
+								<ToggleGroupItem
+									value="fastener"
+									class="min-h-[44px] flex-1"
+									data-testid="mode-fastener">{UI_TEXT.productType.fastener}</ToggleGroupItem
+								>
+								<ToggleGroupItem
+									value="general"
+									class="min-h-[44px] flex-1"
+									data-testid="mode-general">{UI_TEXT.productType.generalItem}</ToggleGroupItem
+								>
+							</ToggleGroup>
+						</div>
 
-								<div class="space-y-2">
-									<label class="text-sm font-medium">{UI_TEXT.measurementSystem.label}</label>
-									<ToggleGroup
-										value={measurementSystem}
-										onValueChange={handleMeasurementSystemChange}
-										variant="outline"
-										type="single"
-										size="default"
-										class="w-full {measurementSystemDisabled
-											? 'pointer-events-none opacity-50'
-											: ''}"
-									>
-										<ToggleGroupItem
-											value="metric"
-											class="min-h-[44px] flex-1"
-											data-testid="metric-button"
-											>{UI_TEXT.measurementSystem.metric}</ToggleGroupItem
-										>
-										<ToggleGroupItem
-											value="imperial"
-											class="min-h-[44px] flex-1"
-											data-testid="imperial-button"
-											>{UI_TEXT.measurementSystem.imperial}</ToggleGroupItem
-										>
-									</ToggleGroup>
-								</div>
-							</div>
+						<div class="space-y-2">
+							<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.measurementSystem.label}</label
+							>
+							<ToggleGroup
+								value={measurementSystem}
+								onValueChange={handleMeasurementSystemChange}
+								variant="outline"
+								type="single"
+								size="default"
+								class="w-full {measurementSystemDisabled ? 'pointer-events-none opacity-50' : ''}"
+							>
+								<ToggleGroupItem
+									value="metric"
+									class="min-h-[44px] flex-1"
+									data-testid="metric-button">{UI_TEXT.measurementSystem.metric}</ToggleGroupItem
+								>
+								<ToggleGroupItem
+									value="imperial"
+									class="min-h-[44px] flex-1"
+									data-testid="imperial-button"
+									>{UI_TEXT.measurementSystem.imperial}</ToggleGroupItem
+								>
+							</ToggleGroup>
+						</div>
+					</div>
 
-							{#if labelMode === 'fastener'}
-								<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-									<div class="space-y-2">
-										<label class="text-sm font-medium">{UI_TEXT.fields.standard}</label>
-										<Popover.Root bind:open={standardsOpen}>
-											<Popover.Trigger>
-												{#snippet child({ props })}
-													<Button
-														{...props}
-														variant="outline"
-														role="combobox"
-														aria-expanded={standardsOpen}
-														class="w-full justify-between font-normal"
-														data-testid="hardware-select"
-													>
-														{#if selectedStandard}
-															{formatDesignations(selectedStandard)}
-														{:else}
-															{@render mutedPlaceholder(UI_TEXT.placeholders.selectStandard)}
-														{/if}
-														<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-													</Button>
-												{/snippet}
-											</Popover.Trigger>
-											<!-- Width: max 400px on desktop, full viewport minus 1rem padding on each side on mobile -->
-											<Popover.Content class="w-[min(400px,calc(100vw-2rem))] p-0">
-												<StandardSearch
-													standards={standardsWithImages}
-													onSelect={(id) => {
-														selectedStandardId = id;
-														closeStandardsAndFocusTrigger();
-													}}
-												/>
-											</Popover.Content>
-										</Popover.Root>
-									</div>
-
-									<div class="space-y-2">
-										<label for="optional-note" class="text-sm font-medium"
-											>{UI_TEXT.fields.note}
-											<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+					{#if labelMode === 'fastener'}
+						<div class="space-y-2">
+							<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.fields.standard}{@render requiredMark()}</label
+							>
+							<Popover.Root bind:open={standardsOpen}>
+								<Popover.Trigger>
+									{#snippet child({ props })}
+										<Button
+											{...props}
+											variant="outline"
+											role="combobox"
+											aria-expanded={standardsOpen}
+											class="w-full justify-between font-normal"
+											data-testid="hardware-select"
 										>
-										<Input
-											id="optional-note"
-											bind:value={optionalNote}
-											placeholder={UI_TEXT.placeholders.note}
-											class="w-full"
-											data-testid="optional-note-input"
-										/>
-									</div>
-								</div>
+											{#if selectedStandard}
+												{formatDesignations(selectedStandard)}
+											{:else}
+												{@render mutedPlaceholder(UI_TEXT.placeholders.selectStandard)}
+											{/if}
+											<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+										</Button>
+									{/snippet}
+								</Popover.Trigger>
+								<!-- Width: max 400px on desktop, full viewport minus 1rem padding on each side on mobile -->
+								<Popover.Content
+									class="w-[min(400px,calc(100vw-2rem))] rounded-xl border-slate-700 p-0 shadow-2xl"
+								>
+									<StandardSearch
+										standards={standardsWithImages}
+										onSelect={(id) => {
+											selectedStandardId = id;
+											closeStandardsAndFocusTrigger();
+										}}
+									/>
+								</Popover.Content>
+							</Popover.Root>
+						</div>
 
-								<div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
-									<div class="space-y-2">
-										<label for="thread-size" class="text-sm font-medium"
-											>{UI_TEXT.fields.threadSize}</label
-										>
-										<Select bind:value={threadSize} type="single">
-											<SelectTrigger
-												id="thread-size"
-												class="w-full"
-												data-testid="thread-size-select"
-											>
-												{#if threadSize}
-													{threadSize}
-												{:else}
-													{@render mutedPlaceholder(UI_TEXT.placeholders.selectSize)}
-												{/if}
-											</SelectTrigger>
-											<SelectContent>
-												{#each availableThreadSizes as size (size)}
-													<SelectItem value={size}>{size}</SelectItem>
-												{/each}
-											</SelectContent>
-										</Select>
-									</div>
-									<div class="space-y-2">
-										<label for="pitch" class="text-sm font-medium"
-											>{UI_TEXT.fields.threadPitch}
-											<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
-										>
-										<Select bind:value={pitch} type="single">
-											<SelectTrigger
-												id="pitch"
-												class="w-full"
-												data-testid="pitch-select"
-												disabled={pitchDisabled}
-											>
-												{#if pitch}
-													{availablePitchOptions.find((p) => p.value === pitch)?.label}
-												{:else}
-													{@render mutedPlaceholder(UI_TEXT.placeholders.selectPitch)}
-												{/if}
-											</SelectTrigger>
-											<SelectContent>
-												<SelectItem value=""
-													>{measurementSystem === 'imperial'
-														? UI_TEXT.placeholders.standardPitchImperial
-														: UI_TEXT.placeholders.standardPitchMetric}</SelectItem
-												>
-												{#each availablePitchOptions as pitchOption (pitchOption.value)}
-													<SelectItem value={pitchOption.value}>{pitchOption.label}</SelectItem>
-												{/each}
-											</SelectContent>
-										</Select>
-									</div>
-									<div class="space-y-2">
-										<label for="length" class="text-sm font-medium"
-											>{UI_TEXT.fields.length} ({measurementSystem === 'metric'
-												? 'mm'
-												: 'in'})</label
-										>
-										<Input
-											id="length"
-											bind:value={length}
-											placeholder={lengthPlaceholder}
-											class="w-full {showLengthError ? 'border-destructive' : ''}"
-											disabled={lengthDisabled}
-											data-testid="length-input"
-											onblur={() => (lengthTouched = true)}
-											aria-invalid={showLengthError}
-										/>
-										{#if showLengthError}
-											<p class="mt-1 text-sm text-destructive">
-												{lengthValidationResult.message}
-											</p>
-										{/if}
-									</div>
-								</div>
-							{:else}
-								<div class="space-y-6">
-									<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-										<div class="space-y-2">
-											<label for="primary-text" class="text-sm font-medium"
-												>{UI_TEXT.fields.primaryText}</label
-											>
-											<Input
-												id="primary-text"
-												bind:value={primaryText}
-												placeholder={UI_TEXT.placeholders.primaryText}
-												class="w-full"
-												data-testid="primary-text-input"
-											/>
-										</div>
-										<div class="space-y-2">
-											<label for="secondary-text" class="text-sm font-medium"
-												>{UI_TEXT.fields.secondaryText}</label
-											>
-											<Input
-												id="secondary-text"
-												bind:value={secondaryText}
-												placeholder={UI_TEXT.placeholders.secondaryText}
-												class="w-full"
-												data-testid="secondary-text-input"
-											/>
-										</div>
-									</div>
+						<div class="space-y-2">
+							<label
+								for="optional-note"
+								class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.fields.note}</label
+							>
+							<Input
+								id="optional-note"
+								bind:value={optionalNote}
+								placeholder={UI_TEXT.placeholders.note}
+								class="w-full"
+								data-testid="optional-note-input"
+							/>
+						</div>
 
-									<!-- Custom Image (12mm only) -->
-									{#if labelHeight === '12'}
-										<div class="space-y-2">
-											<div class="flex items-center justify-between">
-												<label class="text-sm font-medium">
-													Custom Image
-													<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span>
-												</label>
-												{#if customImage}
-													<div class="flex items-center gap-2">
-														<span class="text-sm text-muted-foreground">Show on label</span>
-														<Switch bind:checked={showCustomImage} />
-													</div>
-												{/if}
-											</div>
-											<ImageUploader
-												bind:value={customImage}
-												disabled={false}
-												testId="custom-image-uploader-single"
-											/>
-										</div>
-									{/if}
-								</div>
-							{/if}
-
+						<div class="grid grid-cols-2 gap-4">
 							<div class="space-y-2">
-								<label for="qr-code-url" class="text-sm font-medium"
-									>{UI_TEXT.fields.qrCode}
-									<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+								<label
+									for="thread-size"
+									class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+									>{UI_TEXT.fields.threadSize}{@render requiredMark()}</label
+								>
+								<Select bind:value={threadSize} type="single">
+									<SelectTrigger id="thread-size" class="w-full" data-testid="thread-size-select">
+										{#if threadSize}
+											{threadSize}
+										{:else}
+											{@render mutedPlaceholder(UI_TEXT.placeholders.selectSize)}
+										{/if}
+									</SelectTrigger>
+									<SelectContent>
+										{#each availableThreadSizes as size (size)}
+											<SelectItem value={size}>{size}</SelectItem>
+										{/each}
+									</SelectContent>
+								</Select>
+							</div>
+							<div class="space-y-2">
+								<label
+									for="pitch"
+									class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+									>{UI_TEXT.fields.threadPitch}</label
+								>
+								<Select bind:value={pitch} type="single">
+									<SelectTrigger
+										id="pitch"
+										class="w-full"
+										data-testid="pitch-select"
+										disabled={pitchDisabled}
+									>
+										{#if pitch}
+											{availablePitchOptions.find((p) => p.value === pitch)?.label}
+										{:else}
+											{@render mutedPlaceholder(UI_TEXT.placeholders.selectPitch)}
+										{/if}
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value=""
+											>{measurementSystem === 'imperial'
+												? UI_TEXT.placeholders.standardPitchImperial
+												: UI_TEXT.placeholders.standardPitchMetric}</SelectItem
+										>
+										{#each availablePitchOptions as pitchOption (pitchOption.value)}
+											<SelectItem value={pitchOption.value}>{pitchOption.label}</SelectItem>
+										{/each}
+									</SelectContent>
+								</Select>
+							</div>
+							<div class="col-span-2 space-y-2">
+								<label
+									for="length"
+									class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+									>{UI_TEXT.fields.length} ({measurementSystem === 'metric'
+										? 'mm'
+										: 'in'}){#if !lengthDisabled}{@render requiredMark()}{/if}</label
 								>
 								<Input
-									id="qr-code-url"
-									bind:value={qrCodeUrl}
-									placeholder={UI_TEXT.placeholders.qrCode}
+									id="length"
+									bind:value={length}
+									placeholder={lengthPlaceholder}
+									class="w-full {showLengthError ? 'border-destructive' : ''}"
+									disabled={lengthDisabled}
+									data-testid="length-input"
+									onblur={() => (lengthTouched = true)}
+									aria-invalid={showLengthError}
+								/>
+								{#if showLengthError}
+									<p class="mt-1 text-sm text-destructive">
+										{lengthValidationResult.message}
+									</p>
+								{/if}
+							</div>
+						</div>
+					{:else}
+						<div class="space-y-5">
+							<div class="space-y-2">
+								<label
+									for="primary-text"
+									class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+									>{UI_TEXT.fields.primaryText}</label
+								>
+								<Input
+									id="primary-text"
+									bind:value={primaryText}
+									placeholder={UI_TEXT.placeholders.primaryText}
 									class="w-full"
-									disabled={!showQRCode || qrCodeDisabled}
-									data-testid="qr-code-url-input"
+									data-testid="primary-text-input"
 								/>
 							</div>
-						</Card.Content>
-					</Card.Root>
-
-					<!-- Label Preview Card -->
-					<Card.Root class="gap-4 border-slate-200/50 py-4 shadow-xl">
-						<Card.Header>
-							<Card.Title class="text-lg font-bold text-slate-800"
-								>{UI_TEXT.cards.labelPreview}</Card.Title
-							>
-						</Card.Header>
-						<Card.Content>
-							<LabelPreview
-								primaryText={labelPrimaryText}
-								secondaryText={labelSecondaryText}
-								{optionalNote}
-								standard={selectedStandard}
-								{showStandard}
-								{showHardwareImage}
-								{showQRCode}
-								{qrCodeUrl}
-								labelHeight={parseInt(labelHeight)}
-								{labelWidth}
-								bind:canvasRef
-								{customImage}
-								{showCustomImage}
-							/>
-							<div class="mt-4 flex justify-center">
-								<Button
-									onclick={downloadLabelAsPNG}
-									variant="default"
-									class="gap-2"
-									disabled={!hasContent || !isFormValid}
-									title={!hasContent
-										? UI_TEXT.errors.addTextToExport
-										: !isFastenerComplete()
-											? UI_TEXT.errors.fastenerIncomplete
-											: !isFormValid
-												? UI_TEXT.errors.fixValidation
-												: UI_TEXT.errors.exportTitle}
-									data-testid="export-button"
+							<div class="space-y-2">
+								<label
+									for="secondary-text"
+									class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+									>{UI_TEXT.fields.secondaryText}</label
 								>
-									<DownloadIcon class="h-4 w-4" />
-									{UI_TEXT.buttons.downloadPNG}
-								</Button>
+								<Input
+									id="secondary-text"
+									bind:value={secondaryText}
+									placeholder={UI_TEXT.placeholders.secondaryText}
+									class="w-full"
+									data-testid="secondary-text-input"
+								/>
 							</div>
-						</Card.Content>
-					</Card.Root>
+
+							<!-- Custom Image (12mm only) -->
+							{#if labelHeight === '12'}
+								<div class="space-y-2">
+									<div class="flex items-center justify-between">
+										<label
+											class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+										>
+											Custom Image
+										</label>
+										{#if customImage}
+											<div class="flex items-center gap-2">
+												<span class="text-xs text-slate-400">Show on label</span>
+												<Switch bind:checked={showCustomImage} />
+											</div>
+										{/if}
+									</div>
+									<ImageUploader
+										bind:value={customImage}
+										disabled={false}
+										testId="custom-image-uploader-single"
+									/>
+								</div>
+							{/if}
+						</div>
+					{/if}
+
+					<div class="space-y-2">
+						<label
+							for="qr-code-url"
+							class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+							>{UI_TEXT.fields.qrCode}</label
+						>
+						<Input
+							id="qr-code-url"
+							bind:value={qrCodeUrl}
+							placeholder={UI_TEXT.placeholders.qrCode}
+							class="w-full"
+							disabled={!showQRCode || qrCodeDisabled}
+							data-testid="qr-code-url-input"
+						/>
+					</div>
 				</div>
 
-				<div class="col-span-12 space-y-4 lg:col-span-4 lg:space-y-6">
-					<!-- Mobile: simple div with collapsible -->
-					<div class="rounded-xl border border-slate-200/60 bg-white shadow-sm lg:hidden">
-						<button
-							onclick={() => (settingsExpanded = !settingsExpanded)}
-							class="flex w-full items-center justify-between p-4 text-left"
+				<hr class="border-slate-800/60" />
+
+				<!-- Label Settings: mobile collapsible -->
+				<div class="lg:hidden">
+					<button
+						onclick={() => (settingsExpanded = !settingsExpanded)}
+						class="flex w-full items-center justify-between text-left"
+					>
+						<span class="text-xs font-bold tracking-widest text-slate-400 uppercase"
+							>{UI_TEXT.cards.labelSettings}</span
 						>
-							<span class="text-lg font-bold text-slate-800">{UI_TEXT.cards.labelSettings}</span>
-							<ChevronDownIcon
-								class="h-5 w-5 text-slate-400 transition-transform duration-200 {settingsExpanded
-									? 'rotate-180'
-									: ''}"
-							/>
-						</button>
-						{#if settingsExpanded}
-							<div transition:slide={{ duration: 200 }} class="px-4 pb-4">
-								<LabelSettingsContent
-									{showStandard}
-									{showHardwareImage}
-									{showQRCode}
-									{labelHeight}
-									{labelWidth}
-									{standardReferenceDisabled}
-									{hardwareImageDisabled}
-									{qrCodeDisabled}
-									onShowStandardChange={(v) => (showStandard = v)}
-									onShowHardwareImageChange={(v) => (showHardwareImage = v)}
-									onShowQRCodeChange={(v) => (showQRCode = v)}
-									onLabelHeightChange={handleLabelHeightChange}
-									onLabelWidthChange={(v) => (labelWidth = v)}
-								/>
-							</div>
-						{/if}
-					</div>
-					<!-- Desktop: Card -->
-					<Card.Root class="hidden border-slate-200/50 shadow-xl lg:block">
-						<Card.Header>
-							<Card.Title class="text-lg font-bold text-slate-800"
-								>{UI_TEXT.cards.labelSettings}</Card.Title
-							>
-						</Card.Header>
-						<Card.Content>
+						<ChevronDownIcon
+							class="h-5 w-5 text-slate-500 transition-transform duration-200 {settingsExpanded
+								? 'rotate-180'
+								: ''}"
+						/>
+					</button>
+					{#if settingsExpanded}
+						<div transition:slide={{ duration: 200 }} class="pt-4">
 							<LabelSettingsContent
 								{showStandard}
 								{showHardwareImage}
@@ -935,22 +799,137 @@
 								onLabelHeightChange={handleLabelHeightChange}
 								onLabelWidthChange={(v) => (labelWidth = v)}
 							/>
-						</Card.Content>
-					</Card.Root>
-
-					<RecommendedProducts />
+						</div>
+					{/if}
 				</div>
-			</div>
-		</Tabs.Content>
 
-		<Tabs.Content value="batch">
-			<BatchModePanel />
-		</Tabs.Content>
-	</Tabs.Root>
-</div>
+				<!-- Label Settings: desktop inline -->
+				<div class="hidden lg:block">
+					<h2 class="mb-5 text-xs font-bold tracking-widest text-slate-400 uppercase">
+						{UI_TEXT.cards.labelSettings}
+					</h2>
+					<LabelSettingsContent
+						{showStandard}
+						{showHardwareImage}
+						{showQRCode}
+						{labelHeight}
+						{labelWidth}
+						{standardReferenceDisabled}
+						{hardwareImageDisabled}
+						{qrCodeDisabled}
+						onShowStandardChange={(v) => (showStandard = v)}
+						onShowHardwareImageChange={(v) => (showHardwareImage = v)}
+						onShowQRCodeChange={(v) => (showQRCode = v)}
+						onLabelHeightChange={handleLabelHeightChange}
+						onLabelWidthChange={(v) => (labelWidth = v)}
+					/>
+				</div>
+				<hr class="border-slate-800/60" />
+
+				<RecommendedProducts />
+			{:else}
+				<BatchModePanel view="sidebar" />
+			{/if}
+		</div>
+	</aside>
+
+	<!-- MAIN AREA -->
+	<main
+		class="custom-scrollbar order-2 flex flex-1 flex-col bg-gradient-to-br from-cyan-900/10 via-slate-950/50 to-indigo-900/10 lg:h-screen lg:overflow-y-auto"
+	>
+		<div class="flex flex-1 flex-col p-4 sm:p-8 lg:p-12">
+			<Tabs.Content value="single" class="flex flex-1 flex-col items-center justify-center gap-8">
+				<LabelPreview
+					primaryText={labelPrimaryText}
+					secondaryText={labelSecondaryText}
+					{optionalNote}
+					standard={selectedStandard}
+					{showStandard}
+					{showHardwareImage}
+					{showQRCode}
+					{qrCodeUrl}
+					labelHeight={parseInt(labelHeight)}
+					{labelWidth}
+					bind:canvasRef
+					{customImage}
+					{showCustomImage}
+				/>
+				<Button
+					onclick={downloadLabelAsPNG}
+					variant="default"
+					size="lg"
+					class="h-auto gap-2 rounded-xl px-8 py-4 text-sm font-bold shadow-lg shadow-cyan-500/25 transition-shadow hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]"
+					disabled={!hasContent || !isFormValid}
+					title={!hasContent
+						? UI_TEXT.errors.addTextToExport
+						: !isFastenerComplete()
+							? UI_TEXT.errors.fastenerIncomplete
+							: !isFormValid
+								? UI_TEXT.errors.fixValidation
+								: UI_TEXT.errors.exportTitle}
+					data-testid="export-button"
+				>
+					<DownloadIcon class="h-5 w-5" />
+					{UI_TEXT.buttons.downloadPNG}
+				</Button>
+			</Tabs.Content>
+
+			<Tabs.Content value="batch" class="flex flex-1 flex-col justify-center">
+				<BatchModePanel view="main" />
+			</Tabs.Content>
+
+			<!-- Footer -->
+			<footer
+				class="mt-16 flex flex-col items-center gap-6 border-t border-slate-800/50 pt-8 pb-4 text-xs text-slate-500"
+			>
+				<div class="flex flex-wrap items-center justify-center gap-4">
+					<a
+						href="https://github.com/kamilpajak/gridfinity-label-generator"
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label="View source on GitHub"
+						class="flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-4 py-2 shadow-md transition-all hover:border-slate-600 hover:bg-slate-800 hover:text-slate-200"
+					>
+						<GithubIcon class="h-4 w-4" />
+						<span class="font-medium">GitHub</span>
+					</a>
+					<button
+						onclick={provideFeedback}
+						class="flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-4 py-2 shadow-md transition-all hover:border-slate-600 hover:bg-slate-800 hover:text-slate-200"
+					>
+						<SendIcon class="h-4 w-4" />
+						<span class="font-medium">Feedback</span>
+					</button>
+					<a
+						href="https://www.buymeacoffee.com/kamilpajak"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="flex items-center gap-2 rounded-full border border-amber-600/50 bg-slate-900 px-4 py-2 text-amber-500 shadow-md transition-all hover:border-amber-500 hover:bg-slate-800"
+					>
+						<CoffeeIcon class="h-4 w-4" />
+						<span class="font-medium">Buy me a Coffee</span>
+					</a>
+				</div>
+
+				<div
+					class="flex flex-wrap items-center justify-center gap-3 rounded-full border border-slate-800 bg-slate-900 px-5 py-2.5 text-slate-400 shadow-sm"
+				>
+					<p>Made with <span class="text-red-500">&hearts;</span> for the Gridfinity community</p>
+					<span class="hidden text-slate-700 sm:inline">&middot;</span>
+					<button
+						onclick={() => (privacyModalOpen = true)}
+						class="transition-colors hover:text-slate-300">Privacy Policy</button
+					>
+				</div>
+			</footer>
+		</div>
+	</main>
+</Tabs.Root>
 
 <WhatsNewModal
 	bind:open={whatsNewModalOpen}
 	onClose={() => (whatsNewModalOpen = false)}
 	changelog={data.changelog}
 />
+
+<PrivacyPolicyModal bind:open={privacyModalOpen} onClose={() => (privacyModalOpen = false)} />

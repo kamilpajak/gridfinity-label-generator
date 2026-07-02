@@ -88,17 +88,20 @@
 					standard.description
 				]}
 				onSelect={() => onSelect(standard.id)}
-				class="flex items-center justify-between"
+				class="flex items-center justify-between rounded-md px-3 py-2"
 			>
 				<div class="flex flex-1 flex-col">
-					<span>{formatDesignations(standard)}</span>
-					<span class="text-xs text-muted-foreground">{standard.description}</span>
+					<span class="font-mono text-xs font-bold text-slate-200"
+						>{formatDesignations(standard)}</span
+					>
+					<span class="mt-0.5 text-[10px] leading-tight text-slate-500">{standard.description}</span
+					>
 				</div>
 				{#if standard.image}
 					<StandardImage
 						src={standard.image}
 						alt={formatDesignations(standard)}
-						class="ml-3 h-10 w-10 flex-shrink-0 object-contain"
+						class="ml-3 h-10 w-10 flex-shrink-0 rounded bg-white/90 object-contain"
 					/>
 				{/if}
 			</Command.Item>

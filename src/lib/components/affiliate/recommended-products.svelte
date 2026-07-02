@@ -52,7 +52,7 @@
 		target={hasLink ? '_blank' : undefined}
 		rel={hasLink ? 'noopener noreferrer sponsored' : undefined}
 		class="group -mx-2 block rounded-lg px-2 py-3 transition-all {hasLink
-			? 'hover:bg-slate-50'
+			? 'hover:bg-slate-800/60'
 			: 'cursor-default'}"
 		onclick={(e) => {
 			if (!hasLink) {
@@ -66,8 +66,8 @@
 		<div class="flex gap-3">
 			<!-- Product icon -->
 			<div
-				class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 transition-all {hasLink
-					? 'group-hover:bg-white group-hover:shadow-sm'
+				class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-slate-800 transition-all {hasLink
+					? 'group-hover:bg-slate-700 group-hover:shadow-sm'
 					: ''}"
 			>
 				<IconComponent class="h-6 w-6 text-slate-400" />
@@ -76,8 +76,8 @@
 			<!-- Product info -->
 			<div class="min-w-0 flex-1">
 				<h5
-					class="mb-1 text-sm font-bold text-slate-800 transition-colors {hasLink
-						? 'group-hover:text-blue-600'
+					class="mb-1 text-sm font-bold text-slate-100 transition-colors {hasLink
+						? 'group-hover:text-cyan-400'
 						: ''}"
 				>
 					{product.name}
@@ -85,16 +85,16 @@
 						<ExternalLink class="ml-1 inline h-3 w-3 opacity-0 group-hover:opacity-50" />
 					{/if}
 				</h5>
-				<p class="mb-2 line-clamp-3 text-xs whitespace-pre-line text-slate-500">
+				<p class="mb-2 line-clamp-3 text-xs whitespace-pre-line text-slate-400">
 					{product.description}
 				</p>
 				<div class="flex items-center justify-between">
-					<span class="text-sm font-bold text-blue-600">{product.priceDisplay}</span>
+					<span class="text-sm font-bold text-cyan-400">{product.priceDisplay}</span>
 					{#if product.badge}
 						<span
 							class="rounded px-2 py-0.5 text-[10px] font-medium {product.badge.includes('Value')
-								? 'bg-green-100 text-green-700'
-								: 'bg-purple-100 text-purple-700'}"
+								? 'bg-emerald-500/15 text-emerald-400'
+								: 'bg-indigo-500/15 text-indigo-400'}"
 						>
 							{product.badge}
 						</span>
@@ -110,24 +110,24 @@
 	</a>
 
 	{#if !isLast}
-		<div class="h-px bg-slate-100"></div>
+		<div class="h-px bg-slate-800"></div>
 	{/if}
 {/snippet}
 
 <div
 	data-testid="recommended-products-card"
-	class="overflow-hidden rounded-xl border border-slate-200/60 bg-white shadow-sm"
+	class="overflow-hidden rounded-xl border border-slate-800/80 bg-slate-900/60 shadow-sm"
 >
 	<!-- Header -->
 	<div
-		class="flex items-center justify-between border-b border-slate-100 bg-gradient-to-r from-amber-50 to-white px-5 py-4"
+		class="flex items-center justify-between border-b border-slate-800 bg-gradient-to-r from-amber-500/10 to-transparent px-5 py-4"
 	>
-		<h3 class="flex items-center gap-2 text-lg font-bold text-slate-800">
+		<h3 class="flex items-center gap-2 text-lg font-bold text-slate-100">
 			<Star class="h-4 w-4 text-amber-500" />
 			Recommended Products
 		</h3>
 		<span
-			class="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold tracking-wide text-amber-700 uppercase"
+			class="rounded-full border border-amber-500/20 bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold tracking-wide text-amber-400 uppercase"
 		>
 			Partner
 		</span>
@@ -139,7 +139,7 @@
 			<div class="space-y-3">
 				<div class="mb-3 flex items-center gap-2">
 					<Printer class="h-4 w-4 text-indigo-500" />
-					<h4 class="text-xs font-bold tracking-wide text-slate-700 uppercase">Label Printers</h4>
+					<h4 class="text-xs font-bold tracking-wide text-slate-300 uppercase">Label Printers</h4>
 				</div>
 
 				{#each printers as product, index (product.id)}
@@ -150,7 +150,7 @@
 
 		<!-- Separator -->
 		{#if printers.length > 0 && accessories.length > 0}
-			<div class="h-px bg-slate-200"></div>
+			<div class="h-px bg-slate-800"></div>
 		{/if}
 
 		<!-- Accessories Category -->
@@ -158,7 +158,7 @@
 			<div class="space-y-3">
 				<div class="mb-3 flex items-center gap-2">
 					<Package class="h-4 w-4 text-emerald-500" />
-					<h4 class="text-xs font-bold tracking-wide text-slate-700 uppercase">Accessories</h4>
+					<h4 class="text-xs font-bold tracking-wide text-slate-300 uppercase">Accessories</h4>
 				</div>
 
 				{#each accessories as product, index (product.id)}
@@ -169,8 +169,8 @@
 	</div>
 
 	<!-- Disclosure -->
-	<div class="border-t border-slate-100 px-5 py-4">
-		<p class="flex items-start gap-1.5 text-[10px] leading-relaxed text-slate-400">
+	<div class="border-t border-slate-800/50 bg-slate-900/50 px-5 py-4">
+		<p class="flex items-start gap-1.5 text-[10px] leading-relaxed text-slate-500">
 			<Info class="mt-0.5 h-3 w-3 flex-shrink-0" />
 			{AFFILIATE_DISCLOSURE}
 		</p>

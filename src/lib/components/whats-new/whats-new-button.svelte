@@ -3,25 +3,21 @@
 
 	interface Props {
 		onclick: () => void;
-		showBadge?: boolean;
 	}
 
-	const { onclick, showBadge = true }: Props = $props();
+	const { onclick }: Props = $props();
 </script>
 
 <button
 	{onclick}
-	class="relative inline-flex min-h-[44px] items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-purple-500 to-purple-600 px-3 py-2.5 text-sm font-medium text-white shadow-lg transition-colors hover:from-purple-600 hover:to-purple-700 lg:px-6 lg:py-3 lg:text-base"
+	class="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/50 py-1 pr-3 pl-1 text-[11px] font-medium text-slate-400 transition-colors hover:border-slate-700 hover:bg-slate-800 hover:text-slate-200"
 	data-testid="whats-new-button"
 >
-	<Sparkles class="h-4 w-4 lg:h-5 lg:w-5" />
-	<span class="hidden sm:inline">What's New</span>
-	<span class="sm:hidden">New</span>
-	{#if showBadge}
-		<span
-			class="animate-subtle-pulse absolute -top-1 -right-1 rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white"
-		>
-			NEW
-		</span>
-	{/if}
+	<span
+		class="inline-flex items-center gap-1 rounded-full bg-indigo-500/20 px-2 py-0.5 text-[9px] font-bold tracking-wider text-indigo-400 uppercase"
+	>
+		<Sparkles class="h-3 w-3" />
+		New
+	</span>
+	<span>What's new in v2?</span>
 </button>

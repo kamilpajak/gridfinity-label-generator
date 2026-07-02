@@ -378,7 +378,10 @@
 	<span class="text-muted-foreground">{text}</span>
 {/snippet}
 
-<div class="space-y-6 rounded-lg border p-4" data-testid="batch-label-row-{index}">
+<div
+	class="space-y-6 rounded-lg border border-slate-700/50 p-4"
+	data-testid="batch-label-row-{index}"
+>
 	<!-- Header Row -->
 	<div class="flex items-center justify-between">
 		<h4 class="font-medium" data-testid="batch-label-number">Label #{labelNumber}</h4>
@@ -489,7 +492,7 @@
 				<div class="space-y-2">
 					<label for="note-{index}" class="text-sm font-medium"
 						>{UI_TEXT.fields.note}
-						<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+						<span class="text-slate-400">{UI_TEXT.labels.optional}</span></label
 					>
 					<Input
 						id="note-{index}"
@@ -530,7 +533,7 @@
 				<div class="space-y-2">
 					<label for="pitch-{index}" class="text-sm font-medium"
 						>{UI_TEXT.fields.threadPitch}
-						<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+						<span class="text-slate-400">{UI_TEXT.labels.optional}</span></label
 					>
 					<Select bind:value={pitch} type="single">
 						<SelectTrigger
@@ -635,7 +638,7 @@
 				<div class="space-y-2">
 					<label for="secondary-{index}" class="text-sm font-medium"
 						>{UI_TEXT.fields.secondaryText}
-						<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+						<span class="text-slate-400">{UI_TEXT.labels.optional}</span></label
 					>
 					<Input
 						id="secondary-{index}"
@@ -652,11 +655,11 @@
 					<div class="flex items-center justify-between">
 						<label class="text-sm font-medium">
 							Custom Image
-							<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span>
+							<span class="text-slate-400">{UI_TEXT.labels.optional}</span>
 						</label>
 						{#if customImage}
 							<div class="flex items-center gap-2">
-								<span class="text-sm text-muted-foreground">Show on label</span>
+								<span class="text-sm text-slate-400">Show on label</span>
 								<Switch bind:checked={showCustomImage} />
 							</div>
 						{/if}
@@ -675,7 +678,7 @@
 	<div class="space-y-2">
 		<label for="qr-code-url-{index}" class="text-sm font-medium"
 			>{UI_TEXT.fields.qrCode}
-			<span class="text-muted-foreground">{UI_TEXT.labels.optional}</span></label
+			<span class="text-slate-400">{UI_TEXT.labels.optional}</span></label
 		>
 		<Input
 			id="qr-code-url-{index}"
@@ -688,7 +691,7 @@
 	</div>
 
 	<!-- Label Options Section -->
-	<div class="space-y-4 border-t pt-4">
+	<div class="space-y-4 border-t border-slate-700/50 pt-4">
 		<h4 class="font-medium">{UI_TEXT.cards.labelOptions}</h4>
 
 		{#if isFastenerMode}
@@ -704,7 +707,7 @@
 							data-testid="standard-reference-switch-{index}"
 						/>
 					</div>
-					<div class="text-xs text-muted-foreground">
+					<div class="text-xs text-slate-400">
 						{standardReferenceDisabled
 							? UI_TEXT.settings.standardReference.disabledGeneral
 							: UI_TEXT.settings.standardReference.description}
@@ -721,7 +724,7 @@
 							data-testid="hardware-image-switch-{index}"
 						/>
 					</div>
-					<div class="text-xs text-muted-foreground">
+					<div class="text-xs text-slate-400">
 						{#if hardwareImageDisabled}
 							{tapeHeight === 9
 								? UI_TEXT.settings.hardwareIcon.disabled9mm
@@ -742,7 +745,7 @@
 							data-testid="qr-code-switch-{index}"
 						/>
 					</div>
-					<div class="text-xs text-muted-foreground">
+					<div class="text-xs text-slate-400">
 						{qrDisabled ? UI_TEXT.settings.qrCode.disabled9mm : UI_TEXT.settings.qrCode.description}
 					</div>
 				</div>
@@ -752,7 +755,7 @@
 			<div>
 				<div class="mb-2 flex items-center justify-between">
 					<span class="font-medium">{UI_TEXT.settings.dimensions.labelWidth}</span>
-					<span class="text-sm font-medium">{width}mm</span>
+					<span class="font-mono text-sm font-medium">{width}mm</span>
 				</div>
 				<Slider
 					bind:value={width}
@@ -777,7 +780,7 @@
 							data-testid="qr-code-switch-{index}"
 						/>
 					</div>
-					<div class="text-xs text-muted-foreground">
+					<div class="text-xs text-slate-400">
 						{qrDisabled ? UI_TEXT.settings.qrCode.disabled9mm : UI_TEXT.settings.qrCode.description}
 					</div>
 				</div>
@@ -786,7 +789,7 @@
 				<div class="min-w-0 flex-1">
 					<div class="mb-2 flex items-center justify-between">
 						<span class="text-sm font-medium">{UI_TEXT.settings.dimensions.labelWidth}</span>
-						<span class="text-sm font-medium">{width}mm</span>
+						<span class="font-mono text-sm font-medium">{width}mm</span>
 					</div>
 					<Slider
 						bind:value={width}

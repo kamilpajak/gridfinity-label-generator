@@ -5,6 +5,8 @@
 /* Import fonts globally for canvas rendering */
 @import '@fontsource/noto-sans/900.css'; /* Noto Sans Black 900 */
 @import '@fontsource/oswald/300.css'; /* Oswald Light 300 */
+@import '@fontsource/oswald/600.css'; /* Oswald SemiBold 600 — hero display */
+@import '@fontsource/fira-mono/400.css'; /* Fira Mono 400 — technical readouts */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -44,40 +46,41 @@
 }
 
 .dark {
-	--background: oklch(0.129 0.042 264.695);
-	--foreground: oklch(0.984 0.003 247.858);
+	--background: oklch(0.129 0.042 264.695); /* slate-950 */
+	--foreground: oklch(0.929 0.013 255.508); /* slate-200 */
 	--card: oklch(0.208 0.042 265.755);
-	--card-foreground: oklch(0.984 0.003 247.858);
+	--card-foreground: oklch(0.929 0.013 255.508); /* slate-200 */
 	--popover: oklch(0.208 0.042 265.755);
-	--popover-foreground: oklch(0.984 0.003 247.858);
-	--primary: oklch(0.929 0.013 255.508);
-	--primary-foreground: oklch(0.208 0.042 265.755);
+	--popover-foreground: oklch(0.929 0.013 255.508); /* slate-200 */
+	--primary: oklch(0.715 0.143 215.221); /* cyan-500 */
+	--primary-foreground: oklch(0.129 0.042 264.695); /* slate-950 */
 	--secondary: oklch(0.279 0.041 260.031);
-	--secondary-foreground: oklch(0.984 0.003 247.858);
+	--secondary-foreground: oklch(0.929 0.013 255.508); /* slate-200 */
 	--muted: oklch(0.279 0.041 260.031);
 	--muted-foreground: oklch(0.704 0.04 256.788);
 	--accent: oklch(0.279 0.041 260.031);
-	--accent-foreground: oklch(0.984 0.003 247.858);
+	--accent-foreground: oklch(0.929 0.013 255.508); /* slate-200 */
 	--destructive: oklch(0.704 0.191 22.216);
-	--border: oklch(1 0 0 / 10%);
-	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.551 0.027 264.364);
+	--border: oklch(0.279 0.041 260.031); /* slate-800 */
+	--input: oklch(0.372 0.044 257.287); /* slate-700 */
+	--ring: oklch(0.715 0.143 215.221); /* cyan-500 */
 	--chart-1: oklch(0.488 0.243 264.376);
 	--chart-2: oklch(0.696 0.17 162.48);
 	--chart-3: oklch(0.769 0.188 70.08);
 	--chart-4: oklch(0.627 0.265 303.9);
 	--chart-5: oklch(0.645 0.246 16.439);
 	--sidebar: oklch(0.208 0.042 265.755);
-	--sidebar-foreground: oklch(0.984 0.003 247.858);
-	--sidebar-primary: oklch(0.488 0.243 264.376);
-	--sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+	--sidebar-foreground: oklch(0.929 0.013 255.508); /* slate-200 */
+	--sidebar-primary: oklch(0.715 0.143 215.221); /* cyan-500 */
+	--sidebar-primary-foreground: oklch(0.129 0.042 264.695); /* slate-950 */
 	--sidebar-accent: oklch(0.279 0.041 260.031);
-	--sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-	--sidebar-border: oklch(1 0 0 / 10%);
-	--sidebar-ring: oklch(0.551 0.027 264.364);
+	--sidebar-accent-foreground: oklch(0.929 0.013 255.508); /* slate-200 */
+	--sidebar-border: oklch(0.279 0.041 260.031); /* slate-800 */
+	--sidebar-ring: oklch(0.715 0.143 215.221); /* cyan-500 */
 }
 
 @theme inline {
+	--font-mono: 'Fira Mono', ui-monospace, 'SFMono-Regular', 'Menlo', monospace;
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
@@ -169,12 +172,12 @@
 	width: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-	background: #f1f5f9;
+	background: #0f172a; /* slate-900 */
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-	background: #cbd5e1;
+	background: #334155; /* slate-700 */
 	border-radius: 4px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-	background: #94a3b8;
+	background: #475569; /* slate-600 */
 }

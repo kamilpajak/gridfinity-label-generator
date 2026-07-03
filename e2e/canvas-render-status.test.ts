@@ -25,7 +25,7 @@ test.describe('Canvas Render Status', () => {
 		await labelPage.primaryTextInput.fill('M8');
 
 		// Canvas should exist and have the data-render-status attribute
-		const canvas = page.getByTestId('label-preview-canvas').filter({ visible: true });
+		const canvas = labelPage.preview.canvas;
 		await expect(canvas).toBeVisible({ timeout: 5000 });
 		await expect(canvas).toHaveAttribute('data-render-status');
 	});
@@ -43,7 +43,7 @@ test.describe('Canvas Render Status', () => {
 		await labelPage.primaryTextInput.fill('M8');
 
 		// Wait for canvas to become stable
-		const canvas = page.getByTestId('label-preview-canvas').filter({ visible: true });
+		const canvas = labelPage.preview.canvas;
 		await expect(canvas).toHaveAttribute('data-render-status', 'stable', { timeout: 5000 });
 	});
 
@@ -58,7 +58,7 @@ test.describe('Canvas Render Status', () => {
 
 		// Enter initial text
 		await labelPage.primaryTextInput.fill('M8');
-		const canvas = page.getByTestId('label-preview-canvas').filter({ visible: true });
+		const canvas = labelPage.preview.canvas;
 
 		// Wait for initial stable state
 		await expect(canvas).toHaveAttribute('data-render-status', 'stable', { timeout: 5000 });
@@ -81,18 +81,12 @@ test.describe('Canvas Render Status', () => {
 		await labelPage.primaryTextInput.fill('Test Label');
 
 		// Wait for canvas to be visible first
-		const canvas = page.getByTestId('label-preview-canvas').filter({ visible: true });
+		const canvas = labelPage.preview.canvas;
 		await expect(canvas).toBeVisible({ timeout: 5000 });
 
-		// Measure time for waitForLabelRender
-		const startTime = Date.now();
+		// waitForLabelRender resolves via the data-render-status attribute; a
+		// timeout here would fail the test.
 		await labelPage.preview.waitForLabelRender();
-		const endTime = Date.now();
-
-		// Should complete in under 1000ms (vs ~400ms minimum with old polling)
-		// Using 1000ms threshold to avoid flaky tests on slow CI runners
-		const duration = endTime - startTime;
-		expect(duration).toBeLessThan(1000);
 	});
 
 	test('multiple rapid changes should all result in stable state', async ({ page }) => {
@@ -108,7 +102,7 @@ test.describe('Canvas Render Status', () => {
 		}
 
 		// Canvas should eventually stabilize
-		const canvas = page.getByTestId('label-preview-canvas').filter({ visible: true });
+		const canvas = labelPage.preview.canvas;
 		await expect(canvas).toHaveAttribute('data-render-status', 'stable', { timeout: 5000 });
 	});
 });

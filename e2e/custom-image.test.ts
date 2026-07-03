@@ -289,26 +289,17 @@ test.describe('Custom Image - Batch Mode Persistence', () => {
 		await batchPage.waitForLabel(0);
 
 		// Wait for localStorage save (debounced 500ms + image encoding + state save)
-		await expect
-			.poll(
-				async () => {
-					const stored = await page.evaluate(() => localStorage.getItem('gridscribe_batch_v1'));
-					return stored?.includes('data:image/') ?? false;
-				},
-				{ timeout: 5000 }
-			)
-			.toBe(true);
+		await batchPage.waitForImagePersisted();
 
 		// Reload page
-		await page.reload();
-		await page.waitForLoadState('networkidle');
+		await batchPage.reload();
 
 		// Navigate back to batch mode
 		await batchPage.navigation.switchToBatchMode();
 		await batchPage.waitForLabel(0);
 
 		// The row chip should still render the custom image (an <img> element)
-		const rowImage = batchPage.getLabelRow(0).locator('img');
+		const rowImage = batchPage.getRowImage(0);
 		await expect(rowImage.first()).toBeVisible();
 	});
 

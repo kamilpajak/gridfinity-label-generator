@@ -12,6 +12,7 @@ export class WhatsNewModal {
 	readonly closeButton: Locator;
 	readonly closeButtonFooter: Locator;
 	readonly entries: Locator;
+	readonly categoryTags: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -21,6 +22,19 @@ export class WhatsNewModal {
 		this.closeButton = page.getByTestId('whats-new-modal-close');
 		this.closeButtonFooter = page.getByTestId('whats-new-modal-close-button');
 		this.entries = page.getByTestId('whats-new-entry');
+		this.categoryTags = page.getByTestId('category-tag');
+	}
+
+	/**
+	 * Navigate to the app and wait for the header (including this modal's trigger)
+	 * to be ready. Replaces an inline goto + networkidle wait in tests.
+	 */
+	async goto(): Promise<void> {
+		await this.page.goto('/');
+		// networkidle lets Svelte 5 hydration finish before the modal trigger is
+		// clicked (required for Chromium/WebKit).
+		await this.page.waitForLoadState('networkidle');
+		await this.button.waitFor({ state: 'visible' });
 	}
 
 	async open(): Promise<void> {
@@ -59,6 +73,10 @@ export class WhatsNewModal {
 
 	async getEntryCount(): Promise<number> {
 		return await this.entries.count();
+	}
+
+	async getCategoryTagCount(): Promise<number> {
+		return await this.categoryTags.count();
 	}
 
 	async getEntryVersions(): Promise<string[]> {

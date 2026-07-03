@@ -29,41 +29,13 @@ test.describe('Batch Export DPI', () => {
 		await batchPage.addLabel();
 
 		// Wait for the export button to show "1" - this confirms the label was added
-		await page.waitForSelector('button:has-text("Export Batch (1) Print-Ready PNGs")', {
-			timeout: 5000
-		});
+		await batchPage.exportSection.waitForExportButtonCount(1);
 
 		// Set up canvas dimension interception BEFORE clicking export
-		const canvasDimensionsPromise = page.evaluate(() => {
-			return new Promise<{ width: number; height: number }>((resolve) => {
-				// Spy on HTMLCanvasElement.prototype.toBlob
-				const originalToBlob = HTMLCanvasElement.prototype.toBlob;
-				HTMLCanvasElement.prototype.toBlob = function (
-					callback: BlobCallback,
-					type?: string,
-					quality?: number
-				) {
-					// Capture canvas dimensions before blob creation
-					const dimensions = {
-						width: this.width,
-						height: this.height
-					};
-
-					// Restore original toBlob immediately
-					HTMLCanvasElement.prototype.toBlob = originalToBlob;
-
-					// Resolve with dimensions
-					resolve(dimensions);
-
-					// Call original toBlob
-					return originalToBlob.call(this, callback, type, quality);
-				};
-			});
-		});
+		const canvasDimensionsPromise = batchPage.exportSection.captureNextExportCanvasDimensions();
 
 		// Click export button
-		const exportButton = page.locator('button:has-text("Export Batch")');
-		await exportButton.click();
+		await batchPage.exportSection.clickExport();
 
 		// Wait for canvas dimensions to be captured
 		const dimensions = await canvasDimensionsPromise;
@@ -87,6 +59,6 @@ test.describe('Batch Export DPI', () => {
 		}
 
 		// Verify export success message
-		await expect(page.locator('text=✓ Exported')).toBeVisible({ timeout: 5000 });
+		await batchPage.exportSection.expectExportSuccess();
 	});
 });

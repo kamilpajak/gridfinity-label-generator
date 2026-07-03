@@ -10,11 +10,10 @@ test.describe('Batch Mode - Default Values', () => {
 		await batchPage.goto();
 
 		// The shared form's length input is empty by default (matches single mode)
-		const lengthInput = page.getByTestId('length-input');
-		expect(await lengthInput.inputValue()).toBe('');
+		const form = new SingleModePage(page);
+		expect(await form.getLengthValue()).toBe('');
 
 		// Configure a general label and snapshot it
-		const form = new SingleModePage(page);
 		await form.selectMode('general');
 		await form.fillPrimaryText('Widget');
 

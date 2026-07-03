@@ -5,9 +5,13 @@ import { ExportSection } from '../components/ExportSection';
 import { SingleLabelPreview } from '../components/SingleLabelPreview';
 import { ImageUploaderComponent } from '../components/ImageUploader';
 import { LabelSizeToggle } from '../components/LabelSizeToggle';
-import { HardwareSelector } from '../components/HardwareSelector';
+import { HardwareSelector, HARDWARE_SELECT_TESTID } from '../components/HardwareSelector';
 import { QRCodeSection } from '../components/QRCodeSection';
-import { ThreadSizeSelector } from '../components/ThreadSizeSelector';
+import {
+	ThreadSizeSelector,
+	THREAD_SIZE_SELECT_TESTID,
+	PITCH_SELECT_TESTID
+} from '../components/ThreadSizeSelector';
 import {
 	LABEL_WIDTH_SLIDER_RANGE,
 	type LabelSize,
@@ -16,6 +20,14 @@ import {
 	type CreateLabelOptions
 } from '../../types/page-objects';
 import { setSliderValue } from '../../utils/slider-helpers';
+import { getComputedBackground, hasMutedForegroundClass } from '../../utils/style-helpers';
+
+/** Test ids of the three select fields whose placeholder styling is verified together */
+const SELECT_FIELD_TESTIDS = [
+	HARDWARE_SELECT_TESTID,
+	THREAD_SIZE_SELECT_TESTID,
+	PITCH_SELECT_TESTID
+] as const;
 
 /**
  * Page object for Single Label mode
@@ -66,8 +78,6 @@ export class SingleModePage extends BasePage {
 	readonly clearButton: Locator;
 
 	// Legacy locators (kept for backward compatibility)
-	readonly labelSize9mm: Locator;
-	readonly labelSize12mm: Locator;
 	readonly hardwareSelectButton: Locator;
 	readonly hardwareSearchInput: Locator;
 	readonly hardwareSearchResults: Locator;
@@ -123,8 +133,6 @@ export class SingleModePage extends BasePage {
 		this.clearButton = page.getByTestId('clear-button');
 
 		// Legacy locators (delegated to components but kept for backward compatibility)
-		this.labelSize9mm = this.labelSizeToggle.button9mm;
-		this.labelSize12mm = this.labelSizeToggle.button12mm;
 		this.hardwareSelectButton = this.hardwareSelector.button;
 		this.hardwareSearchInput = this.hardwareSelector.searchInput;
 		this.hardwareSearchResults = this.hardwareSelector.searchResults;
@@ -136,6 +144,8 @@ export class SingleModePage extends BasePage {
 	async goto() {
 		await this.page.goto('/');
 		await this.page.waitForLoadState('domcontentloaded');
+		// networkidle is load-bearing here: it lets Svelte hydration finish before
+		// tests click controls (SSR renders elements enabled before handlers attach).
 		await this.page.waitForLoadState('networkidle');
 		await this.page.waitForSelector('[data-testid="label-mode-toggle"]', { state: 'visible' });
 		await expect(this.fastenerModeButton).toBeEnabled();
@@ -212,6 +222,11 @@ export class SingleModePage extends BasePage {
 
 	async isHardwareImageEnabled(): Promise<boolean> {
 		return await this.hardwareImageSwitch.isChecked();
+	}
+
+	async toggleStandardReference() {
+		await this.standardReferenceSwitch.click();
+		await this.preview.waitForLabelRender();
 	}
 
 	// ============================================
@@ -363,12 +378,54 @@ export class SingleModePage extends BasePage {
 	}
 
 	async getLabelWidth(): Promise<number> {
-		const value = await this.labelWidthSlider.inputValue();
-		return parseInt(value, 10);
+		// The bits-ui slider exposes its current value via aria-valuenow on the
+		// role="slider" thumb (the testid element is the wrapper).
+		const value = await this.labelWidthSlider.getByRole('slider').getAttribute('aria-valuenow');
+		return value ? parseInt(value, 10) : LABEL_WIDTH_SLIDER_RANGE.min;
 	}
 
 	async getLabelWidthDisplay(): Promise<string> {
 		return (await this.labelWidthValue.textContent()) || '';
+	}
+
+	// ============================================
+	// Select Field Placeholder Styling
+	// ============================================
+
+	/**
+	 * True when every empty select field (hardware, thread size, pitch) has a
+	 * placeholder element carrying the `text-muted-foreground` class.
+	 */
+	async allSelectPlaceholdersMuted(): Promise<boolean> {
+		const states = await this.getSelectPlaceholderMutedStates();
+		return states.every((state) => state.hasMutedClass);
+	}
+
+	/**
+	 * Per-field report of whether each select field's placeholder has the
+	 * `text-muted-foreground` class.
+	 */
+	async getSelectPlaceholderMutedStates(): Promise<{ testId: string; hasMutedClass: boolean }[]> {
+		const results: { testId: string; hasMutedClass: boolean }[] = [];
+		for (const testId of SELECT_FIELD_TESTIDS) {
+			results.push({
+				testId,
+				hasMutedClass: await hasMutedForegroundClass(this.page, testId)
+			});
+		}
+		return results;
+	}
+
+	/**
+	 * Computed background colors of the three select fields (hardware, thread
+	 * size, pitch), in that order.
+	 */
+	async getSelectBackgroundColors(): Promise<(string | null)[]> {
+		const colors: (string | null)[] = [];
+		for (const testId of SELECT_FIELD_TESTIDS) {
+			colors.push(await getComputedBackground(this.page, testId));
+		}
+		return colors;
 	}
 
 	// ============================================

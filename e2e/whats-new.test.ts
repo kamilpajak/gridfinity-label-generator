@@ -5,10 +5,8 @@ test.describe("What's New Modal", () => {
 	let whatsNew: WhatsNewModal;
 
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/');
-		// Wait for Svelte 5 hydration to complete (required for Chromium/Webkit)
-		await page.waitForLoadState('networkidle');
 		whatsNew = new WhatsNewModal(page);
+		await whatsNew.goto();
 	});
 
 	test("should display What's New button in header", async () => {
@@ -57,10 +55,9 @@ test.describe("What's New Modal", () => {
 		expect(versions[0]).toMatch(/Version \d+\.\d+\.\d+/);
 	});
 
-	test('should have category tags', async ({ page }) => {
+	test('should have category tags', async () => {
 		await whatsNew.open();
-		const categoryTags = page.getByTestId('category-tag');
-		const tagCount = await categoryTags.count();
+		const tagCount = await whatsNew.getCategoryTagCount();
 		expect(tagCount).toBeGreaterThan(0);
 	});
 });

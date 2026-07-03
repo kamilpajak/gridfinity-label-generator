@@ -199,6 +199,24 @@ describe('validateLength', () => {
 				message: 'Invalid length format'
 			});
 		});
+
+		it('should reject lengths above the maximum', () => {
+			expect(validateLength('1000')).toEqual({ isValid: true });
+			expect(validateLength('1001')).toEqual({
+				isValid: false,
+				message: 'Length must be 1000 or less'
+			});
+			expect(validateLength('999999')).toEqual({
+				isValid: false,
+				message: 'Length must be 1000 or less'
+			});
+			// Imperial magnitudes are bounded too (fractions/mixed parse to a number).
+			expect(validateLength('2000', 'imperial')).toEqual({
+				isValid: false,
+				message: 'Length must be 1000 or less'
+			});
+			expect(validateLength('1 1/2', 'imperial')).toEqual({ isValid: true });
+		});
 	});
 });
 

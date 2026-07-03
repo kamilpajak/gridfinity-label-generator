@@ -1,6 +1,6 @@
 <script lang="ts">
 	// Fonts are now imported globally in app.css
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import type { ISODINStandard } from '$lib/data/standards';
 	import type { CustomImage } from '$lib/types/batch';
 	import TagIcon from '@lucide/svelte/icons/tag';
@@ -57,7 +57,7 @@
 	}: Props = $props();
 
 	let container = $state<HTMLDivElement | undefined>(undefined);
-	let scale = $state(1);
+	let scale = 1;
 	// Bumped to force a canvas re-render (window/container resize, tab reveal).
 	let renderNonce = $state(0);
 
@@ -349,17 +349,9 @@
 		}
 	});
 
-	onMount(() => {
-		// Re-render on window resize.
-		const handleResize = () => {
-			renderNonce++;
-		};
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
-	});
-
-	// Re-render when the preview container changes size — covers becoming visible
-	// after mounting hidden (e.g. the batch-mode draft preview on tab switch).
+	// Re-render when the preview container changes size — covers window resizes
+	// (the chip width is min(100%, …)) and becoming visible after mounting hidden
+	// (e.g. the batch-mode draft preview on tab switch).
 	$effect(() => {
 		if (!container || typeof ResizeObserver === 'undefined') return;
 		const observer = new ResizeObserver(() => {

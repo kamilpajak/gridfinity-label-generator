@@ -15,19 +15,26 @@
 	// Local, drag-reorderable copy of the labels. Kept in sync with the store,
 	// but mutated live during a drag (svelte-dnd-action reassigns it on
 	// `consider`), so it must be writable $state — not a $derived.
-	// eslint-disable-next-line svelte/prefer-writable-derived
 	let items = $state<BatchLabel[]>([]);
+	// While a drag is in progress, do NOT let a store change clobber the
+	// in-flight ordered array (svelte-dnd-action would lose its shadow item).
+	let dragging = $state(false);
 	$effect(() => {
-		items = [...batchState.labels];
+		const labels = batchState.labels;
+		if (!dragging) {
+			items = [...labels];
+		}
 	});
 
 	function handleConsider(e: CustomEvent<DndEvent<BatchLabel>>) {
+		dragging = true;
 		items = e.detail.items;
 	}
 
 	function handleFinalize(e: CustomEvent<DndEvent<BatchLabel>>) {
 		items = e.detail.items;
 		batchStore.reorder(items);
+		dragging = false;
 	}
 
 	function remove(id: string) {

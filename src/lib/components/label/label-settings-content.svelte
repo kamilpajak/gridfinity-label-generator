@@ -57,6 +57,7 @@
 				checked={showStandard}
 				onCheckedChange={onShowStandardChange}
 				disabled={standardReferenceDisabled}
+				aria-label={UI_TEXT.settings.standardReference.title}
 				data-testid="standard-reference-switch"
 			/>
 		</div>
@@ -92,6 +93,7 @@
 				checked={showHardwareImage}
 				onCheckedChange={onShowHardwareImageChange}
 				disabled={hardwareImageDisabled}
+				aria-label={UI_TEXT.settings.hardwareIcon.title}
 				data-testid="hardware-image-switch"
 			/>
 		</div>
@@ -125,6 +127,7 @@
 				checked={showQRCode}
 				onCheckedChange={onShowQRCodeChange}
 				disabled={qrCodeDisabled}
+				aria-label={UI_TEXT.settings.qrCode.title}
 				data-testid="qr-code-switch"
 			/>
 		</div>

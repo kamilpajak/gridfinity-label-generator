@@ -133,6 +133,23 @@
 	<div class="border-t border-slate-700/50 pt-4">
 		<h4 class="mb-3 font-medium tracking-tight">{UI_TEXT.settings.dimensions.title}</h4>
 		<div class="space-y-3">
+			<div>
+				<div class="mb-2 flex items-center justify-between">
+					<span class="text-sm text-muted-foreground">{UI_TEXT.settings.dimensions.labelWidth}</span
+					>
+					<span class="font-mono text-sm text-cyan-400">{labelWidth}mm</span>
+				</div>
+				<Slider
+					value={labelWidth}
+					onValueChange={onLabelWidthChange}
+					type="single"
+					min={35}
+					max={100}
+					step={1}
+					class="w-full"
+					data-testid="label-width-slider"
+				/>
+			</div>
 			{#if !hideHeight}
 				<div>
 					<div class="mb-2 text-sm text-muted-foreground">
@@ -151,23 +168,6 @@
 					</ToggleGroup>
 				</div>
 			{/if}
-			<div>
-				<div class="mb-2 flex items-center justify-between">
-					<span class="text-sm text-muted-foreground">{UI_TEXT.settings.dimensions.labelWidth}</span
-					>
-					<span class="font-mono text-sm text-cyan-400">{labelWidth}mm</span>
-				</div>
-				<Slider
-					value={labelWidth}
-					onValueChange={onLabelWidthChange}
-					type="single"
-					min={35}
-					max={100}
-					step={1}
-					class="w-full"
-					data-testid="label-width-slider"
-				/>
-			</div>
 		</div>
 	</div>
 </div>

@@ -163,10 +163,36 @@ export class BatchModePage extends BasePage {
 	}
 
 	/**
-	 * The image element rendered inside a batch row chip (custom label image).
+	 * The canvas the batch row chip renders into. Chips render through the same
+	 * canvas pipeline as the export, so images are drawn onto this canvas rather
+	 * than as a separate <img> element.
 	 */
-	getRowImage(index: number): Locator {
-		return this.getLabelRow(index).locator('img');
+	getRowCanvas(index: number): Locator {
+		return this.getLabelRow(index).locator('canvas');
+	}
+
+	/**
+	 * Whether the row chip canvas contains a colored (non-grayscale) pixel.
+	 * Label text is black-on-white (grayscale), so a colored pixel means a custom
+	 * image was drawn onto the chip. Used to assert a persisted image re-renders.
+	 */
+	async rowChipHasColoredPixel(index: number): Promise<boolean> {
+		const canvas = this.getRowCanvas(index);
+		await canvas.waitFor({ state: 'visible' });
+		return canvas.evaluate((el) => {
+			const cv = el as HTMLCanvasElement;
+			const ctx = cv.getContext('2d');
+			if (!ctx || cv.width === 0 || cv.height === 0) return false;
+			const { data } = ctx.getImageData(0, 0, cv.width, cv.height);
+			for (let i = 0; i < data.length; i += 4) {
+				const r = data[i];
+				const g = data[i + 1];
+				const b = data[i + 2];
+				// Colored = meaningful spread between channels (not gray/black/white).
+				if (Math.max(r, g, b) - Math.min(r, g, b) > 40) return true;
+			}
+			return false;
+		});
 	}
 
 	async waitForLabel(index: number, timeout: number = 5000) {

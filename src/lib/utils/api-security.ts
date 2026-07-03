@@ -8,12 +8,12 @@
  */
 
 import * as ipaddr from 'ipaddr.js';
+import { env } from '$env/dynamic/public';
 
-const PRODUCTION_DOMAIN = 'gridfinitylabels.com';
-const ALLOWED_ORIGINS = [
-	`https://${PRODUCTION_DOMAIN}`,
-	`https://www.${PRODUCTION_DOMAIN}`,
-	// Development origins
+// localhost dev origins are always allowed; production/self-host origins come from
+// PUBLIC_ALLOWED_ORIGINS (comma-separated) so forks can serve /api/shorten from
+// their own domain instead of a hardcoded one.
+const LOCALHOST_ORIGINS = [
 	'http://localhost:5173',
 	'http://localhost:4173',
 	'http://localhost:3000',
@@ -21,6 +21,15 @@ const ALLOWED_ORIGINS = [
 	'http://127.0.0.1:4173',
 	'http://127.0.0.1:3000'
 ];
+
+/** The full allowlist: localhost defaults plus configured origins, lowercased. */
+function getAllowedOrigins(): string[] {
+	const configured = (env.PUBLIC_ALLOWED_ORIGINS ?? '')
+		.split(',')
+		.map((origin) => origin.trim().toLowerCase())
+		.filter(Boolean);
+	return [...LOCALHOST_ORIGINS, ...configured];
+}
 
 /**
  * Validates if a string is a valid HTTP/HTTPS URL
@@ -124,5 +133,5 @@ export function isAllowedOrigin(origin: string | null | undefined): boolean {
 
 	const normalizedOrigin = origin.toLowerCase();
 
-	return ALLOWED_ORIGINS.some((allowed) => allowed.toLowerCase() === normalizedOrigin);
+	return getAllowedOrigins().some((allowed) => allowed === normalizedOrigin);
 }

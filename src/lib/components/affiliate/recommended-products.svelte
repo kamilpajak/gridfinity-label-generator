@@ -63,49 +63,52 @@
 		}}
 		data-testid="affiliate-product-{product.id}"
 	>
-		<div class="flex gap-3">
-			<!-- Product icon -->
-			<div
-				class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-slate-800 transition-all {hasLink
-					? 'group-hover:bg-slate-700 group-hover:shadow-sm'
-					: ''}"
-			>
-				<IconComponent class="h-6 w-6 text-slate-400" />
-			</div>
-
-			<!-- Product info -->
-			<div class="min-w-0 flex-1">
-				<h5
-					class="mb-1 text-sm font-bold text-slate-100 transition-colors {hasLink
-						? 'group-hover:text-cyan-400'
+		<div class="flex flex-col gap-2">
+			<!-- Top row: icon + (name, price & badge) -->
+			<div class="flex items-center gap-3">
+				<div
+					class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 transition-all {hasLink
+						? 'group-hover:border-slate-700'
 						: ''}"
 				>
-					{product.name}
-					{#if hasLink}
-						<ExternalLink class="ml-1 inline h-3 w-3 opacity-0 group-hover:opacity-50" />
-					{/if}
-				</h5>
-				<p class="mb-2 line-clamp-3 text-xs whitespace-pre-line text-slate-400">
-					{product.description}
-				</p>
-				<div class="flex items-center justify-between">
-					<span class="text-sm font-bold text-cyan-400">{product.priceDisplay}</span>
-					{#if product.badge}
-						<span
-							class="rounded px-2 py-0.5 text-[10px] font-medium {product.badge.includes('Value')
-								? 'bg-emerald-500/15 text-emerald-400'
-								: 'bg-indigo-500/15 text-indigo-400'}"
-						>
-							{product.badge}
-						</span>
-					{:else if product.rating}
-						<span class="flex items-center gap-1 text-[10px] text-slate-400">
-							<Star class="h-3 w-3 fill-amber-400 text-amber-400" />
-							{product.rating}
-						</span>
-					{/if}
+					<IconComponent class="h-5 w-5 text-slate-400" />
+				</div>
+
+				<div class="min-w-0 flex-1">
+					<h5
+						class="text-sm font-bold text-slate-100 transition-colors {hasLink
+							? 'group-hover:text-cyan-400'
+							: ''}"
+					>
+						{product.name}
+						{#if hasLink}
+							<ExternalLink class="ml-1 inline h-3 w-3 opacity-0 group-hover:opacity-50" />
+						{/if}
+					</h5>
+					<div class="mt-0.5 flex items-center gap-2">
+						<span class="text-sm font-bold text-cyan-400">{product.priceDisplay}</span>
+						{#if product.badge}
+							<span
+								class="rounded px-2 py-0.5 text-[10px] font-medium {product.badge.includes('Value')
+									? 'bg-emerald-500/15 text-emerald-400'
+									: 'bg-indigo-500/15 text-indigo-400'}"
+							>
+								{product.badge}
+							</span>
+						{:else if product.rating}
+							<span class="flex items-center gap-1 text-[10px] text-slate-400">
+								<Star class="h-3 w-3 fill-amber-400 text-amber-400" />
+								{product.rating}
+							</span>
+						{/if}
+					</div>
 				</div>
 			</div>
+
+			<!-- Description below -->
+			<p class="line-clamp-3 text-xs whitespace-pre-line text-slate-400">
+				{product.description}
+			</p>
 		</div>
 	</a>
 

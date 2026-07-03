@@ -1,4 +1,11 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+// The allowlist is now env-driven; production/self-host origins come from
+// PUBLIC_ALLOWED_ORIGINS. Mock it to the reference deployment for these tests.
+vi.mock('$env/dynamic/public', () => ({
+	env: { PUBLIC_ALLOWED_ORIGINS: 'https://gridfinitylabels.com,https://www.gridfinitylabels.com' }
+}));
+
 import { isValidUrl, isPrivateOrLocalUrl, isAllowedOrigin, sanitizeUrl } from './api-security';
 
 describe('URL Validation', () => {

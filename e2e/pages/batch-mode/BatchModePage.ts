@@ -1,14 +1,17 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator } from '@playwright/test';
 import { BasePage } from '../base/BasePage';
 import { NavigationTabs } from '../components/NavigationTabs';
 import { ExportSection } from '../components/ExportSection';
-import { ImageUploaderComponent } from '../components/ImageUploader';
 import { LabelSizeToggle } from '../components/LabelSizeToggle';
 import type { LabelSize } from '../../types/page-objects';
 
 /**
- * Page object for Batch Mode
- * Handles all interactions specific to creating multiple labels in batch
+ * Page object for Batch Mode.
+ *
+ * In the new batch model the sidebar form is IDENTICAL to single mode. You
+ * configure a label with the shared form (reuse SingleModePage form methods on
+ * an already-loaded batch page) and click "Add Current Label" to snapshot it
+ * into a read-only, drag-reorderable list. Rows are not editable.
  */
 export class BatchModePage extends BasePage {
 	// Composed Components
@@ -19,6 +22,11 @@ export class BatchModePage extends BasePage {
 	// Label management
 	readonly addLabelButton: Locator;
 	readonly progressText: Locator;
+
+	// Main-area locators
+	readonly emptyState: Locator;
+	readonly draftPreview: Locator;
+	readonly labelList: Locator;
 
 	// Legacy locators (kept for backward compatibility)
 	readonly tapeHeight9mm: Locator;
@@ -36,6 +44,11 @@ export class BatchModePage extends BasePage {
 		this.addLabelButton = page.getByTestId('add-label-button');
 		this.progressText = page.getByTestId('batch-progress-text');
 
+		// Main-area locators
+		this.emptyState = page.getByTestId('batch-empty-state');
+		this.draftPreview = page.getByTestId('batch-draft-preview');
+		this.labelList = page.getByTestId('batch-label-list');
+
 		// Legacy locators (delegated to component)
 		this.tapeHeight9mm = this.tapeHeightToggle.button9mm;
 		this.tapeHeight12mm = this.tapeHeightToggle.button12mm;
@@ -50,7 +63,6 @@ export class BatchModePage extends BasePage {
 		await this.navigation.switchToBatchMode();
 		// Wait for critical elements to be visible and ready
 		await this.addLabelButton.waitFor({ state: 'visible' });
-		await expect(this.addLabelButton).toBeEnabled();
 	}
 
 	// ============================================
@@ -73,6 +85,9 @@ export class BatchModePage extends BasePage {
 	// Label Management Methods
 	// ============================================
 
+	/**
+	 * Snapshot the current shared-form configuration into the batch list.
+	 */
 	async addLabel() {
 		await this.addLabelButton.waitFor({ state: 'visible' });
 
@@ -117,52 +132,45 @@ export class BatchModePage extends BasePage {
 		await this.getLabelRow(index).waitFor({ state: 'visible', timeout });
 	}
 
-	async duplicateLabel(index: number) {
-		const duplicateButton = this.page.getByTestId(`duplicate-label-button-${index}`);
-		await duplicateButton.click();
-		await this.waitForUiUpdate();
-	}
-
-	async deleteLabel(index: number) {
-		const deleteButton = this.page.getByTestId(`delete-label-button-${index}`);
-		await deleteButton.click();
-		await this.waitForUiUpdate();
-	}
-
-	// ============================================
-	// Label Mode Methods
-	// ============================================
-
 	/**
-	 * Switch label mode between Hardware and General Item
-	 * @param index - Label index (0-based)
-	 * @param mode - Target mode: 'hardware' or 'general'
+	 * Count of rendered read-only label rows.
 	 */
-	async switchLabelMode(index: number, mode: 'hardware' | 'general') {
-		const modeToggle = this.page.getByTestId(`label-mode-toggle-${index}`);
-		const buttonText = mode === 'general' ? 'General Item' : 'Hardware';
-		const button = modeToggle.locator(`button:has-text("${buttonText}")`);
-		await button.click();
+	async getRowCount(): Promise<number> {
+		return this.page.locator('[data-testid^="batch-label-row-"]').count();
+	}
+
+	async removeLabel(index: number) {
+		const removeButton = this.page.getByTestId(`remove-label-button-${index}`);
+		await removeButton.click();
 		await this.waitForUiUpdate();
 	}
 
 	// ============================================
-	// Component Accessors
+	// Chip Methods
+	// ============================================
+
+	getChipPrimary(index: number): Locator {
+		return this.page.getByTestId(`batch-chip-primary-${index}`);
+	}
+
+	async getChipPrimaryText(index: number): Promise<string> {
+		return (await this.getChipPrimary(index).textContent())?.trim() ?? '';
+	}
+
+	// ============================================
+	// Reorder (keyboard drag via svelte-dnd-action)
 	// ============================================
 
 	/**
-	 * Get ImageUploader component for a specific label
-	 * @param index - Label index (0-based)
+	 * Reorder a row using svelte-dnd-action keyboard dragging.
+	 * Focus the row, press Space to enter drag mode, arrow to move, Space to drop.
 	 */
-	getImageUploader(index: number): ImageUploaderComponent {
-		return new ImageUploaderComponent(this.page, index);
-	}
-
-	/**
-	 * Get primary text input for a label
-	 * @param index - Label index (0-based)
-	 */
-	getPrimaryTextInput(index: number): Locator {
-		return this.page.getByTestId(`primary-text-input-${index}`);
+	async reorderByKeyboard(index: number, direction: 'up' | 'down') {
+		const row = this.getLabelRow(index);
+		await row.focus();
+		await this.page.keyboard.press('Space');
+		await this.page.keyboard.press(direction === 'up' ? 'ArrowUp' : 'ArrowDown');
+		await this.page.keyboard.press('Space');
+		await this.waitForUiUpdate();
 	}
 }

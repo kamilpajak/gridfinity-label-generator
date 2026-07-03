@@ -2,16 +2,15 @@
 	import { onMount } from 'svelte';
 	import { renderBatchTape } from '$lib/utils/batch-renderer';
 	import { exportBatchTapeAsPNG } from '$lib/utils/batch-exporter';
-	import type { BatchState } from '$lib/types/batch';
+	import type { BatchRenderData } from '$lib/types/batch';
 
 	let canvas: HTMLCanvasElement;
 	let status = 'Ready to render';
 	let error = '';
 
 	// Hard-coded batch for visual validation
-	const testBatch: BatchState = {
+	const testBatch: BatchRenderData = {
 		height: 12,
-		maxLabels: 20,
 		labels: [
 			{
 				mode: 'fastener',

@@ -1,6 +1,23 @@
 import { writable, get } from 'svelte/store';
-import type { BatchState, BatchLabelConfig, TapeHeight } from '$lib/types/batch';
+import type { BatchState, BatchLabel, BatchLabelConfig, TapeHeight } from '$lib/types/batch';
 import { DEFAULT_BATCH_STATE } from '$lib/types/batch';
+
+/** Generate a stable unique id for a batch label. */
+function newLabelId(): string {
+	if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+		return crypto.randomUUID();
+	}
+	// Fallback for environments without crypto.randomUUID
+	return `label-${Date.now()}-${Math.floor(Math.random() * 1e9)}`;
+}
+
+/** Strip the qrCode field from a label (used when tape height is 9mm). */
+function stripQrCode<T extends { qrCode?: string }>(label: T): T {
+	if (!label.qrCode) return label;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { qrCode: _qrCode, ...rest } = label;
+	return rest as T;
+}
 
 const STORAGE_KEY = 'gridscribe_batch_v1';
 const STORAGE_VERSION = 1;
@@ -43,7 +60,15 @@ function loadFromStorage(): BatchState {
 			return { ...DEFAULT_BATCH_STATE };
 		}
 
-		return parsed.data;
+		// Backfill ids for labels persisted before the id field existed, so old
+		// data is upgraded in place instead of discarded.
+		return {
+			...parsed.data,
+			labels: parsed.data.labels.map((label) => ({
+				...label,
+				id: label.id ?? newLabelId()
+			}))
+		};
 	} catch (error) {
 		console.warn('Failed to load batch from localStorage:', error);
 		return { ...DEFAULT_BATCH_STATE };
@@ -100,11 +125,7 @@ function createBatchStore() {
 				const newState = { ...state, height };
 				// Remove QR codes from all labels if switching to 9mm
 				if (height === 9) {
-					newState.labels = newState.labels.map((label) => {
-						// eslint-disable-next-line @typescript-eslint/no-unused-vars
-						const { qrCode: _qrCode, ...rest } = label;
-						return rest as BatchLabelConfig;
-					});
+					newState.labels = newState.labels.map((label) => stripQrCode(label));
 				}
 				return newState;
 			});
@@ -114,15 +135,12 @@ function createBatchStore() {
 				if (state.labels.length >= state.maxLabels) {
 					return state;
 				}
-				// Strip QR code if height is 9mm
-				const cleanedLabel =
-					state.height === 9 && label.qrCode
-						? // eslint-disable-next-line @typescript-eslint/no-unused-vars
-							(({ qrCode: _qrCode, ...rest }) => rest as BatchLabelConfig)(label)
-						: label;
+				// Strip QR code if height is 9mm, then assign a fresh id.
+				const cleaned = state.height === 9 ? stripQrCode(label) : label;
+				const stored: BatchLabel = { ...cleaned, id: newLabelId() };
 				return {
 					...state,
-					labels: [...state.labels, cleanedLabel]
+					labels: [...state.labels, stored]
 				};
 			});
 		},
@@ -137,19 +155,21 @@ function createBatchStore() {
 				};
 			});
 		},
+		removeLabelById: (id: string) => {
+			update((state) => ({
+				...state,
+				labels: state.labels.filter((label) => label.id !== id)
+			}));
+		},
 		updateLabel: (index: number, label: BatchLabelConfig) => {
 			update((state) => {
 				if (index < 0 || index >= state.labels.length) {
 					return state;
 				}
-				// Strip QR code if height is 9mm
-				const cleanedLabel =
-					state.height === 9 && label.qrCode
-						? // eslint-disable-next-line @typescript-eslint/no-unused-vars
-							(({ qrCode: _qrCode, ...rest }) => rest as BatchLabelConfig)(label)
-						: label;
+				// Strip QR code if height is 9mm; preserve the existing id.
+				const cleaned = state.height === 9 ? stripQrCode(label) : label;
 				const newLabels = [...state.labels];
-				newLabels[index] = cleanedLabel;
+				newLabels[index] = { ...cleaned, id: state.labels[index].id };
 				return {
 					...state,
 					labels: newLabels
@@ -163,15 +183,16 @@ function createBatchStore() {
 				}
 				const labelToDuplicate = state.labels[index];
 
-				// Deep copy for GeneralLabelConfig with customImage
-				let duplicatedLabel: BatchLabelConfig;
+				// Deep copy for GeneralLabelConfig with customImage; always a fresh id.
+				let duplicatedLabel: BatchLabel;
 				if (labelToDuplicate.mode === 'general' && labelToDuplicate.customImage) {
 					duplicatedLabel = {
 						...labelToDuplicate,
-						customImage: { ...labelToDuplicate.customImage }
+						customImage: { ...labelToDuplicate.customImage },
+						id: newLabelId()
 					};
 				} else {
-					duplicatedLabel = { ...labelToDuplicate };
+					duplicatedLabel = { ...labelToDuplicate, id: newLabelId() };
 				}
 
 				return {
@@ -179,6 +200,10 @@ function createBatchStore() {
 					labels: [...state.labels, duplicatedLabel]
 				};
 			});
+		},
+		/** Replace the label order with a reordered array (same labels, e.g. from drag-and-drop). */
+		reorder: (labels: BatchLabel[]) => {
+			update((state) => ({ ...state, labels: [...labels] }));
 		},
 		reorderLabels: (fromIndex: number, toIndex: number) => {
 			update((state) => {

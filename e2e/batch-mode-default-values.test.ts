@@ -3,29 +3,28 @@ import { BatchModePage } from './pages/batch-mode/BatchModePage';
 import { SingleModePage } from './pages/single-mode/SingleModePage';
 
 test.describe('Batch Mode - Default Values', () => {
-	test('should have empty length field matching single mode behavior', async ({ page }) => {
-		const singlePage = new SingleModePage(page);
+	test('shared length field is empty by default and adding a label appends one row', async ({
+		page
+	}) => {
 		const batchPage = new BatchModePage(page);
+		await batchPage.goto();
 
-		await singlePage.goto();
+		// The shared form's length input is empty by default (matches single mode)
+		const lengthInput = page.getByTestId('length-input');
+		expect(await lengthInput.inputValue()).toBe('');
 
-		const singleModeLength = page.getByTestId('length-input');
-		const singleModeValue = await singleModeLength.inputValue();
+		// Configure a general label and snapshot it
+		const form = new SingleModePage(page);
+		await form.selectMode('general');
+		await form.fillPrimaryText('Widget');
 
-		// Switch to batch mode
-		await batchPage.navigation.switchToBatchMode();
+		expect(await batchPage.getRowCount()).toBe(0);
 
-		// Add first label
 		await batchPage.addLabel();
 		await batchPage.waitForLabel(0);
 
-		// Check batch mode default
-		const batchModeLength = page.locator('input[id^="length-"]').first();
-		const batchModeValue = await batchModeLength.inputValue();
-
-		// Both should be empty strings
-		expect(singleModeValue).toBe('');
-		expect(batchModeValue).toBe('');
-		expect(batchModeValue).toBe(singleModeValue);
+		// Adding appends exactly one read-only row reflecting the configured text
+		expect(await batchPage.getRowCount()).toBe(1);
+		expect(await batchPage.getChipPrimaryText(0)).toContain('Widget');
 	});
 });

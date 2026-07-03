@@ -40,6 +40,9 @@
 	import { exportCanvasLabelAsPNG } from '$lib/utils/label-exporter';
 	import { validateLength, type ValidationResult } from '$lib/utils/input-validator';
 	import BatchModePanel from '$lib/components/batch/batch-mode-panel.svelte';
+	import { batchStore } from '$lib/stores/batch-store';
+	import { formStateToBatchConfig } from '$lib/utils/batch-config';
+	import PlusIcon from '@lucide/svelte/icons/plus';
 	import ImageUploader from '$lib/components/shared/image-uploader.svelte';
 	import type { CustomImage } from '$lib/types/batch';
 	import { UI_TEXT } from '$lib/constants/ui-text';
@@ -423,6 +426,55 @@
 		customImage = undefined;
 		showCustomImage = true;
 	}
+
+	// ---- Batch mode ----
+	const batchState = $derived($batchStore);
+	const canAddLabel = $derived(batchState.labels.length < batchState.maxLabels);
+
+	// In batch mode the tape height is global (batchStore); mirror it into the
+	// page's labelHeight so the shared form logic and the draft preview react to
+	// it. The batch tape-height toggle only calls batchStore.setHeight.
+	$effect(() => {
+		if (mode === 'batch') {
+			const h = String(batchState.height);
+			untrack(() => {
+				if (labelHeight !== h) {
+					labelHeight = h;
+				}
+			});
+		}
+	});
+
+	function handleBatchHeightChange(value: string | undefined) {
+		if (value) {
+			batchStore.setHeight(value === '9' ? 9 : 12);
+		}
+	}
+
+	// Snapshot the current shared-form configuration into the batch.
+	function handleAddCurrentLabel() {
+		if (!canAddLabel) return;
+		const config = formStateToBatchConfig({
+			labelMode,
+			measurementSystem,
+			threadSize,
+			pitch,
+			threadType,
+			length,
+			primaryText,
+			secondaryText,
+			optionalNote,
+			qrCodeUrl,
+			selectedStandardId,
+			showStandard,
+			showHardwareImage,
+			showQRCode,
+			labelWidth,
+			customImage,
+			showCustomImage
+		});
+		batchStore.addLabel(config);
+	}
 </script>
 
 {#snippet mutedPlaceholder(text: string)}
@@ -485,350 +537,393 @@
 				>
 			</Tabs.List>
 
-			{#if mode === 'single'}
-				<!-- Product Information -->
+			<!-- Product Information (shared by single + batch) -->
+			<div class="space-y-5">
+				<div class="flex items-center justify-between">
+					<h2 class="text-xs font-bold tracking-widest text-slate-400 uppercase">
+						Product Information
+					</h2>
+					<Button
+						variant="ghost"
+						size="sm"
+						onclick={clearForm}
+						class="gap-1.5 text-[10px] font-bold tracking-wider text-slate-500 uppercase hover:bg-slate-800 hover:text-slate-300"
+						data-testid="clear-button"
+					>
+						<RotateCcwIcon class="h-3 w-3" />
+						{UI_TEXT.buttons.clear}
+					</Button>
+				</div>
+
 				<div class="space-y-5">
-					<div class="flex items-center justify-between">
-						<h2 class="text-xs font-bold tracking-widest text-slate-400 uppercase">
-							Product Information
-						</h2>
-						<Button
-							variant="ghost"
-							size="sm"
-							onclick={clearForm}
-							class="gap-1.5 text-[10px] font-bold tracking-wider text-slate-500 uppercase hover:bg-slate-800 hover:text-slate-300"
-							data-testid="clear-button"
+					<div class="space-y-2">
+						<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+							>{UI_TEXT.productType.label}</label
 						>
-							<RotateCcwIcon class="h-3 w-3" />
-							{UI_TEXT.buttons.clear}
-						</Button>
+						<ToggleGroup
+							value={labelMode}
+							onValueChange={handleLabelModeChange}
+							variant="outline"
+							type="single"
+							size="default"
+							class="w-full"
+							data-testid="label-mode-toggle"
+						>
+							<ToggleGroupItem
+								value="fastener"
+								class="min-h-[44px] flex-1"
+								data-testid="mode-fastener">{UI_TEXT.productType.fastener}</ToggleGroupItem
+							>
+							<ToggleGroupItem
+								value="general"
+								class="min-h-[44px] flex-1"
+								data-testid="mode-general">{UI_TEXT.productType.generalItem}</ToggleGroupItem
+							>
+						</ToggleGroup>
 					</div>
 
-					<div class="space-y-5">
-						<div class="space-y-2">
-							<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-								>{UI_TEXT.productType.label}</label
+					<div class="space-y-2">
+						<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+							>{UI_TEXT.measurementSystem.label}</label
+						>
+						<ToggleGroup
+							value={measurementSystem}
+							onValueChange={handleMeasurementSystemChange}
+							variant="outline"
+							type="single"
+							size="default"
+							class="w-full {measurementSystemDisabled ? 'pointer-events-none opacity-50' : ''}"
+						>
+							<ToggleGroupItem
+								value="metric"
+								class="min-h-[44px] flex-1"
+								data-testid="metric-button">{UI_TEXT.measurementSystem.metric}</ToggleGroupItem
 							>
-							<ToggleGroup
-								value={labelMode}
-								onValueChange={handleLabelModeChange}
-								variant="outline"
-								type="single"
-								size="default"
-								class="w-full"
-								data-testid="label-mode-toggle"
+							<ToggleGroupItem
+								value="imperial"
+								class="min-h-[44px] flex-1"
+								data-testid="imperial-button">{UI_TEXT.measurementSystem.imperial}</ToggleGroupItem
 							>
-								<ToggleGroupItem
-									value="fastener"
-									class="min-h-[44px] flex-1"
-									data-testid="mode-fastener">{UI_TEXT.productType.fastener}</ToggleGroupItem
-								>
-								<ToggleGroupItem
-									value="general"
-									class="min-h-[44px] flex-1"
-									data-testid="mode-general">{UI_TEXT.productType.generalItem}</ToggleGroupItem
-								>
-							</ToggleGroup>
-						</div>
-
-						<div class="space-y-2">
-							<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-								>{UI_TEXT.measurementSystem.label}</label
-							>
-							<ToggleGroup
-								value={measurementSystem}
-								onValueChange={handleMeasurementSystemChange}
-								variant="outline"
-								type="single"
-								size="default"
-								class="w-full {measurementSystemDisabled ? 'pointer-events-none opacity-50' : ''}"
-							>
-								<ToggleGroupItem
-									value="metric"
-									class="min-h-[44px] flex-1"
-									data-testid="metric-button">{UI_TEXT.measurementSystem.metric}</ToggleGroupItem
-								>
-								<ToggleGroupItem
-									value="imperial"
-									class="min-h-[44px] flex-1"
-									data-testid="imperial-button"
-									>{UI_TEXT.measurementSystem.imperial}</ToggleGroupItem
-								>
-							</ToggleGroup>
-						</div>
+						</ToggleGroup>
 					</div>
+				</div>
 
-					{#if labelMode === 'fastener'}
-						<div class="space-y-2">
-							<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-								>{UI_TEXT.fields.standard}{@render requiredMark()}</label
-							>
-							<Popover.Root bind:open={standardsOpen}>
-								<Popover.Trigger>
-									{#snippet child({ props })}
-										<Button
-											{...props}
-											variant="outline"
-											role="combobox"
-											aria-expanded={standardsOpen}
-											class="w-full justify-between font-normal"
-											data-testid="hardware-select"
-										>
-											{#if selectedStandard}
-												{formatDesignations(selectedStandard)}
-											{:else}
-												{@render mutedPlaceholder(UI_TEXT.placeholders.selectStandard)}
-											{/if}
-											<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-										</Button>
-									{/snippet}
-								</Popover.Trigger>
-								<!-- Width: max 400px on desktop, full viewport minus 1rem padding on each side on mobile -->
-								<Popover.Content
-									class="w-[min(400px,calc(100vw-2rem))] rounded-xl border-slate-700 p-0 shadow-2xl"
-								>
-									<StandardSearch
-										standards={standardsWithImages}
-										onSelect={(id) => {
-											selectedStandardId = id;
-											closeStandardsAndFocusTrigger();
-										}}
-									/>
-								</Popover.Content>
-							</Popover.Root>
-						</div>
-
-						<div class="space-y-2">
-							<label
-								for="optional-note"
-								class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-								>{UI_TEXT.fields.note}</label
-							>
-							<Input
-								id="optional-note"
-								bind:value={optionalNote}
-								placeholder={UI_TEXT.placeholders.note}
-								class="w-full"
-								data-testid="optional-note-input"
-							/>
-						</div>
-
-						<div class="grid grid-cols-2 gap-4">
-							<div class="space-y-2">
-								<label
-									for="thread-size"
-									class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-									>{UI_TEXT.fields.threadSize}{@render requiredMark()}</label
-								>
-								<Select bind:value={threadSize} type="single">
-									<SelectTrigger id="thread-size" class="w-full" data-testid="thread-size-select">
-										{#if threadSize}
-											{threadSize}
-										{:else}
-											{@render mutedPlaceholder(UI_TEXT.placeholders.selectSize)}
-										{/if}
-									</SelectTrigger>
-									<SelectContent>
-										{#each availableThreadSizes as size (size)}
-											<SelectItem value={size}>{size}</SelectItem>
-										{/each}
-									</SelectContent>
-								</Select>
-							</div>
-							<div class="space-y-2">
-								<label
-									for="pitch"
-									class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-									>{UI_TEXT.fields.threadPitch}</label
-								>
-								<Select bind:value={pitch} type="single">
-									<SelectTrigger
-										id="pitch"
-										class="w-full"
-										data-testid="pitch-select"
-										disabled={pitchDisabled}
+				{#if labelMode === 'fastener'}
+					<div class="space-y-2">
+						<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+							>{UI_TEXT.fields.standard}{@render requiredMark()}</label
+						>
+						<Popover.Root bind:open={standardsOpen}>
+							<Popover.Trigger>
+								{#snippet child({ props })}
+									<Button
+										{...props}
+										variant="outline"
+										role="combobox"
+										aria-expanded={standardsOpen}
+										class="w-full justify-between font-normal"
+										data-testid="hardware-select"
 									>
-										{#if pitch}
-											{availablePitchOptions.find((p) => p.value === pitch)?.label}
+										{#if selectedStandard}
+											{formatDesignations(selectedStandard)}
 										{:else}
-											{@render mutedPlaceholder(UI_TEXT.placeholders.selectPitch)}
+											{@render mutedPlaceholder(UI_TEXT.placeholders.selectStandard)}
 										{/if}
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value=""
-											>{measurementSystem === 'imperial'
-												? UI_TEXT.placeholders.standardPitchImperial
-												: UI_TEXT.placeholders.standardPitchMetric}</SelectItem
-										>
-										{#each availablePitchOptions as pitchOption (pitchOption.value)}
-											<SelectItem value={pitchOption.value}>{pitchOption.label}</SelectItem>
-										{/each}
-									</SelectContent>
-								</Select>
-							</div>
-							<div class="col-span-2 space-y-2">
-								<label
-									for="length"
-									class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-									>{UI_TEXT.fields.length} ({measurementSystem === 'metric'
-										? 'mm'
-										: 'in'}){#if !lengthDisabled}{@render requiredMark()}{/if}</label
-								>
-								<Input
-									id="length"
-									bind:value={length}
-									placeholder={lengthPlaceholder}
-									class="w-full {showLengthError ? 'border-destructive' : ''}"
-									disabled={lengthDisabled}
-									data-testid="length-input"
-									onblur={() => (lengthTouched = true)}
-									aria-invalid={showLengthError}
+										<ChevronsUpDownIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+									</Button>
+								{/snippet}
+							</Popover.Trigger>
+							<!-- Width: max 400px on desktop, full viewport minus 1rem padding on each side on mobile -->
+							<Popover.Content
+								class="w-[min(400px,calc(100vw-2rem))] rounded-xl border-slate-700 p-0 shadow-2xl"
+							>
+								<StandardSearch
+									standards={standardsWithImages}
+									onSelect={(id) => {
+										selectedStandardId = id;
+										closeStandardsAndFocusTrigger();
+									}}
 								/>
-								{#if showLengthError}
-									<p class="mt-1 text-sm text-destructive">
-										{lengthValidationResult.message}
-									</p>
-								{/if}
-							</div>
-						</div>
-					{:else}
-						<div class="space-y-5">
-							<div class="space-y-2">
-								<label
-									for="primary-text"
-									class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-									>{UI_TEXT.fields.primaryText}</label
-								>
-								<Input
-									id="primary-text"
-									bind:value={primaryText}
-									placeholder={UI_TEXT.placeholders.primaryText}
-									class="w-full"
-									data-testid="primary-text-input"
-								/>
-							</div>
-							<div class="space-y-2">
-								<label
-									for="secondary-text"
-									class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-									>{UI_TEXT.fields.secondaryText}</label
-								>
-								<Input
-									id="secondary-text"
-									bind:value={secondaryText}
-									placeholder={UI_TEXT.placeholders.secondaryText}
-									class="w-full"
-									data-testid="secondary-text-input"
-								/>
-							</div>
-
-							<!-- Custom Image (12mm only) -->
-							{#if labelHeight === '12'}
-								<div class="space-y-2">
-									<div class="flex items-center justify-between">
-										<label
-											class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-										>
-											Custom Image
-										</label>
-										{#if customImage}
-											<div class="flex items-center gap-2">
-												<span class="text-xs text-slate-400">Show on label</span>
-												<Switch bind:checked={showCustomImage} />
-											</div>
-										{/if}
-									</div>
-									<ImageUploader
-										bind:value={customImage}
-										disabled={false}
-										testId="custom-image-uploader-single"
-									/>
-								</div>
-							{/if}
-						</div>
-					{/if}
+							</Popover.Content>
+						</Popover.Root>
+					</div>
 
 					<div class="space-y-2">
 						<label
-							for="qr-code-url"
+							for="optional-note"
 							class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-							>{UI_TEXT.fields.qrCode}</label
+							>{UI_TEXT.fields.note}</label
 						>
 						<Input
-							id="qr-code-url"
-							bind:value={qrCodeUrl}
-							placeholder={UI_TEXT.placeholders.qrCode}
+							id="optional-note"
+							bind:value={optionalNote}
+							placeholder={UI_TEXT.placeholders.note}
 							class="w-full"
-							disabled={!showQRCode || qrCodeDisabled}
-							data-testid="qr-code-url-input"
+							data-testid="optional-note-input"
 						/>
 					</div>
-				</div>
 
-				<hr class="border-slate-800/60" />
-
-				<!-- Label Settings: mobile collapsible -->
-				<div class="lg:hidden">
-					<button
-						onclick={() => (settingsExpanded = !settingsExpanded)}
-						class="flex w-full items-center justify-between text-left"
-					>
-						<span class="text-xs font-bold tracking-widest text-slate-400 uppercase"
-							>{UI_TEXT.cards.labelSettings}</span
-						>
-						<ChevronDownIcon
-							class="h-5 w-5 text-slate-500 transition-transform duration-200 {settingsExpanded
-								? 'rotate-180'
-								: ''}"
-						/>
-					</button>
-					{#if settingsExpanded}
-						<div transition:slide={{ duration: 200 }} class="pt-4">
-							<LabelSettingsContent
-								{showStandard}
-								{showHardwareImage}
-								{showQRCode}
-								{labelHeight}
-								{labelWidth}
-								{standardReferenceDisabled}
-								{hardwareImageDisabled}
-								{qrCodeDisabled}
-								onShowStandardChange={(v) => (showStandard = v)}
-								onShowHardwareImageChange={(v) => (showHardwareImage = v)}
-								onShowQRCodeChange={(v) => (showQRCode = v)}
-								onLabelHeightChange={handleLabelHeightChange}
-								onLabelWidthChange={(v) => (labelWidth = v)}
+					<div class="grid grid-cols-2 gap-4">
+						<div class="space-y-2">
+							<label
+								for="thread-size"
+								class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.fields.threadSize}{@render requiredMark()}</label
+							>
+							<Select bind:value={threadSize} type="single">
+								<SelectTrigger id="thread-size" class="w-full" data-testid="thread-size-select">
+									{#if threadSize}
+										{threadSize}
+									{:else}
+										{@render mutedPlaceholder(UI_TEXT.placeholders.selectSize)}
+									{/if}
+								</SelectTrigger>
+								<SelectContent>
+									{#each availableThreadSizes as size (size)}
+										<SelectItem value={size}>{size}</SelectItem>
+									{/each}
+								</SelectContent>
+							</Select>
+						</div>
+						<div class="space-y-2">
+							<label
+								for="pitch"
+								class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.fields.threadPitch}</label
+							>
+							<Select bind:value={pitch} type="single">
+								<SelectTrigger
+									id="pitch"
+									class="w-full"
+									data-testid="pitch-select"
+									disabled={pitchDisabled}
+								>
+									{#if pitch}
+										{availablePitchOptions.find((p) => p.value === pitch)?.label}
+									{:else}
+										{@render mutedPlaceholder(UI_TEXT.placeholders.selectPitch)}
+									{/if}
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value=""
+										>{measurementSystem === 'imperial'
+											? UI_TEXT.placeholders.standardPitchImperial
+											: UI_TEXT.placeholders.standardPitchMetric}</SelectItem
+									>
+									{#each availablePitchOptions as pitchOption (pitchOption.value)}
+										<SelectItem value={pitchOption.value}>{pitchOption.label}</SelectItem>
+									{/each}
+								</SelectContent>
+							</Select>
+						</div>
+						<div class="col-span-2 space-y-2">
+							<label
+								for="length"
+								class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.fields.length} ({measurementSystem === 'metric'
+									? 'mm'
+									: 'in'}){#if !lengthDisabled}{@render requiredMark()}{/if}</label
+							>
+							<Input
+								id="length"
+								bind:value={length}
+								placeholder={lengthPlaceholder}
+								class="w-full {showLengthError ? 'border-destructive' : ''}"
+								disabled={lengthDisabled}
+								data-testid="length-input"
+								onblur={() => (lengthTouched = true)}
+								aria-invalid={showLengthError}
+							/>
+							{#if showLengthError}
+								<p class="mt-1 text-sm text-destructive">
+									{lengthValidationResult.message}
+								</p>
+							{/if}
+						</div>
+					</div>
+				{:else}
+					<div class="space-y-5">
+						<div class="space-y-2">
+							<label
+								for="primary-text"
+								class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.fields.primaryText}</label
+							>
+							<Input
+								id="primary-text"
+								bind:value={primaryText}
+								placeholder={UI_TEXT.placeholders.primaryText}
+								class="w-full"
+								data-testid="primary-text-input"
 							/>
 						</div>
-					{/if}
-				</div>
+						<div class="space-y-2">
+							<label
+								for="secondary-text"
+								class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.fields.secondaryText}</label
+							>
+							<Input
+								id="secondary-text"
+								bind:value={secondaryText}
+								placeholder={UI_TEXT.placeholders.secondaryText}
+								class="w-full"
+								data-testid="secondary-text-input"
+							/>
+						</div>
 
-				<!-- Label Settings: desktop inline -->
-				<div class="hidden lg:block">
-					<h2 class="mb-5 text-xs font-bold tracking-widest text-slate-400 uppercase">
-						{UI_TEXT.cards.labelSettings}
-					</h2>
-					<LabelSettingsContent
-						{showStandard}
-						{showHardwareImage}
-						{showQRCode}
-						{labelHeight}
-						{labelWidth}
-						{standardReferenceDisabled}
-						{hardwareImageDisabled}
-						{qrCodeDisabled}
-						onShowStandardChange={(v) => (showStandard = v)}
-						onShowHardwareImageChange={(v) => (showHardwareImage = v)}
-						onShowQRCodeChange={(v) => (showQRCode = v)}
-						onLabelHeightChange={handleLabelHeightChange}
-						onLabelWidthChange={(v) => (labelWidth = v)}
+						<!-- Custom Image (12mm only) -->
+						{#if labelHeight === '12'}
+							<div class="space-y-2">
+								<div class="flex items-center justify-between">
+									<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase">
+										Custom Image
+									</label>
+									{#if customImage}
+										<div class="flex items-center gap-2">
+											<span class="text-xs text-slate-400">Show on label</span>
+											<Switch bind:checked={showCustomImage} />
+										</div>
+									{/if}
+								</div>
+								<ImageUploader
+									bind:value={customImage}
+									disabled={false}
+									testId="custom-image-uploader-single"
+								/>
+							</div>
+						{/if}
+					</div>
+				{/if}
+
+				<div class="space-y-2">
+					<label
+						for="qr-code-url"
+						class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+						>{UI_TEXT.fields.qrCode}</label
+					>
+					<Input
+						id="qr-code-url"
+						bind:value={qrCodeUrl}
+						placeholder={UI_TEXT.placeholders.qrCode}
+						class="w-full"
+						disabled={!showQRCode || qrCodeDisabled}
+						data-testid="qr-code-url-input"
 					/>
 				</div>
-				<hr class="border-slate-800/60" />
+			</div>
 
+			<hr class="border-slate-800/60" />
+
+			<!-- Label Settings: mobile collapsible -->
+			<div class="lg:hidden">
+				<button
+					onclick={() => (settingsExpanded = !settingsExpanded)}
+					class="flex w-full items-center justify-between text-left"
+				>
+					<span class="text-xs font-bold tracking-widest text-slate-400 uppercase"
+						>{UI_TEXT.cards.labelSettings}</span
+					>
+					<ChevronDownIcon
+						class="h-5 w-5 text-slate-500 transition-transform duration-200 {settingsExpanded
+							? 'rotate-180'
+							: ''}"
+					/>
+				</button>
+				{#if settingsExpanded}
+					<div transition:slide={{ duration: 200 }} class="pt-4">
+						<LabelSettingsContent
+							{showStandard}
+							{showHardwareImage}
+							{showQRCode}
+							{labelHeight}
+							{labelWidth}
+							{standardReferenceDisabled}
+							{hardwareImageDisabled}
+							{qrCodeDisabled}
+							hideHeight={mode === 'batch'}
+							onShowStandardChange={(v) => (showStandard = v)}
+							onShowHardwareImageChange={(v) => (showHardwareImage = v)}
+							onShowQRCodeChange={(v) => (showQRCode = v)}
+							onLabelHeightChange={handleLabelHeightChange}
+							onLabelWidthChange={(v) => (labelWidth = v)}
+						/>
+					</div>
+				{/if}
+			</div>
+
+			<!-- Label Settings: desktop inline -->
+			<div class="hidden lg:block">
+				<h2 class="mb-5 text-xs font-bold tracking-widest text-slate-400 uppercase">
+					{UI_TEXT.cards.labelSettings}
+				</h2>
+				<LabelSettingsContent
+					{showStandard}
+					{showHardwareImage}
+					{showQRCode}
+					{labelHeight}
+					{labelWidth}
+					{standardReferenceDisabled}
+					{hardwareImageDisabled}
+					{qrCodeDisabled}
+					hideHeight={mode === 'batch'}
+					onShowStandardChange={(v) => (showStandard = v)}
+					onShowHardwareImageChange={(v) => (showHardwareImage = v)}
+					onShowQRCodeChange={(v) => (showQRCode = v)}
+					onLabelHeightChange={handleLabelHeightChange}
+					onLabelWidthChange={(v) => (labelWidth = v)}
+				/>
+			</div>
+			<hr class="border-slate-800/60" />
+
+			{#if mode === 'single'}
 				<RecommendedProducts />
 			{:else}
-				<BatchModePanel view="sidebar" />
+				<!-- Batch Settings -->
+				<div class="space-y-5">
+					<h2 class="text-xs font-bold tracking-widest text-slate-400 uppercase">Batch Settings</h2>
+
+					<div class="space-y-2">
+						<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+							>Tape Height (Global)</label
+						>
+						<ToggleGroup
+							value={String(batchState.height)}
+							onValueChange={handleBatchHeightChange}
+							variant="outline"
+							type="single"
+							class="w-full"
+							data-testid="tape-height-toggle"
+						>
+							<ToggleGroupItem value="9" class="min-h-[44px] flex-1" data-testid="tape-height-9mm"
+								>9mm</ToggleGroupItem
+							>
+							<ToggleGroupItem value="12" class="min-h-[44px] flex-1" data-testid="tape-height-12mm"
+								>12mm</ToggleGroupItem
+							>
+						</ToggleGroup>
+					</div>
+
+					<div class="flex items-center justify-between text-sm">
+						<span class="font-bold text-slate-300">Progress</span>
+						<span class="font-mono text-xs text-cyan-400" data-testid="batch-progress-text"
+							>{batchState.labels.length} / {batchState.maxLabels} labels</span
+						>
+					</div>
+
+					<Button
+						onclick={handleAddCurrentLabel}
+						disabled={!canAddLabel}
+						class="w-full gap-2 font-bold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40"
+						data-testid="add-label-button"
+					>
+						<PlusIcon class="h-4 w-4" />
+						Add Current Label
+						{#if !canAddLabel}
+							<span class="text-xs">(Max {batchState.maxLabels})</span>
+						{/if}
+					</Button>
+				</div>
 			{/if}
 		</div>
 	</aside>
@@ -839,43 +934,76 @@
 	>
 		<div class="flex flex-1 flex-col p-4 sm:p-8 lg:p-12">
 			<Tabs.Content value="single" class="flex flex-1 flex-col items-center justify-center gap-8">
-				<LabelPreview
-					primaryText={labelPrimaryText}
-					secondaryText={labelSecondaryText}
-					{optionalNote}
-					standard={selectedStandard}
-					{showStandard}
-					{showHardwareImage}
-					{showQRCode}
-					{qrCodeUrl}
-					labelHeight={parseInt(labelHeight)}
-					{labelWidth}
-					bind:canvasRef
-					{customImage}
-					{showCustomImage}
-				/>
-				<Button
-					onclick={downloadLabelAsPNG}
-					variant="default"
-					size="lg"
-					class="h-auto gap-2 rounded-xl px-8 py-4 text-sm font-bold shadow-lg shadow-cyan-500/25 transition-shadow hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]"
-					disabled={!hasContent || !isFormValid}
-					title={!hasContent
-						? UI_TEXT.errors.addTextToExport
-						: !isFastenerComplete()
-							? UI_TEXT.errors.fastenerIncomplete
-							: !isFormValid
-								? UI_TEXT.errors.fixValidation
-								: UI_TEXT.errors.exportTitle}
-					data-testid="export-button"
-				>
-					<DownloadIcon class="h-5 w-5" />
-					{UI_TEXT.buttons.downloadPNG}
-				</Button>
+				{#if mode === 'single'}
+					<LabelPreview
+						primaryText={labelPrimaryText}
+						secondaryText={labelSecondaryText}
+						{optionalNote}
+						standard={selectedStandard}
+						{showStandard}
+						{showHardwareImage}
+						{showQRCode}
+						{qrCodeUrl}
+						labelHeight={parseInt(labelHeight)}
+						{labelWidth}
+						bind:canvasRef
+						{customImage}
+						{showCustomImage}
+					/>
+					<Button
+						onclick={downloadLabelAsPNG}
+						variant="default"
+						size="lg"
+						class="h-auto gap-2 rounded-xl px-8 py-4 text-sm font-bold shadow-lg shadow-cyan-500/25 transition-shadow hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]"
+						disabled={!hasContent || !isFormValid}
+						title={!hasContent
+							? UI_TEXT.errors.addTextToExport
+							: !isFastenerComplete()
+								? UI_TEXT.errors.fastenerIncomplete
+								: !isFormValid
+									? UI_TEXT.errors.fixValidation
+									: UI_TEXT.errors.exportTitle}
+						data-testid="export-button"
+					>
+						<DownloadIcon class="h-5 w-5" />
+						{UI_TEXT.buttons.downloadPNG}
+					</Button>
+				{/if}
 			</Tabs.Content>
 
-			<Tabs.Content value="batch" class="flex flex-1 flex-col justify-center">
-				<BatchModePanel view="main" />
+			<Tabs.Content value="batch" class="flex-1">
+				{#if mode === 'batch'}
+					<div class="mx-auto w-full max-w-4xl space-y-12 py-4">
+						<!-- Draft preview of the current sidebar configuration -->
+						<div class="space-y-4">
+							<h2 class="text-center text-sm font-bold tracking-widest text-slate-400 uppercase">
+								Draft Label Preview
+							</h2>
+							<div
+								class="rounded-3xl border border-slate-800/80 bg-slate-900/50 p-8 backdrop-blur"
+								data-testid="batch-draft-preview"
+							>
+								<LabelPreview
+									primaryText={labelPrimaryText}
+									secondaryText={labelSecondaryText}
+									{optionalNote}
+									standard={selectedStandard}
+									{showStandard}
+									{showHardwareImage}
+									{showQRCode}
+									{qrCodeUrl}
+									labelHeight={parseInt(labelHeight)}
+									{labelWidth}
+									{customImage}
+									{showCustomImage}
+								/>
+							</div>
+						</div>
+
+						<!-- Batch collection + export -->
+						<BatchModePanel />
+					</div>
+				{/if}
 			</Tabs.Content>
 
 			<!-- Footer -->

@@ -15,6 +15,8 @@
 		standardReferenceDisabled: boolean;
 		hardwareImageDisabled: boolean;
 		qrCodeDisabled: boolean;
+		/** Hide the tape-height toggle (batch mode owns height globally). */
+		hideHeight?: boolean;
 		onShowStandardChange: (value: boolean) => void;
 		onShowHardwareImageChange: (value: boolean) => void;
 		onShowQRCodeChange: (value: boolean) => void;
@@ -31,6 +33,7 @@
 		standardReferenceDisabled,
 		hardwareImageDisabled,
 		qrCodeDisabled,
+		hideHeight = false,
 		onShowStandardChange,
 		onShowHardwareImageChange,
 		onShowQRCodeChange,
@@ -136,22 +139,24 @@
 	<div class="border-t border-slate-700/50 pt-4">
 		<h4 class="mb-3 font-medium tracking-tight">{UI_TEXT.settings.dimensions.title}</h4>
 		<div class="space-y-3">
-			<div>
-				<div class="mb-2 text-sm text-muted-foreground">
-					{UI_TEXT.settings.dimensions.labelHeight}
+			{#if !hideHeight}
+				<div>
+					<div class="mb-2 text-sm text-muted-foreground">
+						{UI_TEXT.settings.dimensions.labelHeight}
+					</div>
+					<ToggleGroup
+						value={labelHeight}
+						onValueChange={onLabelHeightChange}
+						variant="outline"
+						type="single"
+						class="w-full"
+						data-testid="label-height-toggle"
+					>
+						<ToggleGroupItem value="9" class="min-h-[44px] flex-1">9mm</ToggleGroupItem>
+						<ToggleGroupItem value="12" class="min-h-[44px] flex-1">12mm</ToggleGroupItem>
+					</ToggleGroup>
 				</div>
-				<ToggleGroup
-					value={labelHeight}
-					onValueChange={onLabelHeightChange}
-					variant="outline"
-					type="single"
-					class="w-full"
-					data-testid="label-height-toggle"
-				>
-					<ToggleGroupItem value="9" class="min-h-[44px] flex-1">9mm</ToggleGroupItem>
-					<ToggleGroupItem value="12" class="min-h-[44px] flex-1">12mm</ToggleGroupItem>
-				</ToggleGroup>
-			</div>
+			{/if}
 			<div>
 				<div class="mb-2 flex items-center justify-between">
 					<span class="text-sm text-muted-foreground">{UI_TEXT.settings.dimensions.labelWidth}</span

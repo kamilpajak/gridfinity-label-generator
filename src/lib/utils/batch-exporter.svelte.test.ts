@@ -4,7 +4,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { exportBatchTapeAsPNG } from './batch-exporter';
-import type { BatchState } from '$lib/types/batch';
+import type { BatchRenderData } from '$lib/types/batch';
 import * as batchRenderer from './batch-renderer';
 
 // Mock the batch renderer
@@ -77,7 +77,7 @@ describe('batch-exporter', () => {
 
 	describe('exportBatchTapeAsPNG', () => {
 		it('should throw error for empty batch', async () => {
-			const emptyBatch: BatchState = {
+			const emptyBatch: BatchRenderData = {
 				height: 12,
 				labels: [],
 				maxLabels: 20
@@ -89,7 +89,7 @@ describe('batch-exporter', () => {
 		});
 
 		it('should create canvas and call renderBatchTape', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -114,7 +114,7 @@ describe('batch-exporter', () => {
 		});
 
 		it('should use custom DPI when provided', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 9,
 				labels: [
 					{
@@ -136,7 +136,7 @@ describe('batch-exporter', () => {
 		});
 
 		it('should generate filename with timestamp and label count', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{ mode: 'general', primaryText: 'Label 1', width: 40 },
@@ -162,7 +162,7 @@ describe('batch-exporter', () => {
 		});
 
 		it('should create blob and trigger download', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [{ mode: 'general', primaryText: 'Test', width: 40 }],
 				maxLabels: 20
@@ -179,7 +179,7 @@ describe('batch-exporter', () => {
 		});
 
 		it('should handle render error gracefully', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [{ mode: 'general', primaryText: 'Test', width: 40 }],
 				maxLabels: 20
@@ -191,7 +191,7 @@ describe('batch-exporter', () => {
 		});
 
 		it('should handle blob creation failure', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [{ mode: 'general', primaryText: 'Test', width: 40 }],
 				maxLabels: 20
@@ -207,7 +207,7 @@ describe('batch-exporter', () => {
 		});
 
 		it('should export batch with mixed label modes', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -259,7 +259,7 @@ describe('batch-exporter', () => {
 				width: 40
 			}));
 
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels,
 				maxLabels: 20
@@ -279,7 +279,7 @@ describe('batch-exporter', () => {
 
 	describe('filename generation', () => {
 		it('should format timestamps with leading zeros', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [{ mode: 'general', primaryText: 'Test', width: 40 }],
 				maxLabels: 20
@@ -315,7 +315,7 @@ describe('batch-exporter', () => {
 					width: 40
 				}));
 
-				const batch: BatchState = { height: 12, labels, maxLabels: 20 };
+				const batch: BatchRenderData = { height: 12, labels, maxLabels: 20 };
 				await exportBatchTapeAsPNG({ batch });
 
 				const mockAnchor = createElementSpy.mock.results.find(
@@ -335,7 +335,7 @@ describe('batch-exporter', () => {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { exportCanvasLabelAsPNG } = await import('./label-exporter');
 
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [{ mode: 'general', primaryText: 'Test', width: 40 }],
 				maxLabels: 20

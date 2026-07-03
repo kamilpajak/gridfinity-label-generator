@@ -91,7 +91,8 @@ describe('batchStore', () => {
 
 			const state = get(batchStore);
 			expect(state.labels).toHaveLength(1);
-			expect(state.labels[0]).toEqual(label);
+			expect(state.labels[0]).toMatchObject(label);
+			expect(state.labels[0].id).toBeTruthy();
 		});
 
 		it('should add a general label', () => {
@@ -106,7 +107,8 @@ describe('batchStore', () => {
 
 			const state = get(batchStore);
 			expect(state.labels).toHaveLength(1);
-			expect(state.labels[0]).toEqual(label);
+			expect(state.labels[0]).toMatchObject(label);
+			expect(state.labels[0].id).toBeTruthy();
 		});
 
 		it('should not exceed max labels limit', () => {
@@ -172,7 +174,7 @@ describe('batchStore', () => {
 			batchStore.updateLabel(0, updated);
 
 			const state = get(batchStore);
-			expect(state.labels[0]).toEqual(updated);
+			expect(state.labels[0]).toMatchObject(updated);
 		});
 
 		it('should strip QR code if height is 9mm', () => {
@@ -214,7 +216,8 @@ describe('batchStore', () => {
 
 			const state = get(batchStore);
 			expect(state.labels).toHaveLength(2);
-			expect(state.labels[1]).toEqual(original);
+			expect(state.labels[1]).toMatchObject(original);
+			expect(state.labels[1].id).not.toBe(state.labels[0].id);
 		});
 
 		it('should duplicate toggle flags along with label data', () => {
@@ -234,7 +237,8 @@ describe('batchStore', () => {
 
 			const state = get(batchStore);
 			expect(state.labels).toHaveLength(2);
-			expect(state.labels[1]).toEqual(original);
+			expect(state.labels[1]).toMatchObject(original);
+			expect(state.labels[1].id).not.toBe(state.labels[0].id);
 			expect((state.labels[1] as FastenerLabelConfig).showImage).toBe(false);
 			expect((state.labels[1] as FastenerLabelConfig).showReference).toBe(true);
 			expect((state.labels[1] as FastenerLabelConfig).showQRCode).toBe(false);
@@ -324,7 +328,7 @@ describe('batchStore', () => {
 
 			const state = get(batchStore);
 			expect(state.labels).toHaveLength(2);
-			expect(state.labels[1]).toEqual(fastenerLabel);
+			expect(state.labels[1]).toMatchObject(fastenerLabel);
 		});
 	});
 

@@ -4,7 +4,7 @@
  * Renders multiple labels horizontally on a single canvas with cutting lines
  */
 
-import type { BatchState, BatchLabelConfig } from '$lib/types/batch';
+import type { BatchRenderData, BatchLabelConfig } from '$lib/types/batch';
 import { solveLabelLayout } from './label-constraint-solver';
 import { renderLabelToCanvas } from './label-renderer';
 import { formatPrimaryText, appendOptionalNote } from './label-formatter';
@@ -13,7 +13,7 @@ import { decimalToFraction } from './fraction-parser';
 
 export interface BatchRenderOptions {
 	canvas: HTMLCanvasElement;
-	batch: BatchState;
+	batch: BatchRenderData;
 	dpi?: number;
 	showMargins?: boolean;
 }
@@ -119,7 +119,7 @@ async function getHardwareImageAspectRatio(
 async function renderSingleLabel(
 	ctx: CanvasRenderingContext2D,
 	labelData: LabelRenderData,
-	batch: BatchState,
+	batch: BatchRenderData,
 	dpi: number,
 	showMargins: boolean,
 	currentX: number
@@ -292,13 +292,21 @@ function getStandardDesignationText(standard: ReturnType<typeof getStandardById>
 }
 
 /**
- * Calculates render data for a single label
+ * Derived, display-ready text for a batch label. Pure and synchronous — shared
+ * by the tape renderer (below) and the read-only preview chip so both stay in
+ * sync.
  */
-async function calculateLabelData(
-	config: BatchLabelConfig,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	_tapeHeight: number
-): Promise<LabelRenderData> {
+export interface DerivedLabelText {
+	primaryText: string;
+	secondaryText: string;
+	standard?: ReturnType<typeof getStandardById>;
+}
+
+/**
+ * Derives the primary/secondary text (and resolved standard) for a batch label
+ * config, matching the single-mode formatting rules.
+ */
+export function deriveLabelText(config: BatchLabelConfig): DerivedLabelText {
 	let primaryText = '';
 	let secondaryText = '';
 	let standard: ReturnType<typeof getStandardById> | undefined = undefined;
@@ -345,6 +353,19 @@ async function calculateLabelData(
 		// Append optional note to secondary text (matches single mode)
 		secondaryText = appendOptionalNote(config.secondaryText ?? '', config.note);
 	}
+
+	return { primaryText, secondaryText, standard };
+}
+
+/**
+ * Calculates render data for a single label
+ */
+async function calculateLabelData(
+	config: BatchLabelConfig,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	_tapeHeight: number
+): Promise<LabelRenderData> {
+	const { primaryText, secondaryText, standard } = deriveLabelText(config);
 
 	return {
 		config,

@@ -127,7 +127,7 @@
 	>
 		<h3 class="flex items-center gap-2 text-lg font-bold text-slate-100">
 			<Star class="h-4 w-4 text-amber-500" />
-			Recommended Products
+			Recommended
 		</h3>
 		<span
 			class="rounded-full border border-amber-500/20 bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold tracking-wide text-amber-400 uppercase"

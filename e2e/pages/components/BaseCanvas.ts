@@ -9,10 +9,14 @@ import { QRCodeValidator, type QRCodePixelData } from '../../utils/QRCodeValidat
 export class BaseCanvas {
 	protected page: Page;
 	readonly canvas: Locator;
+	readonly placeholder: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
+		// Each tab guards its preview with `{#if mode === ...}`, so only one
+		// `label-preview-canvas` / `label-preview-placeholder` is mounted at a time.
 		this.canvas = page.getByTestId('label-preview-canvas');
+		this.placeholder = page.getByTestId('label-preview-placeholder');
 	}
 
 	/**
@@ -20,6 +24,13 @@ export class BaseCanvas {
 	 */
 	async isVisible(): Promise<boolean> {
 		return await this.canvas.isVisible();
+	}
+
+	/**
+	 * Check if the "no content" placeholder is visible (canvas not rendered)
+	 */
+	async isPlaceholderVisible(): Promise<boolean> {
+		return await this.placeholder.isVisible();
 	}
 
 	/**
@@ -110,9 +121,11 @@ export class BaseCanvas {
 			return true;
 		}
 
+		const canvasHandle = await this.canvas.elementHandle();
+		if (!canvasHandle) return true;
+
 		return await this.page.evaluate(
-			({ labelW, guidelineColor }) => {
-				const canvas = document.querySelector('canvas');
+			({ canvas, labelW, guidelineColor }) => {
 				if (!canvas) return true;
 
 				const ctx = canvas.getContext('2d');
@@ -171,7 +184,7 @@ export class BaseCanvas {
 					maxY <= printableArea.bottom + tolerance
 				);
 			},
-			{ labelW: labelWidth, guidelineColor: GUIDELINE_COLOR_RGB }
+			{ canvas: canvasHandle, labelW: labelWidth, guidelineColor: GUIDELINE_COLOR_RGB }
 		);
 	}
 

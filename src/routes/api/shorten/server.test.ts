@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Mock contexts don't match exact RequestEvent type signature */
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
+// Allowed origins are env-driven (PUBLIC_ALLOWED_ORIGINS). Mock it so the test
+// origin (the reference deployment) is accepted.
+vi.mock('$env/dynamic/public', () => ({
+	env: { PUBLIC_ALLOWED_ORIGINS: 'https://gridfinitylabels.com,https://www.gridfinitylabels.com' }
+}));
+
 // Mock RateLimiter with low limits suitable for testing.
 // Production uses 100,000 requests/hour — tests need limits they can actually exhaust.
 // Server creates perUser first (100k), then global (100k).

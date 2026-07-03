@@ -1,10 +1,19 @@
 <script lang="ts">
 	// Fonts are now imported globally in app.css
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import type { ISODINStandard } from '$lib/data/standards';
 	import type { CustomImage } from '$lib/types/batch';
-	import { AspectRatio } from '$lib/components/ui/aspect-ratio';
 	import TagIcon from '@lucide/svelte/icons/tag';
+
+	/** Display scale for the preview chip (px per mm) — physically proportioned,
+	 * but large enough to make good use of the main area (capped to 100% width). */
+	const PX_PER_MM = 16;
+	/** Constant internal render width (px). The canvas backing store is always
+	 * this wide regardless of label width, so narrow labels render at high
+	 * resolution (crisp text/QR) and wide labels at lower resolution — the CSS
+	 * chip scales it to PX_PER_MM. This mirrors the original container-fit
+	 * behaviour that the canvas pixel tests were calibrated against. */
+	const RENDER_WIDTH_PX = 700;
 	import {
 		solveLabelLayout,
 		type LabelDimensions,
@@ -47,8 +56,10 @@
 		showCustomImage = false
 	}: Props = $props();
 
-	let container: HTMLDivElement;
-	let scale = $state(1);
+	let container = $state<HTMLDivElement | undefined>(undefined);
+	let scale = 1;
+	// Bumped to force a canvas re-render (window/container resize, tab reveal).
+	let renderNonce = $state(0);
 
 	// Check if we have any content to display
 	const hasContent = $derived(
@@ -223,6 +234,10 @@
 		customImage;
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		showCustomImage;
+		// Re-render when the container resizes / becomes visible (e.g. a tab switch
+		// reveals the draft preview after it mounted at zero size).
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		renderNonce;
 
 		if (!canvasRef || !container || !layout) return;
 
@@ -240,16 +255,18 @@
 		const rect = container.getBoundingClientRect();
 
 		if (rect.width > 0 && rect.height > 0) {
-			// Calculate scale to fit container
-			scale = Math.min(rect.width / labelWidth, rect.height / labelHeight);
+			// Render into a constant-width backing store (independent of the small
+			// on-screen chip). Narrow labels get more px/mm (crisp), wide labels
+			// fewer — the CSS chip downscales the bitmap.
+			scale = RENDER_WIDTH_PX / labelWidth;
 
-			// Set canvas size
+			// Set canvas backing-store size (high resolution)
 			canvasRef.width = labelWidth * scale * dpr;
 			canvasRef.height = labelHeight * scale * dpr;
 
-			// Set display size
-			canvasRef.style.width = `${labelWidth * scale}px`;
-			canvasRef.style.height = `${labelHeight * scale}px`;
+			// Display size follows the container chip; CSS scales the bitmap down.
+			canvasRef.style.width = '100%';
+			canvasRef.style.height = '100%';
 
 			// Render label
 			const render = async () => {
@@ -332,17 +349,16 @@
 		}
 	});
 
-	onMount(() => {
-		// Handle window resize
-		const handleResize = () => {
-			// Force a re-render by updating scale
-			const temp = scale;
-			scale = 0;
-			scale = temp;
-		};
-
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
+	// Re-render when the preview container changes size — covers window resizes
+	// (the chip width is min(100%, …)) and becoming visible after mounting hidden
+	// (e.g. the batch-mode draft preview on tab switch).
+	$effect(() => {
+		if (!container || typeof ResizeObserver === 'undefined') return;
+		const observer = new ResizeObserver(() => {
+			renderNonce++;
+		});
+		observer.observe(container);
+		return () => observer.disconnect();
 	});
 
 	onDestroy(() => {
@@ -356,57 +372,57 @@
 	});
 </script>
 
-<div class="label-preview-container w-full" bind:this={container}>
-	<AspectRatio ratio={labelWidth / labelHeight}>
-		{#if hasContent}
-			<canvas
-				bind:this={canvasRef}
-				class="h-full w-full bg-white shadow-lg"
-				style="image-rendering: crisp-edges;"
-				data-render-status={renderStatus}
-				data-testid="label-preview-canvas"
-				data-primary-text={primaryText || ''}
-				data-secondary-text={fullSecondaryText || ''}
-				data-primary-font-size={layout?.primaryFontSize.toFixed(2) || ''}
-				data-secondary-font-size={layout?.secondaryFontSize.toFixed(2) || ''}
-			></canvas>
-		{:else}
+<div class="flex w-full flex-col items-center gap-8">
+	{#if hasContent}
+		<div class="flex w-full items-center justify-center py-4">
+			<!-- Physically-scaled, centered tape chip with soft glow -->
 			<div
-				class="flex h-full w-full flex-col items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/25 bg-muted/50"
+				bind:this={container}
+				class="group relative shrink-0"
+				style="width: min(100%, {labelWidth *
+					PX_PER_MM}px, {RENDER_WIDTH_PX}px); aspect-ratio: {labelWidth} / {labelHeight};"
+			>
+				<div
+					class="pointer-events-none absolute -inset-3 rounded bg-white/20 opacity-60 blur-2xl transition-opacity duration-300 group-hover:opacity-90"
+				></div>
+				<canvas
+					bind:this={canvasRef}
+					class="relative h-full w-full rounded-[2px] bg-white shadow-2xl"
+					style="image-rendering: crisp-edges;"
+					data-render-status={renderStatus}
+					data-testid="label-preview-canvas"
+					data-primary-text={primaryText || ''}
+					data-secondary-text={fullSecondaryText || ''}
+					data-primary-font-size={layout?.primaryFontSize.toFixed(2) || ''}
+					data-secondary-font-size={layout?.secondaryFontSize.toFixed(2) || ''}
+				></canvas>
+			</div>
+		</div>
+	{:else}
+		<div bind:this={container} class="flex w-full items-center justify-center py-4">
+			<div
+				class="flex max-w-md flex-col items-center rounded-3xl border border-dashed border-slate-800 bg-slate-900/50 p-12 text-center backdrop-blur lg:p-16"
 				data-testid="label-preview-placeholder"
 			>
-				<TagIcon class="mb-3 h-8 w-8 text-muted-foreground/40 lg:h-12 lg:w-12" />
-				<p class="text-sm font-medium text-muted-foreground">
-					<span class="lg:hidden">Enter text to preview</span>
-					<span class="hidden lg:inline">Enter text to preview your label</span>
-				</p>
-				<p class="mt-1 text-xs text-muted-foreground/70">
-					<span class="lg:hidden">Start typing above</span>
-					<span class="hidden lg:inline">Start typing in the form above</span>
-				</p>
-				<!-- Alternative: Show sample label with watermark
-				<div class="mt-3 rounded border border-dashed border-muted-foreground/20 bg-muted/30 px-3 py-1">
-					<p class="text-xs font-medium text-muted-foreground/50">Example: M8</p>
-					<p class="text-xs text-muted-foreground/40">ISO 4762</p>
+				<div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-800/50">
+					<TagIcon class="h-8 w-8 text-slate-600" />
 				</div>
-				-->
+				<p class="text-lg font-bold text-slate-300">Ready to design</p>
+				<p class="mt-2 max-w-[220px] text-sm text-slate-400">
+					Adjust the settings in the sidebar to preview your label.
+				</p>
 			</div>
-		{/if}
-	</AspectRatio>
+		</div>
+	{/if}
 
-	<div class="mt-2 text-center text-xs text-muted-foreground">
-		{#if hasContent}
-			Preview: {labelWidth}mm × {labelHeight}mm (Printable: {dimensions.printableWidth}mm × {dimensions.printableHeight}mm)
-		{:else}
-			Label size: {labelWidth}mm × {labelHeight}mm
-		{/if}
+	<!-- Dimension readout pill -->
+	<div
+		class="flex items-center gap-3 rounded-full border border-slate-800 bg-slate-900/50 px-4 py-2 font-mono text-sm text-slate-400"
+	>
+		<span class="text-slate-500">Width:</span>
+		<span class="font-bold text-cyan-400">{labelWidth}mm</span>
+		<span class="mx-1 h-4 w-px bg-slate-700"></span>
+		<span class="text-slate-500">Height:</span>
+		<span class="font-bold text-amber-400">{labelHeight}mm</span>
 	</div>
 </div>
-
-<style>
-	.label-preview-container {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-</style>

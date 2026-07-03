@@ -9,64 +9,33 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { BatchModePage } from './pages/batch-mode/BatchModePage';
+import { SingleModePage } from './pages/single-mode/SingleModePage';
 
 test.describe('Batch Export DPI', () => {
 	test('should export batch with 360 DPI (not 300 DPI)', async ({ page }) => {
-		await page.goto('/');
+		const batchPage = new BatchModePage(page);
+		await batchPage.goto();
 
-		// Wait for page to load
-		await page.waitForLoadState('networkidle');
+		// Select 12mm tape height (global batch setting)
+		await batchPage.selectTapeHeight('12mm');
 
-		// Switch to batch mode by clicking the Batch Mode tab
-		const batchModeTab = page.locator('button:has-text("Batch Mode")');
-		await batchModeTab.click();
+		// Configure a minimal valid label via the shared form: general + primary text
+		const form = new SingleModePage(page);
+		await form.selectMode('general');
+		await form.fillPrimaryText('M8');
 
-		// Wait for batch mode UI elements to appear
-		await page.waitForSelector('button:has-text("Add Label")', { state: 'visible' });
+		// Snapshot the current form config into the batch
+		await batchPage.addLabel();
 
-		// Select 12mm tape height using testid
-		const tape12mmButton = page.getByTestId('tape-height-12mm');
-		await tape12mmButton.waitFor({ state: 'visible' });
-		await tape12mmButton.click();
-
-		// Click Add Label button - this adds the current label configuration to the batch
-		const addLabelButton = page.locator('button:has-text("Add Label")').first();
-		await addLabelButton.click();
-
-		// Wait for the export button to show "1 label" - this confirms the label was added
-		await page.waitForSelector('button:has-text("Export Batch (1 label)")', { timeout: 5000 });
+		// Wait for the export button to show "1" - this confirms the label was added
+		await batchPage.exportSection.waitForExportButtonCount(1);
 
 		// Set up canvas dimension interception BEFORE clicking export
-		const canvasDimensionsPromise = page.evaluate(() => {
-			return new Promise<{ width: number; height: number }>((resolve) => {
-				// Spy on HTMLCanvasElement.prototype.toBlob
-				const originalToBlob = HTMLCanvasElement.prototype.toBlob;
-				HTMLCanvasElement.prototype.toBlob = function (
-					callback: BlobCallback,
-					type?: string,
-					quality?: number
-				) {
-					// Capture canvas dimensions before blob creation
-					const dimensions = {
-						width: this.width,
-						height: this.height
-					};
-
-					// Restore original toBlob immediately
-					HTMLCanvasElement.prototype.toBlob = originalToBlob;
-
-					// Resolve with dimensions
-					resolve(dimensions);
-
-					// Call original toBlob
-					return originalToBlob.call(this, callback, type, quality);
-				};
-			});
-		});
+		const canvasDimensionsPromise = batchPage.exportSection.captureNextExportCanvasDimensions();
 
 		// Click export button
-		const exportButton = page.locator('button:has-text("Export Batch")');
-		await exportButton.click();
+		await batchPage.exportSection.clickExport();
 
 		// Wait for canvas dimensions to be captured
 		const dimensions = await canvasDimensionsPromise;
@@ -90,6 +59,6 @@ test.describe('Batch Export DPI', () => {
 		}
 
 		// Verify export success message
-		await expect(page.locator('text=✓ Exported')).toBeVisible({ timeout: 5000 });
+		await batchPage.exportSection.expectExportSuccess();
 	});
 });

@@ -48,8 +48,7 @@ test.describe('Label Generator - Single Mode', () => {
 
 	test('should display label preview placeholder initially', async () => {
 		// Check that placeholder is shown when there's no content
-		const placeholder = labelPage.page.getByTestId('label-preview-placeholder');
-		expect(await placeholder.isVisible()).toBe(true);
+		expect(await labelPage.preview.isPlaceholderVisible()).toBe(true);
 
 		// Canvas should not be visible initially
 		expect(await labelPage.preview.isVisible()).toBe(false);

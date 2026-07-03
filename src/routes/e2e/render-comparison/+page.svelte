@@ -3,7 +3,7 @@
 	import { renderLabelToCanvas } from '$lib/utils/label-renderer';
 	import { solveLabelLayout } from '$lib/utils/label-constraint-solver';
 	import { renderBatchTape } from '$lib/utils/batch-renderer';
-	import type { BatchState } from '$lib/types/batch';
+	import type { BatchRenderData } from '$lib/types/batch';
 
 	let status = $state('Ready');
 	let singleCanvas: HTMLCanvasElement;
@@ -69,7 +69,7 @@
 			status = 'Rendering batch mode...';
 
 			// === BATCH MODE ===
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: testConfig.height as 9 | 12,
 				labels: [
 					{
@@ -78,8 +78,7 @@
 						secondaryText: testConfig.secondaryText,
 						width: testConfig.width
 					}
-				],
-				maxLabels: 20
+				]
 			};
 
 			await renderBatchTape({

@@ -79,7 +79,7 @@ export const affiliateProducts: AffiliateProduct[] = [
 	},
 	{
 		id: 'magnets_6x2',
-		name: 'Neodymium Magnets 6x2mm',
+		name: 'Neodymium Magnets',
 		description: 'Precise 6x2mm dimensions.\nPerfect for Gridfinity bins.',
 		priceDisplay: '$13.99',
 		affiliateLink: affiliateEnv('PUBLIC_AFFILIATE_MAGNETS'),

@@ -68,13 +68,19 @@ function drawMarginsGuide(
 ): void {
 	ctx.save();
 	ctx.strokeStyle = '#f3f4f6';
-	ctx.lineWidth = 0.05 * scale;
+	const lineWidth = 0.05 * scale;
+	ctx.lineWidth = lineWidth;
 	ctx.setLineDash([0.2 * scale, 0.2 * scale]);
+	// Inset the guide so its stroke (and its anti-aliased halo) stays fully
+	// inside the printable area rather than straddling the boundary. Without
+	// this, at high render resolution the outer half of the stroke lands
+	// outside the printable rectangle and reads as out-of-bounds content.
+	const inset = lineWidth + 1;
 	ctx.strokeRect(
-		2 * scale,
-		1 * scale,
-		dimensions.printableWidth * scale,
-		dimensions.printableHeight * scale
+		2 * scale + inset,
+		1 * scale + inset,
+		dimensions.printableWidth * scale - 2 * inset,
+		dimensions.printableHeight * scale - 2 * inset
 	);
 	ctx.restore();
 }

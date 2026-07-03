@@ -86,7 +86,7 @@
 
 			<div class="min-w-0 flex-1">
 				<h5
-					class="truncate text-sm font-bold text-slate-200 transition-colors {hasLink
+					class="truncate text-xs font-bold text-slate-200 transition-colors {hasLink
 						? 'group-hover:text-cyan-400'
 						: ''}"
 				>
@@ -96,13 +96,13 @@
 					{/if}
 				</h5>
 				<div class="mt-0.5 flex items-center gap-2">
-					<span class="text-sm font-bold text-cyan-400">{product.priceDisplay}</span>
+					<span class="text-xs font-bold text-cyan-400">{product.priceDisplay}</span>
 					{#if product.badge}
-						<span class="rounded px-1.5 py-0.5 text-[10px] font-bold {badgeClasses(product.badge)}">
+						<span class="rounded px-1.5 py-0.5 text-[9px] font-bold {badgeClasses(product.badge)}">
 							{product.badge}
 						</span>
 					{:else if product.rating}
-						<span class="flex items-center gap-1 text-[10px] text-slate-400">
+						<span class="flex items-center gap-1 text-[9px] text-slate-400">
 							<Star class="h-3 w-3 fill-amber-400 text-amber-400" />
 							{product.rating}
 						</span>
@@ -112,7 +112,7 @@
 		</div>
 
 		<!-- Description below -->
-		<p class="text-xs leading-relaxed whitespace-pre-line text-slate-400">
+		<p class="text-[10px] leading-relaxed whitespace-pre-line text-slate-400">
 			{product.description}
 		</p>
 	</a>
@@ -139,7 +139,7 @@
 		{#if printers.length > 0}
 			<div>
 				<div
-					class="mb-3 flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-slate-500 uppercase"
+					class="mb-3 flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-slate-500 uppercase"
 				>
 					<Printer class="h-3 w-3" />
 					Printers
@@ -156,7 +156,7 @@
 		{#if accessories.length > 0}
 			<div>
 				<div
-					class="mb-3 flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-slate-500 uppercase"
+					class="mb-3 flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-slate-500 uppercase"
 				>
 					<Package class="h-3 w-3" />
 					Accessories
@@ -171,7 +171,7 @@
 
 		<!-- Disclosure -->
 		<div
-			class="flex items-start gap-1.5 rounded-lg border border-slate-800/50 bg-slate-900/50 p-2.5 text-[10px] leading-relaxed text-slate-500"
+			class="flex items-start gap-1.5 rounded-lg border border-slate-800/50 bg-slate-900/50 p-2.5 text-[9px] leading-relaxed text-slate-500"
 		>
 			<Info class="mt-0.5 h-3 w-3 flex-shrink-0" />
 			<p>{AFFILIATE_DISCLOSURE}</p>

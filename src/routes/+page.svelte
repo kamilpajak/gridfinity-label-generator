@@ -557,7 +557,7 @@
 					</Button>
 				</div>
 
-				<div class="space-y-5">
+				<div class="grid grid-cols-2 gap-4">
 					<div class="space-y-2">
 						<label class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
 							>{UI_TEXT.productType.label}</label
@@ -572,12 +572,12 @@
 						>
 							<ToggleGroupItem
 								value="fastener"
-								class="min-h-[40px] flex-1 rounded-md px-3 text-xs font-semibold text-slate-500 hover:bg-transparent hover:text-slate-300 data-[state=on]:bg-slate-800 data-[state=on]:text-white data-[state=on]:shadow-sm data-[state=on]:ring-1 data-[state=on]:ring-slate-700"
+								class="min-h-[40px] w-full flex-1 rounded-md px-2 text-xs font-semibold text-slate-500 hover:bg-transparent hover:text-slate-300 data-[state=on]:bg-slate-800 data-[state=on]:text-white data-[state=on]:shadow-sm data-[state=on]:ring-1 data-[state=on]:ring-slate-700"
 								data-testid="mode-fastener">{UI_TEXT.productType.fastener}</ToggleGroupItem
 							>
 							<ToggleGroupItem
 								value="general"
-								class="min-h-[40px] flex-1 rounded-md px-3 text-xs font-semibold text-slate-500 hover:bg-transparent hover:text-slate-300 data-[state=on]:bg-slate-800 data-[state=on]:text-white data-[state=on]:shadow-sm data-[state=on]:ring-1 data-[state=on]:ring-slate-700"
+								class="min-h-[40px] w-full flex-1 rounded-md px-2 text-xs font-semibold text-slate-500 hover:bg-transparent hover:text-slate-300 data-[state=on]:bg-slate-800 data-[state=on]:text-white data-[state=on]:shadow-sm data-[state=on]:ring-1 data-[state=on]:ring-slate-700"
 								data-testid="mode-general">{UI_TEXT.productType.generalItem}</ToggleGroupItem
 							>
 						</ToggleGroup>
@@ -598,12 +598,12 @@
 						>
 							<ToggleGroupItem
 								value="metric"
-								class="min-h-[40px] flex-1 rounded-md px-3 text-xs font-semibold text-slate-500 hover:bg-transparent hover:text-slate-300 data-[state=on]:bg-slate-800 data-[state=on]:text-white data-[state=on]:shadow-sm data-[state=on]:ring-1 data-[state=on]:ring-slate-700"
+								class="min-h-[40px] w-full flex-1 rounded-md px-2 text-xs font-semibold text-slate-500 hover:bg-transparent hover:text-slate-300 data-[state=on]:bg-slate-800 data-[state=on]:text-white data-[state=on]:shadow-sm data-[state=on]:ring-1 data-[state=on]:ring-slate-700"
 								data-testid="metric-button">{UI_TEXT.measurementSystem.metric}</ToggleGroupItem
 							>
 							<ToggleGroupItem
 								value="imperial"
-								class="min-h-[40px] flex-1 rounded-md px-3 text-xs font-semibold text-slate-500 hover:bg-transparent hover:text-slate-300 data-[state=on]:bg-slate-800 data-[state=on]:text-white data-[state=on]:shadow-sm data-[state=on]:ring-1 data-[state=on]:ring-slate-700"
+								class="min-h-[40px] w-full flex-1 rounded-md px-2 text-xs font-semibold text-slate-500 hover:bg-transparent hover:text-slate-300 data-[state=on]:bg-slate-800 data-[state=on]:text-white data-[state=on]:shadow-sm data-[state=on]:ring-1 data-[state=on]:ring-slate-700"
 								data-testid="imperial-button">{UI_TEXT.measurementSystem.imperial}</ToggleGroupItem
 							>
 						</ToggleGroup>

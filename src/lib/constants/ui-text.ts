@@ -10,7 +10,7 @@ export const UI_TEXT = {
 		generalItem: 'General Item'
 	},
 	measurementSystem: {
-		label: 'Measurement System',
+		label: 'System',
 		metric: 'Metric',
 		imperial: 'Imperial'
 	},

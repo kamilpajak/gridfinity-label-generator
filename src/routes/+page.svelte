@@ -926,6 +926,10 @@
 						{/if}
 					</Button>
 				</div>
+
+				<hr class="border-slate-800/60" />
+
+				<RecommendedProducts />
 			{/if}
 		</div>
 	</aside>

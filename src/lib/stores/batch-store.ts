@@ -33,13 +33,13 @@ interface StoredBatch {
  */
 function loadFromStorage(): BatchState {
 	if (typeof localStorage === 'undefined') {
-		return { ...DEFAULT_BATCH_STATE };
+		return { ...DEFAULT_BATCH_STATE, labels: [] };
 	}
 
 	try {
 		const stored = localStorage.getItem(STORAGE_KEY);
 		if (!stored) {
-			return { ...DEFAULT_BATCH_STATE };
+			return { ...DEFAULT_BATCH_STATE, labels: [] };
 		}
 
 		const parsed: StoredBatch = JSON.parse(stored);
@@ -47,7 +47,7 @@ function loadFromStorage(): BatchState {
 		// Version check for future migrations
 		if (parsed.version !== STORAGE_VERSION) {
 			console.warn(`Batch storage version mismatch: ${parsed.version} !== ${STORAGE_VERSION}`);
-			return { ...DEFAULT_BATCH_STATE };
+			return { ...DEFAULT_BATCH_STATE, labels: [] };
 		}
 
 		// Validate data structure
@@ -57,7 +57,7 @@ function loadFromStorage(): BatchState {
 			!Array.isArray(parsed.data.labels)
 		) {
 			console.warn('Invalid batch data structure in localStorage');
-			return { ...DEFAULT_BATCH_STATE };
+			return { ...DEFAULT_BATCH_STATE, labels: [] };
 		}
 
 		// Backfill ids for labels persisted before the id field existed, so old
@@ -71,7 +71,7 @@ function loadFromStorage(): BatchState {
 		};
 	} catch (error) {
 		console.warn('Failed to load batch from localStorage:', error);
-		return { ...DEFAULT_BATCH_STATE };
+		return { ...DEFAULT_BATCH_STATE, labels: [] };
 	}
 }
 
@@ -231,7 +231,7 @@ function createBatchStore() {
 			}));
 		},
 		reset: () => {
-			set({ ...DEFAULT_BATCH_STATE });
+			set({ ...DEFAULT_BATCH_STATE, labels: [] });
 		},
 		canAddLabel: (): boolean => {
 			const state = get(batchStore);

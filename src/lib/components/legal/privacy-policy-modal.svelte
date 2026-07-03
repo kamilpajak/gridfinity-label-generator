@@ -62,7 +62,9 @@
 			<!-- Intro -->
 			<p class="text-xs leading-relaxed text-slate-400">
 				Gridfinity Label Generator is designed to keep your data on your device. This policy
-				explains the few cases where data leaves your browser and how this instance handles it.
+				explains the few cases where data leaves your browser and how this instance handles it. You
+				can use the app without providing any personal data, and it performs no automated
+				decision-making or profiling.
 			</p>
 
 			<!-- What we process -->
@@ -167,6 +169,9 @@
 				{@render section('7. Data retention', Server)}
 				<ul class="mt-1 space-y-2">
 					{@render bullet('Label data: not retained on any server (processed in your browser).')}
+					{@render bullet(
+						'Browser local storage (your batch labels and settings): kept on your device until you clear it.'
+					)}
 					{@render bullet(
 						'Rate-limiting IP data: held only in memory for a short window, then discarded.'
 					)}

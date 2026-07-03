@@ -87,8 +87,14 @@
 
 	// Validation effects
 	$effect(() => {
-		if (labelMode === 'fastener' && !lengthDisabled && length) {
-			debouncedValidateLength(length, measurementSystem);
+		if (labelMode === 'fastener' && !lengthDisabled) {
+			if (length) {
+				debouncedValidateLength(length, measurementSystem);
+			} else {
+				// Required for screws/bolts: surface an inline message when empty
+				// (instead of silently resetting to valid) once the field is touched.
+				lengthValidationResult = { isValid: false, message: 'Length is required' };
+			}
 		} else {
 			lengthValidationResult = { isValid: true };
 		}

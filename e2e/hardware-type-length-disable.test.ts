@@ -95,4 +95,20 @@ test.describe('Hardware Type Length Field Behavior', () => {
 			UI_TEXT.placeholders.lengthImperial
 		);
 	});
+
+	test('shows an inline required message when a screw length is cleared', async ({ page }) => {
+		await labelPage.selectHardwareByName('4762', /ISO 4762/);
+		await expect(labelPage.lengthInput).toBeEnabled();
+
+		// Enter then clear the length and blur to mark the field touched.
+		await labelPage.lengthInput.fill('20');
+		await labelPage.lengthInput.fill('');
+		await labelPage.lengthInput.blur();
+
+		await expect(page.getByText('Length is required')).toBeVisible();
+
+		// A valid value clears the inline error.
+		await labelPage.lengthInput.fill('20');
+		await expect(page.getByText('Length is required')).not.toBeVisible();
+	});
 });

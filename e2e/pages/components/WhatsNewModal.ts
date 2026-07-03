@@ -83,7 +83,7 @@ export class WhatsNewModal {
 		const versions: string[] = [];
 		const count = await this.entries.count();
 		for (let i = 0; i < count; i++) {
-			const versionText = await this.entries.nth(i).locator('.text-sm.font-semibold').textContent();
+			const versionText = await this.entries.nth(i).getByTestId('whats-new-version').textContent();
 			if (versionText) versions.push(versionText.trim());
 		}
 		return versions;

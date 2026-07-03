@@ -51,9 +51,14 @@
 					<div class="mb-4 flex items-center justify-between">
 						<div class="flex items-center gap-2">
 							<span
-								class="rounded border border-indigo-500/20 bg-indigo-500/20 px-2 py-0.5 tracking-wider text-indigo-400 uppercase"
+								data-testid="whats-new-version"
+								class="rounded border px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase {isNewest(
+									index
+								)
+									? 'border-indigo-500/20 bg-indigo-500/20 text-indigo-400'
+									: 'border-slate-700/50 bg-slate-800/50 text-slate-400'}"
 							>
-								<span class="text-[10px] font-semibold">Version {entry.version}</span>
+								Version {entry.version}
 							</span>
 							{#if isNewest(index)}
 								<span

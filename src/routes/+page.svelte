@@ -718,7 +718,7 @@
 								</SelectContent>
 							</Select>
 						</div>
-						<div class="col-span-2 space-y-2">
+						<div class="space-y-2">
 							<label
 								for="length"
 								class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
@@ -741,6 +741,21 @@
 									{lengthValidationResult.message}
 								</p>
 							{/if}
+						</div>
+						<div class="space-y-2">
+							<label
+								for="qr-code-url"
+								class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.fields.qrCode}</label
+							>
+							<Input
+								id="qr-code-url"
+								bind:value={qrCodeUrl}
+								placeholder={UI_TEXT.placeholders.qrCode}
+								class="w-full"
+								disabled={!showQRCode || qrCodeDisabled}
+								data-testid="qr-code-url-input"
+							/>
 						</div>
 					</div>
 				{:else}
@@ -795,24 +810,24 @@
 								/>
 							</div>
 						{/if}
+
+						<div class="space-y-2">
+							<label
+								for="qr-code-url"
+								class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
+								>{UI_TEXT.fields.qrCode}</label
+							>
+							<Input
+								id="qr-code-url"
+								bind:value={qrCodeUrl}
+								placeholder={UI_TEXT.placeholders.qrCode}
+								class="w-full"
+								disabled={!showQRCode || qrCodeDisabled}
+								data-testid="qr-code-url-input"
+							/>
+						</div>
 					</div>
 				{/if}
-
-				<div class="space-y-2">
-					<label
-						for="qr-code-url"
-						class="block text-[11px] font-bold tracking-wide text-slate-400 uppercase"
-						>{UI_TEXT.fields.qrCode}</label
-					>
-					<Input
-						id="qr-code-url"
-						bind:value={qrCodeUrl}
-						placeholder={UI_TEXT.placeholders.qrCode}
-						class="w-full"
-						disabled={!showQRCode || qrCodeDisabled}
-						data-testid="qr-code-url-input"
-					/>
-				</div>
 			</div>
 
 			<hr class="border-slate-800/60" />

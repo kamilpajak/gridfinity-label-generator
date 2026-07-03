@@ -152,8 +152,8 @@
 						class="w-full"
 						data-testid="label-height-toggle"
 					>
-						<ToggleGroupItem value="9" class="min-h-[44px] flex-1">9mm</ToggleGroupItem>
-						<ToggleGroupItem value="12" class="min-h-[44px] flex-1">12mm</ToggleGroupItem>
+						<ToggleGroupItem value="9" class="min-h-[36px] flex-1">9mm</ToggleGroupItem>
+						<ToggleGroupItem value="12" class="min-h-[36px] flex-1">12mm</ToggleGroupItem>
 					</ToggleGroup>
 				</div>
 			{/if}

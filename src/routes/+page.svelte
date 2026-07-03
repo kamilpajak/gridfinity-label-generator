@@ -529,12 +529,12 @@
 			>
 				<Tabs.Trigger
 					value="single"
-					class="h-auto min-h-[44px] flex-1 rounded-lg px-4 py-2 text-xs font-bold text-slate-500 transition-all hover:text-slate-300 data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-slate-600 dark:text-slate-500 dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white"
+					class="h-auto min-h-[36px] flex-1 rounded-lg px-4 py-2 text-xs font-bold text-slate-500 transition-all hover:text-slate-300 data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-slate-600 dark:text-slate-500 dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white"
 					>Single Label</Tabs.Trigger
 				>
 				<Tabs.Trigger
 					value="batch"
-					class="h-auto min-h-[44px] flex-1 rounded-lg px-4 py-2 text-xs font-bold text-slate-500 transition-all hover:text-slate-300 data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-slate-600 dark:text-slate-500 dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white"
+					class="h-auto min-h-[36px] flex-1 rounded-lg px-4 py-2 text-xs font-bold text-slate-500 transition-all hover:text-slate-300 data-[state=active]:bg-slate-800 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:ring-1 data-[state=active]:ring-slate-600 dark:text-slate-500 dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-slate-800 dark:data-[state=active]:text-white"
 					>Batch Mode</Tabs.Trigger
 				>
 			</Tabs.List>
@@ -897,10 +897,10 @@
 							class="w-full"
 							data-testid="tape-height-toggle"
 						>
-							<ToggleGroupItem value="9" class="min-h-[44px] flex-1" data-testid="tape-height-9mm"
+							<ToggleGroupItem value="9" class="min-h-[36px] flex-1" data-testid="tape-height-9mm"
 								>9mm</ToggleGroupItem
 							>
-							<ToggleGroupItem value="12" class="min-h-[44px] flex-1" data-testid="tape-height-12mm"
+							<ToggleGroupItem value="12" class="min-h-[36px] flex-1" data-testid="tape-height-12mm"
 								>12mm</ToggleGroupItem
 							>
 						</ToggleGroup>

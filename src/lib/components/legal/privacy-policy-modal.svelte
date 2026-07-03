@@ -84,10 +84,10 @@
 				</p>
 				<ul class="mt-2 space-y-2">
 					{@render bullet(
-						'The URL is forwarded to is.gd (primary) or tinyurl.com (fallback). These providers are outside the EU and have their own privacy policies.'
+						'The URL is forwarded to is.gd (primary) or tinyurl.com (fallback) to generate the short link. These providers are outside the EU (an international data transfer) and have their own privacy policies.'
 					)}
 					{@render bullet(
-						'Your IP address is used transiently (kept only in memory, for a short window) to rate-limit requests and prevent abuse. It is not stored long-term.'
+						'Your IP address is used transiently (kept only in memory, for a short window) to rate-limit requests and prevent abuse. This relies on our legitimate interest (GDPR Art. 6(1)(f)); it is not stored long-term.'
 					)}
 					{@render bullet(
 						'Short QR URLs (50 characters or fewer) are encoded directly in your browser and are never sent anywhere.'
@@ -109,6 +109,10 @@
 							'IP addresses are anonymized where the analytics server is configured to do so.'
 						)}
 					</ul>
+					<p class="mt-2 text-xs leading-relaxed text-slate-400">
+						This aggregated analytics relies on our legitimate interest (GDPR Art. 6(1)(f)); you can
+						object at any time, and enabling "Do Not Track" opts you out.
+					</p>
 				</div>
 			{:else}
 				<div class="rounded-xl border border-slate-800/50 bg-slate-950/50 p-5">

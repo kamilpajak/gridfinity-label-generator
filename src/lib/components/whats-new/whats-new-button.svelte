@@ -3,9 +3,11 @@
 
 	interface Props {
 		onclick: () => void;
+		/** Full app version (e.g. "2.9.1"), rendered in the label. */
+		version: string;
 	}
 
-	const { onclick }: Props = $props();
+	const { onclick, version }: Props = $props();
 </script>
 
 <button
@@ -19,5 +21,5 @@
 		<Sparkles class="h-3 w-3" />
 		New
 	</span>
-	<span>What's new in v2?</span>
+	<span>What's new in v{version}?</span>
 </button>

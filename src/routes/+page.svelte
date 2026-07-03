@@ -517,7 +517,7 @@
 					Gridfinity <br />Label <br /><span class="text-cyan-400">Generator</span>
 				</h1>
 				<div>
-					<WhatsNewButton onclick={() => (whatsNewModalOpen = true)} />
+					<WhatsNewButton version={data.appVersion} onclick={() => (whatsNewModalOpen = true)} />
 				</div>
 			</div>
 		</div>

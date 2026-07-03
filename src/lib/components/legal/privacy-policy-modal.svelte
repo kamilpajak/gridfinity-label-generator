@@ -22,125 +22,167 @@
 	{onClose}
 	title="Privacy Policy"
 	titleId="privacy-modal-title"
-	maxWidth="4xl"
+	maxWidth="2xl"
 >
 	{#snippet headerSubtitle()}
-		<p class="mt-1 text-sm text-slate-400">Last updated: January 2026</p>
+		<p class="text-xs font-medium text-slate-400">Last updated: January 2026</p>
 	{/snippet}
 
 	{#snippet content()}
-		<div class="space-y-6">
+		<div class="space-y-4">
 			<!-- Introduction -->
-			<div class="space-y-3">
-				<p class="leading-relaxed text-slate-300">
-					Welcome to Gridfinity Label Generator. We respect your privacy and are committed to
-					protecting your personal data. This privacy policy explains how we handle your information
-					when you use our label generation service.
-				</p>
-			</div>
+			<p class="text-xs leading-relaxed text-slate-400">
+				Welcome to Gridfinity Label Generator. We respect your privacy and are committed to
+				protecting your personal data. This privacy policy explains how we handle your information
+				when you use our label generation service.
+			</p>
 
 			<!-- Section 1 -->
-			<div class="space-y-3">
-				<h3 class="flex items-center gap-2 text-lg font-bold text-slate-100">
-					<Database class="h-4 w-4 text-blue-500" />
+			<div class="rounded-xl border border-slate-800/50 bg-slate-950/50 p-5">
+				<h3 class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-200">
+					<Database class="h-3.5 w-3.5 text-slate-400" />
 					1. Information We Collect
 				</h3>
-				<p class="text-sm leading-relaxed text-slate-300">
+				<p class="text-xs leading-relaxed text-slate-400">
 					Our service processes label data locally in your browser. We collect minimal information:
 				</p>
-				<ul class="ml-4 list-inside list-disc space-y-2 text-sm text-slate-300">
-					<li>
-						<strong>Analytics (Matomo, self-hosted):</strong> Page views, feature usage, anonymized IP
-						(2-3 bytes masked)
+				<ul class="mt-2 space-y-2">
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>
+							<strong class="font-medium text-slate-300">Analytics (Matomo, self-hosted):</strong>
+							Page views, feature usage, anonymized IP (2-3 bytes masked)
+						</span>
 					</li>
-					<li>
-						<strong>Technical data:</strong> Browser type, device information (no cookies used)
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>
+							<strong class="font-medium text-slate-300">Technical data:</strong>
+							Browser type, device information (no cookies used)
+						</span>
 					</li>
-					<li>
-						<strong>Do Not Track:</strong> We respect the DNT browser setting
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>
+							<strong class="font-medium text-slate-300">Do Not Track:</strong>
+							We respect the DNT browser setting
+						</span>
 					</li>
 				</ul>
 			</div>
 
 			<!-- Section 2 -->
-			<div class="space-y-3">
-				<h3 class="flex items-center gap-2 text-lg font-bold text-slate-100">
-					<Shield class="h-4 w-4 text-emerald-500" />
+			<div class="rounded-xl border border-slate-800/50 bg-slate-950/50 p-5">
+				<h3 class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-200">
+					<Shield class="h-3.5 w-3.5 text-slate-400" />
 					2. How We Use Your Information
 				</h3>
-				<p class="text-sm leading-relaxed text-slate-300">
+				<p class="text-xs leading-relaxed text-slate-400">
 					Your label data is processed entirely in your browser and never sent to our servers. We
 					use collected information to:
 				</p>
-				<ul class="ml-4 list-inside list-disc space-y-2 text-sm text-slate-300">
-					<li>Understand how features are used and improve the service</li>
-					<li>Fix technical issues and bugs</li>
-					<li>Measure affiliate link performance (aggregated only)</li>
+				<ul class="mt-2 space-y-2">
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>Understand how features are used and improve the service</span>
+					</li>
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>Fix technical issues and bugs</span>
+					</li>
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>Measure affiliate link performance (aggregated only)</span>
+					</li>
 				</ul>
 			</div>
 
 			<!-- Section 3 -->
-			<div class="space-y-3">
-				<h3 class="flex items-center gap-2 text-lg font-bold text-slate-100">
-					<Cookie class="h-4 w-4 text-amber-500" />
+			<div class="rounded-xl border border-slate-800/50 bg-slate-950/50 p-5">
+				<h3 class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-200">
+					<Cookie class="h-3.5 w-3.5 text-slate-400" />
 					3. Cookies and Local Storage
 				</h3>
-				<p class="text-sm leading-relaxed text-slate-300">
-					<strong>We do not use cookies for analytics or tracking.</strong> Your label preferences may
-					be saved in browser local storage, which remains on your device and can be cleared at any time
-					through your browser settings.
+				<p class="text-xs leading-relaxed text-slate-400">
+					<strong class="font-medium text-slate-300"
+						>We do not use cookies for analytics or tracking.</strong
+					> Your label preferences may be saved in browser local storage, which remains on your device
+					and can be cleared at any time through your browser settings.
 				</p>
 			</div>
 
 			<!-- Section 4 -->
-			<div class="space-y-3">
-				<h3 class="flex items-center gap-2 text-lg font-bold text-slate-100">
-					<Link class="h-4 w-4 text-purple-500" />
+			<div class="rounded-xl border border-slate-800/50 bg-slate-950/50 p-5">
+				<h3 class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-200">
+					<Link class="h-3.5 w-3.5 text-slate-400" />
 					4. Affiliate Links (Amazon Associates)
 				</h3>
-				<p class="text-sm leading-relaxed text-slate-300">
+				<p class="text-xs leading-relaxed text-slate-400">
 					We participate in the Amazon Services LLC Associates Program. When you click Amazon links
 					on our site:
 				</p>
-				<ul class="ml-4 list-inside list-disc space-y-2 text-sm text-slate-300">
-					<li>You leave our website and visit Amazon</li>
-					<li>Amazon may collect data and set cookies according to their privacy policy</li>
-					<li>We may earn a commission from qualifying purchases at no extra cost to you</li>
+				<ul class="mt-2 space-y-2">
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>You leave our website and visit Amazon</span>
+					</li>
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>Amazon may collect data and set cookies according to their privacy policy</span>
+					</li>
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>We may earn a commission from qualifying purchases at no extra cost to you</span>
+					</li>
 				</ul>
-				<div class="rounded-lg border border-amber-500/20 bg-amber-500/10 p-4">
-					<p class="text-sm text-amber-300">
-						<Info class="mr-1 inline h-4 w-4" />
+				<div
+					class="mt-3 flex items-start gap-1.5 rounded-lg border border-amber-500/20 bg-amber-500/10 p-3"
+				>
+					<Info class="mt-0.5 h-3 w-3 flex-shrink-0 text-amber-400" />
+					<p class="text-xs leading-relaxed text-amber-300">
 						As an Amazon Associate, we earn from qualifying purchases at no extra cost to you.
 					</p>
 				</div>
 			</div>
 
 			<!-- Section 5 -->
-			<div class="space-y-3">
-				<h3 class="flex items-center gap-2 text-lg font-bold text-slate-100">
-					<UserCheck class="h-4 w-4 text-indigo-500" />
+			<div class="rounded-xl border border-slate-800/50 bg-slate-950/50 p-5">
+				<h3 class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-200">
+					<UserCheck class="h-3.5 w-3.5 text-slate-400" />
 					5. Your Rights (GDPR)
 				</h3>
-				<p class="text-sm leading-relaxed text-slate-300">You have the right to:</p>
-				<ul class="ml-4 list-inside list-disc space-y-2 text-sm text-slate-300">
-					<li>Access information we hold about you</li>
-					<li>Request correction or deletion of your data</li>
-					<li>Object to processing based on legitimate interests</li>
-					<li>Lodge a complaint with a supervisory authority</li>
+				<p class="text-xs leading-relaxed text-slate-400">You have the right to:</p>
+				<ul class="mt-2 space-y-2">
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>Access information we hold about you</span>
+					</li>
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>Request correction or deletion of your data</span>
+					</li>
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>Object to processing based on legitimate interests</span>
+					</li>
+					<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+						<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-600"></span>
+						<span>Lodge a complaint with a supervisory authority</span>
+					</li>
 				</ul>
-				<p class="text-sm leading-relaxed text-slate-300">
+				<p class="mt-2 text-xs leading-relaxed text-slate-400">
 					Note: Because we use anonymized, cookieless analytics, we may not be able to identify your
 					specific data in our systems.
 				</p>
 			</div>
 
 			<!-- Section 6 -->
-			<div class="space-y-3">
-				<h3 class="flex items-center gap-2 text-lg font-bold text-slate-100">
-					<Lock class="h-4 w-4 text-red-500" />
+			<div class="rounded-xl border border-slate-800/50 bg-slate-950/50 p-5">
+				<h3 class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-200">
+					<Lock class="h-3.5 w-3.5 text-slate-400" />
 					6. Data Security
 				</h3>
-				<p class="text-sm leading-relaxed text-slate-300">
+				<p class="text-xs leading-relaxed text-slate-400">
 					Your label data is processed locally and never leaves your device. Analytics data is
 					stored on self-hosted servers in the EU with restricted access. All connections use HTTPS
 					encryption.
@@ -148,36 +190,37 @@
 			</div>
 
 			<!-- Section 7 -->
-			<div class="space-y-3">
-				<h3 class="flex items-center gap-2 text-lg font-bold text-slate-100">
-					<Mail class="h-4 w-4 text-blue-500" />
+			<div class="rounded-xl border border-slate-800/50 bg-slate-950/50 p-5">
+				<h3 class="mb-3 flex items-center gap-1.5 text-sm font-bold text-slate-200">
+					<Mail class="h-3.5 w-3.5 text-slate-400" />
 					7. Contact Us
 				</h3>
-				<p class="text-sm leading-relaxed text-slate-300">
+				<p class="text-xs leading-relaxed text-slate-400">
 					If you have questions about this privacy policy or our data practices, please contact us
 					via email:
 				</p>
-				<div class="rounded-lg border border-slate-700 bg-slate-800 p-4">
-					<p class="text-sm text-slate-300">
-						<strong>Email:</strong>
+				<div class="mt-3 rounded-lg border border-slate-800/50 bg-slate-900/50 p-3">
+					<p class="text-xs text-slate-400">
+						<strong class="font-medium text-slate-300">Email:</strong>
 						<a href="mailto:hello@gridfinitylabels.com" class="text-cyan-400 hover:underline">
 							hello@gridfinitylabels.com
 						</a>
 					</p>
 				</div>
 			</div>
+
+			<p class="flex items-center gap-1.5 text-[10px] text-slate-500">
+				<Info class="h-3 w-3 flex-shrink-0" />
+				We may update this policy from time to time.
+			</p>
 		</div>
 	{/snippet}
 
 	{#snippet footer()}
-		<div class="flex items-center justify-between">
-			<p class="text-xs text-slate-400">
-				<Info class="mr-1 inline h-3 w-3" />
-				We may update this policy from time to time
-			</p>
+		<div class="flex items-center justify-end">
 			<button
 				onclick={onClose}
-				class="rounded-lg bg-cyan-500 px-6 py-2 text-sm font-medium text-cyan-950 transition-all hover:bg-cyan-400"
+				class="rounded-full border border-slate-700 bg-slate-800 px-6 py-2 text-xs font-bold text-slate-200 transition-colors hover:bg-slate-700 hover:text-white"
 			>
 				Got it
 			</button>

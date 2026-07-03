@@ -47,6 +47,38 @@ describe('batchStore', () => {
 		});
 	});
 
+	describe('label id generation fallbacks', () => {
+		it('derives an id from Web Crypto when randomUUID is unavailable', () => {
+			const orig = globalThis.crypto.randomUUID;
+			// @ts-expect-error force the getRandomValues fallback path
+			globalThis.crypto.randomUUID = undefined;
+			try {
+				batchStore.reset();
+				batchStore.addLabel({ mode: 'general', primaryText: 'X', width: 35 });
+				expect(get(batchStore).labels[0].id).toMatch(/^label-\d+-[0-9a-f]+$/);
+			} finally {
+				globalThis.crypto.randomUUID = orig;
+			}
+		});
+
+		it('falls back further when no Web Crypto RNG is available', () => {
+			const origUuid = globalThis.crypto.randomUUID;
+			const origRnd = globalThis.crypto.getRandomValues;
+			// @ts-expect-error force the last-resort path
+			globalThis.crypto.randomUUID = undefined;
+			// @ts-expect-error force the last-resort path
+			globalThis.crypto.getRandomValues = undefined;
+			try {
+				batchStore.reset();
+				batchStore.addLabel({ mode: 'general', primaryText: 'Y', width: 35 });
+				expect(get(batchStore).labels[0].id).toMatch(/^label-\d+-/);
+			} finally {
+				globalThis.crypto.randomUUID = origUuid;
+				globalThis.crypto.getRandomValues = origRnd;
+			}
+		});
+	});
+
 	describe('setHeight', () => {
 		it('should set tape height to 9mm', () => {
 			batchStore.setHeight(9);

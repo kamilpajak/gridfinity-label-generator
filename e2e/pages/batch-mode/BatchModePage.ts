@@ -125,9 +125,13 @@ export class BatchModePage extends BasePage {
 	async addLabel() {
 		await this.addLabelButton.waitFor({ state: 'visible' });
 
-		const isDisabled = await this.addLabelButton.isDisabled();
-		if (isDisabled) {
-			throw new Error('Cannot add label: maximum labels reached');
+		// Wait for the button to become enabled. After filling the shared form,
+		// isFormValid updates on the next reactive tick, so an immediate
+		// isDisabled() check races with it and can misfire as "max reached".
+		try {
+			await expect(this.addLabelButton).toBeEnabled({ timeout: 5000 });
+		} catch {
+			throw new Error('Cannot add label: button stayed disabled (max reached or form invalid)');
 		}
 
 		await this.addLabelButton.click();

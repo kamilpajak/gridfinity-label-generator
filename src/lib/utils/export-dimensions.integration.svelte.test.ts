@@ -5,7 +5,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { exportCanvasLabelAsPNG } from './label-exporter';
 import { exportBatchTapeAsPNG } from './batch-exporter';
-import type { BatchState } from '$lib/types/batch';
+import type { BatchRenderData } from '$lib/types/batch';
 
 describe('Export dimensions integration', () => {
 	let capturedCanvases: HTMLCanvasElement[] = [];
@@ -76,7 +76,7 @@ describe('Export dimensions integration', () => {
 		const singleCanvasCount = capturedCanvases.length;
 
 		// Export in batch mode with same label
-		const batch: BatchState = {
+		const batch: BatchRenderData = {
 			height: 12,
 			labels: [
 				{

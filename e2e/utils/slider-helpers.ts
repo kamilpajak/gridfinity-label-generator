@@ -40,9 +40,12 @@ export async function setSliderValue(
 	// Clamp value to valid range
 	const clampedValue = Math.max(min, Math.min(max, value));
 
-	// Calculate click position as percentage of slider width
+	// Calculate click position as percentage of slider width.
+	// Inset the target by 1px from each edge so extreme values (0% / 100%) land
+	// squarely inside the slider track instead of on the exact border, where
+	// sub-pixel rounding can send the click to an ancestor and get intercepted.
 	const percentage = (clampedValue - min) / (max - min);
-	const targetX = boundingBox.width * percentage;
+	const targetX = Math.min(Math.max(boundingBox.width * percentage, 1), boundingBox.width - 1);
 
 	await slider.click({
 		position: { x: targetX, y: boundingBox.height / 2 }

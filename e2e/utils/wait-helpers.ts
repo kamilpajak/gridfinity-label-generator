@@ -18,15 +18,6 @@ export async function waitForImagesLoaded(page: Page, options: { timeout?: numbe
 }
 
 /**
- * Wait for network to be idle (no ongoing requests)
- * @param page - Playwright page object
- * @param options - Wait options
- */
-export async function waitForNetworkIdle(page: Page, options: { timeout?: number } = {}) {
-	await page.waitForLoadState('networkidle', options);
-}
-
-/**
  * Wait for a specific data attribute to have a value
  * @param page - Playwright page object
  * @param selector - Element selector
@@ -76,66 +67,9 @@ export async function waitForDataAttribute(
 export async function waitForQRCodeRender(page: Page, options: { timeout?: number } = {}) {
 	const { timeout = 5000 } = options;
 
+	// Each tab guards its preview with `{#if mode === ...}`, so only one
+	// `label-preview-canvas` is mounted at a time.
 	const canvas = page.getByTestId('label-preview-canvas');
 	await canvas.waitFor({ state: 'visible', timeout });
 	await expect(canvas).toHaveAttribute('data-render-status', 'stable', { timeout });
-}
-
-/**
- * Wait for canvas content to change
- * @param page - Playwright page object
- * @param previousImageData - Previous image data to compare against
- * @param options - Wait options
- */
-export async function waitForCanvasChange(
-	page: Page,
-	previousImageData: number[],
-	options: { timeout?: number; selector?: string } = {}
-) {
-	const { timeout = 5000, selector = '[data-testid="label-preview-canvas"]' } = options;
-
-	await page.waitForFunction(
-		({ selector, previousData }) => {
-			const canvas = document.querySelector(selector) as HTMLCanvasElement;
-			if (!canvas) return false;
-
-			const ctx = canvas.getContext('2d');
-			if (!ctx) return false;
-
-			// Get current image data
-			const currentData = ctx.getImageData(0, 0, 50, 50).data;
-
-			// Compare with previous data
-			for (let i = 0; i < previousData.length; i++) {
-				if (currentData[i] !== previousData[i]) {
-					return true; // Content has changed
-				}
-			}
-
-			return false;
-		},
-		{ selector, previousData: previousImageData },
-		{ timeout }
-	);
-}
-
-/**
- * Get a sample of canvas image data for comparison
- * @param page - Playwright page object
- * @param selector - Canvas selector
- */
-export async function getCanvasSample(
-	page: Page,
-	selector: string = '[data-testid="label-preview-canvas"]'
-): Promise<number[]> {
-	return await page.evaluate((selector) => {
-		const canvas = document.querySelector(selector) as HTMLCanvasElement;
-		if (!canvas) return [];
-
-		const ctx = canvas.getContext('2d');
-		if (!ctx) return [];
-
-		const imageData = ctx.getImageData(0, 0, 50, 50).data;
-		return Array.from(imageData);
-	}, selector);
 }

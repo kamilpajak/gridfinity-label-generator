@@ -158,22 +158,22 @@ const modes: ModeConfig[] = [
 	{
 		name: 'Batch Mode',
 		setupFor12mm: async (page: Page) => {
+			// Batch mode shares the single-mode form. Configure the shared form
+			// (general + 12mm tape) and use the single custom-image uploader.
 			const batchPage = new BatchModePage(page);
 			await batchPage.goto();
 			await batchPage.selectTapeHeight('12mm');
-			await batchPage.addLabel();
-			await batchPage.waitForLabel(0);
-			await batchPage.switchLabelMode(0, 'general');
-			return batchPage.getImageUploader(0);
+			const form = new SingleModePage(page);
+			await form.selectMode('general');
+			return form.getImageUploader();
 		},
 		setupFor9mm: async (page: Page) => {
 			const batchPage = new BatchModePage(page);
 			await batchPage.goto();
 			await batchPage.selectTapeHeight('9mm');
-			await batchPage.addLabel();
-			await batchPage.waitForLabel(0);
-			await batchPage.switchLabelMode(0, 'general');
-			return batchPage.getImageUploader(0);
+			const form = new SingleModePage(page);
+			await form.selectMode('general');
+			return form.getImageUploader();
 		},
 		switchTo12mm: async (page: Page) => {
 			const batchPage = new BatchModePage(page);
@@ -275,71 +275,51 @@ test.describe('Custom Image - Batch Mode Persistence', () => {
 		const batchPage = new BatchModePage(page);
 		await batchPage.goto();
 		await batchPage.selectTapeHeight('12mm');
+
+		// Configure the shared form: general mode, primary text, custom image
+		const form = new SingleModePage(page);
+		await form.selectMode('general');
+		await form.fillPrimaryText('Test Label');
+
+		const imageUploader = form.getImageUploader();
+		await imageUploader.uploadAndWaitForPreview(testPngPath);
+
+		// Snapshot the configured label into the batch
 		await batchPage.addLabel();
 		await batchPage.waitForLabel(0);
 
-		// Switch to general mode
-		await batchPage.switchLabelMode(0, 'general');
-
-		// Fill in primary text (required)
-		await batchPage.getPrimaryTextInput(0).fill('Test Label');
-
-		// Get image uploader and upload image
-		const imageUploader = batchPage.getImageUploader(0);
-		await imageUploader.uploadAndWaitForPreview(testPngPath);
-
 		// Wait for localStorage save (debounced 500ms + image encoding + state save)
-		await expect
-			.poll(
-				async () => {
-					const stored = await page.evaluate(() => localStorage.getItem('gridscribe_batch_v1'));
-					return stored?.includes('data:image/') ?? false;
-				},
-				{ timeout: 5000 }
-			)
-			.toBe(true);
+		await batchPage.waitForImagePersisted();
 
 		// Reload page
-		await page.reload();
-		await page.waitForLoadState('networkidle');
+		await batchPage.reload();
 
 		// Navigate back to batch mode
 		await batchPage.navigation.switchToBatchMode();
 		await batchPage.waitForLabel(0);
 
-		// Image should still be there
-		const reloadedUploader = batchPage.getImageUploader(0);
-		await reloadedUploader.waitForPreview();
-		await reloadedUploader.expectFilenameContains('test-image.png');
+		// The row chip renders via canvas; the persisted custom image (a red test
+		// pixel) should re-draw onto it, so the canvas contains a colored pixel.
+		await expect.poll(() => batchPage.rowChipHasColoredPixel(0)).toBe(true);
 	});
 
-	test('should create independent copy when duplicating label', async ({ page }) => {
+	test('snapshot is independent of later form edits', async ({ page }) => {
 		const batchPage = new BatchModePage(page);
 		await batchPage.goto();
 		await batchPage.selectTapeHeight('12mm');
+
+		// Configure the shared form and snapshot it
+		const form = new SingleModePage(page);
+		await form.selectMode('general');
+		await form.fillPrimaryText('Original');
 		await batchPage.addLabel();
 		await batchPage.waitForLabel(0);
 
-		// Switch to general mode
-		await batchPage.switchLabelMode(0, 'general');
+		expect(await batchPage.getChipPrimaryText(0)).toContain('Original');
 
-		// Get image uploader and upload image
-		const imageUploader0 = batchPage.getImageUploader(0);
-		await imageUploader0.uploadAndWaitForPreview(testPngPath);
+		// Change the form after snapshotting; the existing row must NOT change
+		await form.fillPrimaryText('Changed');
 
-		// Duplicate the label
-		await batchPage.duplicateLabel(0);
-		await batchPage.waitForLabel(1);
-
-		// Both labels should have the image
-		const imageUploader1 = batchPage.getImageUploader(1);
-		await imageUploader1.expectPreviewVisible();
-
-		// Remove image from duplicated label
-		await imageUploader1.removeImage();
-
-		// Original should still have the image (deep copy, not shared reference)
-		await imageUploader0.expectPreviewVisible();
-		await imageUploader1.expectDropzoneVisible();
+		expect(await batchPage.getChipPrimaryText(0)).toContain('Original');
 	});
 });

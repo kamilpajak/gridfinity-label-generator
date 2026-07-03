@@ -15,6 +15,8 @@
 		standardReferenceDisabled: boolean;
 		hardwareImageDisabled: boolean;
 		qrCodeDisabled: boolean;
+		/** Hide the tape-height toggle (batch mode owns height globally). */
+		hideHeight?: boolean;
 		onShowStandardChange: (value: boolean) => void;
 		onShowHardwareImageChange: (value: boolean) => void;
 		onShowQRCodeChange: (value: boolean) => void;
@@ -31,6 +33,7 @@
 		standardReferenceDisabled,
 		hardwareImageDisabled,
 		qrCodeDisabled,
+		hideHeight = false,
 		onShowStandardChange,
 		onShowHardwareImageChange,
 		onShowQRCodeChange,
@@ -43,8 +46,8 @@
 	<Tooltip.Provider>
 		<div class="flex items-center justify-between space-x-2">
 			<div class="space-y-0.5">
-				<div class="font-medium">{UI_TEXT.settings.standardReference.title}</div>
-				<div class="text-sm text-muted-foreground">
+				<div class="text-sm font-medium">{UI_TEXT.settings.standardReference.title}</div>
+				<div class="text-[10px] text-slate-400">
 					{standardReferenceDisabled
 						? UI_TEXT.settings.standardReference.disabledGeneral
 						: UI_TEXT.settings.standardReference.description}
@@ -54,13 +57,14 @@
 				checked={showStandard}
 				onCheckedChange={onShowStandardChange}
 				disabled={standardReferenceDisabled}
+				aria-label={UI_TEXT.settings.standardReference.title}
 				data-testid="standard-reference-switch"
 			/>
 		</div>
 
 		<div class="flex items-center justify-between space-x-2">
 			<div class="space-y-0.5">
-				<div class="flex items-center gap-1.5 font-medium">
+				<div class="flex items-center gap-1.5 text-sm font-medium">
 					{UI_TEXT.settings.hardwareIcon.title}
 					{#if labelWidth < 50 && !hardwareImageDisabled && !qrCodeDisabled}
 						<Tooltip.Root>
@@ -75,14 +79,11 @@
 						</Tooltip.Root>
 					{/if}
 				</div>
-				<div class="text-sm text-muted-foreground">
+				<div class="text-[10px] text-slate-400">
 					{#if hardwareImageDisabled}
 						{labelHeight === '9'
 							? UI_TEXT.settings.hardwareIcon.disabled9mm
 							: UI_TEXT.settings.hardwareIcon.disabledGeneral}
-					{:else if labelWidth < 50 && !qrCodeDisabled}
-						{UI_TEXT.settings.hardwareIcon.description}<br />{UI_TEXT.settings.hardwareIcon
-							.exclusiveWithQR}
 					{:else}
 						{UI_TEXT.settings.hardwareIcon.description}
 					{/if}
@@ -92,13 +93,14 @@
 				checked={showHardwareImage}
 				onCheckedChange={onShowHardwareImageChange}
 				disabled={hardwareImageDisabled}
+				aria-label={UI_TEXT.settings.hardwareIcon.title}
 				data-testid="hardware-image-switch"
 			/>
 		</div>
 
 		<div class="flex items-center justify-between space-x-2">
 			<div class="space-y-0.5">
-				<div class="flex items-center gap-1.5 font-medium">
+				<div class="flex items-center gap-1.5 text-sm font-medium">
 					{UI_TEXT.settings.qrCode.title}
 					{#if labelWidth < 50 && !hardwareImageDisabled && !qrCodeDisabled}
 						<Tooltip.Root>
@@ -113,12 +115,9 @@
 						</Tooltip.Root>
 					{/if}
 				</div>
-				<div class="text-sm text-muted-foreground">
+				<div class="text-[10px] text-slate-400">
 					{#if qrCodeDisabled}
 						{UI_TEXT.settings.qrCode.disabled9mm}
-					{:else if labelWidth < 50 && !hardwareImageDisabled}
-						{UI_TEXT.settings.qrCode.description}<br />{UI_TEXT.settings.qrCode
-							.exclusiveWithHardware}
 					{:else}
 						{UI_TEXT.settings.qrCode.description}
 					{/if}
@@ -128,35 +127,20 @@
 				checked={showQRCode}
 				onCheckedChange={onShowQRCodeChange}
 				disabled={qrCodeDisabled}
+				aria-label={UI_TEXT.settings.qrCode.title}
 				data-testid="qr-code-switch"
 			/>
 		</div>
 	</Tooltip.Provider>
 
-	<div class="border-t pt-4">
-		<h4 class="mb-3 font-medium">{UI_TEXT.settings.dimensions.title}</h4>
+	<div class="border-t border-slate-700/50 pt-4">
 		<div class="space-y-3">
 			<div>
-				<div class="mb-2 text-sm text-muted-foreground">
-					{UI_TEXT.settings.dimensions.labelHeight}
-				</div>
-				<ToggleGroup
-					value={labelHeight}
-					onValueChange={onLabelHeightChange}
-					variant="outline"
-					type="single"
-					class="w-full"
-					data-testid="label-height-toggle"
-				>
-					<ToggleGroupItem value="9" class="min-h-[44px] flex-1">9mm</ToggleGroupItem>
-					<ToggleGroupItem value="12" class="min-h-[44px] flex-1">12mm</ToggleGroupItem>
-				</ToggleGroup>
-			</div>
-			<div>
 				<div class="mb-2 flex items-center justify-between">
-					<span class="text-sm text-muted-foreground">{UI_TEXT.settings.dimensions.labelWidth}</span
+					<span class="text-[11px] text-muted-foreground"
+						>{UI_TEXT.settings.dimensions.labelWidth}</span
 					>
-					<span class="text-sm font-medium">{labelWidth}mm</span>
+					<span class="font-mono text-xs text-cyan-400">{labelWidth}mm</span>
 				</div>
 				<Slider
 					value={labelWidth}
@@ -169,6 +153,24 @@
 					data-testid="label-width-slider"
 				/>
 			</div>
+			{#if !hideHeight}
+				<div>
+					<div class="mb-2 text-[11px] text-muted-foreground">
+						{UI_TEXT.settings.dimensions.labelHeight}
+					</div>
+					<ToggleGroup
+						value={labelHeight}
+						onValueChange={onLabelHeightChange}
+						variant="outline"
+						type="single"
+						class="w-full"
+						data-testid="label-height-toggle"
+					>
+						<ToggleGroupItem value="9" class="min-h-[36px] flex-1">9mm</ToggleGroupItem>
+						<ToggleGroupItem value="12" class="min-h-[36px] flex-1">12mm</ToggleGroupItem>
+					</ToggleGroup>
+				</div>
+			{/if}
 		</div>
 	</div>
 </div>

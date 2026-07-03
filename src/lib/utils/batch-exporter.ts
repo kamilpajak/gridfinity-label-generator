@@ -5,10 +5,10 @@
  */
 
 import { renderBatchTape } from './batch-renderer';
-import type { BatchState } from '$lib/types/batch';
+import type { BatchRenderData } from '$lib/types/batch';
 
 export interface BatchExportOptions {
-	batch: BatchState;
+	batch: BatchRenderData;
 	dpi?: number;
 }
 

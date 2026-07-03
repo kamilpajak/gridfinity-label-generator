@@ -44,6 +44,26 @@ export function validateThreadSize(input: string | null | undefined): Validation
 	return { isValid: false, message: 'Invalid thread size format' };
 }
 
+/** Upper bound for a fastener length (mm for metric, inches for imperial). */
+export const MAX_LENGTH = 1000;
+
+/** Parse an accepted length string (decimal, a/b, or w a/b) into a number. */
+function parseLengthValue(trimmed: string): number {
+	const mixed = trimmed.match(/^(\d+)\s+(\d+)\/(\d+)$/);
+	if (mixed) return Number(mixed[1]) + Number(mixed[2]) / Number(mixed[3]);
+	const fraction = trimmed.match(/^(\d+)\/(\d+)$/);
+	if (fraction) return Number(fraction[1]) / Number(fraction[2]);
+	return parseFloat(trimmed);
+}
+
+/** Reject absurd magnitudes; a well-formed but out-of-range length is invalid. */
+function checkLengthBound(value: number): ValidationResult {
+	if (value > MAX_LENGTH) {
+		return { isValid: false, message: `Length must be ${MAX_LENGTH} or less` };
+	}
+	return { isValid: true };
+}
+
 /**
  * Validates length input for fasteners
  * Accepts:
@@ -52,6 +72,7 @@ export function validateThreadSize(input: string | null | undefined): Validation
  * - Imperial mixed numbers: 1 1/4, 2 3/4, etc.
  * - Imperial decimals: 0.25, 1.5, 2.75
  * Does NOT accept units (mm, in, ")
+ * Rejects magnitudes above MAX_LENGTH.
  */
 export function validateLength(
 	input: string | null | undefined,
@@ -100,7 +121,7 @@ export function validateLength(
 	if (measurementSystem === 'metric') {
 		// Metric only accepts decimal numbers
 		if (decimalPattern.test(trimmed)) {
-			return { isValid: true };
+			return checkLengthBound(parseLengthValue(trimmed));
 		}
 		// Reject fractions in metric mode
 		if (fractionPattern.test(trimmed) || mixedPattern.test(trimmed)) {
@@ -112,7 +133,7 @@ export function validateLength(
 		mixedPattern.test(trimmed)
 	) {
 		// Imperial accepts all formats: decimals, fractions, and mixed numbers
-		return { isValid: true };
+		return checkLengthBound(parseLengthValue(trimmed));
 	}
 
 	return { isValid: false, message: 'Invalid length format' };

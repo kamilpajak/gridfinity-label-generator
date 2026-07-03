@@ -47,10 +47,29 @@ export interface GeneralLabelConfig {
 
 export type BatchLabelConfig = FastenerLabelConfig | GeneralLabelConfig;
 
+/**
+ * A batch label as stored in the batch: a config plus a stable unique id used
+ * for keying, reordering, and removal. Callers build a `BatchLabelConfig`
+ * (without id) and the store assigns the id on `addLabel`.
+ */
+export type BatchLabel = BatchLabelConfig & { id: string };
+
 export interface BatchState {
 	height: TapeHeight;
-	labels: BatchLabelConfig[];
+	labels: BatchLabel[];
 	maxLabels: number;
+}
+
+/**
+ * Id-agnostic batch shape accepted by the tape renderer/exporter. Rendering
+ * only needs the label configs, so callers (and test fixtures) can pass labels
+ * without ids; a full `BatchState` is also assignable.
+ */
+export interface BatchRenderData {
+	height: TapeHeight;
+	labels: BatchLabelConfig[];
+	/** Ignored by the renderer; allowed so a full BatchState-shaped literal fits. */
+	maxLabels?: number;
 }
 
 export const DEFAULT_BATCH_STATE: BatchState = {

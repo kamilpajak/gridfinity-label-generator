@@ -5,10 +5,8 @@ test.describe("What's New Modal", () => {
 	let whatsNew: WhatsNewModal;
 
 	test.beforeEach(async ({ page }) => {
-		await page.goto('/');
-		// Wait for Svelte 5 hydration to complete (required for Chromium/Webkit)
-		await page.waitForLoadState('networkidle');
 		whatsNew = new WhatsNewModal(page);
+		await whatsNew.goto();
 	});
 
 	test("should display What's New button in header", async () => {
@@ -57,10 +55,33 @@ test.describe("What's New Modal", () => {
 		expect(versions[0]).toMatch(/Version \d+\.\d+\.\d+/);
 	});
 
-	test('should have category tags', async ({ page }) => {
+	test('should have category tags', async () => {
 		await whatsNew.open();
-		const categoryTags = page.getByTestId('category-tag');
-		const tagCount = await categoryTags.count();
+		const tagCount = await whatsNew.getCategoryTagCount();
 		expect(tagCount).toBeGreaterThan(0);
+	});
+
+	test('manages focus: moves into the dialog, traps Tab, restores to trigger on close', async ({
+		page
+	}) => {
+		await whatsNew.button.focus();
+		await whatsNew.open();
+		const dialog = whatsNew.modal;
+
+		// Focus moved into the dialog on open
+		expect(await dialog.evaluate((d) => d.contains(document.activeElement))).toBe(true);
+
+		// Tabbing repeatedly keeps focus trapped inside the dialog
+		for (let i = 0; i < 15; i++) await page.keyboard.press('Tab');
+		expect(await dialog.evaluate((d) => d.contains(document.activeElement))).toBe(true);
+
+		// Shift+Tab too
+		for (let i = 0; i < 5; i++) await page.keyboard.press('Shift+Tab');
+		expect(await dialog.evaluate((d) => d.contains(document.activeElement))).toBe(true);
+
+		// Closing restores focus to the trigger button
+		await page.keyboard.press('Escape');
+		await expect(dialog).not.toBeVisible();
+		expect(await whatsNew.button.evaluate((el) => el === document.activeElement)).toBe(true);
 	});
 });

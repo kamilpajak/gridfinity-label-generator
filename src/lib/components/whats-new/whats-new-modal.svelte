@@ -2,7 +2,7 @@
 	import type { ChangelogEntry } from '$lib/types/changelog';
 	import { getRelativeDate } from '$lib/utils/changelog-parser';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
-	import Bell from '@lucide/svelte/icons/bell';
+	import CheckCircle2 from '@lucide/svelte/icons/check-circle-2';
 	import CategoryTag from './category-tag.svelte';
 	import ModalWrapper from '$lib/components/shared/modal-wrapper.svelte';
 
@@ -13,54 +13,6 @@
 	}
 
 	let { open = $bindable(), onClose, changelog }: Props = $props();
-
-	// Color schemes for timeline entries (newest to oldest)
-	const colorSchemes = [
-		{
-			dot: 'bg-purple-500',
-			ring: 'ring-purple-100',
-			border: 'border-purple-100',
-			line: 'border-purple-200',
-			bg: 'bg-gradient-to-br from-purple-50 to-blue-50',
-			badge: 'bg-purple-500 text-white'
-		},
-		{
-			dot: 'bg-blue-500',
-			ring: 'ring-blue-100',
-			border: 'border-blue-100',
-			line: 'border-blue-200',
-			bg: 'bg-blue-50/50',
-			badge: 'bg-blue-100 text-blue-700'
-		},
-		{
-			dot: 'bg-emerald-500',
-			ring: 'ring-emerald-100',
-			border: 'border-emerald-100',
-			line: 'border-emerald-200',
-			bg: 'bg-emerald-50/50',
-			badge: 'bg-emerald-100 text-emerald-700'
-		},
-		{
-			dot: 'bg-amber-500',
-			ring: 'ring-amber-100',
-			border: 'border-amber-100',
-			line: 'border-amber-200',
-			bg: 'bg-amber-50/50',
-			badge: 'bg-amber-100 text-amber-700'
-		},
-		{
-			dot: 'bg-slate-300',
-			ring: 'ring-slate-100',
-			border: 'border-slate-200',
-			line: 'border-slate-200',
-			bg: 'bg-slate-50/50',
-			badge: 'bg-slate-100 text-slate-700'
-		}
-	];
-
-	function getColorScheme(index: number) {
-		return colorSchemes[Math.min(index, colorSchemes.length - 1)];
-	}
 
 	function isNewest(index: number): boolean {
 		return index === 0;
@@ -73,79 +25,82 @@
 	title="What's New"
 	titleId="whats-new-modal-title"
 	testId="whats-new-modal"
-	headerGradient="from-purple-50 via-blue-50 to-white"
+	maxWidth="2xl"
 >
 	{#snippet headerIcon()}
 		<div
-			class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 text-white"
+			class="flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-400 shadow-inner"
 		>
-			<Sparkles class="animate-sparkle h-5 w-5" />
+			<Sparkles class="h-5 w-5" />
 		</div>
 	{/snippet}
 
-	{#snippet content()}
-		<div class="space-y-6">
-			{#each changelog as entry, index (entry.version)}
-				{@const colors = getColorScheme(index)}
-				{@const isLast = index === changelog.length - 1}
+	{#snippet headerSubtitle()}
+		<p class="text-xs font-medium text-slate-400">Recent updates and improvements</p>
+	{/snippet}
 
+	{#snippet content()}
+		<div class="space-y-4">
+			{#each changelog as entry, index (entry.version)}
 				<div
-					class="relative pb-8 pl-8 {isLast ? '' : 'border-l-2'} {colors.line}"
+					class="rounded-xl p-5 {isNewest(index)
+						? 'border border-indigo-500/20 bg-indigo-500/5'
+						: 'border border-slate-800/50 bg-slate-950/50 hover:border-slate-700/50'}"
 					data-testid="whats-new-entry"
 				>
-					<!-- Timeline dot -->
-					<div
-						class="absolute top-0 -left-[9px] h-4 w-4 rounded-full ring-4 {colors.dot} {colors.ring}"
-					></div>
-
-					<!-- Entry card -->
-					<div class="rounded-xl border p-5 {colors.bg} {colors.border}">
-						<div class="mb-3 flex items-start justify-between">
-							<div class="flex items-center gap-2">
-								{#if isNewest(index)}
-									<span
-										class="rounded px-2 py-1 text-xs font-bold tracking-wide uppercase {colors.badge}"
-									>
-										New
-									</span>
-								{/if}
-								<span class="text-sm font-semibold text-slate-600">
-									Version {entry.version}
-								</span>
-							</div>
-							<span class="text-xs text-slate-400">
-								{getRelativeDate(entry.date)}
+					<div class="mb-4 flex items-center justify-between">
+						<div class="flex items-center gap-2">
+							<span
+								data-testid="whats-new-version"
+								class="rounded border px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase {isNewest(
+									index
+								)
+									? 'border-indigo-500/20 bg-indigo-500/20 text-indigo-400'
+									: 'border-slate-700/50 bg-slate-800/50 text-slate-400'}"
+							>
+								Version {entry.version}
 							</span>
+							{#if isNewest(index)}
+								<span
+									class="flex items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold tracking-wider text-emerald-400 uppercase"
+								>
+									<CheckCircle2 class="h-2.5 w-2.5" /> Latest
+								</span>
+							{/if}
 						</div>
+						<span class="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+							{getRelativeDate(entry.date)}
+						</span>
+					</div>
 
-						<!-- Changes -->
-						<div class="space-y-3">
-							{#each entry.changes as change (change.category)}
-								<div>
-									<div class="mb-2">
-										<CategoryTag category={change.category} />
-									</div>
-									<ul class="space-y-1.5">
-										{#each change.items as item, i (i)}
-											{@const colonIndex = item.indexOf(':')}
-											{@const hasTitle = colonIndex > 0 && colonIndex < 50}
-											<li class="flex items-start gap-2 text-sm text-slate-600">
-												<span class="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-400"
-												></span>
-												{#if hasTitle}
-													<span>
-														<strong class="text-slate-800">{item.substring(0, colonIndex)}</strong
-														>{item.substring(colonIndex)}
-													</span>
-												{:else}
-													<span>{item}</span>
-												{/if}
-											</li>
-										{/each}
-									</ul>
+					<!-- Changes -->
+					<div class="space-y-4">
+						{#each entry.changes as change (change.category)}
+							<div>
+								<div class="mb-2">
+									<CategoryTag category={change.category} />
 								</div>
-							{/each}
-						</div>
+								<ul class="space-y-2">
+									{#each change.items as item, i (i)}
+										{@const colonIndex = item.indexOf(':')}
+										{@const hasTitle = colonIndex > 0 && colonIndex < 50}
+										<li class="flex items-start gap-2 text-xs leading-relaxed text-slate-400">
+											<span class="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-slate-600"
+											></span>
+											{#if hasTitle}
+												<span>
+													<strong class="font-medium text-slate-300"
+														>{item.substring(0, colonIndex)}</strong
+													>{item.substring(colonIndex)}
+												</span>
+											{:else}
+												<span>{item}</span>
+											{/if}
+										</li>
+									{/each}
+								</ul>
+							</div>
+						{/each}
 					</div>
 				</div>
 			{/each}
@@ -153,14 +108,10 @@
 	{/snippet}
 
 	{#snippet footer()}
-		<div class="flex items-center justify-between">
-			<div class="flex items-center gap-2 text-sm text-slate-500">
-				<Bell class="h-4 w-4 text-purple-500" />
-				<span>Stay tuned for more updates!</span>
-			</div>
+		<div class="flex items-center justify-end">
 			<button
 				onclick={onClose}
-				class="rounded-lg bg-purple-500 px-6 py-2 text-sm font-medium text-white transition-all hover:bg-purple-600"
+				class="rounded-full border border-slate-700 bg-slate-800 px-6 py-2 text-xs font-bold text-slate-200 transition-colors hover:bg-slate-700 hover:text-white"
 				data-testid="whats-new-modal-close-button"
 			>
 				Close

@@ -7,8 +7,15 @@ function newLabelId(): string {
 	if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
 		return crypto.randomUUID();
 	}
-	// Fallback for environments without crypto.randomUUID
-	return `label-${Date.now()}-${Math.floor(Math.random() * 1e9)}`;
+	// Fallback for environments without crypto.randomUUID: derive randomness from
+	// the Web Crypto RNG (ids are not security-sensitive, but this avoids a weak PRNG).
+	if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+		const bytes = crypto.getRandomValues(new Uint8Array(8));
+		const rand = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+		return `label-${Date.now()}-${rand}`;
+	}
+	// Last resort (no Web Crypto at all, e.g. very old runtimes).
+	return `label-${Date.now()}-${globalThis.performance?.now?.() ?? 0}`;
 }
 
 /** Strip the qrCode field from a label (used when tape height is 9mm). */

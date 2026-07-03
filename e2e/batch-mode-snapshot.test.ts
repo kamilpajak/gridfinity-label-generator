@@ -93,6 +93,37 @@ test.describe('Batch Mode - Snapshot Model', () => {
 		expect(await batchPage.getChipPrimaryText(1)).toContain('AAA');
 	});
 
+	test('list stays in sync after keyboard reorder (regression: no freeze on later remove)', async ({
+		page
+	}) => {
+		const batchPage = new BatchModePage(page);
+		await batchPage.goto();
+
+		const form = new SingleModePage(page);
+		await form.selectMode('general');
+		await form.fillPrimaryText('AAA');
+		await batchPage.addLabel();
+		await batchPage.waitForLabel(0);
+		await form.fillPrimaryText('BBB');
+		await batchPage.addLabel();
+		await batchPage.waitForLabel(1);
+		await form.fillPrimaryText('CCC');
+		await batchPage.addLabel();
+		await batchPage.waitForLabel(2);
+
+		// Reorder the first row down: AAA, BBB, CCC -> BBB, AAA, CCC
+		await batchPage.reorderByKeyboard(0, 'down');
+		expect(await batchPage.getChipPrimaryText(0)).toContain('BBB');
+
+		// Regression: a keyboard reorder used to leave svelte-dnd-action's dragging
+		// flag stuck, freezing the list so this remove never re-rendered. The remove
+		// must drop the first visible row (BBB) and the DOM must match the store now.
+		await batchPage.removeLabel(0);
+		expect(await batchPage.getRowCount()).toBe(2);
+		expect(await batchPage.getChipPrimaryText(0)).toContain('AAA');
+		expect(await batchPage.getChipPrimaryText(1)).toContain('CCC');
+	});
+
 	test('Add Current Label disabled at max (20)', async ({ page }) => {
 		const batchPage = new BatchModePage(page);
 		await batchPage.goto();

@@ -5,6 +5,7 @@
  * claims that are true for its own deployment. With nothing configured, analytics
  * and affiliate sections are omitted and a neutral self-hosted notice is shown.
  */
+import { browser } from '$app/environment';
 import { env } from '$env/dynamic/public';
 
 const AFFILIATE_KEYS = [
@@ -14,7 +15,10 @@ const AFFILIATE_KEYS = [
 	'PUBLIC_AFFILIATE_MAGNETS'
 ] as const;
 
-const read = (key: `PUBLIC_${string}`): string => (env[key] ?? '').trim();
+// Read public env only in the browser. During prerender/SSR `$env/dynamic/public`
+// is unavailable (SvelteKit throws), and the privacy modal is only ever rendered
+// client-side (it starts closed), so an empty value at build time is correct.
+const read = (key: `PUBLIC_${string}`): string => (browser ? (env[key] ?? '') : '').trim();
 
 /** Analytics is active only when a Matomo endpoint AND site id are configured. */
 export function isAnalyticsEnabled(): boolean {

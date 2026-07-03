@@ -73,51 +73,49 @@ test.describe('UX Anti-Patterns Detection', () => {
 	});
 
 	test('Batch Mode: should NEVER have checked+disabled switches', async ({ page }) => {
+		// Batch mode shares the single-mode form. The switches here are the shared
+		// standard-reference-switch / hardware-image-switch / qr-code-switch.
 		const batchPage = new BatchModePage(page);
+		const form = new SingleModePage(page);
 		await batchPage.goto();
 
-		// Add a label to test
-		await batchPage.addLabel();
-
-		// Test scenarios
 		const scenarios = [
-			{ modeButtonText: 'Fastener', description: 'Fastener mode' },
-			{ modeButtonText: 'General Item', description: 'General mode' }
+			{ mode: 'fastener' as const, height: '12mm' as const, description: 'Fastener 12mm' },
+			{ mode: 'fastener' as const, height: '9mm' as const, description: 'Fastener 9mm' },
+			{ mode: 'general' as const, height: '12mm' as const, description: 'General 12mm' },
+			{ mode: 'general' as const, height: '9mm' as const, description: 'General 9mm' }
 		];
 
 		for (const scenario of scenarios) {
-			// Set mode by clicking the mode button
-			const modeToggle = page
-				.getByTestId('batch-label-row-0')
-				.locator('[data-testid^="label-mode-toggle"]')
-				.first();
-			const modeButton = modeToggle.getByRole('radio', { name: scenario.modeButtonText });
+			// Tape height is a global batch setting; mode uses the shared form toggle.
+			await batchPage.selectTapeHeight(scenario.height);
+			await form.selectMode(scenario.mode);
 
-			// Check if button is already selected (default mode in batch is Fastener)
-			const currentState = await modeButton.getAttribute('data-state');
-			if (currentState !== 'on') {
-				await modeButton.click();
-				// Wait for mode switch to complete
-				await expect(modeButton).toHaveAttribute('data-state', 'on');
-			}
+			await expect(form.hardwareImageSwitch).toBeVisible();
 
-			// Get all switches for this label
-			const switches = await page
-				.locator('[data-testid="batch-label-row-0"]')
-				.locator('button[role="switch"]')
-				.all();
+			const switches = [
+				{
+					name: 'Hardware Image',
+					element: form.hardwareImageSwitch,
+					testId: 'hardware-image-switch'
+				},
+				{ name: 'QR Code', element: form.qrCodeSwitch, testId: 'qr-code-switch' },
+				{
+					name: 'Standard Reference',
+					element: form.standardReferenceSwitch,
+					testId: 'standard-reference-switch'
+				}
+			];
 
-			for (let i = 0; i < switches.length; i++) {
-				const switchElement = switches[i];
-				const isDisabled = await switchElement.isDisabled();
-				const isChecked = (await switchElement.getAttribute('data-state')) === 'checked';
-				const testId = await switchElement.getAttribute('data-testid');
+			for (const switchInfo of switches) {
+				const isDisabled = await switchInfo.element.isDisabled();
+				const isChecked = await switchInfo.element.isChecked();
 
 				// UX ANTI-PATTERN CHECK
 				if (isDisabled && isChecked) {
 					throw new Error(
 						`UX ANTI-PATTERN DETECTED in Batch Mode ${scenario.description}:\n` +
-							`Switch #${i} (${testId || 'unknown'}) is CHECKED but DISABLED.\n` +
+							`Switch "${switchInfo.name}" (${switchInfo.testId}) is CHECKED but DISABLED.\n` +
 							`This confuses users who see an active feature they cannot interact with.\n` +
 							`FIX: Set checked=false when switch becomes disabled.`
 					);

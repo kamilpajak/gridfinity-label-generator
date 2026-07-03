@@ -48,7 +48,11 @@ test.describe('Label Generator - Single Mode', () => {
 
 	test('should display label preview placeholder initially', async () => {
 		// Check that placeholder is shown when there's no content
-		const placeholder = labelPage.page.getByTestId('label-preview-placeholder');
+		// Both the single preview and batch draft preview render a placeholder
+		// (inactive tab content stays mounted). Scope to the visible one.
+		const placeholder = labelPage.page
+			.getByTestId('label-preview-placeholder')
+			.filter({ visible: true });
 		expect(await placeholder.isVisible()).toBe(true);
 
 		// Canvas should not be visible initially

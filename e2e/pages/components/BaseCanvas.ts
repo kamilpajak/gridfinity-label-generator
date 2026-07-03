@@ -12,7 +12,11 @@ export class BaseCanvas {
 
 	constructor(page: Page) {
 		this.page = page;
-		this.canvas = page.getByTestId('label-preview-canvas');
+		// Both the single-tab preview and the batch draft preview render a
+		// `label-preview-canvas`, and inactive tab content stays mounted (just
+		// hidden). Scope to the visible one so the locator resolves to the canvas
+		// of whichever mode is currently active.
+		this.canvas = page.getByTestId('label-preview-canvas').filter({ visible: true });
 	}
 
 	/**

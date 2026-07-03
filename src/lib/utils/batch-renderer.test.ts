@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderBatchTape } from './batch-renderer';
-import type { BatchState } from '$lib/types/batch';
+import type { BatchRenderData } from '$lib/types/batch';
 
 // Mock label-constraint-solver module
 vi.mock('./label-constraint-solver', () => ({
@@ -124,7 +124,7 @@ describe('batch-renderer', () => {
 
 	describe('renderBatchTape', () => {
 		it('should throw error for empty batch', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [],
 				maxLabels: 20
@@ -136,7 +136,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should set canvas dimensions for single label', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -157,7 +157,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should calculate correct canvas width for multiple labels', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{ mode: 'general', primaryText: 'Label 1', width: 35 },
@@ -175,7 +175,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should draw cutting lines between labels', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{ mode: 'general', primaryText: 'Label 1', width: 35 },
@@ -196,7 +196,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should not draw cutting lines for single label', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [{ mode: 'general', primaryText: 'Single Label', width: 35 }],
 				maxLabels: 20
@@ -210,7 +210,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should use correct DPI for dimensions', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 9,
 				labels: [{ mode: 'general', primaryText: 'Test', width: 35 }],
 				maxLabels: 20
@@ -223,7 +223,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should handle fastener labels', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -243,7 +243,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should handle mixed label modes', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{ mode: 'general', primaryText: 'General', width: 35 },
@@ -263,7 +263,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should respect 1mm gap between labels', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{ mode: 'general', primaryText: 'A', width: 30 },
@@ -281,7 +281,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should use gray dashed line style for cutting lines', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{ mode: 'general', primaryText: 'A', width: 30 },
@@ -297,7 +297,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should handle export without margins', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [{ mode: 'general', primaryText: 'Export Test', width: 35 }],
 				maxLabels: 20
@@ -315,7 +315,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should handle labels with QR codes', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -333,7 +333,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should handle labels with different lengths', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -368,7 +368,7 @@ describe('batch-renderer', () => {
 
 	describe('toggle flags', () => {
 		it('should pass showHardwareImage=false to solver when showImage=false', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -395,7 +395,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should pass showStandard=false to solver when showReference=false', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -422,7 +422,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should pass showQRCode=false to solver when showQRCode=false', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -447,7 +447,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should pass showHardwareImage=true when showImage is undefined (default)', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -474,7 +474,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should show reference by default when showReference is undefined', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -495,7 +495,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should show QR code by default when showQRCode is undefined', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -514,7 +514,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should not include standard text in secondaryText when showReference=false', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -542,7 +542,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should include standard text in secondaryText when showReference=true', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -575,7 +575,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should handle mixed toggle states across multiple labels', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -616,7 +616,7 @@ describe('batch-renderer', () => {
 
 	describe('imperial fraction formatting', () => {
 		it('should format imperial length as fraction in primaryText', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -647,7 +647,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should format imperial length 3/8 correctly', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -671,7 +671,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should format imperial mixed fraction 1-1/2 correctly', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -695,7 +695,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should keep metric length as decimal', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{
@@ -722,7 +722,7 @@ describe('batch-renderer', () => {
 
 	describe('cutting line placement', () => {
 		it('should draw 2 cutting lines for 3 labels', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{ mode: 'general', primaryText: 'A', width: 30 },
@@ -741,7 +741,7 @@ describe('batch-renderer', () => {
 		});
 
 		it('should draw 3 cutting lines for 4 labels', async () => {
-			const batch: BatchState = {
+			const batch: BatchRenderData = {
 				height: 12,
 				labels: [
 					{ mode: 'general', primaryText: 'A', width: 30 },

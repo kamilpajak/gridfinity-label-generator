@@ -76,7 +76,9 @@ export async function waitForDataAttribute(
 export async function waitForQRCodeRender(page: Page, options: { timeout?: number } = {}) {
 	const { timeout = 5000 } = options;
 
-	const canvas = page.getByTestId('label-preview-canvas');
+	// Inactive tab content stays mounted, so the batch draft preview also has a
+	// `label-preview-canvas`. Scope to the visible one (the active mode's canvas).
+	const canvas = page.getByTestId('label-preview-canvas').filter({ visible: true });
 	await canvas.waitFor({ state: 'visible', timeout });
 	await expect(canvas).toHaveAttribute('data-render-status', 'stable', { timeout });
 }

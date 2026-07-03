@@ -9,32 +9,29 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { BatchModePage } from './pages/batch-mode/BatchModePage';
+import { SingleModePage } from './pages/single-mode/SingleModePage';
 
 test.describe('Batch Export DPI', () => {
 	test('should export batch with 360 DPI (not 300 DPI)', async ({ page }) => {
-		await page.goto('/');
+		const batchPage = new BatchModePage(page);
+		await batchPage.goto();
 
-		// Wait for page to load
-		await page.waitForLoadState('networkidle');
+		// Select 12mm tape height (global batch setting)
+		await batchPage.selectTapeHeight('12mm');
 
-		// Switch to batch mode by clicking the Batch Mode tab
-		const batchModeTab = page.locator('button:has-text("Batch Mode")');
-		await batchModeTab.click();
+		// Configure a minimal valid label via the shared form: general + primary text
+		const form = new SingleModePage(page);
+		await form.selectMode('general');
+		await form.fillPrimaryText('M8');
 
-		// Wait for batch mode UI elements to appear
-		await page.waitForSelector('button:has-text("Add Label")', { state: 'visible' });
+		// Snapshot the current form config into the batch
+		await batchPage.addLabel();
 
-		// Select 12mm tape height using testid
-		const tape12mmButton = page.getByTestId('tape-height-12mm');
-		await tape12mmButton.waitFor({ state: 'visible' });
-		await tape12mmButton.click();
-
-		// Click Add Label button - this adds the current label configuration to the batch
-		const addLabelButton = page.locator('button:has-text("Add Label")').first();
-		await addLabelButton.click();
-
-		// Wait for the export button to show "1 label" - this confirms the label was added
-		await page.waitForSelector('button:has-text("Export Batch (1 label)")', { timeout: 5000 });
+		// Wait for the export button to show "1" - this confirms the label was added
+		await page.waitForSelector('button:has-text("Export Batch (1) Print-Ready PNGs")', {
+			timeout: 5000
+		});
 
 		// Set up canvas dimension interception BEFORE clicking export
 		const canvasDimensionsPromise = page.evaluate(() => {

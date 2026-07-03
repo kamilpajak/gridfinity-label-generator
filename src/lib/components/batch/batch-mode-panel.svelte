@@ -2,13 +2,9 @@
 	import { Button } from '$lib/components/ui/button';
 	import { batchStore } from '$lib/stores/batch-store';
 	import { exportBatchTapeAsPNG } from '$lib/utils/batch-exporter';
-	import BatchControls from './batch-controls.svelte';
 	import BatchLabelList from './batch-label-list.svelte';
 	import DownloadIcon from '@lucide/svelte/icons/download';
-
-	// Which slice of the batch UI to render: controls live in the sidebar,
-	// the label collection lives in the main area (mirrors the single-mode split).
-	let { view = 'main' }: { view?: 'sidebar' | 'main' } = $props();
+	import ListIcon from '@lucide/svelte/icons/list';
 
 	let batchState = $derived($batchStore);
 	let canExport = $derived(batchState.labels.length > 0);
@@ -43,33 +39,44 @@
 	}
 </script>
 
-{#if view === 'sidebar'}
-	<div class="space-y-6">
-		<!-- Batch Settings -->
-		<div>
-			<h2 class="mb-5 text-xs font-bold tracking-widest text-slate-400 uppercase">
-				Batch Settings
-			</h2>
-			<BatchControls />
+<div class="w-full">
+	<div class="mb-6 border-t border-slate-800/80 pt-8">
+		<h2 class="text-2xl font-black tracking-tight text-white">Batch Labels</h2>
+		<p class="mt-1 text-sm text-slate-400">Manage your label collection before exporting.</p>
+	</div>
+
+	{#if batchState.labels.length === 0}
+		<div
+			class="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-800 bg-slate-900/50 p-8 text-center backdrop-blur"
+			data-testid="batch-empty-state"
+		>
+			<div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-800/50">
+				<ListIcon class="h-7 w-7 text-slate-600" />
+			</div>
+			<p class="text-lg font-bold text-slate-300">No labels in batch</p>
+			<p class="mt-2 text-sm text-slate-500">
+				Configure a label in the sidebar and click "Add Current Label"
+			</p>
+		</div>
+	{:else}
+		<div class="rounded-2xl border border-slate-800/50 bg-slate-900/30 p-4">
+			<BatchLabelList />
 		</div>
 
-		<hr class="border-slate-800/60" />
-
-		<!-- Export -->
-		<div class="space-y-3">
-			<h3 class="text-[11px] font-bold tracking-wide text-slate-400 uppercase">Export</h3>
+		<div class="mt-10 flex flex-col items-center gap-3 pb-8">
 			<Button
 				onclick={handleExport}
 				disabled={!canExport || isExporting}
-				class="w-full gap-2 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40"
 				variant="default"
+				size="lg"
+				class="h-auto gap-2 rounded-xl px-8 py-4 text-sm font-bold shadow-lg shadow-cyan-500/25 transition-shadow hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]"
+				data-testid="export-button"
 			>
-				<DownloadIcon class="h-4 w-4" />
+				<DownloadIcon class="h-5 w-5" />
 				{#if isExporting}
 					Exporting...
 				{:else}
-					Export Batch ({batchState.labels.length}
-					{batchState.labels.length === 1 ? 'label' : 'labels'})
+					Export Batch ({batchState.labels.length}) Print-Ready PNGs
 				{/if}
 			</Button>
 
@@ -82,21 +89,6 @@
 					{exportStatus}
 				</p>
 			{/if}
-
-			{#if !canExport}
-				<p class="text-center text-[10px] text-slate-500">Add at least one label to export</p>
-			{/if}
 		</div>
-	</div>
-{:else}
-	<!-- Main: the label collection -->
-	<div class="mx-auto flex w-full max-w-2xl flex-col">
-		<div class="mb-6">
-			<h2 class="text-2xl font-black tracking-tight text-white">Batch Labels</h2>
-			<p class="mt-1 text-sm text-slate-400">
-				Manage and preview your label collection before exporting.
-			</p>
-		</div>
-		<BatchLabelList />
-	</div>
-{/if}
+	{/if}
+</div>

@@ -56,8 +56,10 @@
 		showCustomImage = false
 	}: Props = $props();
 
-	let container: HTMLDivElement;
+	let container = $state<HTMLDivElement | undefined>(undefined);
 	let scale = $state(1);
+	// Bumped to force a canvas re-render (window/container resize, tab reveal).
+	let renderNonce = $state(0);
 
 	// Check if we have any content to display
 	const hasContent = $derived(
@@ -232,6 +234,10 @@
 		customImage;
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		showCustomImage;
+		// Re-render when the container resizes / becomes visible (e.g. a tab switch
+		// reveals the draft preview after it mounted at zero size).
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		renderNonce;
 
 		if (!canvasRef || !container || !layout) return;
 
@@ -344,16 +350,23 @@
 	});
 
 	onMount(() => {
-		// Handle window resize
+		// Re-render on window resize.
 		const handleResize = () => {
-			// Force a re-render by updating scale
-			const temp = scale;
-			scale = 0;
-			scale = temp;
+			renderNonce++;
 		};
-
 		window.addEventListener('resize', handleResize);
 		return () => window.removeEventListener('resize', handleResize);
+	});
+
+	// Re-render when the preview container changes size — covers becoming visible
+	// after mounting hidden (e.g. the batch-mode draft preview on tab switch).
+	$effect(() => {
+		if (!container || typeof ResizeObserver === 'undefined') return;
+		const observer = new ResizeObserver(() => {
+			renderNonce++;
+		});
+		observer.observe(container);
+		return () => observer.disconnect();
 	});
 
 	onDestroy(() => {
@@ -374,7 +387,8 @@
 			<div
 				bind:this={container}
 				class="group relative shrink-0"
-				style="width: min(100%, {labelWidth * PX_PER_MM}px, {RENDER_WIDTH_PX}px); aspect-ratio: {labelWidth} / {labelHeight};"
+				style="width: min(100%, {labelWidth *
+					PX_PER_MM}px, {RENDER_WIDTH_PX}px); aspect-ratio: {labelWidth} / {labelHeight};"
 			>
 				<div
 					class="pointer-events-none absolute -inset-3 rounded bg-white/20 opacity-60 blur-2xl transition-opacity duration-300 group-hover:opacity-90"

@@ -28,6 +28,11 @@ interface StoredBatch {
 	data: BatchState;
 }
 
+// Set by loadFromStorage when it had to backfill ids for legacy data, so the
+// store can re-persist the upgraded records once on init (otherwise the ids
+// regenerate on every reload).
+let loadedWithBackfill = false;
+
 /**
  * Load batch state from localStorage
  */
@@ -64,10 +69,11 @@ function loadFromStorage(): BatchState {
 		// data is upgraded in place instead of discarded.
 		return {
 			...parsed.data,
-			labels: parsed.data.labels.map((label) => ({
-				...label,
-				id: label.id ?? newLabelId()
-			}))
+			labels: parsed.data.labels.map((label) => {
+				if (label.id) return label;
+				loadedWithBackfill = true;
+				return { ...label, id: newLabelId() };
+			})
 		};
 	} catch (error) {
 		console.warn('Failed to load batch from localStorage:', error);
@@ -104,13 +110,35 @@ function saveToStorage(state: BatchState): void {
 	}, SAVE_DEBOUNCE_MS);
 }
 
+/**
+ * Write state to localStorage immediately, cancelling any pending debounced save.
+ * Used on page hide/unload so a change made right before closing isn't lost.
+ */
+function flushSave(state: BatchState | undefined): void {
+	if (!state || typeof localStorage === 'undefined') {
+		return;
+	}
+	if (saveTimeout) {
+		clearTimeout(saveTimeout);
+		saveTimeout = null;
+	}
+	try {
+		const toStore: StoredBatch = { version: STORAGE_VERSION, data: state };
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+	} catch (error) {
+		console.warn('Failed to save batch to localStorage:', error);
+	}
+}
+
 function createBatchStore() {
 	// Initialize with data from localStorage
 	const { subscribe, set, update } = writable<BatchState>(loadFromStorage());
 
 	// Subscribe to changes and save to localStorage
 	let isInitialLoad = true;
+	let latest: BatchState | undefined;
 	subscribe((state) => {
+		latest = state;
 		if (isInitialLoad) {
 			isInitialLoad = false;
 			return;
@@ -118,8 +146,26 @@ function createBatchStore() {
 		saveToStorage(state);
 	});
 
+	// Persist ids backfilled onto legacy data once, so they stay stable across reloads.
+	if (loadedWithBackfill) {
+		flushSave(latest);
+		loadedWithBackfill = false;
+	}
+
+	// Flush any pending debounced save when the page is hidden/unloaded, so a label
+	// added right before closing or reloading is not lost to the 500ms debounce.
+	if (typeof window !== 'undefined') {
+		const flush = () => flushSave(latest);
+		window.addEventListener('pagehide', flush);
+		document.addEventListener('visibilitychange', () => {
+			if (document.visibilityState === 'hidden') flush();
+		});
+	}
+
 	return {
 		subscribe,
+		/** Persist the current state immediately (bypassing the debounce). */
+		flush: () => flushSave(latest),
 		setHeight: (height: TapeHeight) => {
 			update((state) => {
 				const newState = { ...state, height };

@@ -46,8 +46,8 @@
 	<Tooltip.Provider>
 		<div class="flex items-center justify-between space-x-2">
 			<div class="space-y-0.5">
-				<div class="font-medium">{UI_TEXT.settings.standardReference.title}</div>
-				<div class="text-sm text-slate-400">
+				<div class="text-sm font-medium">{UI_TEXT.settings.standardReference.title}</div>
+				<div class="text-[10px] text-slate-400">
 					{standardReferenceDisabled
 						? UI_TEXT.settings.standardReference.disabledGeneral
 						: UI_TEXT.settings.standardReference.description}
@@ -63,7 +63,7 @@
 
 		<div class="flex items-center justify-between space-x-2">
 			<div class="space-y-0.5">
-				<div class="flex items-center gap-1.5 font-medium">
+				<div class="flex items-center gap-1.5 text-sm font-medium">
 					{UI_TEXT.settings.hardwareIcon.title}
 					{#if labelWidth < 50 && !hardwareImageDisabled && !qrCodeDisabled}
 						<Tooltip.Root>
@@ -78,7 +78,7 @@
 						</Tooltip.Root>
 					{/if}
 				</div>
-				<div class="text-sm text-slate-400">
+				<div class="text-[10px] text-slate-400">
 					{#if hardwareImageDisabled}
 						{labelHeight === '9'
 							? UI_TEXT.settings.hardwareIcon.disabled9mm
@@ -98,7 +98,7 @@
 
 		<div class="flex items-center justify-between space-x-2">
 			<div class="space-y-0.5">
-				<div class="flex items-center gap-1.5 font-medium">
+				<div class="flex items-center gap-1.5 text-sm font-medium">
 					{UI_TEXT.settings.qrCode.title}
 					{#if labelWidth < 50 && !hardwareImageDisabled && !qrCodeDisabled}
 						<Tooltip.Root>
@@ -113,7 +113,7 @@
 						</Tooltip.Root>
 					{/if}
 				</div>
-				<div class="text-sm text-slate-400">
+				<div class="text-[10px] text-slate-400">
 					{#if qrCodeDisabled}
 						{UI_TEXT.settings.qrCode.disabled9mm}
 					{:else}
@@ -135,9 +135,10 @@
 		<div class="space-y-3">
 			<div>
 				<div class="mb-2 flex items-center justify-between">
-					<span class="text-sm text-muted-foreground">{UI_TEXT.settings.dimensions.labelWidth}</span
+					<span class="text-[11px] text-muted-foreground"
+						>{UI_TEXT.settings.dimensions.labelWidth}</span
 					>
-					<span class="font-mono text-sm text-cyan-400">{labelWidth}mm</span>
+					<span class="font-mono text-xs text-cyan-400">{labelWidth}mm</span>
 				</div>
 				<Slider
 					value={labelWidth}
@@ -152,7 +153,7 @@
 			</div>
 			{#if !hideHeight}
 				<div>
-					<div class="mb-2 text-sm text-muted-foreground">
+					<div class="mb-2 text-[11px] text-muted-foreground">
 						{UI_TEXT.settings.dimensions.labelHeight}
 					</div>
 					<ToggleGroup

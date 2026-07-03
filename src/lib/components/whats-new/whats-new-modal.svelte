@@ -53,7 +53,7 @@
 							<span
 								class="rounded border border-indigo-500/20 bg-indigo-500/20 px-2 py-0.5 tracking-wider text-indigo-400 uppercase"
 							>
-								<span class="text-sm font-semibold">Version {entry.version}</span>
+								<span class="text-[10px] font-semibold">Version {entry.version}</span>
 							</span>
 							{#if isNewest(index)}
 								<span

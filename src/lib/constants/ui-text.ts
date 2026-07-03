@@ -70,7 +70,6 @@ export const UI_TEXT = {
 			exclusiveWithHardware: '(exclusive with Hardware Icon)'
 		},
 		dimensions: {
-			title: 'Dimensions',
 			labelHeight: 'Label Height',
 			labelWidth: 'Label Width'
 		}

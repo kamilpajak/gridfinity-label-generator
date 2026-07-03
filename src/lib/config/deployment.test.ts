@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+// The config reads public env only in the browser; force that on for these tests.
+vi.mock('$app/environment', () => ({ browser: true }));
+
 describe('deployment config', () => {
 	beforeEach(() => {
 		vi.resetModules();

@@ -1,9 +1,12 @@
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator, expect } from '@playwright/test';
 import { BasePage } from '../base/BasePage';
 import { NavigationTabs } from '../components/NavigationTabs';
 import { ExportSection } from '../components/ExportSection';
 import { LabelSizeToggle } from '../components/LabelSizeToggle';
 import type { LabelSize } from '../../types/page-objects';
+
+/** localStorage key under which batch state (including encoded images) is persisted */
+export const BATCH_STORAGE_KEY = 'gridscribe_batch_v1';
 
 /**
  * Page object for Batch Mode.
@@ -58,11 +61,42 @@ export class BatchModePage extends BasePage {
 	async goto() {
 		await this.page.goto('/');
 		await this.page.waitForLoadState('domcontentloaded');
+		// networkidle is load-bearing here: it lets Svelte hydration finish before
+		// tests interact (SSR renders controls before their handlers attach).
 		await this.page.waitForLoadState('networkidle');
 		// Switch to batch mode
 		await this.navigation.switchToBatchMode();
 		// Wait for critical elements to be visible and ready
 		await this.addLabelButton.waitFor({ state: 'visible' });
+	}
+
+	/**
+	 * Reload the page and wait for the app shell to be interactive again.
+	 * Callers typically switch back to batch mode afterwards.
+	 */
+	async reload() {
+		await this.page.reload();
+		// networkidle lets hydration finish before the caller re-interacts.
+		await this.page.waitForLoadState('networkidle');
+	}
+
+	/**
+	 * Raw persisted batch state string from localStorage (or null if absent).
+	 */
+	async getPersistedState(): Promise<string | null> {
+		return this.page.evaluate((key) => localStorage.getItem(key), BATCH_STORAGE_KEY);
+	}
+
+	/**
+	 * Wait until the persisted batch state includes an encoded image data URL.
+	 * Persistence is debounced (~500ms) plus image encoding time.
+	 */
+	async waitForImagePersisted(timeout: number = 5000): Promise<void> {
+		await expect
+			.poll(async () => (await this.getPersistedState())?.includes('data:image/') ?? false, {
+				timeout
+			})
+			.toBe(true);
 	}
 
 	// ============================================
@@ -126,6 +160,13 @@ export class BatchModePage extends BasePage {
 
 	getLabelRow(index: number): Locator {
 		return this.page.getByTestId(`batch-label-row-${index}`);
+	}
+
+	/**
+	 * The image element rendered inside a batch row chip (custom label image).
+	 */
+	getRowImage(index: number): Locator {
+		return this.getLabelRow(index).locator('img');
 	}
 
 	async waitForLabel(index: number, timeout: number = 5000) {

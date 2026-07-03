@@ -1,4 +1,4 @@
-import { type Page, type Locator, type Download } from '@playwright/test';
+import { type Page, type Locator, type Download, expect } from '@playwright/test';
 
 /**
  * Export section component shared between Single and Batch modes
@@ -9,6 +9,7 @@ export class ExportSection {
 
 	readonly exportButton: Locator;
 	readonly downloadProgress: Locator;
+	readonly exportedConfirmation: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -16,7 +17,9 @@ export class ExportSection {
 		// Use data-testid for reliable selection
 		this.exportButton = page.getByTestId('export-button');
 		// Progress indicator for future implementation
-		this.downloadProgress = page.locator('[data-testid="download-progress"]');
+		this.downloadProgress = page.getByTestId('download-progress');
+		// Batch export success message ("✓ Exported N labels successfully")
+		this.exportedConfirmation = page.locator('text=✓ Exported');
 	}
 
 	/**
@@ -26,6 +29,55 @@ export class ExportSection {
 		const downloadPromise = this.page.waitForEvent('download');
 		await this.exportButton.click();
 		return await downloadPromise;
+	}
+
+	/**
+	 * Click the export button without waiting for a download.
+	 *
+	 * Used by tests that intercept `HTMLCanvasElement.prototype.toBlob` instead
+	 * of a browser download event (see {@link captureNextExportCanvasDimensions}).
+	 */
+	async clickExport(): Promise<void> {
+		await this.exportButton.click();
+	}
+
+	/**
+	 * Wait for the batch export button label to reflect a given label count,
+	 * e.g. "Export Batch (2) Print-Ready PNGs" when `count` is 2.
+	 */
+	async waitForExportButtonCount(count: number): Promise<void> {
+		await expect(this.exportButton).toContainText(`(${count})`);
+	}
+
+	/**
+	 * Install a one-shot spy on `HTMLCanvasElement.prototype.toBlob` and resolve
+	 * with the dimensions of the next canvas that is exported. Call this BEFORE
+	 * triggering the export, then await the returned promise afterwards.
+	 */
+	async captureNextExportCanvasDimensions(): Promise<{ width: number; height: number }> {
+		return this.page.evaluate(() => {
+			return new Promise<{ width: number; height: number }>((resolve) => {
+				const originalToBlob = HTMLCanvasElement.prototype.toBlob;
+				HTMLCanvasElement.prototype.toBlob = function (
+					callback: BlobCallback,
+					type?: string,
+					quality?: number
+				) {
+					const dimensions = { width: this.width, height: this.height };
+					// Restore original immediately so only the first export is captured
+					HTMLCanvasElement.prototype.toBlob = originalToBlob;
+					resolve(dimensions);
+					return originalToBlob.call(this, callback, type, quality);
+				};
+			});
+		});
+	}
+
+	/**
+	 * Assert the batch export success message is shown.
+	 */
+	async expectExportSuccess(): Promise<void> {
+		await expect(this.exportedConfirmation).toBeVisible({ timeout: 5000 });
 	}
 
 	/**

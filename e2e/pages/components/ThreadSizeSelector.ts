@@ -1,5 +1,10 @@
 import { type Page, type Locator } from '@playwright/test';
 
+/** Test id of the thread-size select trigger */
+export const THREAD_SIZE_SELECT_TESTID = 'thread-size-select';
+/** Test id of the pitch select trigger */
+export const PITCH_SELECT_TESTID = 'pitch-select';
+
 /**
  * Component for thread size, pitch, and length selection
  * Used in fastener mode for specifying hardware dimensions
@@ -21,8 +26,8 @@ export class ThreadSizeSelector {
 		this.onSelectionComplete = onSelectionComplete;
 
 		// Initialize locators
-		this.threadSizeButton = page.getByTestId('thread-size-select');
-		this.pitchSelect = page.getByTestId('pitch-select');
+		this.threadSizeButton = page.getByTestId(THREAD_SIZE_SELECT_TESTID);
+		this.pitchSelect = page.getByTestId(PITCH_SELECT_TESTID);
 		this.lengthInput = page.getByTestId('length-input');
 	}
 

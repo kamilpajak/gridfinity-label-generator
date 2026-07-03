@@ -8,33 +8,23 @@
  */
 
 import { test, expect } from '@playwright/test';
+import { RenderComparisonPage } from './pages/harness/RenderComparisonPage';
 
 test.describe('Single vs Batch Mode Rendering', () => {
 	test('should produce pixel-perfect identical output for same label configuration', async ({
 		page
 	}) => {
+		const renderComparison = new RenderComparisonPage(page);
+
 		// Navigate to test page that renders both modes
-		await page.goto('/e2e/render-comparison');
+		await renderComparison.goto();
 
 		// Wait for rendering to complete (status changes from "Ready" to "Rendered successfully")
-		await page.waitForFunction(
-			() => {
-				const statusEl = document.querySelector('[data-testid="status"]');
-				return statusEl?.textContent === 'Rendered successfully';
-			},
-			{ timeout: 10000 }
-		);
+		await renderComparison.waitForRendered();
 
 		// Get canvas data from both modes
-		const singleModeCanvasData = await page.evaluate(() => {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			return (window as any).getSingleCanvasData();
-		});
-
-		const batchModeCanvasData = await page.evaluate(() => {
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			return (window as any).getBatchCanvasData();
-		});
+		const singleModeCanvasData = await renderComparison.getSingleCanvasData();
+		const batchModeCanvasData = await renderComparison.getBatchCanvasData();
 
 		// === PIXEL-PERFECT COMPARISON ===
 		// Dimensions must match

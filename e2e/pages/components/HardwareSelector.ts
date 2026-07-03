@@ -1,5 +1,8 @@
 import { type Page, type Locator } from '@playwright/test';
 
+/** Test id of the hardware/standard select trigger */
+export const HARDWARE_SELECT_TESTID = 'hardware-select';
+
 /**
  * Component for hardware/standard selection with search functionality
  * Encapsulates the Command popover interaction pattern
@@ -22,7 +25,7 @@ export class HardwareSelector {
 		this.onSelectionComplete = onSelectionComplete;
 
 		// Initialize locators
-		this.button = page.getByTestId('hardware-select');
+		this.button = page.getByTestId(HARDWARE_SELECT_TESTID);
 		this.searchInput = page.getByPlaceholder('Search standards...');
 		this.searchResults = page.locator('[data-slot="command-item"]');
 	}

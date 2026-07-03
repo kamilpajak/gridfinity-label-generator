@@ -510,5 +510,61 @@ describe('batchStore', () => {
 
 			vi.useRealTimers();
 		});
+
+		it('flush() persists immediately, bypassing and cancelling the debounce', () => {
+			vi.useFakeTimers();
+
+			batchStore.addLabel({ mode: 'general', primaryText: 'Flush me', width: 35 });
+			// Debounced: nothing written yet.
+			expect(localStorageMock.setItem).not.toHaveBeenCalled();
+
+			// Flush writes synchronously.
+			batchStore.flush();
+			expect(localStorageMock.setItem).toHaveBeenCalledWith(
+				'gridscribe_batch_v1',
+				expect.stringContaining('Flush me')
+			);
+
+			// The pending debounce must not fire a second, redundant write.
+			const callsAfterFlush = localStorageMock.setItem.mock.calls.length;
+			vi.advanceTimersByTime(600);
+			expect(localStorageMock.setItem.mock.calls.length).toBe(callsAfterFlush);
+
+			vi.useRealTimers();
+		});
+	});
+});
+
+describe('batchStore legacy id backfill', () => {
+	afterEach(() => {
+		vi.resetModules();
+	});
+
+	it('re-persists ids backfilled onto legacy data so they survive reloads', async () => {
+		localStorageMock.clear();
+		vi.clearAllMocks();
+		// Legacy record: a label with NO id (persisted before ids existed).
+		localStorageMock.setItem(
+			'gridscribe_batch_v1',
+			JSON.stringify({
+				version: 1,
+				data: {
+					height: 12,
+					maxLabels: 20,
+					labels: [{ mode: 'general', primaryText: 'Legacy', width: 35 }]
+				}
+			})
+		);
+
+		// Fresh module load simulates a page reload.
+		vi.resetModules();
+		const mod = await import('./batch-store');
+		const state = get(mod.batchStore);
+
+		// The loaded label gets an id in memory...
+		expect(state.labels[0].id).toBeTruthy();
+		// ...and the store re-wrote storage so that id is now persisted.
+		const persisted = JSON.parse(localStorageMock.getItem('gridscribe_batch_v1') as string);
+		expect(persisted.data.labels[0].id).toBe(state.labels[0].id);
 	});
 });

@@ -131,7 +131,6 @@
 	</Tooltip.Provider>
 
 	<div class="border-t border-slate-700/50 pt-4">
-		<h4 class="mb-3 font-medium tracking-tight">{UI_TEXT.settings.dimensions.title}</h4>
 		<div class="space-y-3">
 			<div>
 				<div class="mb-2 flex items-center justify-between">

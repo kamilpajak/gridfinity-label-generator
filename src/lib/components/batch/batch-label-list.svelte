@@ -61,7 +61,7 @@
 
 			<BatchLabelChip config={label} {height} {index} />
 
-			<div class="ml-auto flex items-center gap-1">
+			<div class="flex items-center gap-1">
 				<span
 					class="flex cursor-grab items-center justify-center rounded p-2 text-slate-500 transition-colors hover:bg-slate-800 hover:text-slate-300 active:cursor-grabbing"
 					title="Drag to reorder"

@@ -83,9 +83,6 @@
 						{labelHeight === '9'
 							? UI_TEXT.settings.hardwareIcon.disabled9mm
 							: UI_TEXT.settings.hardwareIcon.disabledGeneral}
-					{:else if labelWidth < 50 && !qrCodeDisabled}
-						{UI_TEXT.settings.hardwareIcon.description}<br />{UI_TEXT.settings.hardwareIcon
-							.exclusiveWithQR}
 					{:else}
 						{UI_TEXT.settings.hardwareIcon.description}
 					{/if}
@@ -119,9 +116,6 @@
 				<div class="text-sm text-slate-400">
 					{#if qrCodeDisabled}
 						{UI_TEXT.settings.qrCode.disabled9mm}
-					{:else if labelWidth < 50 && !hardwareImageDisabled}
-						{UI_TEXT.settings.qrCode.description}<br />{UI_TEXT.settings.qrCode
-							.exclusiveWithHardware}
 					{:else}
 						{UI_TEXT.settings.qrCode.description}
 					{/if}

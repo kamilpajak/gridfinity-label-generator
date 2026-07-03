@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { BatchLabelConfig, TapeHeight } from '$lib/types/batch';
-	import { deriveLabelText } from '$lib/utils/batch-renderer';
-	import StandardImage from '$lib/components/shared/standard-image.svelte';
+	import { deriveLabelText, renderBatchLabelToCanvas } from '$lib/utils/batch-renderer';
 
 	interface Props {
 		config: BatchLabelConfig;
@@ -12,70 +11,56 @@
 
 	let { config, height, index }: Props = $props();
 
-	// Physical proportions: px = mm * SCALE, so a 35mm/12mm chip renders small
-	// but true-to-shape. DOM render (not canvas) keeps 20 rows cheap.
+	// On-screen size: px = mm * SCALE, so a 35mm/12mm chip renders small but
+	// true-to-shape. The canvas backing store carries the real render at CHIP_DPI.
 	const SCALE = 4;
+	// Modest DPI: chips are tiny on screen, so ~2x the display size is plenty sharp
+	// while keeping 20 concurrent renders cheap (existing image/svg/qr caches help).
+	const CHIP_DPI = 200;
+
 	const heightPx = $derived(height * SCALE);
 	const widthPx = $derived(config.width * SCALE);
-	const primaryFontPx = $derived(height === 12 ? 3.5 * SCALE : 2.8 * SCALE);
-	const secondaryFontPx = $derived(height === 12 ? 2.2 * SCALE : 1.8 * SCALE);
+	// Printable area (label minus 2mm side + 1mm top/bottom margins); the surrounding
+	// white box supplies the margins so the chip matches the printed tape 1:1.
+	const printableWidthPx = $derived((config.width - 4) * SCALE);
+	const printableHeightPx = $derived((height - 2) * SCALE);
 
+	// Kept only for the visually-hidden text hook used by e2e.
 	const text = $derived(deriveLabelText(config));
 
-	// Right-side indicator: QR takes precedence, else the hardware/custom image.
-	const showQr = $derived((config.showQRCode ?? false) && !!config.qrCode && height === 12);
-	const fastenerImage = $derived(
-		config.mode === 'fastener' && (config.showImage ?? true) ? text.standard?.image : undefined
-	);
-	const customImage = $derived(
-		config.mode === 'general' && (config.showCustomImage ?? true) && height === 12
-			? config.customImage?.data
-			: undefined
-	);
-	const rightImage = $derived(fastenerImage ?? customImage);
+	let canvasEl = $state<HTMLCanvasElement | undefined>();
+	let renderToken = 0;
+	// Serialize renders per chip and skip superseded ones so a slow render never
+	// clobbers a newer one on the same canvas.
+	let inFlight: Promise<void> = Promise.resolve();
+
+	$effect(() => {
+		const el = canvasEl;
+		const cfg = config;
+		const h = height;
+		if (!el || typeof document === 'undefined') return;
+
+		const token = ++renderToken;
+		inFlight = inFlight
+			.then(async () => {
+				if (token !== renderToken) return; // superseded before it started
+				await renderBatchLabelToCanvas({ canvas: el, config: cfg, height: h, dpi: CHIP_DPI });
+			})
+			.catch((e) => {
+				console.warn('Failed to render batch chip preview:', e);
+			});
+	});
 </script>
 
 <div
-	class="relative flex shrink-0 items-center overflow-hidden rounded-[2px] bg-white text-black shadow-md"
-	style="height: {heightPx}px; width: {widthPx}px; padding: 0 {2 * SCALE}px;"
+	class="relative flex shrink-0 items-center justify-center overflow-hidden rounded-[2px] bg-white shadow-md"
+	style="height: {heightPx}px; width: {widthPx}px;"
 	data-testid="batch-chip-{index}"
 >
-	<div class="flex h-full w-full items-center justify-between font-mono">
-		<div class="flex w-full flex-col justify-center overflow-hidden leading-[1.1]">
-			<span
-				class="truncate font-bold tracking-tighter"
-				style="font-size: {primaryFontPx}px;"
-				data-testid="batch-chip-primary-{index}"
-			>
-				{text.primaryText}
-			</span>
-			{#if text.secondaryText}
-				<span
-					class="truncate font-semibold tracking-tight text-slate-800"
-					style="font-size: {secondaryFontPx}px;"
-				>
-					{text.secondaryText}
-				</span>
-			{/if}
-		</div>
+	<canvas bind:this={canvasEl} style="width: {printableWidthPx}px; height: {printableHeightPx}px;"
+	></canvas>
 
-		{#if showQr}
-			<div
-				class="ml-2 flex h-[80%] shrink-0 items-center justify-center border-l-2 border-slate-300 pl-2"
-			>
-				<div
-					class="rounded-sm bg-black"
-					style="width: {heightPx * 0.55}px; height: {heightPx * 0.55}px;"
-				></div>
-			</div>
-		{:else if rightImage}
-			<div
-				class="ml-2 flex h-[80%] shrink-0 items-center justify-center border-l-2 border-slate-300 pl-2"
-			>
-				<div style="width: {heightPx * 0.75}px; height: {heightPx * 0.75}px;">
-					<StandardImage src={rightImage} alt="" class="h-full w-full object-contain" />
-				</div>
-			</div>
-		{/if}
-	</div>
+	<!-- Visually-hidden text hook: keeps e2e assertions on chip text working while
+	     the visible label is a canvas render. -->
+	<span class="sr-only" data-testid="batch-chip-primary-{index}">{text.primaryText}</span>
 </div>

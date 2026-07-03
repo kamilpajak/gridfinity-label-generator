@@ -4,7 +4,7 @@
  * Renders multiple labels horizontally on a single canvas with cutting lines
  */
 
-import type { BatchRenderData, BatchLabelConfig } from '$lib/types/batch';
+import type { BatchRenderData, BatchLabelConfig, TapeHeight } from '$lib/types/batch';
 import { solveLabelLayout } from './label-constraint-solver';
 import { renderLabelToCanvas } from './label-renderer';
 import { formatPrimaryText, appendOptionalNote } from './label-formatter';
@@ -113,6 +113,94 @@ async function getHardwareImageAspectRatio(
 	}
 }
 
+export interface BatchLabelRenderOptions {
+	/** Destination canvas. Its width/height are set to the printable area at `dpi`. */
+	canvas: HTMLCanvasElement;
+	config: BatchLabelConfig;
+	height: TapeHeight;
+	dpi?: number;
+}
+
+/**
+ * Renders one batch label (printable area only, no margins/cutting lines) onto a
+ * caller-supplied canvas via the SAME constraint-solver + canvas pipeline used by
+ * the single-mode preview and the batch PNG export. This is the single source of
+ * truth for per-label typography, layout, QR and image gating, so the batch list
+ * preview and the exported tape stay pixel-identical.
+ */
+export async function renderBatchLabelToCanvas(options: BatchLabelRenderOptions): Promise<void> {
+	const { canvas, config, height, dpi = 300 } = options;
+	const { primaryText, secondaryText, standard } = deriveLabelText(config);
+
+	const labelWidthMm = config.width;
+	const labelHeightMm = height;
+	const printableWidthMm = labelWidthMm - 4;
+	const printableHeightMm = labelHeightMm - 2;
+	const scale = dpi / 25.4;
+
+	canvas.width = Math.round(printableWidthMm * scale);
+	canvas.height = Math.round(printableHeightMm * scale);
+
+	// Determine flags - respect per-label toggle settings (default to true if undefined)
+	const showQRCode = (config.showQRCode ?? true) && !!(config.qrCode && height === 12);
+
+	// Get custom image data for general mode
+	const generalConfig = config.mode === 'general' ? config : null;
+	const customImage = generalConfig?.customImage;
+	const showCustomImage = generalConfig?.showCustomImage ?? true;
+
+	// showHardwareImage: fastener mode with standard image OR general mode with custom image (12mm only)
+	const showHardwareImage =
+		config.mode === 'fastener'
+			? (config.showImage ?? true) && !!standard?.image
+			: height === 12 && showCustomImage && !!customImage;
+
+	const showStandard =
+		config.mode === 'fastener' ? (config.showReference ?? true) && !!standard : false;
+
+	// Calculate hardware image aspect ratio if needed
+	const hardwareImageAspectRatio = showHardwareImage
+		? await getHardwareImageAspectRatio(customImage, standard?.image)
+		: undefined;
+
+	const dimensions = {
+		width: labelWidthMm,
+		height: labelHeightMm,
+		printableWidth: printableWidthMm,
+		printableHeight: printableHeightMm
+	};
+
+	// Solve layout for this label
+	const layout = await solveLabelLayout({
+		dimensions,
+		showQRCode,
+		showHardwareImage,
+		showStandard,
+		primaryText,
+		secondaryText,
+		hardwareImageAspectRatio
+	});
+
+	// Render label to the destination canvas
+	await renderLabelToCanvas({
+		canvas,
+		dimensions,
+		layout,
+		content: {
+			primaryText,
+			secondaryText,
+			standard,
+			showStandard,
+			showHardwareImage,
+			showQRCode,
+			qrCodeUrl: config.qrCode,
+			customImageSrc: customImage?.data
+		},
+		scale,
+		showMargins: false
+	});
+}
+
 /**
  * Renders a single label onto the main canvas
  */
@@ -124,80 +212,16 @@ async function renderSingleLabel(
 	showMargins: boolean,
 	currentX: number
 ): Promise<void> {
-	const labelWidthMm = labelData.width;
-	const labelHeightMm = batch.height;
-	const printableWidthMm = labelWidthMm - 4;
-	const printableHeightMm = labelHeightMm - 2;
-	const scale = dpi / 25.4;
+	const printableWidthMm = labelData.width - 4;
+	const printableHeightMm = batch.height - 2;
 
-	// Create temporary canvas for this label
+	// Render this label's printable area via the shared pipeline
 	const labelCanvas = document.createElement('canvas');
-	labelCanvas.width = Math.round(printableWidthMm * scale);
-	labelCanvas.height = Math.round(printableHeightMm * scale);
-
-	// Determine flags - respect per-label toggle settings (default to true if undefined)
-	const showQRCode =
-		(labelData.config.showQRCode ?? true) && !!(labelData.config.qrCode && batch.height === 12);
-
-	// Get custom image data for general mode
-	const generalConfig = labelData.config.mode === 'general' ? labelData.config : null;
-	const customImage = generalConfig?.customImage;
-	const showCustomImage = generalConfig?.showCustomImage ?? true;
-
-	// showHardwareImage: fastener mode with standard image OR general mode with custom image (12mm only)
-	const showHardwareImage =
-		labelData.config.mode === 'fastener'
-			? (labelData.config.showImage ?? true) && !!labelData.standard?.image
-			: batch.height === 12 && showCustomImage && !!customImage;
-
-	const showStandard =
-		labelData.config.mode === 'fastener'
-			? (labelData.config.showReference ?? true) && !!labelData.standard
-			: false;
-
-	// Calculate hardware image aspect ratio if needed
-	const hardwareImageAspectRatio = showHardwareImage
-		? await getHardwareImageAspectRatio(customImage, labelData.standard?.image)
-		: undefined;
-
-	// Solve layout for this label
-	const layout = await solveLabelLayout({
-		dimensions: {
-			width: labelWidthMm,
-			height: labelHeightMm,
-			printableWidth: printableWidthMm,
-			printableHeight: printableHeightMm
-		},
-		showQRCode,
-		showHardwareImage,
-		showStandard,
-		primaryText: labelData.primaryText,
-		secondaryText: labelData.secondaryText,
-		hardwareImageAspectRatio
-	});
-
-	// Render label to temporary canvas
-	await renderLabelToCanvas({
+	await renderBatchLabelToCanvas({
 		canvas: labelCanvas,
-		dimensions: {
-			width: labelWidthMm,
-			height: labelHeightMm,
-			printableWidth: printableWidthMm,
-			printableHeight: printableHeightMm
-		},
-		layout,
-		content: {
-			primaryText: labelData.primaryText,
-			secondaryText: labelData.secondaryText,
-			standard: labelData.standard,
-			showStandard,
-			showHardwareImage,
-			showQRCode,
-			qrCodeUrl: labelData.config.qrCode,
-			customImageSrc: customImage?.data
-		},
-		scale,
-		showMargins: false
+		config: labelData.config,
+		height: batch.height,
+		dpi
 	});
 
 	// Draw label onto main canvas

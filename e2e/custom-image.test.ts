@@ -298,9 +298,9 @@ test.describe('Custom Image - Batch Mode Persistence', () => {
 		await batchPage.navigation.switchToBatchMode();
 		await batchPage.waitForLabel(0);
 
-		// The row chip should still render the custom image (an <img> element)
-		const rowImage = batchPage.getRowImage(0);
-		await expect(rowImage.first()).toBeVisible();
+		// The row chip renders via canvas; the persisted custom image (a red test
+		// pixel) should re-draw onto it, so the canvas contains a colored pixel.
+		await expect.poll(() => batchPage.rowChipHasColoredPixel(0)).toBe(true);
 	});
 
 	test('snapshot is independent of later form edits', async ({ page }) => {

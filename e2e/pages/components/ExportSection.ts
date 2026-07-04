@@ -43,7 +43,7 @@ export class ExportSection {
 
 	/**
 	 * Wait for the batch export button label to reflect a given label count,
-	 * e.g. "Export Batch (2) Print-Ready PNGs" when `count` is 2.
+	 * e.g. "Export Batch (2) as a Single Strip" when `count` is 2.
 	 */
 	async waitForExportButtonCount(count: number): Promise<void> {
 		await expect(this.exportButton).toContainText(`(${count})`);

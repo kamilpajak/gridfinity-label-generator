@@ -82,7 +82,7 @@ export const UI_TEXT = {
 	},
 	buttons: {
 		clear: 'Clear',
-		downloadPNG: 'Download PNG'
+		downloadPNG: 'Export Print-Ready PNG'
 	},
 	cards: {
 		labelSettings: 'Label Settings',

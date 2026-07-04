@@ -76,9 +76,13 @@
 				{#if isExporting}
 					Exporting...
 				{:else}
-					Export Batch ({batchState.labels.length}) Print-Ready PNGs
+					Export Batch ({batchState.labels.length}) as a Single Strip
 				{/if}
 			</Button>
+
+			<p class="max-w-md text-center text-sm text-slate-500">
+				Exports a single continuous PNG file containing all labels side-by-side.
+			</p>
 
 			{#if exportStatus}
 				<p

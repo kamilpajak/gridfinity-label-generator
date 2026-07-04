@@ -124,6 +124,38 @@ test.describe('Batch Mode - Snapshot Model', () => {
 		expect(await batchPage.getChipPrimaryText(1)).toContain('CCC');
 	});
 
+	test('list stays in sync after MOUSE reorder (regression: remove works after drag)', async ({
+		page
+	}) => {
+		const batchPage = new BatchModePage(page);
+		await batchPage.goto();
+
+		const form = new SingleModePage(page);
+		await form.selectMode('general');
+		await form.fillPrimaryText('AAA');
+		await batchPage.addLabel();
+		await batchPage.waitForLabel(0);
+		await form.fillPrimaryText('BBB');
+		await batchPage.addLabel();
+		await batchPage.waitForLabel(1);
+		await form.fillPrimaryText('CCC');
+		await batchPage.addLabel();
+		await batchPage.waitForLabel(2);
+
+		// Reorder the first row down with a real pointer drag: AAA, BBB, CCC -> BBB, AAA, CCC
+		await batchPage.reorderByMouse(0, 1);
+		expect(await batchPage.getChipPrimaryText(0)).toContain('BBB');
+
+		// Regression: a POINTER drag inserts a shadow item into the local list, which
+		// the id-set resync mistook for a membership change and reset mid-drag,
+		// corrupting svelte-dnd-action so later removes never re-rendered (rows only
+		// vanished after a page reload). Remove must now update the DOM immediately.
+		await batchPage.removeLabel(0);
+		expect(await batchPage.getRowCount()).toBe(2);
+		expect(await batchPage.getChipPrimaryText(0)).toContain('AAA');
+		expect(await batchPage.getChipPrimaryText(1)).toContain('CCC');
+	});
+
 	test('Add Current Label disabled at max (20)', async ({ page }) => {
 		const batchPage = new BatchModePage(page);
 		await batchPage.goto();

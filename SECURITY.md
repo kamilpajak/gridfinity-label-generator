@@ -32,7 +32,7 @@ Report privately using one of these channels:
    and click **Report a vulnerability**. This opens a private advisory that
    only you and the maintainer can see.
 2. **Email.** If you cannot use GitHub, email the maintainer at
-   **pajakkamil@gmail.com** with `SECURITY` in the subject line.
+   **hello@gridfinitylabels.com** with `SECURITY` in the subject line.
 
 To help triage the report faster, please include:
 

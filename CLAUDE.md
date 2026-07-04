@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **Human contributors:** see [`CONTRIBUTING.md`](CONTRIBUTING.md) for the canonical setup,
+> workflow, and coding conventions. This file is AI-tool guidance and intentionally overlaps
+> with it in a few places.
+
 ## Package Manager
 
 This project uses **pnpm** as the package manager. All commands should use `pnpm` instead of `npm`.
@@ -26,7 +30,7 @@ This project uses **pnpm** as the package manager. All commands should use `pnpm
 
 ### Testing Guidelines
 
-- Nie uzywaj zahardcodowanych waitForTimeout
+- Do not use hard-coded `waitForTimeout` waits in tests; wait on conditions or locators instead.
 
 ## Commands
 
@@ -109,15 +113,18 @@ pnpm standards:build           # Regenerate standards-generated.ts
 
 **Future:** See `docs/plan-standards-validation-pipeline.md` for planned improvements.
 
-### SonarCloud API
+### SonarCloud API (maintainer only)
 
-Pobieranie metryk projektu (wymaga tokena SONAR_TOKEN):
+Contributors do not need this — CI runs the SonarCloud quality gate automatically on every
+pull request. These snippets are for the maintainer and require a personal `SONAR_TOKEN`.
+
+Fetch project metrics:
 
 ```bash
 curl -s -u "${SONAR_TOKEN}:" "https://sonarcloud.io/api/measures/component?component=kamilpajak_gridfinity-label-generator&metricKeys=bugs,vulnerabilities,code_smells,coverage,reliability_issues,maintainability_issues,security_issues"
 ```
 
-Pobieranie listy issues:
+Fetch the issue list:
 
 ```bash
 curl -s -u "${SONAR_TOKEN}:" "https://sonarcloud.io/api/issues/search?componentKeys=kamilpajak_gridfinity-label-generator&ps=100&facets=types,severities"

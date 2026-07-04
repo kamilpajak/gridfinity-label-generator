@@ -145,6 +145,20 @@
 			background-color 600000s 0s,
 			color 600000s 0s;
 	}
+	/* Same rule for the standard, unprefixed `:autofill` (Firefox and modern
+	   engines). Kept in its own block on purpose: a selector list mixing a
+	   pseudo-class an engine doesn't recognize is dropped whole, which would
+	   disable the `-webkit-` block above too. */
+	input:autofill,
+	input:autofill:hover,
+	input:autofill:focus,
+	input:autofill:active {
+		caret-color: var(--foreground);
+		box-shadow: 0 0 0 1000px color-mix(in oklch, var(--input) 30%, var(--background)) inset;
+		transition:
+			background-color 600000s 0s,
+			color 600000s 0s;
+	}
 }
 
 /* Shared component styles */

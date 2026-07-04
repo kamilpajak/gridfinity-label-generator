@@ -1,0 +1,21 @@
+onlyBuiltDependencies:
+  - esbuild
+# Force patched versions of transitive dev-tooling packages flagged by Dependabot.
+# All are backward-compatible patches within the same major; per-major keys avoid
+# forcing a cross-major bump onto parents that need the older line.
+overrides:
+  'ajv@6': '^6.14.0'
+  'ajv@8': '^8.18.0'
+  'brace-expansion@1': '^1.1.13'
+  'brace-expansion@2': '^2.0.3'
+  'cookie': '^0.7.0'
+  'fast-uri': '^3.1.2'
+  'flatted': '^3.4.2'
+  'js-yaml@4': '^4.1.2'
+  'minimatch@3': '^3.1.4'
+  'minimatch@9': '^9.0.7'
+  'picomatch@2': '^2.3.2'
+  'postcss': '^8.5.10'
+  'ws@8': '^8.21.0'
+  'yaml@1': '^1.10.3'
+  'yaml@2': '^2.8.3'

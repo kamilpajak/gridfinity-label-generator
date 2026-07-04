@@ -64,7 +64,7 @@ describe('label-exporter', () => {
 	let revokeObjectURLSpy: any;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let requestAnimationFrameSpy: any;
-	let mockAnchor: Partial<HTMLAnchorElement> & { click: ReturnType<typeof vi.fn> };
+	let mockAnchor: Partial<Omit<HTMLAnchorElement, 'click'>> & { click: ReturnType<typeof vi.fn> };
 
 	beforeEach(() => {
 		// Mock global document if not available

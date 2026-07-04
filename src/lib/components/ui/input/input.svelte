@@ -15,6 +15,9 @@
 		type,
 		files = $bindable(),
 		class: className,
+		// Default off: every input in this app holds label data, none benefit from
+		// the browser's form-history dropdown or autofill. Callers can override.
+		autocomplete = 'off',
 		...restProps
 	}: Props = $props();
 </script>
@@ -45,6 +48,7 @@
 			className
 		)}
 		{type}
+		{autocomplete}
 		bind:value
 		{...restProps}
 	/>

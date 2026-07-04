@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-07-04
+
+This is the open-source debut of Gridfinity Label Generator, alongside a full visual redesign.
+
+### Added
+
+- Open source: the project is now open source under AGPL-3.0. Issues, ideas, and pull requests are welcome on GitHub.
+- Feedback: the Feedback button now opens GitHub Discussions, where you can share ideas and see what others suggest.
+
+### Changed
+
+- Redesigned interface: a refreshed dark, two-pane layout with a live label preview as you type.
+- Clearer export buttons: "Export Print-Ready PNG" for a single label, and "Export Batch (N) as a Single Strip" with a note that batch mode produces one continuous strip.
+
+### Fixed
+
+- Inputs no longer trigger the browser's autofill or autocomplete, so the Length, Note, and QR fields keep the dark theme (no white background or history dropdown).
+- Batch mode: labels can be removed reliably after reordering them with the mouse.
+- Batch mode: a general-item label can no longer be added while the form is empty.
+- Accessibility and polish: keyboard focus is trapped inside dialogs and returns to the trigger on close, and animations respect the "reduce motion" system setting.
+
 ## [2.9.1] - 2026-02-18
 
 ### Fixed

@@ -461,7 +461,7 @@
 	// Guarded by the same validity rules as the single-mode export so an
 	// incomplete/invalid fastener config can never be snapshotted.
 	function handleAddCurrentLabel() {
-		if (!canAddLabel || !isFormValid) return;
+		if (!canAddLabel || !isFormValid || !hasContent) return;
 		const config = formStateToBatchConfig({
 			labelMode,
 			measurementSystem,
@@ -936,7 +936,7 @@
 
 					<Button
 						onclick={handleAddCurrentLabel}
-						disabled={!canAddLabel || !isFormValid}
+						disabled={!canAddLabel || !isFormValid || !hasContent}
 						class="w-full gap-2 font-bold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40"
 						data-testid="add-label-button"
 					>

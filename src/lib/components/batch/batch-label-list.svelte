@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { batchStore } from '$lib/stores/batch-store';
 	import BatchLabelChip from './batch-label-chip.svelte';
-	import { dndzone, type DndEvent } from 'svelte-dnd-action';
+	import { dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME, type DndEvent } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
 	import GripVerticalIcon from '@lucide/svelte/icons/grip-vertical';
 	import XIcon from '@lucide/svelte/icons/x';
@@ -26,6 +26,16 @@
 	// the list so later add/remove never re-rendered.
 	$effect(() => {
 		const storeLabels = batchState.labels;
+		// Never resync mid-drag. While a pointer/keyboard drag is active,
+		// svelte-dnd-action inserts a shadow placeholder into `items` whose id is
+		// not a real label id. That looks like a membership change and would reset
+		// `items` under the library's feet, corrupting its internal state so the
+		// list freezes and later add/remove never re-render. The shadow item only
+		// exists during an active drag, so this needs no sticky flag to clear.
+		const dragging = items.some((it) => SHADOW_ITEM_MARKER_PROPERTY_NAME in it);
+		if (dragging) {
+			return;
+		}
 		const sameMembership =
 			storeLabels.length === items.length &&
 			storeLabels.every((label) => items.some((it) => it.id === label.id));

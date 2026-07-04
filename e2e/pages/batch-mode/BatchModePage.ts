@@ -244,4 +244,32 @@ export class BatchModePage extends BasePage {
 		await this.page.keyboard.press('Space');
 		await this.waitForUiUpdate();
 	}
+
+	/**
+	 * Reorder a row using a real POINTER drag (svelte-dnd-action mouse path).
+	 * Presses on the source row, crosses the drag threshold, travels to the target
+	 * row, drops, and waits for the library's drop animation to remove its dragged
+	 * clone so the list is settled before the caller interacts again.
+	 */
+	async reorderByMouse(from: number, to: number) {
+		const src = await this.getLabelRow(from).boundingBox();
+		const dst = await this.getLabelRow(to).boundingBox();
+		if (!src || !dst) throw new Error('reorderByMouse: source or target row not visible');
+
+		const sx = src.x + src.width / 2;
+		const sy = src.y + src.height / 2;
+		const dy = dst.y + dst.height / 2;
+
+		await this.page.mouse.move(sx, sy);
+		await this.page.mouse.down();
+		// Small initial move to cross the drag threshold, then travel to the target.
+		await this.page.mouse.move(sx, sy + 8);
+		await this.page.mouse.move(sx, dy, { steps: 12 });
+		await this.page.mouse.move(sx, dy + (to > from ? 6 : -6), { steps: 4 });
+		await this.page.mouse.up();
+
+		// Wait for the drop animation to finish and the dragged clone to be removed.
+		await expect(this.page.locator('#dnd-action-dragged-el')).toHaveCount(0);
+		await this.waitForUiUpdate();
+	}
 }

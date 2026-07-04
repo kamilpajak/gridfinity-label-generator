@@ -1,0 +1,5 @@
+# Code owners for gridfinity-label-generator.
+# The maintainer is the default owner of everything, so every pull request
+# requests their review. See:
+# https://docs.github.com/articles/about-code-owners
+* @kamilpajak

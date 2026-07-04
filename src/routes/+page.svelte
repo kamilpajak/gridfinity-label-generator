@@ -408,11 +408,12 @@
 		}
 	}
 
-	// Provide feedback function
+	// Provide feedback function — opens a new GitHub Discussion in the Ideas category.
 	function provideFeedback() {
 		window.open(
-			'https://docs.google.com/forms/d/e/1FAIpQLSegG3P2FED1dOJ1P5Pjv68R4bAq1IFFoc-2U-5_Gt-7IoSDvQ/viewform?usp=dialog',
-			'_blank'
+			'https://github.com/kamilpajak/gridfinity-label-generator/discussions/new?category=ideas',
+			'_blank',
+			'noopener,noreferrer'
 		);
 	}
 

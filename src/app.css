@@ -129,6 +129,36 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+	/* Keep browser-autofilled inputs on the app theme. Chrome paints a light
+	   background over `:-webkit-autofill` that normal CSS can't override; the
+	   inset box-shadow repaints it and the long transition kills the flash. */
+	input:-webkit-autofill,
+	input:-webkit-autofill:hover,
+	input:-webkit-autofill:focus,
+	input:-webkit-autofill:active {
+		-webkit-text-fill-color: var(--foreground);
+		caret-color: var(--foreground);
+		/* Reproduce the input's `bg-input/30` overlay so an autofilled field
+		   matches its manually-typed siblings exactly. */
+		box-shadow: 0 0 0 1000px color-mix(in oklch, var(--input) 30%, var(--background)) inset;
+		transition:
+			background-color 600000s 0s,
+			color 600000s 0s;
+	}
+	/* Same rule for the standard, unprefixed `:autofill` (Firefox and modern
+	   engines). Kept in its own block on purpose: a selector list mixing a
+	   pseudo-class an engine doesn't recognize is dropped whole, which would
+	   disable the `-webkit-` block above too. */
+	input:autofill,
+	input:autofill:hover,
+	input:autofill:focus,
+	input:autofill:active {
+		caret-color: var(--foreground);
+		box-shadow: 0 0 0 1000px color-mix(in oklch, var(--input) 30%, var(--background)) inset;
+		transition:
+			background-color 600000s 0s,
+			color 600000s 0s;
+	}
 }
 
 /* Shared component styles */

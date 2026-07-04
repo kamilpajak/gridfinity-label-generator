@@ -7,11 +7,15 @@
  * but does NOT auto-generate changelog (manual changelog workflow).
  *
  * Usage:
- *   node scripts/release.js [--dry-run]
+ *   node scripts/release.js [--dry-run] [--release-as <major|minor|patch>]
+ *
+ * By default the bump is derived from conventional commits. Pass
+ * --release-as to override it — e.g. a milestone major release that has no
+ * BREAKING CHANGE commits.
  *
  * What it does:
  *   1. Analyzes commits since last tag
- *   2. Determines version bump (major/minor/patch)
+ *   2. Determines version bump (major/minor/patch), or uses --release-as
  *   3. Updates package.json version
  *   4. Creates git tag
  *   5. Pushes tag to origin
@@ -23,6 +27,26 @@ import { join } from 'node:path';
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const ROOT = process.cwd();
+
+const VALID_BUMPS = ['major', 'minor', 'patch'];
+
+function parseReleaseAs() {
+	const idx = process.argv.indexOf('--release-as');
+	const value =
+		idx !== -1
+			? process.argv[idx + 1]
+			: process.argv.find((a) => a.startsWith('--release-as='))?.split('=')[1];
+	if (!value) return null;
+	if (!VALID_BUMPS.includes(value)) {
+		console.error(
+			`❌ Invalid --release-as value: "${value}" (expected: ${VALID_BUMPS.join(', ')})`
+		);
+		process.exit(1);
+	}
+	return value;
+}
+
+const RELEASE_AS = parseReleaseAs();
 
 function exec(cmd, options = {}) {
 	if (DRY_RUN && !options.allowInDryRun) {
@@ -139,8 +163,8 @@ function main() {
 		process.exit(0);
 	}
 
-	// Determine version bump
-	const bump = determineVersionBump(commits);
+	// Determine version bump (explicit override wins over commit analysis)
+	const bump = RELEASE_AS || determineVersionBump(commits);
 
 	if (!bump) {
 		console.log('\n⚠️  No releasable commits found (no feat: or fix: commits).');
@@ -148,7 +172,9 @@ function main() {
 	}
 
 	const newVersion = bumpVersion(currentVersion, bump);
-	console.log(`\n📈 Version bump: ${bump} (${currentVersion} → ${newVersion})`);
+	console.log(
+		`\n📈 Version bump: ${bump}${RELEASE_AS ? ' (forced via --release-as)' : ''} (${currentVersion} → ${newVersion})`
+	);
 
 	// Show commits that will be included
 	console.log('\n📋 Commits in this release:');

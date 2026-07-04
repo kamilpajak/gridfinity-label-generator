@@ -1,8 +1,12 @@
 # Gridfinity Label Generator
 
 [![Try Online](https://img.shields.io/badge/Try-Online-blue)](https://gridfinitylabels.com)
+[![CI](https://github.com/kamilpajak/gridfinity-label-generator/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/kamilpajak/gridfinity-label-generator/actions/workflows/ci.yml)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=kamilpajak_gridfinity-label-generator&metric=alert_status)](https://sonarcloud.io/summary/overall?id=kamilpajak_gridfinity-label-generator)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kamilpajak_gridfinity-label-generator&metric=coverage)](https://sonarcloud.io/summary/overall?id=kamilpajak_gridfinity-label-generator)
+[![Version](https://img.shields.io/github/v/tag/kamilpajak/gridfinity-label-generator?sort=semver&label=version)](https://github.com/kamilpajak/gridfinity-label-generator/tags)
+[![License: AGPL v3](https://img.shields.io/github/license/kamilpajak/gridfinity-label-generator)](LICENSE)
 [![Framework](https://img.shields.io/badge/framework-SvelteKit-orange)](https://kit.svelte.dev/)
-[![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](CONTRIBUTING.md)
 
 Design and export print-ready labels for your [Gridfinity](https://gridfinity.xyz/) storage system. Built for makers who want tidy, consistent labels for fasteners (screws, nuts, washers, bolts) and any other small parts — right from the browser, no install required.

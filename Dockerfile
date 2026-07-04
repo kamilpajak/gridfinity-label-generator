@@ -1,16 +1,16 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Builder
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Install pnpm (pinned version for reproducible builds)
-RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+RUN corepack enable && corepack prepare pnpm@11.1.3 --activate
 
 # Set working directory
 WORKDIR /app
 
 # Copy package files
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
@@ -28,7 +28,7 @@ RUN pnpm build
 RUN pnpm prune --prod
 
 # Stage 2: Production
-FROM node:20-alpine AS production
+FROM node:22-alpine AS production
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001

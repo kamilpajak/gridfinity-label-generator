@@ -1,6 +1,8 @@
-packages: []
-onlyBuiltDependencies:
-  - esbuild
+# Approve postinstall build scripts for these dependencies (pnpm 11 blocks
+# unapproved build scripts by default). esbuild and sharp ship native binaries.
+allowBuilds:
+  esbuild: true
+  sharp: true
 # Force patched versions of transitive dev-tooling packages flagged by Dependabot.
 # All are backward-compatible patches within the same major; per-major keys avoid
 # forcing a cross-major bump onto parents that need the older line.

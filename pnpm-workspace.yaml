@@ -1,3 +1,4 @@
+packages: []
 onlyBuiltDependencies:
   - esbuild
 # Force patched versions of transitive dev-tooling packages flagged by Dependabot.

@@ -220,7 +220,10 @@ describe('Standards Search', () => {
 		}
 
 		expect(unsearchable).toHaveLength(0);
-	});
+		// Exhaustively searches every standard by each of its numeric codes — O(n^2)
+		// over ~200 standards. Under v8 coverage instrumentation on CI hardware this
+		// exceeds the default 5s per-test timeout, so give it explicit headroom.
+	}, 20000);
 
 	it('should prioritize exact numeric match over partial match (DIN 96 before DIN 964)', () => {
 		// Search for "96" should return DIN 96 as first result, not DIN 964 or ISO 2010

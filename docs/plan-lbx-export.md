@@ -7,7 +7,8 @@
 > text. **Critical finding:** the XML must be **compact — no whitespace between
 > elements**; a pretty-printed `.lbx` crashes P-touch's parser
 > (`lbxcore::CPtObjList::CreatePtObj`, null deref). The generator emits compact XML.
-> Open items: 9 mm tape geometry (best-effort, unvalidated) and multi-label-in-one-file.
+> Open items: 9 mm tape geometry (best-effort, unvalidated). Batch route decided: one long
+> single-sheet `.lbx` strip (not database/CSV, not multi-sheet) — see "Batch route investigation".
 > **Owner:** maintainer
 > **Related:** Recommended Products already promote Brother P-touch printers (PT-E560BT, PT-P710BT)
 
@@ -134,14 +135,14 @@ Key facts that simplify the implementation:
 
 ## Architecture (new modules)
 
-| File                                  | Mirrors             | Role                                               |
-| ------------------------------------- | ------------------- | -------------------------------------------------- |
-| `src/lib/utils/lbx/units.ts`          | —                   | `mmToPt` (`* 72/25.4`), tape/margins → paper block |
-| `src/lib/utils/lbx/label-xml.ts`      | —                   | config → `label.xml` string (namespaced, ordered)  |
-| `src/lib/utils/lbx/prop-xml.ts`       | —                   | config → `prop.xml` string                         |
-| `src/lib/utils/lbx/lbx-zip.ts`        | —                   | zip files → `Blob` (**fflate**, ~8 KB, zero-dep)   |
-| `src/lib/utils/label-lbx-exporter.ts` | `label-exporter.ts` | single label → `.lbx` → download                   |
-| `src/lib/utils/batch-lbx-exporter.ts` | `batch-exporter.ts` | batch → ZIP of N `.lbx`                            |
+| File                                  | Mirrors             | Role                                                   |
+| ------------------------------------- | ------------------- | ------------------------------------------------------ |
+| `src/lib/utils/lbx/units.ts`          | —                   | `mmToPt` (`* 72/25.4`), tape/margins → paper block     |
+| `src/lib/utils/lbx/label-xml.ts`      | —                   | config → `label.xml` string (namespaced, ordered)      |
+| `src/lib/utils/lbx/prop-xml.ts`       | —                   | config → `prop.xml` string                             |
+| `src/lib/utils/lbx/lbx-zip.ts`        | —                   | zip files → `Blob` (**fflate**, ~8 KB, zero-dep)       |
+| `src/lib/utils/label-lbx-exporter.ts` | `label-exporter.ts` | single label → `.lbx` → download                       |
+| `src/lib/utils/batch-lbx-exporter.ts` | `batch-exporter.ts` | batch → one long single-sheet `.lbx` strip (N objects) |
 
 Dependencies to add: **`fflate`** (ZIP). XML via hand-rolled template functions + `xmlEscape`
 (schema is fixed; element order is load-bearing; avoid a heavy XML builder). QR reuses the
@@ -182,6 +183,38 @@ scissor guides the PNG tape strip uses.
   multi-page documents — but all shipped templates are single-sheet (`numPages=1`, one `style:sheet`,
   no merge), so the exact multi-label XML is unconfirmed. Resolve by saving a 2–3 label document from
   P-touch Editor and inspecting it. Preferred outcome: one multi-label `.lbx`; fallback: ZIP of N.
+  **Decision (2026-07-05): neither multi-sheet nor database — use one long single-sheet `.lbx`
+  strip** (see "Batch route investigation" below).
+
+### Batch route investigation — database/CSV vs one long strip (2026-07-05)
+
+We evaluated P-touch's built-in **database (CSV mail-merge)** feature as the batch route (manual
+"Simultaneously creating multiple labels using a database"). Findings after generating a sample CSV
+and driving P-touch Editor on macOS:
+
+- **Import works, 1 row = 1 label.** P-touch loaded a 5-column CSV (`No,Primary,Secondary,Note,QR`)
+  and showed one record per row — the merge model is real.
+- **CSV must be single-byte, not UTF-8.** P-touch Editor does not support UTF-8 CSV; on macOS it
+  expects a Western single-byte encoding (Brother's own FAQ: re-save via TextEdit → Western). Even
+  Windows-1252 mis-rendered `×` (U+00D7) as a Cyrillic glyph, and `Ω` has no Western single-byte
+  code point at all. **The multiplication sign `×` does not survive the CSV route** — it must be
+  downgraded to ASCII `x`. (Our `.lbx` route keeps `×`, because `.lbx` XML is UTF-8 and P-touch
+  parses it correctly — confirmed in Phase 0.)
+- **Multi-record printing needs a physical Brother printer.** The "All records" option lives in
+  `File → Print` and only works with a printer connected/selected. There is **no export of the
+  merged labels to a file/PDF** — P-touch "works with Brother printers only".
+
+**Conclusion:** the database/CSV route is a poor fit for us — it needs the user to hand-build a
+template, forces `×` → `x`, requires a physical printer to produce anything, and yields **no portable
+multi-label file**. We drop it.
+
+**Adopted approach — one long strip `.lbx`:** our batch is already rendered as a single long PNG
+"strip" (all labels in a row). We mirror that in `.lbx`: **one `style:sheet`** whose `paper.height`
+= sum of the label lengths, holding **N text objects laid out along the tape** (increasing X offset).
+This sidesteps the multi-sheet/`numPages` question entirely (it is one sheet with many objects, which
+we already know P-touch accepts), keeps `×`, and produces **one file** the user opens and prints in a
+single job — no template building, no CSV encoding fight.
+
 - **Exact `style:paper` for PT continuous tape (9/12 mm):** the Bin Box sample is a QL die-cut roll;
   lift the correct paper attributes (media/format/printerID) from a PT-series tape template or a
   P-touch-saved sample.
@@ -199,10 +232,12 @@ scissor guides the PNG tape strip uses.
   `label-lbx-exporter` + "Export .lbx" button + unit tests vs golden fixtures).
 - **Phase 2 — QR:** native `barcode:barcode protocol="QRCODE"` (params lifted from a QR template),
   with a bitmap `image:image` fallback (reuses `qrcode` + custom-image base64).
-- **Phase 3 — Batch:** **prefer a single multi-label `.lbx`** (multiple labels in one document) so
-  the user opens ONE file, not N. This fits our heterogeneous batch (each label fully custom) better
-  than database/merge. Fall back to a **ZIP of individual `.lbx` files** only if multi-label proves
-  unreliable (decided in Phase 0). Same success/error status UX as the PNG batch export.
+- **Phase 3 — Batch:** **one long single-sheet `.lbx` strip** — one `style:sheet` with
+  `paper.height` = sum of label lengths and **N text objects along the tape** (increasing X offset),
+  mirroring the existing PNG batch strip. The user opens ONE file and prints it in a single job.
+  Decided against the database/CSV mail-merge route (needs a physical printer, no file output, drops
+  `×`) and against multi-sheet/`numPages` (unconfirmed XML) — see "Batch route investigation". Same
+  success/error status UX as the PNG batch export.
 - **Phase 4 — polish (optional):** custom images as `image:image`, closer positions from the solver,
   imperial/metric edge cases.
 
@@ -216,14 +251,14 @@ scissor guides the PNG tape strip uses.
 
 ## Risks & mitigations
 
-| Risk                                                        | Mitigation                                                                     |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| P-touch rejects the file (strict schema / order / versions) | Model 1:1 on installed golden templates; validate in P-touch (Phase 0)         |
-| Font mismatch (Noto/Oswald absent)                          | Use Helsinki/Helsinki Narrow; text is editable, parity not required            |
-| Text clipping                                               | `textControl shrink="true"` (built-in auto-fit)                                |
-| QR/barcode params                                           | Lift from a real QR template; bitmap fallback                                  |
-| Batch = 3 files vs 1 (poor UX)                              | Prefer a single multi-label `.lbx`; confirm structure in Phase 0, ZIP fallback |
-| Reverse-engineered format drift                             | Pin to one known-good structure; golden fixtures in tests                      |
+| Risk                                                        | Mitigation                                                                                          |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| P-touch rejects the file (strict schema / order / versions) | Model 1:1 on installed golden templates; validate in P-touch (Phase 0)                              |
+| Font mismatch (Noto/Oswald absent)                          | Use Helsinki/Helsinki Narrow; text is editable, parity not required                                 |
+| Text clipping                                               | `textControl shrink="true"` (built-in auto-fit)                                                     |
+| QR/barcode params                                           | Lift from a real QR template; bitmap fallback                                                       |
+| Batch = 3 files vs 1 (poor UX)                              | One long single-sheet `.lbx` strip (N text objects on one sheet); not database/CSV, not multi-sheet |
+| Reverse-engineered format drift                             | Pin to one known-good structure; golden fixtures in tests                                           |
 
 ## Effort (estimate)
 

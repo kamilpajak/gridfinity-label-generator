@@ -1,9 +1,14 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { unzipSync, strFromU8 } from 'fflate';
 import { mmToPt, charLength, xmlEscape, TAPE_SPECS } from './units';
 import { buildLabelXml } from './label-xml';
 import { buildPropXml } from './prop-xml';
-import { buildSingleLabelLbx, lbxFileName } from '../label-lbx-exporter';
+import {
+	buildSingleLabelLbx,
+	lbxFileName,
+	downloadBlob,
+	exportSingleLabelAsLbx
+} from '../label-lbx-exporter';
 
 const TEXT = 'M8 × 20 DIN 912';
 
@@ -99,5 +104,68 @@ describe('lbxFileName', () => {
 	it('slugifies the label text and replaces the multiplication sign', () => {
 		expect(lbxFileName(TEXT)).toBe('M8_x_20_DIN_912');
 		expect(lbxFileName('')).toBe('label');
+	});
+});
+
+describe('downloadBlob', () => {
+	afterEach(() => {
+		vi.restoreAllMocks();
+		vi.unstubAllGlobals();
+	});
+
+	it('creates an object URL, clicks a download anchor, then cleans up', () => {
+		const click = vi.fn();
+		const anchor = { href: '', download: '', click } as unknown as HTMLAnchorElement;
+		const createElement = vi.fn(() => anchor);
+		const appendChild = vi.fn();
+		const removeChild = vi.fn();
+		const createObjectURL = vi.fn(() => 'blob:mock');
+		const revokeObjectURL = vi.fn();
+
+		vi.stubGlobal('document', { createElement, body: { appendChild, removeChild } });
+		vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
+
+		const blob = new Blob(['x']);
+		downloadBlob(blob, 'file.lbx');
+
+		expect(createObjectURL).toHaveBeenCalledWith(blob);
+		expect(createElement).toHaveBeenCalledWith('a');
+		expect(anchor.download).toBe('file.lbx');
+		expect(anchor.href).toBe('blob:mock');
+		expect(appendChild).toHaveBeenCalledWith(anchor);
+		expect(click).toHaveBeenCalledOnce();
+		expect(removeChild).toHaveBeenCalledWith(anchor);
+		expect(revokeObjectURL).toHaveBeenCalledWith('blob:mock');
+	});
+});
+
+describe('exportSingleLabelAsLbx', () => {
+	afterEach(() => {
+		vi.restoreAllMocks();
+		vi.unstubAllGlobals();
+	});
+
+	it('downloads a .lbx named after the label text by default', () => {
+		const anchor = { href: '', download: '', click: vi.fn() } as unknown as HTMLAnchorElement;
+		vi.stubGlobal('document', {
+			createElement: () => anchor,
+			body: { appendChild: vi.fn(), removeChild: vi.fn() }
+		});
+		vi.stubGlobal('URL', { createObjectURL: () => 'blob:mock', revokeObjectURL: vi.fn() });
+
+		exportSingleLabelAsLbx({ text: TEXT, tapeHeightMm: 12, labelLengthMm: 35 });
+		expect(anchor.download).toBe('M8_x_20_DIN_912.lbx');
+	});
+
+	it('uses an explicit fileName when provided', () => {
+		const anchor = { href: '', download: '', click: vi.fn() } as unknown as HTMLAnchorElement;
+		vi.stubGlobal('document', {
+			createElement: () => anchor,
+			body: { appendChild: vi.fn(), removeChild: vi.fn() }
+		});
+		vi.stubGlobal('URL', { createObjectURL: () => 'blob:mock', revokeObjectURL: vi.fn() });
+
+		exportSingleLabelAsLbx({ text: TEXT, tapeHeightMm: 9, labelLengthMm: 30, fileName: 'custom' });
+		expect(anchor.download).toBe('custom.lbx');
 	});
 });

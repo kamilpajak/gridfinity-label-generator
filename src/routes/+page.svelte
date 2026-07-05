@@ -1014,7 +1014,7 @@
 							variant="outline"
 							size="sm"
 							class="gap-2 text-xs"
-							disabled={!hasContent || !isFormValid}
+							disabled={!hasContent || !isFormValid || !labelPrimaryText}
 							title="Export an editable Brother P-touch label (.lbx)"
 							data-testid="export-lbx-button"
 						>

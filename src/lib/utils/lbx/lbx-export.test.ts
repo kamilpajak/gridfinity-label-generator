@@ -25,6 +25,12 @@ describe('lbx units', () => {
 			'a &amp; b &lt; c &gt; &quot;d&quot; &apos;e&apos;'
 		);
 	});
+
+	it('xmlEscape strips C0 control characters but keeps tab/CR/LF', () => {
+		// P-touch rejects a .lbx whose text contains raw control bytes.
+		expect(xmlEscape('a\x00b\x07c\x1Fd\x7Fe')).toBe('abcde');
+		expect(xmlEscape('a\tb\nc\rd')).toBe('a\tb\nc\rd');
+	});
 });
 
 describe('buildLabelXml', () => {

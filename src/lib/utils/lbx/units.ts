@@ -61,9 +61,19 @@ export const TAPE_SPECS: Record<number, TapeSpec> = {
 export const PT_PRINTER_ID = '18992';
 export const PT_PRINTER_NAME = 'Brother PT-9500PC';
 
+/**
+ * C0 control characters that XML 1.0 forbids in text content. Tab (0x09), LF
+ * (0x0A) and CR (0x0D) are allowed and kept; everything else in 0x00–0x1F plus
+ * DEL (0x7F) is stripped. P-touch rejects a `.lbx` whose text carries raw
+ * control bytes, so we remove them before escaping.
+ */
+// eslint-disable-next-line no-control-regex
+const CONTROL_CHARS = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
+
 /** Escape a string for use in XML text or attribute content. */
 export function xmlEscape(value: string): string {
 	return value
+		.replace(CONTROL_CHARS, '')
 		.replace(/&/g, '&amp;')
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')

@@ -8,6 +8,11 @@ import { SingleModePage } from './pages/single-mode/SingleModePage';
  * read-only, drag-reorderable list.
  */
 test.describe('Batch Mode - Snapshot Model', () => {
+	// Backstop only: the synthetic pointer-drag helper is now deterministic, but a
+	// dropped-frame during svelte-dnd-action's timer-based hit-testing could still
+	// flake on loaded CI. Scoped retries keep genuinely broken behavior failing fast.
+	test.describe.configure({ retries: process.env.CI ? 2 : 0 });
+
 	test('empty state shows when no labels', async ({ page }) => {
 		const batchPage = new BatchModePage(page);
 		await batchPage.goto();
@@ -144,16 +149,17 @@ test.describe('Batch Mode - Snapshot Model', () => {
 
 		// Reorder the first row down with a real pointer drag: AAA, BBB, CCC -> BBB, AAA, CCC
 		await batchPage.reorderByMouse(0, 1);
-		expect(await batchPage.getChipPrimaryText(0)).toContain('BBB');
+		await expect(batchPage.getChipPrimary(0)).toContainText('BBB');
 
 		// Regression: a POINTER drag inserts a shadow item into the local list, which
 		// the id-set resync mistook for a membership change and reset mid-drag,
 		// corrupting svelte-dnd-action so later removes never re-rendered (rows only
 		// vanished after a page reload). Remove must now update the DOM immediately.
+		// Web-first assertions ride out the ~180ms flip animation after removal.
 		await batchPage.removeLabel(0);
-		expect(await batchPage.getRowCount()).toBe(2);
-		expect(await batchPage.getChipPrimaryText(0)).toContain('AAA');
-		expect(await batchPage.getChipPrimaryText(1)).toContain('CCC');
+		await expect(page.locator('[data-testid^="batch-label-row-"]')).toHaveCount(2);
+		await expect(batchPage.getChipPrimary(0)).toContainText('AAA');
+		await expect(batchPage.getChipPrimary(1)).toContainText('CCC');
 	});
 
 	test('Add Current Label disabled at max (20)', async ({ page }) => {

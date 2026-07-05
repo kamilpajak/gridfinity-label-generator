@@ -15,7 +15,7 @@ Design and export print-ready labels for your [Gridfinity](https://gridfinity.xy
 
 ![Gridfinity Label Generator Screenshot](docs/screenshot.png)
 
-## ✨ Features
+## Features
 
 - **Fastener Labels**: Generate labels for screws, bolts, nuts, and washers with automatic hardware type detection
 - **General Item Labels**: Create custom labels for any storage need
@@ -32,19 +32,19 @@ Design and export print-ready labels for your [Gridfinity](https://gridfinity.xy
 - **Dimension Control**: Support for 9 mm and 12 mm label tape widths
 - **What's New**: Built-in changelog with recent updates
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework**: [SvelteKit](https://kit.svelte.dev/) with Svelte 5 (runes)
 - **UI Components**: [shadcn-svelte](https://www.shadcn-svelte.com/) with [bits-ui](https://bits-ui.com/)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **Icons**: [Lucide](https://lucide.dev/)
-- **State**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **State**: Svelte stores (`svelte/store`)
 - **Testing**: [Vitest](https://vitest.dev/) (unit) + [Playwright](https://playwright.dev/) (E2E)
 - **Language**: TypeScript
 - **Build Tool**: Vite
 - **Runtime**: Node.js via `@sveltejs/adapter-node` (containerized with Docker)
 
-## 🚀 Quick Start
+## Quick Start
 
 Requires [Node.js](https://nodejs.org/) 20+ and [pnpm](https://pnpm.io/).
 
@@ -63,7 +63,7 @@ pnpm dev
 open http://localhost:5173
 ```
 
-## 💻 Development
+## Development
 
 ```bash
 pnpm dev          # Start development server with hot reload
@@ -76,7 +76,7 @@ pnpm format       # Auto-format the codebase with Prettier
 
 The hardware standards data is generated from a small pipeline. See the "Standards Data" section of [CLAUDE.md](CLAUDE.md) and the `scripts/` directory for the `standards:*` commands.
 
-## 🧪 Testing
+## Testing
 
 ```bash
 pnpm test         # Run all tests (unit + E2E)
@@ -89,7 +89,7 @@ pnpm test:e2e     # Run Playwright E2E tests
 - Browser component tests live in `*.svelte.test.ts` files; node tests in `*.test.ts` / `*.spec.ts`.
 - End-to-end tests live in the `e2e/` directory.
 
-## 🐳 Deployment
+## Deployment
 
 The app builds to a standalone Node.js server via `@sveltejs/adapter-node` and ships as a container image.
 
@@ -104,10 +104,10 @@ node build
 A container image is published to GitHub Container Registry:
 
 ```bash
-docker run -p 3000:3000 ghcr.io/kamilpajak/gridfinity-label-generator:latest
+docker run -p 3000:80 ghcr.io/kamilpajak/gridfinity-label-generator:latest
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 gridfinity-label-generator/
@@ -127,7 +127,7 @@ gridfinity-label-generator/
 └── package.json
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome — bug reports, feature ideas, and pull requests all help.
 
@@ -139,24 +139,24 @@ Contributions are welcome — bug reports, feature ideas, and pull requests all 
 
 This project uses a **Contributor License Agreement (CLA)** / DCO sign-off so that the maintainer can keep offering the code under both the AGPL and a separate commercial license. You'll be asked to agree to it before your first pull request is merged. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guidelines and the CLA details.
 
-## 📜 License
+## License
 
 The original source code in this repository is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0-only)** — see the [LICENSE](LICENSE) file for the full text.
 
 In short: if you run a modified version of this software as a network service, the AGPL requires you to make your modified source available to its users. If you cannot comply with the AGPL (for example, to embed or re-host this software without publishing your changes), a separate **commercial license is available** — contact the maintainer.
 
-This license covers **only the project's own source code**. Third-party components (fonts, UI libraries, and other bundled materials) are subject to their own separate terms — see [Acknowledgments](#-acknowledgments) below.
+This license covers **only the project's own source code**. Third-party components (fonts, UI libraries, and other bundled materials) are subject to their own separate terms — see [Acknowledgments](#acknowledgments) below.
 
-## 💖 Support
+## Support
 
 If you find this project helpful, consider:
 
-- ⭐ Starring the repository
-- ☕ [Buying me a coffee](https://www.buymeacoffee.com/kamilpajak)
-- 🐛 [Reporting issues](https://github.com/kamilpajak/gridfinity-label-generator/issues)
-- 💡 [Providing feedback](https://github.com/kamilpajak/gridfinity-label-generator/discussions)
+- Starring the repository
+- [Buying me a coffee](https://www.buymeacoffee.com/kamilpajak)
+- [Reporting issues](https://github.com/kamilpajak/gridfinity-label-generator/issues)
+- [Providing feedback](https://github.com/kamilpajak/gridfinity-label-generator/discussions)
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 This project builds on the work of others:
 

@@ -38,6 +38,7 @@
 		appendOptionalNote
 	} from '$lib/utils/label-formatter';
 	import { exportCanvasLabelAsPNG } from '$lib/utils/label-exporter';
+	import { exportSingleLabelAsLbx } from '$lib/utils/label-lbx-exporter';
 	import { validateLength, type ValidationResult } from '$lib/utils/input-validator';
 	import BatchModePanel from '$lib/components/batch/batch-mode-panel.svelte';
 	import { batchStore } from '$lib/stores/batch-store';
@@ -406,6 +407,17 @@
 		} catch (error) {
 			console.error('Failed to export label:', error);
 		}
+	}
+
+	// Download label as a Brother P-touch .lbx (opens with editable text in P-touch Editor).
+	// Phase 1: the primary text line on the selected 9/12 mm tape.
+	function downloadLabelAsLbx() {
+		if (!hasContent || !labelPrimaryText) return;
+		exportSingleLabelAsLbx({
+			text: labelPrimaryText,
+			tapeHeightMm: parseInt(labelHeight) as 9 | 12,
+			labelLengthMm: labelWidth
+		});
 	}
 
 	// Provide feedback function — opens a new GitHub Discussion in the Ideas category.
@@ -978,24 +990,38 @@
 						{customImage}
 						{showCustomImage}
 					/>
-					<Button
-						onclick={downloadLabelAsPNG}
-						variant="default"
-						size="lg"
-						class="h-auto gap-2 rounded-xl px-8 py-4 text-sm font-bold shadow-lg shadow-cyan-500/25 transition-shadow hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]"
-						disabled={!hasContent || !isFormValid}
-						title={!hasContent
-							? UI_TEXT.errors.addTextToExport
-							: !isFastenerComplete()
-								? UI_TEXT.errors.fastenerIncomplete
-								: !isFormValid
-									? UI_TEXT.errors.fixValidation
-									: UI_TEXT.errors.exportTitle}
-						data-testid="export-button"
-					>
-						<DownloadIcon class="h-5 w-5" />
-						{UI_TEXT.buttons.downloadPNG}
-					</Button>
+					<div class="flex flex-col items-center gap-2">
+						<Button
+							onclick={downloadLabelAsPNG}
+							variant="default"
+							size="lg"
+							class="h-auto gap-2 rounded-xl px-8 py-4 text-sm font-bold shadow-lg shadow-cyan-500/25 transition-shadow hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]"
+							disabled={!hasContent || !isFormValid}
+							title={!hasContent
+								? UI_TEXT.errors.addTextToExport
+								: !isFastenerComplete()
+									? UI_TEXT.errors.fastenerIncomplete
+									: !isFormValid
+										? UI_TEXT.errors.fixValidation
+										: UI_TEXT.errors.exportTitle}
+							data-testid="export-button"
+						>
+							<DownloadIcon class="h-5 w-5" />
+							{UI_TEXT.buttons.downloadPNG}
+						</Button>
+						<Button
+							onclick={downloadLabelAsLbx}
+							variant="outline"
+							size="sm"
+							class="gap-2 text-xs"
+							disabled={!hasContent || !isFormValid}
+							title="Export an editable Brother P-touch label (.lbx)"
+							data-testid="export-lbx-button"
+						>
+							<DownloadIcon class="h-4 w-4" />
+							Export for P-touch (.lbx)
+						</Button>
+					</div>
 				{/if}
 			</Tabs.Content>
 

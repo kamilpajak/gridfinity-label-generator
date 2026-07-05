@@ -151,17 +151,51 @@ existing `qrcode` dependency if we go the bitmap route.
 - **Positions:** MVP centers text in the printable area; later, map `SolverOutput` (mm→pt) for
   closer parity.
 
+## Cutting
+
+Label cutting is **not stored in `.lbx`**. Verified across all 1501 shipped templates: each `.lbx`
+contains only `label.xml` + `prop.xml` (+ optional `ObjectN.bmp`), the `<style:cutLine>` element is
+always at defaults (`regularCut="0pt" freeCut=""`), and there are no `halfCut`/`autoCut`/`chainPrint`
+fields anywhere. Cut behavior is a **print-time / printer setting**, chosen in P-touch Editor's print
+dialog and executed by the printer's cutter:
+
+- **Full cut / auto-cut** — cuts the whole tape (label + backing), separating each label.
+- **Half-cut** — cuts only the label layer, leaving the backing intact for easy peeling (hardware
+  feature, **depends on printer model**).
+- **Chain printing** — no cut between labels (saves tape).
+
+Implication: the exporter neither controls nor needs to control cutting — the user picks the cut mode
+when printing. For batch, the printer's auto/half-cut separates the labels; we don't draw the manual
+scissor guides the PNG tape strip uses.
+
+## Open questions (resolve in Phase 0)
+
+- **Multi-label in one file:** can a single `.lbx` hold N independent labels so the user opens ONE
+  file? The schema has `meta:numPages` and `database`/`table` namespaces, and P-touch Editor supports
+  multi-page documents — but all shipped templates are single-sheet (`numPages=1`, one `style:sheet`,
+  no merge), so the exact multi-label XML is unconfirmed. Resolve by saving a 2–3 label document from
+  P-touch Editor and inspecting it. Preferred outcome: one multi-label `.lbx`; fallback: ZIP of N.
+- **Exact `style:paper` for PT continuous tape (9/12 mm):** the Bin Box sample is a QL die-cut roll;
+  lift the correct paper attributes (media/format/printerID) from a PT-series tape template or a
+  P-touch-saved sample.
+- **QR object params:** lift `barcode:barcodeStyle protocol="QRCODE"` attributes from a template that
+  contains a QR code (or a P-touch-saved sample).
+
 ## Phased rollout
 
 - **Phase 0 — spike / de-risk (do first):** generate a text-only `.lbx` modeled 1:1 on Bin Box;
   **open it in the installed P-touch Editor** to confirm acceptance. Lift the exact `style:paper`
-  block for a 12 mm PT tape and the `prop.xml` field set from golden templates.
+  block for a 12 mm PT tape and the `prop.xml` field set from golden templates. **Also resolve the
+  multi-label question** (see Open Questions): in P-touch Editor, save a 2–3 label document as
+  `.lbx` and inspect how multiple labels are encoded (multiple `style:sheet`? `numPages` > 1?).
 - **Phase 1 — MVP:** single-label, text-only (`units` + `label-xml` + `prop-xml` + `lbx-zip` +
   `label-lbx-exporter` + "Export .lbx" button + unit tests vs golden fixtures).
 - **Phase 2 — QR:** native `barcode:barcode protocol="QRCODE"` (params lifted from a QR template),
   with a bitmap `image:image` fallback (reuses `qrcode` + custom-image base64).
-- **Phase 3 — Batch:** `batch-lbx-exporter` → a ZIP of individual `.lbx` files (P-touch stores one
-  label per file). Same success/error status UX as the PNG batch export.
+- **Phase 3 — Batch:** **prefer a single multi-label `.lbx`** (multiple labels in one document) so
+  the user opens ONE file, not N. This fits our heterogeneous batch (each label fully custom) better
+  than database/merge. Fall back to a **ZIP of individual `.lbx` files** only if multi-label proves
+  unreliable (decided in Phase 0). Same success/error status UX as the PNG batch export.
 - **Phase 4 — polish (optional):** custom images as `image:image`, closer positions from the solver,
   imperial/metric edge cases.
 
@@ -175,14 +209,14 @@ existing `qrcode` dependency if we go the bitmap route.
 
 ## Risks & mitigations
 
-| Risk                                                        | Mitigation                                                             |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------- |
-| P-touch rejects the file (strict schema / order / versions) | Model 1:1 on installed golden templates; validate in P-touch (Phase 0) |
-| Font mismatch (Noto/Oswald absent)                          | Use Helsinki/Helsinki Narrow; text is editable, parity not required    |
-| Text clipping                                               | `textControl shrink="true"` (built-in auto-fit)                        |
-| QR/barcode params                                           | Lift from a real QR template; bitmap fallback                          |
-| Batch semantics                                             | ZIP of one `.lbx` per label                                            |
-| Reverse-engineered format drift                             | Pin to one known-good structure; golden fixtures in tests              |
+| Risk                                                        | Mitigation                                                                     |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| P-touch rejects the file (strict schema / order / versions) | Model 1:1 on installed golden templates; validate in P-touch (Phase 0)         |
+| Font mismatch (Noto/Oswald absent)                          | Use Helsinki/Helsinki Narrow; text is editable, parity not required            |
+| Text clipping                                               | `textControl shrink="true"` (built-in auto-fit)                                |
+| QR/barcode params                                           | Lift from a real QR template; bitmap fallback                                  |
+| Batch = 3 files vs 1 (poor UX)                              | Prefer a single multi-label `.lbx`; confirm structure in Phase 0, ZIP fallback |
+| Reverse-engineered format drift                             | Pin to one known-good structure; golden fixtures in tests                      |
 
 ## Effort (estimate)
 

@@ -247,29 +247,117 @@ export class BatchModePage extends BasePage {
 
 	/**
 	 * Reorder a row using a real POINTER drag (svelte-dnd-action mouse path).
-	 * Presses on the source row, crosses the drag threshold, travels to the target
-	 * row, drops, and waits for the library's drop animation to remove its dragged
-	 * clone so the list is settled before the caller interacts again.
+	 *
+	 * Deterministic without sleeps: svelte-dnd-action decides the hovered target
+	 * index on a recurring ~193ms observer timer (flipDurationMs 180), NOT on
+	 * pointermove, so a synthetic down->move->up that finishes inside one timer gap
+	 * is a no-op. We hold the pointer down and poll the live DOM until the in-flight
+	 * shadow row shows the dragged text at the target index, release only then, and
+	 * retry the whole gesture if the reorder did not commit.
 	 */
 	async reorderByMouse(from: number, to: number) {
+		// The chip text that must end up at the target index. A failed pointer drag
+		// leaves the order unchanged, so this stays valid across retry attempts.
+		const draggedText = await this.inZoneChipText(from);
+
+		const MAX_ATTEMPTS = 3;
+		for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+			if (await this.attemptMouseDrag(from, to, draggedText)) {
+				await this.waitForUiUpdate();
+				return;
+			}
+		}
+		throw new Error(
+			`reorderByMouse: drag from ${from} to ${to} did not take effect after ${MAX_ATTEMPTS} attempts`
+		);
+	}
+
+	/**
+	 * One pointer-drag attempt. Returns true only if the reorder actually committed
+	 * (the dragged chip text is at the target index after drop).
+	 */
+	private async attemptMouseDrag(from: number, to: number, draggedText: string): Promise<boolean> {
+		// Recompute boxes fresh each attempt: a prior failed drag or a flip animation
+		// can shift rows, and a stale box aims the clone at the wrong slot.
 		const src = await this.getLabelRow(from).boundingBox();
 		const dst = await this.getLabelRow(to).boundingBox();
 		if (!src || !dst) throw new Error('reorderByMouse: source or target row not visible');
 
 		const sx = src.x + src.width / 2;
 		const sy = src.y + src.height / 2;
+		const dx = dst.x + dst.width / 2;
 		const dy = dst.y + dst.height / 2;
+		const dir = to > from ? 1 : -1;
+		// Overshoot past the target center so the clone clearly covers the target slot
+		// (detection uses the clone center) and the >10px observer tolerance is exceeded.
+		const overshoot = Math.max(8, dst.height * 0.4) * dir;
+
+		const clone = this.page.locator('#dnd-action-dragged-el');
 
 		await this.page.mouse.move(sx, sy);
 		await this.page.mouse.down();
-		// Small initial move to cross the drag threshold, then travel to the target.
-		await this.page.mouse.move(sx, sy + 8);
-		await this.page.mouse.move(sx, dy, { steps: 12 });
-		await this.page.mouse.move(sx, dy + (to > from ? 6 : -6), { steps: 4 });
-		await this.page.mouse.up();
+		// Cross the 3px drag-start threshold, then confirm the drag was recognized
+		// (clone appended, shadow inserted) BEFORE travelling.
+		await this.page.mouse.move(sx, sy + 6 * dir);
+		try {
+			await expect(clone).toHaveCount(1, { timeout: 2000 });
+		} catch {
+			await this.page.mouse.up();
+			await expect(clone).toHaveCount(0);
+			return false;
+		}
 
-		// Wait for the drop animation to finish and the dragged clone to be removed.
-		await expect(this.page.locator('#dnd-action-dragged-el')).toHaveCount(0);
-		await this.waitForUiUpdate();
+		// Travel the clone center to the target row, then overshoot past its center.
+		await this.page.mouse.move(dx, dy, { steps: 20 });
+		await this.page.mouse.move(dx, dy + overshoot, { steps: 6 });
+
+		// Hold and wait (condition-based) for an observer tick to splice the shadow to
+		// the target index. Nudge inside the poll so each iteration re-crosses the
+		// tolerance and keeps the ~193ms timer re-evaluating until it lands on target.
+		let toggle = 0;
+		let reachedTarget = false;
+		try {
+			await expect
+				.poll(
+					async () => {
+						toggle ^= 1;
+						await this.page.mouse.move(dx, dy + overshoot + toggle * 12 * dir, { steps: 2 });
+						return this.inZoneChipText(to);
+					},
+					{ timeout: 4000, intervals: [100, 150, 200, 250, 300] }
+				)
+				.toContain(draggedText);
+			reachedTarget = true;
+		} catch {
+			reachedTarget = false;
+		}
+
+		if (!reachedTarget) {
+			// Release so the library restores the original order for the next attempt.
+			await this.page.mouse.up();
+			await expect(clone).toHaveCount(0);
+			return false;
+		}
+
+		await this.page.mouse.up();
+		// handleDrop runs a ~180ms drop animation before finalize/cleanup removes the
+		// clone; waiting for the clone to disappear bridges that delay, so the store
+		// reorder has committed by the time this returns.
+		await expect(clone).toHaveCount(0);
+
+		// Confirm the reorder actually stuck in the settled DOM.
+		return (await this.inZoneChipText(to)).includes(draggedText);
+	}
+
+	/**
+	 * Chip primary text at a row index, scoped to the drop-zone container.
+	 * Scoping matters DURING a drag: svelte-dnd-action deep-clones the dragged row
+	 * (duplicating its data-testid) onto document.body, outside `labelList`. An
+	 * unscoped getByTestId would match two nodes and trip Playwright strict mode.
+	 */
+	private async inZoneChipText(index: number): Promise<string> {
+		return (
+			(await this.labelList.getByTestId(`batch-chip-primary-${index}`).textContent())?.trim() ?? ''
+		);
 	}
 }

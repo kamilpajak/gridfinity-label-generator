@@ -231,28 +231,35 @@ single job — no template building, no CSV encoding fight.
 - **Exact `style:paper` for PT continuous tape (9/12 mm):** the Bin Box sample is a QL die-cut roll;
   lift the correct paper attributes (media/format/printerID) from a PT-series tape template or a
   P-touch-saved sample.
-- **QR object params:** lift `barcode:barcodeStyle protocol="QRCODE"` attributes from a template that
-  contains a QR code (or a P-touch-saved sample).
+- ~~**QR object params**~~: moot — QR is rendered into the embedded PNG, never a native
+  `barcode:barcode` object (see Core principle).
+
+## Core principle (locked 2026-07-06)
+
+**The `.lbx` ALWAYS embeds exactly the same PNG raster the app generates** — the very image
+the user can download via `Export PNG` / `Export PNG Strip`. We never emit native P-touch
+objects (text, `barcode:barcode`, standard/QR). Everything the label shows — text, hardware
+icon, QR code, custom images, secondary text, note — is already rendered onto that raster by
+the canvas pipeline, so the `.lbx` inherits it for free and stays pixel-identical to the PNG.
+This makes native-object work (QR/barcode objects, editable text) **out of scope permanently**,
+not a "later phase". It keeps one source of truth (the canvas), avoids font/encoding drift, and
+means there is nothing to add per new label feature — if it shows in the PNG, it ships in the `.lbx`.
 
 ## Phased rollout
 
-- **Phase 0 — spike / de-risk (do first):** generate a text-only `.lbx` modeled 1:1 on Bin Box;
-  **open it in the installed P-touch Editor** to confirm acceptance. Lift the exact `style:paper`
-  block for a 12 mm PT tape and the `prop.xml` field set from golden templates. **Also resolve the
-  multi-label question** (see Open Questions): in P-touch Editor, save a 2–3 label document as
-  `.lbx` and inspect how multiple labels are encoded (multiple `style:sheet`? `numPages` > 1?).
-- **Phase 1 — MVP:** single-label, text-only (`units` + `label-xml` + `prop-xml` + `lbx-zip` +
-  `label-lbx-exporter` + "Export .lbx" button + unit tests vs golden fixtures).
-- **Phase 2 — QR:** native `barcode:barcode protocol="QRCODE"` (params lifted from a QR template),
-  with a bitmap `image:image` fallback (reuses `qrcode` + custom-image base64).
-- **Phase 3 — Batch:** **one long single-sheet `.lbx` strip** — one `style:sheet` with
-  `paper.height` = sum of label lengths and **N text objects along the tape** (increasing X offset),
-  mirroring the existing PNG batch strip. The user opens ONE file and prints it in a single job.
-  Decided against the database/CSV mail-merge route (needs a physical printer, no file output, drops
-  `×`) and against multi-sheet/`numPages` (unconfirmed XML) — see "Batch route investigation". Same
-  success/error status UX as the PNG batch export.
-- **Phase 4 — polish (optional):** custom images as `image:image`, closer positions from the solver,
-  imperial/metric edge cases.
+- **Phase 0 — spike / de-risk:** DONE — generated an `.lbx` from scratch, opened it in P-touch
+  Editor 5.3.23; found the compact-XML requirement and the image-wrapper approach.
+- **Phase 1 — single label:** DONE — `bmp` + `label-xml` (image object) + `prop-xml` + `lbx-zip`
+  - `label-lbx-exporter` + `Export .lbx` button + unit/e2e tests.
+- **Phase 3 — Batch:** DONE — **one long single-sheet `.lbx` strip**: one `style:sheet` with
+  `paper.height` = strip length and a **single `image:image`** holding the whole rendered strip,
+  mirroring the PNG batch strip. One file, one print job. Decided against the database/CSV route
+  (needs a physical printer, no file output, drops `×`) and multi-sheet/`numPages` — see "Batch
+  route investigation".
+- ~~**Phase 2 — native QR** / **Phase 4 — native text/images**~~: **cancelled** by the core
+  principle above. QR, images, and secondary text are already baked into the embedded PNG.
+- **Remaining:** validate 9 mm tape geometry (currently best-effort); optionally expose the 1-bit
+  threshold if fine strokes thin.
 
 ## Testing & validation
 
@@ -264,18 +271,18 @@ single job — no template building, no CSV encoding fight.
 
 ## Risks & mitigations
 
-| Risk                                                        | Mitigation                                                                                          |
-| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| P-touch rejects the file (strict schema / order / versions) | Model 1:1 on installed golden templates; validate in P-touch (Phase 0)                              |
-| Font mismatch (Noto/Oswald absent)                          | Use Helsinki/Helsinki Narrow; text is editable, parity not required                                 |
-| Text clipping                                               | `textControl shrink="true"` (built-in auto-fit)                                                     |
-| QR/barcode params                                           | Lift from a real QR template; bitmap fallback                                                       |
-| Batch = 3 files vs 1 (poor UX)                              | One long single-sheet `.lbx` strip (N text objects on one sheet); not database/CSV, not multi-sheet |
-| Reverse-engineered format drift                             | Pin to one known-good structure; golden fixtures in tests                                           |
+| Risk                                                        | Mitigation                                                                                        |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| P-touch rejects the file (strict schema / order / versions) | Model 1:1 on installed golden templates; validate in P-touch (Phase 0)                            |
+| Font/encoding drift vs the app design                       | Embed the app's PNG raster (Core principle) — no native objects, so `.lbx` == PNG by construction |
+| 1-bit conversion thins fine strokes                         | Fixed threshold 128 works for bold label text; can expose `threshold` if needed                   |
+| Batch = 3 files vs 1 (poor UX)                              | One long single-sheet `.lbx` strip (single embedded image); not database/CSV, not multi-sheet     |
+| Reverse-engineered format drift                             | Pin to one known-good structure; golden fixtures in tests + manual P-touch validation             |
 
-## Effort (estimate)
+## Status
 
-Phase 0+1 (MVP + validation) ~1–2 days · Phase 2 ~0.5–1 day · Phase 3 ~0.5 day · Phase 4 optional.
+Phase 0, 1 (single) and 3 (batch) shipped. Native-object phases cancelled by the Core principle.
+Remaining: validate 9 mm tape geometry.
 
 ## References
 

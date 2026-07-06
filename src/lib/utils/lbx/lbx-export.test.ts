@@ -1,14 +1,10 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { unzipSync, strFromU8 } from 'fflate';
 import { mmToPt, charLength, xmlEscape, TAPE_SPECS } from './units';
-import { buildLabelXml } from './label-xml';
+import { buildImageLabelXml } from './label-xml';
 import { buildPropXml } from './prop-xml';
-import {
-	buildSingleLabelLbx,
-	lbxFileName,
-	downloadBlob,
-	exportSingleLabelAsLbx
-} from '../label-lbx-exporter';
+import { buildLbxBlob } from './lbx-zip';
+import { lbxFileName, downloadBlob } from '../label-lbx-exporter';
 
 const TEXT = 'M8 × 20 DIN 912';
 
@@ -38,8 +34,12 @@ describe('lbx units', () => {
 	});
 });
 
-describe('buildLabelXml', () => {
-	const xml = buildLabelXml({ text: TEXT, tapeHeightMm: 12, labelLengthMm: 35 });
+describe('buildImageLabelXml', () => {
+	const xml = buildImageLabelXml({
+		tapeHeightMm: 12,
+		labelLengthMm: 35,
+		image: { fileName: 'Object0.bmp', xMm: 2, yMm: 1, widthMm: 31, heightMm: 10 }
+	});
 
 	it('is compact: no whitespace between elements (P-touch crashes otherwise)', () => {
 		const body = xml.split('\n').slice(1).join('\n'); // drop the <?xml?> line
@@ -50,6 +50,12 @@ describe('buildLabelXml', () => {
 		expect(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>\n<pt:document ')).toBe(true);
 	});
 
+	it('embeds exactly one image object and no text object', () => {
+		expect((xml.match(/<image:image>/g) || []).length).toBe(1);
+		expect(xml).not.toContain('<text:text>');
+		expect(xml).toContain('fileName="Object0.bmp"');
+	});
+
 	it('encodes the 12 mm tape paper block', () => {
 		expect(xml).toContain('width="34pt"'); // 12 mm tape
 		expect(xml).toContain(`format="${TAPE_SPECS[12].format}"`); // 259
@@ -57,27 +63,31 @@ describe('buildLabelXml', () => {
 		expect(xml).toContain('orientation="landscape"');
 	});
 
-	it('places the text with an auto-shrinking, centered text object', () => {
-		expect(xml).toContain(`<pt:data>${TEXT}</pt:data>`);
-		expect(xml).toContain('charLen="15"');
-		expect(xml).toContain('shrink="true"');
-		expect(xml).toContain('name="Helsinki Narrow"');
+	it('positions the image from the given millimetre rect', () => {
+		expect(xml).toContain(`x="${mmToPt(2)}pt"`);
+		expect(xml).toContain(`width="${mmToPt(31)}pt"`);
+		expect(xml).toContain(`height="${mmToPt(10)}pt"`);
 	});
 
-	it('escapes special characters in the text', () => {
-		const x = buildLabelXml({ text: 'A & B <C>', tapeHeightMm: 12, labelLengthMm: 35 });
-		expect(x).toContain('<pt:data>A &amp; B &lt;C&gt;</pt:data>');
-	});
-
-	it('supports the 9 mm tape (best-effort geometry)', () => {
-		const x = buildLabelXml({ text: 'M4', tapeHeightMm: 9, labelLengthMm: 30 });
+	it('supports the 9 mm tape', () => {
+		const x = buildImageLabelXml({
+			tapeHeightMm: 9,
+			labelLengthMm: 30,
+			image: { fileName: 'Object0.bmp', xMm: 2, yMm: 1, widthMm: 26, heightMm: 7 }
+		});
 		expect(x).toContain('width="25.6pt"');
 		expect(x).toContain(`format="${TAPE_SPECS[9].format}"`);
 	});
 
 	it('rejects an unsupported tape height', () => {
-		// @ts-expect-error deliberately invalid
-		expect(() => buildLabelXml({ text: 'x', tapeHeightMm: 24, labelLengthMm: 30 })).toThrow();
+		expect(() =>
+			buildImageLabelXml({
+				// @ts-expect-error deliberately invalid
+				tapeHeightMm: 24,
+				labelLengthMm: 30,
+				image: { fileName: 'Object0.bmp', xMm: 2, yMm: 1, widthMm: 26, heightMm: 20 }
+			})
+		).toThrow();
 	});
 });
 
@@ -89,14 +99,18 @@ describe('buildPropXml', () => {
 	});
 });
 
-describe('buildSingleLabelLbx', () => {
-	it('produces a ZIP containing label.xml and prop.xml', async () => {
-		const blob = buildSingleLabelLbx({ text: TEXT, tapeHeightMm: 12, labelLengthMm: 35 });
-		const bytes = new Uint8Array(await blob.arrayBuffer());
-		const files = unzipSync(bytes);
-		expect(Object.keys(files).sort()).toEqual(['label.xml', 'prop.xml']);
-		expect(strFromU8(files['label.xml'])).toContain(`<pt:data>${TEXT}</pt:data>`);
-		expect(strFromU8(files['prop.xml'])).toContain('<meta:properties');
+describe('buildLbxBlob', () => {
+	it('packages XML strings and a binary bitmap into one ZIP', async () => {
+		const bmp = new Uint8Array([0x42, 0x4d, 0x01, 0x02, 0x03]);
+		const blob = buildLbxBlob({
+			'label.xml': '<pt:document/>',
+			'prop.xml': '<meta:properties/>',
+			'Object0.bmp': bmp
+		});
+		const files = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+		expect(Object.keys(files).sort()).toEqual(['Object0.bmp', 'label.xml', 'prop.xml']);
+		expect(strFromU8(files['label.xml'])).toBe('<pt:document/>');
+		expect(Array.from(files['Object0.bmp'])).toEqual([0x42, 0x4d, 0x01, 0x02, 0x03]);
 	});
 });
 
@@ -136,36 +150,5 @@ describe('downloadBlob', () => {
 		expect(click).toHaveBeenCalledOnce();
 		expect(removeChild).toHaveBeenCalledWith(anchor);
 		expect(revokeObjectURL).toHaveBeenCalledWith('blob:mock');
-	});
-});
-
-describe('exportSingleLabelAsLbx', () => {
-	afterEach(() => {
-		vi.restoreAllMocks();
-		vi.unstubAllGlobals();
-	});
-
-	it('downloads a .lbx named after the label text by default', () => {
-		const anchor = { href: '', download: '', click: vi.fn() } as unknown as HTMLAnchorElement;
-		vi.stubGlobal('document', {
-			createElement: () => anchor,
-			body: { appendChild: vi.fn(), removeChild: vi.fn() }
-		});
-		vi.stubGlobal('URL', { createObjectURL: () => 'blob:mock', revokeObjectURL: vi.fn() });
-
-		exportSingleLabelAsLbx({ text: TEXT, tapeHeightMm: 12, labelLengthMm: 35 });
-		expect(anchor.download).toBe('M8_x_20_DIN_912.lbx');
-	});
-
-	it('uses an explicit fileName when provided', () => {
-		const anchor = { href: '', download: '', click: vi.fn() } as unknown as HTMLAnchorElement;
-		vi.stubGlobal('document', {
-			createElement: () => anchor,
-			body: { appendChild: vi.fn(), removeChild: vi.fn() }
-		});
-		vi.stubGlobal('URL', { createObjectURL: () => 'blob:mock', revokeObjectURL: vi.fn() });
-
-		exportSingleLabelAsLbx({ text: TEXT, tapeHeightMm: 9, labelLengthMm: 30, fileName: 'custom' });
-		expect(anchor.download).toBe('custom.lbx');
 	});
 });

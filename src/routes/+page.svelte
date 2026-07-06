@@ -37,7 +37,7 @@
 		formatSecondaryText,
 		appendOptionalNote
 	} from '$lib/utils/label-formatter';
-	import { exportCanvasLabelAsPNG } from '$lib/utils/label-exporter';
+	import { exportCanvasLabelAsPNG, type CanvasExportOptions } from '$lib/utils/label-exporter';
 	import { exportSingleLabelAsLbx } from '$lib/utils/label-lbx-exporter';
 	import { validateLength, type ValidationResult } from '$lib/utils/input-validator';
 	import BatchModePanel from '$lib/components/batch/batch-mode-panel.svelte';
@@ -342,11 +342,9 @@
 			(showQRCode && qrCodeUrl?.trim())
 	);
 
-	// Download label as PNG
-	async function downloadLabelAsPNG() {
-		if (!hasContent) return;
-		console.log('downloadLabelAsPNG called');
-
+	// Build the canvas export options from the current form state. Shared by the
+	// PNG export and the `.lbx` export (which wraps the same rendered canvas).
+	function buildCanvasExportOptions(): CanvasExportOptions {
 		// Prepare base secondary text (from labelSecondaryText or standard designation)
 		const baseSecondaryText =
 			labelSecondaryText ||
@@ -369,13 +367,6 @@
 		// Append optional note to base text
 		const fullSecondaryText = appendOptionalNote(baseSecondaryText, optionalNote);
 
-		console.log('Calling exportCanvasLabelAsPNG with:', {
-			labelWidth: Number(labelWidth),
-			labelHeight: Number(labelHeight),
-			primaryText: labelPrimaryText,
-			secondaryText: fullSecondaryText
-		});
-
 		// Determine effective showHardwareImage for export
 		// In general mode, use custom image; in fastener mode, use hardware image
 		const isGeneralItemMode = labelMode === 'general';
@@ -383,41 +374,44 @@
 			? showCustomImage && !!customImage
 			: showHardwareImage;
 
+		return {
+			labelWidth: Number(labelWidth),
+			labelHeight: Number(labelHeight),
+			primaryText: labelPrimaryText,
+			secondaryText: fullSecondaryText,
+			standard: selectedStandard,
+			showStandard: isGeneralItemMode ? false : showStandard,
+			showHardwareImage: effectiveShowHardwareImage,
+			showQRCode,
+			qrCodeUrl,
+			labelMode: labelMode as 'fastener' | 'general',
+			threadSize,
+			length,
+			customImageSrc: isGeneralItemMode && showCustomImage ? customImage?.data : undefined,
+			customImageAspectRatio:
+				isGeneralItemMode && showCustomImage ? customImage?.aspectRatio : undefined
+		};
+	}
+
+	// Download label as PNG
+	async function downloadLabelAsPNG() {
+		if (!hasContent) return;
 		try {
-			await exportCanvasLabelAsPNG({
-				labelWidth: Number(labelWidth),
-				labelHeight: Number(labelHeight),
-				primaryText: labelPrimaryText,
-				secondaryText: fullSecondaryText,
-				standard: selectedStandard,
-				showStandard: isGeneralItemMode ? false : showStandard,
-				showHardwareImage: effectiveShowHardwareImage,
-				showQRCode,
-				qrCodeUrl,
-				// New params for descriptive filenames
-				labelMode: labelMode as 'fastener' | 'general',
-				threadSize,
-				length,
-				// Custom image for general mode
-				customImageSrc: isGeneralItemMode && showCustomImage ? customImage?.data : undefined,
-				customImageAspectRatio:
-					isGeneralItemMode && showCustomImage ? customImage?.aspectRatio : undefined
-			});
-			console.log('Export completed successfully');
+			await exportCanvasLabelAsPNG(buildCanvasExportOptions());
 		} catch (error) {
 			console.error('Failed to export label:', error);
 		}
 	}
 
-	// Download label as a Brother P-touch .lbx (opens with editable text in P-touch Editor).
-	// Phase 1: the primary text line on the selected 9/12 mm tape.
-	function downloadLabelAsLbx() {
-		if (!hasContent || !labelPrimaryText) return;
-		exportSingleLabelAsLbx({
-			text: labelPrimaryText,
-			tapeHeightMm: parseInt(labelHeight) as 9 | 12,
-			labelLengthMm: labelWidth
-		});
+	// Download label as a Brother P-touch .lbx: the app's rendered label baked
+	// into a 1-bit bitmap, so P-touch shows a pixel-perfect copy on the right tape.
+	async function downloadLabelAsLbx() {
+		if (!hasContent || !isFormValid) return;
+		try {
+			await exportSingleLabelAsLbx(buildCanvasExportOptions());
+		} catch (error) {
+			console.error('Failed to export .lbx:', error);
+		}
 	}
 
 	// Provide feedback function — opens a new GitHub Discussion in the Ideas category.
@@ -990,12 +984,11 @@
 						{customImage}
 						{showCustomImage}
 					/>
-					<div class="flex flex-col items-center gap-2">
+					<div class="flex flex-col gap-3 sm:flex-row">
 						<Button
 							onclick={downloadLabelAsPNG}
-							variant="default"
 							size="lg"
-							class="h-auto gap-2 rounded-xl px-8 py-4 text-sm font-bold shadow-lg shadow-cyan-500/25 transition-shadow hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]"
+							class="h-auto gap-2 rounded-xl bg-cyan-500 px-6 py-4 text-sm font-bold text-slate-900 shadow-lg shadow-cyan-500/25 transition-shadow hover:bg-cyan-400 hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]"
 							disabled={!hasContent || !isFormValid}
 							title={!hasContent
 								? UI_TEXT.errors.addTextToExport
@@ -1011,15 +1004,14 @@
 						</Button>
 						<Button
 							onclick={downloadLabelAsLbx}
-							variant="outline"
-							size="sm"
-							class="gap-2 text-xs"
-							disabled={!hasContent || !isFormValid || !labelPrimaryText}
-							title="Export an editable Brother P-touch label (.lbx)"
+							size="lg"
+							class="h-auto gap-2 rounded-xl bg-violet-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet-500/25 transition-shadow hover:bg-violet-500 hover:shadow-[0_0_30px_rgba(139,92,246,0.45)]"
+							disabled={!hasContent || !isFormValid}
+							title="Export a Brother P-touch label (.lbx) that opens on the right tape"
 							data-testid="export-lbx-button"
 						>
-							<DownloadIcon class="h-4 w-4" />
-							Export for P-touch (.lbx)
+							<DownloadIcon class="h-5 w-5" />
+							{UI_TEXT.buttons.downloadLbx}
 						</Button>
 					</div>
 				{/if}

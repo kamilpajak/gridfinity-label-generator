@@ -1,32 +1,51 @@
 /**
- * Export a single label to a Brother P-touch `.lbx` file (editable in P-touch
- * Editor), mirroring the PNG export. Phase 1: one text line on 9/12 mm tape.
- * QR codes, custom images, and multi-line/secondary text come in later phases.
+ * Export a single label to a Brother P-touch `.lbx` file.
+ *
+ * The label is rendered with the same canvas pipeline as the PNG export, then
+ * baked into a 1-bit BMP and embedded as an `image:image` object. P-touch opens
+ * it on the correct tape showing a pixel-perfect copy of the app's label — no
+ * font substitution, no lost characters (the `×` survives because it is pixels,
+ * not text).
  */
-import { buildLabelXml } from './lbx/label-xml';
+import { renderLabelToExportCanvas, type CanvasExportOptions } from './label-exporter';
+import { encodeMonochromeBmp } from './lbx/bmp';
+import { buildImageLabelXml } from './lbx/label-xml';
 import { buildPropXml } from './lbx/prop-xml';
 import { buildLbxBlob } from './lbx/lbx-zip';
 
-export interface LbxExportOptions {
-	/** The single line of label text (already formatted, e.g. "M8 × 20 DIN 912"). */
-	text: string;
-	/** Tape width in mm (9 or 12). */
-	tapeHeightMm: 9 | 12;
-	/** Label length along the tape, in mm. */
-	labelLengthMm: number;
-	/** Optional file name (without extension); defaults to a slug of the text. */
-	fileName?: string;
+/** Margins (mm) matching the PNG export crop; the rendered canvas excludes them. */
+const EXPORT_MARGINS = { left: 2, right: 2, top: 1, bottom: 1 };
+const BMP_FILE = 'Object0.bmp';
+
+/** Build the `.lbx` Blob for a single label (renders to canvas → 1-bit BMP → ZIP). */
+export async function buildSingleLabelLbx(options: CanvasExportOptions): Promise<Blob> {
+	const { canvas, printableWidth, printableHeight } = await renderLabelToExportCanvas(options);
+
+	const ctx = canvas.getContext('2d');
+	if (!ctx) throw new Error('Canvas 2D context unavailable');
+	const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	const bmp = encodeMonochromeBmp(imageData, { dpi: options.dpi ?? 360 });
+
+	const margins = options.margins ?? EXPORT_MARGINS;
+	const labelXml = buildImageLabelXml({
+		tapeHeightMm: options.labelHeight as 9 | 12,
+		labelLengthMm: options.labelWidth,
+		image: {
+			fileName: BMP_FILE,
+			xMm: margins.left,
+			yMm: margins.top,
+			widthMm: printableWidth,
+			heightMm: printableHeight
+		}
+	});
+	const propXml = buildPropXml({ title: lbxTitle(options) });
+
+	return buildLbxBlob({ 'label.xml': labelXml, 'prop.xml': propXml, [BMP_FILE]: bmp });
 }
 
-/** Build the `.lbx` Blob (pure — no DOM), so it is unit-testable. */
-export function buildSingleLabelLbx(options: LbxExportOptions): Blob {
-	const labelXml = buildLabelXml({
-		text: options.text,
-		tapeHeightMm: options.tapeHeightMm,
-		labelLengthMm: options.labelLengthMm
-	});
-	const propXml = buildPropXml({ title: options.text });
-	return buildLbxBlob({ 'label.xml': labelXml, 'prop.xml': propXml });
+/** A human-friendly document title for `prop.xml`. */
+function lbxTitle(options: CanvasExportOptions): string {
+	return options.primaryText?.trim() || options.secondaryText?.trim() || 'label';
 }
 
 /** Turn label text into a safe file-name stem. */
@@ -52,8 +71,8 @@ export function downloadBlob(blob: Blob, filename: string): void {
 }
 
 /** Build and download a single label as `.lbx`. */
-export function exportSingleLabelAsLbx(options: LbxExportOptions): void {
-	const blob = buildSingleLabelLbx(options);
-	const name = `${options.fileName ?? lbxFileName(options.text)}.lbx`;
+export async function exportSingleLabelAsLbx(options: CanvasExportOptions): Promise<void> {
+	const blob = await buildSingleLabelLbx(options);
+	const name = `${lbxFileName(lbxTitle(options))}.lbx`;
 	downloadBlob(blob, name);
 }

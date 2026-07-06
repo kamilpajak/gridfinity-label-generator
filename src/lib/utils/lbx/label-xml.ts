@@ -1,15 +1,18 @@
 /**
- * Generate a Brother P-touch `label.xml` for a single text label.
+ * Generate a Brother P-touch `label.xml` that wraps a rendered label bitmap.
+ *
+ * The app's label (text, hardware icon, standard, QR — laid out by the same
+ * pipeline as the PNG export) is rasterised to a 1-bit BMP and embedded as a
+ * single `image:image` object. This gives P-touch a pixel-perfect copy of what
+ * the app shows, instead of re-rendering text in a Brother font that does not
+ * match. The image structure mirrors a shipped template ("Address2").
  *
  * CRITICAL: the output has NO whitespace between elements. P-touch's parser
  * walks child nodes directly and dereferences a null when it hits a whitespace
  * text node — a pretty-printed `.lbx` crashes P-touch Editor (verified in Phase
  * 0). Keep this compact.
- *
- * The structure mirrors a real shipped template ("Bin Box"): one `text:text`
- * object with `shrink="true"` so P-touch auto-fits the text to its frame.
  */
-import { TAPE_SPECS, PT_PRINTER_ID, PT_PRINTER_NAME, mmToPt, xmlEscape, charLength } from './units';
+import { TAPE_SPECS, PT_PRINTER_ID, PT_PRINTER_NAME, mmToPt } from './units';
 
 const NS =
 	'xmlns:pt="http://schemas.brother.info/ptouch/2007/lbx/main"' +
@@ -21,74 +24,75 @@ const NS =
 	' xmlns:database="http://schemas.brother.info/ptouch/2007/lbx/database"' +
 	' xmlns:table="http://schemas.brother.info/ptouch/2007/lbx/table"';
 
-/** Font info reused for the object default and its single string run (Helsinki is a Brother built-in). */
-function fontInfo(fontPt: number): string {
-	return (
-		`<text:logFont name="Helsinki Narrow" width="0" italic="false" weight="700" charSet="0" pitchAndFamily="34"/>` +
-		`<text:fontExt effect="NOEFFECT" underline="0" strikeout="0" size="${fontPt}pt" orgSize="28.8pt" textColor="#000000"/>`
-	);
+/** Placement of the embedded bitmap on the tape, in millimetres. */
+export interface LbxImageRect {
+	/** File name of the BMP entry inside the `.lbx` ZIP (e.g. `Object0.bmp`). */
+	fileName: string;
+	/** Offset from the label's leading edge along the tape length (mm). */
+	xMm: number;
+	/** Offset from the tape edge along its width (mm). */
+	yMm: number;
+	/** Displayed width along the tape length (mm). */
+	widthMm: number;
+	/** Displayed height along the tape width (mm). */
+	heightMm: number;
 }
 
-export interface LbxLabelInput {
-	/** The single line of text on the label. */
-	text: string;
+export interface LbxImageLabelInput {
 	/** Tape width in mm (the app's TapeHeight). */
 	tapeHeightMm: 9 | 12;
 	/** Label length along the tape, in mm (the app's label width). */
 	labelLengthMm: number;
-	/** Optional font size in points (default 10). */
-	fontPt?: number;
+	/** The embedded bitmap and where it sits on the tape. */
+	image: LbxImageRect;
 }
 
 /**
- * Build a compact, P-touch-valid `label.xml` string for a one-line text label.
+ * Build a compact, P-touch-valid `label.xml` that displays a single embedded
+ * bitmap on the given tape.
  */
-export function buildLabelXml(input: LbxLabelInput): string {
+export function buildImageLabelXml(input: LbxImageLabelInput): string {
 	const spec = TAPE_SPECS[input.tapeHeightMm];
 	if (!spec) throw new Error(`Unsupported tape height: ${input.tapeHeightMm}mm`);
 
-	const fontPt = input.fontPt ?? 10;
 	const lengthPt = mmToPt(input.labelLengthMm);
-	const text = xmlEscape(input.text);
-	const len = charLength(input.text);
-
-	// Length axis (paper.height): margins on left/right; tape-width axis (paper.width): the printable band.
-	const bgX = spec.marginLengthPt;
-	const bgWidth = Math.round((lengthPt - spec.marginLengthPt * 2) * 10) / 10;
-	const boxX = spec.marginLengthPt + 1;
-	const boxWidth = Math.round((lengthPt - spec.marginLengthPt * 2 - 2) * 10) / 10;
-	const boxY = Math.round((spec.bandYPt + 0.2) * 10) / 10;
-	const boxHeight = Math.round((spec.bandHeightPt - 0.4) * 10) / 10;
+	const x = mmToPt(input.image.xMm);
+	const y = mmToPt(input.image.yMm);
+	const w = mmToPt(input.image.widthMm);
+	const h = mmToPt(input.image.heightMm);
 
 	const paper =
 		`<style:paper media="0" width="${spec.paperWidthPt}pt" height="${lengthPt}pt"` +
-		` marginLeft="${spec.marginLengthPt}pt" marginTop="${spec.marginWidthPt}pt"` +
-		` marginRight="${spec.marginLengthPt}pt" marginBottom="${spec.marginWidthPt}pt"` +
+		` marginLeft="${x}pt" marginTop="${y}pt" marginRight="${x}pt" marginBottom="${y}pt"` +
 		` orientation="landscape" autoLength="false" monochromeDisplay="true" paperColor="#FFFFFF"` +
 		` paperInk="#000000" split="1" format="${spec.format}" backgroundTheme="0"` +
 		` printerID="${PT_PRINTER_ID}" printerName="${PT_PRINTER_NAME}"/>`;
 
 	const background =
-		`<style:backGround x="${bgX}pt" y="${spec.bandYPt}pt" width="${bgWidth}pt" height="${spec.bandHeightPt}pt"` +
+		`<style:backGround x="${x}pt" y="${y}pt" width="${w}pt" height="${h}pt"` +
 		` brushStyle="NULL" brushId="0" color="#000000" backColor="#FFFFFF"/>`;
 
-	const textObject =
-		`<text:text>` +
-		`<pt:objectStyle x="${boxX}pt" y="${boxY}pt" width="${boxWidth}pt" height="${boxHeight}pt"` +
+	const imageObject =
+		`<image:image>` +
+		`<pt:objectStyle x="${x}pt" y="${y}pt" width="${w}pt" height="${h}pt"` +
 		` backColor="#FFFFFF" ropMode="COPYPEN" angle="0" anchor="TOPLEFT" flip="NONE">` +
-		`<pt:pen style="NULL" widthX="0.5pt" widthY="0.5pt" color="#FF0000"/>` +
-		`<pt:brush style="NULL" color="#FF0000" id="1"/>` +
-		`<pt:expanded objectName="Text1" ID="0" lock="0" templateMergeTarget="LABLELIST"` +
+		`<pt:pen style="NULL" widthX="0.5pt" widthY="0.5pt" color="#000000"/>` +
+		`<pt:brush style="NULL" color="#000000" id="0"/>` +
+		`<pt:expanded objectName="Bitmap1" ID="0" lock="0" templateMergeTarget="LABELLIST"` +
 		` templateMergeType="NONE" templateMergeID="0" linkStatus="NONE" linkID="0"/>` +
 		`</pt:objectStyle>` +
-		`<text:ptFontInfo>${fontInfo(fontPt)}</text:ptFontInfo>` +
-		`<text:textControl control="FIXEDFRAME" clipFrame="false" aspectNormal="true" shrink="true"` +
-		` autoLF="false" avoidImage="false"/>` +
-		`<text:textAlign horizontalAlignment="CENTER" verticalAlignment="CENTER" inLineAlignment="BASELINE"/>` +
-		`<text:textStyle vertical="false" nullBlock="false" charSpace="0" lineSpace="0" orgPoint="${fontPt}pt" combinedChars="false"/>` +
-		`<pt:data>${text}</pt:data>` +
-		`<text:stringItem charLen="${len}"><text:ptFontInfo>${fontInfo(fontPt)}</text:ptFontInfo></text:stringItem>` +
-		`</text:text>`;
+		`<image:imageStyle originalName="" alignInText="LEFT" firstMerge="true"` +
+		` fileName="${input.image.fileName}">` +
+		`<image:transparent flag="false" color="#FFFFFF"/>` +
+		`<image:trimming flag="false" shape="RECTANGLE" trimOrgX="0pt" trimOrgY="0pt"` +
+		` trimOrgWidth="0pt" trimOrgHeight="0pt"/>` +
+		`<image:orgPos x="${x}pt" y="${y}pt" width="${w}pt" height="${h}pt"/>` +
+		`<image:effect effect="NONE" brightness="50" contrast="50" photoIndex="4"/>` +
+		`<image:mono operationKind="BINARY" reverse="0" ditherKind="MESH" threshold="128"` +
+		` gamma="100" ditherEdge="0" rgbconvProportionRed="30" rgbconvProportionGreen="59"` +
+		` rgbconvProportionBlue="11" rgbconvProportionReversed="0"/>` +
+		`</image:imageStyle>` +
+		`</image:image>`;
 
 	return (
 		`<?xml version="1.0" encoding="UTF-8"?>\n` +
@@ -98,7 +102,7 @@ export function buildLabelXml(input: LbxLabelInput): string {
 		paper +
 		`<style:cutLine regularCut="0pt" freeCut=""/>` +
 		background +
-		`<pt:objects>${textObject}</pt:objects>` +
+		`<pt:objects>${imageObject}</pt:objects>` +
 		`</style:sheet>` +
 		`</pt:body>` +
 		`</pt:document>`

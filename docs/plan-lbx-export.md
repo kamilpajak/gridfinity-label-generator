@@ -28,19 +28,21 @@
 ## Summary
 
 Add an **"Export to P-touch (`.lbx`)"** action alongside the existing PNG export. Unlike a
-PNG (a raster the user must import into P-touch Editor), an `.lbx` file opens natively in
-Brother P-touch Editor with **editable text** on the correct tape, ready to print or tweak.
+bare PNG (which the user must import and place by hand), an `.lbx` opens natively in Brother
+P-touch Editor **on the correct tape, sized and positioned**, ready to print. Per the Core
+principle it embeds the app's PNG raster — see the "Approach change" note above for why we
+dropped native/editable text.
 
-Feasibility is **confirmed**: `.lbx` is a ZIP of XML, the schema is well understood, and
-P-touch Editor ships **1501 real `.lbx` templates** on macOS — including a fastener label
-("Bin Box") that is almost exactly what this app produces. We model the generator on those
-golden samples and validate by opening generated files in the installed P-touch Editor.
+Feasibility is **confirmed**: `.lbx` is a ZIP of XML (+ bitmaps), the schema is well understood
+from **1501 real `.lbx` templates** P-touch Editor ships on macOS. We model the generator on
+those golden samples (image object from "Address2") and validate by opening generated files in
+the installed P-touch Editor.
 
 ## Why (value)
 
-- Native, **editable** output on Brother hardware (the app's promoted printers) vs a flat PNG.
-- Correct tape width and print metadata baked in.
-- Text stays text (searchable/editable/re-sizable), not pixels.
+- Opens on the right Brother tape with print metadata baked in — no manual import/placement.
+- Pixel-identical to the app's PNG (one source of truth: the canvas), so no font/encoding drift.
+- One file for a whole batch strip; prints in a single job.
 
 ## The `.lbx` format (from real golden samples)
 

@@ -28,8 +28,8 @@ test.describe('Batch Export DPI', () => {
 		// Snapshot the current form config into the batch
 		await batchPage.addLabel();
 
-		// Wait for the export button to show "1" - this confirms the label was added
-		await batchPage.exportSection.waitForExportButtonCount(1);
+		// Wait for the label row to appear - this confirms the label was added
+		await batchPage.waitForLabel(0);
 
 		// Set up canvas dimension interception BEFORE clicking export
 		const canvasDimensionsPromise = batchPage.exportSection.captureNextExportCanvasDimensions();

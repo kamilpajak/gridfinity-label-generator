@@ -12,7 +12,7 @@
  * text node — a pretty-printed `.lbx` crashes P-touch Editor (verified in Phase
  * 0). Keep this compact.
  */
-import { TAPE_SPECS, PT_PRINTER_ID, PT_PRINTER_NAME, mmToPt } from './units';
+import { TAPE_SPECS, PT_PRINTER_ID, PT_PRINTER_NAME, mmToPt, xmlEscape } from './units';
 
 const NS =
 	'xmlns:pt="http://schemas.brother.info/ptouch/2007/lbx/main"' +
@@ -60,10 +60,14 @@ export function buildImageLabelXml(input: LbxImageLabelInput): string {
 	const y = mmToPt(input.image.yMm);
 	const w = mmToPt(input.image.widthMm);
 	const h = mmToPt(input.image.heightMm);
+	// Trailing margins are the space left after the image, not a mirror of the
+	// leading margin — correct for any placement (equals x/y for symmetric ones).
+	const marginRight = mmToPt(input.labelLengthMm - input.image.xMm - input.image.widthMm);
+	const marginBottom = mmToPt(input.tapeHeightMm - input.image.yMm - input.image.heightMm);
 
 	const paper =
 		`<style:paper media="0" width="${spec.paperWidthPt}pt" height="${lengthPt}pt"` +
-		` marginLeft="${x}pt" marginTop="${y}pt" marginRight="${x}pt" marginBottom="${y}pt"` +
+		` marginLeft="${x}pt" marginTop="${y}pt" marginRight="${marginRight}pt" marginBottom="${marginBottom}pt"` +
 		` orientation="landscape" autoLength="false" monochromeDisplay="true" paperColor="#FFFFFF"` +
 		` paperInk="#000000" split="1" format="${spec.format}" backgroundTheme="0"` +
 		` printerID="${PT_PRINTER_ID}" printerName="${PT_PRINTER_NAME}"/>`;
@@ -82,7 +86,7 @@ export function buildImageLabelXml(input: LbxImageLabelInput): string {
 		` templateMergeType="NONE" templateMergeID="0" linkStatus="NONE" linkID="0"/>` +
 		`</pt:objectStyle>` +
 		`<image:imageStyle originalName="" alignInText="LEFT" firstMerge="true"` +
-		` fileName="${input.image.fileName}">` +
+		` fileName="${xmlEscape(input.image.fileName)}">` +
 		`<image:transparent flag="false" color="#FFFFFF"/>` +
 		`<image:trimming flag="false" shape="RECTANGLE" trimOrgX="0pt" trimOrgY="0pt"` +
 		` trimOrgWidth="0pt" trimOrgHeight="0pt"/>` +

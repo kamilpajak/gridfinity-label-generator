@@ -11,13 +11,9 @@ import type { BatchRenderData } from '$lib/types/batch';
 vi.mock('./label-exporter', () => ({ renderLabelToExportCanvas: vi.fn() }));
 vi.mock('./batch-renderer', () => ({ renderBatchTape: vi.fn() }));
 
-import { renderLabelToExportCanvas } from './label-exporter';
+import { renderLabelToExportCanvas, type CanvasExportOptions } from './label-exporter';
 import { renderBatchTape } from './batch-renderer';
-import {
-	buildSingleLabelLbx,
-	exportSingleLabelAsLbx,
-	type CanvasExportOptions
-} from './label-lbx-exporter';
+import { buildSingleLabelLbx, exportSingleLabelAsLbx } from './label-lbx-exporter';
 import { buildBatchLbx, batchLbxFileName, exportBatchTapeAsLbx } from './batch-lbx-exporter';
 
 /** A mock canvas whose pixels are all white, exposing getImageData. */

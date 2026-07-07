@@ -14,6 +14,15 @@ updates:
     commit-message:
       prefix: 'chore'
       include: 'scope'
+    # Only propose versions old enough to clear the pnpm minimumReleaseAge
+    # supply-chain gate, with longer waits for riskier bumps so the ecosystem
+    # can surface breakage and peer deps can catch up. Security updates bypass
+    # cooldown automatically.
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-minor-days: 7
+      semver-patch-days: 3
     groups:
       npm-minor-and-patch:
         applies-to: version-updates
@@ -36,6 +45,9 @@ updates:
     commit-message:
       prefix: 'ci'
       include: 'scope'
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
     groups:
       actions-minor-and-patch:
         applies-to: version-updates
@@ -47,3 +59,6 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    cooldown:
+      default-days: 7
+      semver-major-days: 14

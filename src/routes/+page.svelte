@@ -14,7 +14,7 @@
 	import RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw';
 	import CoffeeIcon from '@lucide/svelte/icons/coffee';
 	import SendIcon from '@lucide/svelte/icons/send';
-	import GithubIcon from '@lucide/svelte/icons/github';
+	import CodeIcon from '@lucide/svelte/icons/code';
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 	import WhatsNewModal from '$lib/components/whats-new/whats-new-modal.svelte';
 	import WhatsNewButton from '$lib/components/whats-new/whats-new-button.svelte';
@@ -1046,7 +1046,7 @@
 						aria-label="View source on GitHub"
 						class="flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900 px-4 py-2 shadow-md transition-all hover:border-slate-600 hover:bg-slate-800 hover:text-slate-200"
 					>
-						<GithubIcon class="h-4 w-4" />
+						<CodeIcon class="h-4 w-4" />
 						<span class="font-medium">GitHub</span>
 					</a>
 					<button

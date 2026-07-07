@@ -22,3 +22,8 @@ overrides:
   'ws@8': '^8.21.0'
   'yaml@1': '^1.10.3'
   'yaml@2': '^2.8.3'
+  # Some parents float these transitive typescript-eslint packages to 8.63.0,
+  # published <24h ago and blocked by CI's pnpm minimumReleaseAge gate. Hold them
+  # on 8.62.0 (already aged, same 8.x, peers eslint ^10 + TypeScript <6.1).
+  '@typescript-eslint/types@8': '8.62.0'
+  '@typescript-eslint/tsconfig-utils@8': '8.62.0'

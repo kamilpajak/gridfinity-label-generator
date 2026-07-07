@@ -211,7 +211,7 @@ jobs:
 
       - name: Upload Trivy results to GitHub Security
         if: steps.dockerfile-check.outputs.exists == 'true' && always()
-        uses: github/codeql-action/upload-sarif@64d10c13136e1c5bce3e5fbde8d4906eeaafc885 # v3
+        uses: github/codeql-action/upload-sarif@54f647b7e1bb85c95cddabcd46b0c578ec92bc1a # v3
         continue-on-error: true
         with:
           sarif_file: 'trivy-results.sarif'

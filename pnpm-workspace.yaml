@@ -3,18 +3,6 @@
 allowBuilds:
   esbuild: true
   sharp: true
-minimumReleaseAgeExclude:
-  - '@typescript-eslint/eslint-plugin@8.63.0'
-  - '@typescript-eslint/parser@8.63.0'
-  - '@typescript-eslint/project-service@8.63.0'
-  - '@typescript-eslint/scope-manager@8.63.0'
-  - '@typescript-eslint/tsconfig-utils@8.63.0'
-  - '@typescript-eslint/type-utils@8.63.0'
-  - '@typescript-eslint/types@8.63.0'
-  - '@typescript-eslint/typescript-estree@8.63.0'
-  - '@typescript-eslint/utils@8.63.0'
-  - '@typescript-eslint/visitor-keys@8.63.0'
-  - typescript-eslint@8.63.0
 # Force patched versions of transitive dev-tooling packages flagged by Dependabot.
 # All are backward-compatible patches within the same major; per-major keys avoid
 # forcing a cross-major bump onto parents that need the older line.
@@ -34,3 +22,8 @@ overrides:
   'ws@8': '^8.21.0'
   'yaml@1': '^1.10.3'
   'yaml@2': '^2.8.3'
+  # Some parents float these transitive typescript-eslint packages to 8.63.0,
+  # published <24h ago and blocked by CI's pnpm minimumReleaseAge gate. Hold them
+  # on 8.62.0 (already aged, same 8.x, peers eslint ^10 + TypeScript <6.1).
+  '@typescript-eslint/types@8': '8.62.0'
+  '@typescript-eslint/tsconfig-utils@8': '8.62.0'

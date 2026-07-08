@@ -1,0 +1,45 @@
+{
+	"standards": {
+		"din125": {
+			"family": "flat_washer",
+			"sha256": "eb51eb53b7c89f1a5dde742ef395c71424bfbdd465e8d5e1b95ebe55ec5b1459",
+			"source": "DIN 125-1:2011 (M12)",
+			"svg": "din125.svg"
+		},
+		"din126": {
+			"family": "flat_washer",
+			"sha256": "f009f0b3b82fc44753173695e96b426ec718cf61efbb7c51c1f1d20eb5f18628",
+			"source": "DIN 126:2020 (M12, coarse)",
+			"svg": "din126.svg"
+		},
+		"din127": {
+			"family": "spring_washer",
+			"sha256": "6233b8b1c0ffdc1869f52590f7771f313fcb958ec7811c0c35553964867cd6f3",
+			"source": "DIN 127-B:1997 (M12)",
+			"svg": "din127.svg"
+		},
+		"din128": {
+			"family": "spring_washer",
+			"sha256": "22c2affa00d62e362655aa53e299e4dcf65e488be172cdbe7324b19baad95103",
+			"source": "DIN 128-A:2011 (M12, curved)",
+			"svg": "din128.svg"
+		},
+		"din433": {
+			"family": "flat_washer",
+			"sha256": "cff4b1900b98c4bd1ccc5c09fce172e214395b453b5cb837f4badf6f07fde975",
+			"source": "DIN 433-1:2020 (M12, small OD)",
+			"svg": "din433.svg"
+		},
+		"din9021": {
+			"family": "flat_washer",
+			"sha256": "296a3bce041bfa28699387263801d70951d76f9e0638b1e2752fac4c47fc9dc9",
+			"source": "DIN 9021:1990 (M12, large OD)",
+			"svg": "din9021.svg"
+		}
+	},
+	"toolchain": {
+		"build123d": "0.11.1",
+		"cadquery-ocp": "unknown",
+		"jsonschema": "4.26.0"
+	}
+}

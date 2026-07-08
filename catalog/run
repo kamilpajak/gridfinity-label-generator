@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Runs a command inside the catalog image with the repo mounted at /work.
+set -euo pipefail
+IMAGE="gridscribe-catalog:latest"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
+  docker build -t "$IMAGE" -f "$REPO_ROOT/catalog/Dockerfile" "$REPO_ROOT"
+fi
+exec docker run --rm -v "$REPO_ROOT":/work -w /work "$IMAGE" "$@"

@@ -1,0 +1,50 @@
+{
+	"din125": {
+		"family": "flat_washer",
+		"shape": { "d_inner": 13.0, "d_outer": 24.0, "thickness": 2.5 },
+		"hardwareType": "washer",
+		"source": "DIN 125-1:2011 (M12)",
+		"verified": false,
+		"designations": [{ "system": "DIN", "code": "125" }]
+	},
+	"din126": {
+		"family": "flat_washer",
+		"shape": { "d_inner": 13.5, "d_outer": 24.0, "thickness": 2.5 },
+		"hardwareType": "washer",
+		"source": "DIN 126:2020 (M12, coarse)",
+		"verified": false,
+		"designations": [{ "system": "DIN", "code": "126" }]
+	},
+	"din433": {
+		"family": "flat_washer",
+		"shape": { "d_inner": 13.0, "d_outer": 20.0, "thickness": 2.5 },
+		"hardwareType": "washer",
+		"source": "DIN 433-1:2020 (M12, small OD)",
+		"verified": false,
+		"designations": [{ "system": "DIN", "code": "433" }]
+	},
+	"din9021": {
+		"family": "flat_washer",
+		"shape": { "d_inner": 13.0, "d_outer": 37.0, "thickness": 3.0 },
+		"hardwareType": "washer",
+		"source": "DIN 9021:1990 (M12, large OD)",
+		"verified": false,
+		"designations": [{ "system": "DIN", "code": "9021" }]
+	},
+	"din127": {
+		"family": "spring_washer",
+		"shape": { "d_inner": 12.2, "d_outer": 20.2, "section": 3.5, "gap": 2.5 },
+		"hardwareType": "washer",
+		"source": "DIN 127-B:1997 (M12)",
+		"verified": false,
+		"designations": [{ "system": "DIN", "code": "127" }]
+	},
+	"din128": {
+		"family": "spring_washer",
+		"shape": { "d_inner": 12.2, "d_outer": 21.0, "section": 3.5, "gap": 2.5 },
+		"hardwareType": "washer",
+		"source": "DIN 128-A:2011 (M12, curved)",
+		"verified": false,
+		"designations": [{ "system": "DIN", "code": "128" }]
+	}
+}

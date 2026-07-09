@@ -11,7 +11,7 @@ from catalog.render import render_two_views, DEFAULT_AXIS_Z
 
 def _toolchain() -> dict:
     out = {}
-    for pkg in ("build123d", "cadquery-ocp", "jsonschema"):
+    for pkg in ("build123d", "cadquery-ocp-novtk", "jsonschema"):
         try:
             out[pkg] = version(pkg)
         except PackageNotFoundError:

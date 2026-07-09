@@ -20,3 +20,15 @@ The app and `pnpm build` do NOT run this — outputs are committed files.
 Determinism: versions are pinned in `requirements.txt` / `requirements.lock` and
 recorded in `manifest.json`. Regenerating the whole catalog is a deliberate,
 reviewed operation — never silent CI.
+
+## Known scope / follow-ups
+
+**Flat-washer ISO wiring is deferred (option A).** DIN 125, 126, 433, and 9021
+are served in the app through their ISO-equivalent entries (iso7089, iso7090,
+iso7091, iso7093). Those ISO entries still point at the old PNGs in
+`data/image-mappings.json`, so repointing them in that file is currently a UI
+no-op — the SVG files exist but are not reached by those ISO keys. Repointing
+the ISO rendering-entries to the generated SVGs is deferred to the supervised
+data/mapping pass: each ISO→SVG assignment must be verified on the contact sheet
+before committing. DIN 127 and DIN 128 are top-level entries with no ISO alias
+and already render the new SVG live.

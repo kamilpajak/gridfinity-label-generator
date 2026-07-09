@@ -24,6 +24,12 @@
 			"source": "DIN 128-A:2011 (M12, curved)",
 			"svg": "din128.svg"
 		},
+		"din2093": {
+			"family": "curved_washer",
+			"sha256": "38df6af4e97bde60389066ed4800d2488875c883aeff2df2e23ad94bd294c284",
+			"source": "DIN 2093 (disc spring / Belleville, representative; nominal, unverified)",
+			"svg": "din2093.svg"
+		},
 		"din433": {
 			"family": "flat_washer",
 			"sha256": "092e37274008d84175042949f6b059db197d41922206ea89abf6f67bce0e26cf",
@@ -35,6 +41,12 @@
 			"sha256": "c7ba049249922ba7fd7842395fda59a2c8f4b838f8837c7707070cce9a45ea13",
 			"source": "DIN 440-R (M12, large flat washer)",
 			"svg": "din440.svg"
+		},
+		"din6796": {
+			"family": "curved_washer",
+			"sha256": "8e0857660aad46c59c953aa5ba459f6e6301aa4d7335914e6173ddf6a12f4e3c",
+			"source": "DIN 6796 (M12 conical spring washer; nominal, unverified)",
+			"svg": "din6796.svg"
 		},
 		"din6916": {
 			"family": "flat_washer",

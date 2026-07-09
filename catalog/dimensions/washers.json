@@ -287,5 +287,43 @@
 				"code": "7416"
 			}
 		]
+	},
+	"din6796": {
+		"family": "curved_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 29.0,
+			"thickness": 3.2,
+			"cone_angle": 16,
+			"gap_deg": 0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 6796 (M12 conical spring washer; nominal, unverified)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6796"
+			}
+		]
+	},
+	"din2093": {
+		"family": "curved_washer",
+		"shape": {
+			"d_inner": 12.2,
+			"d_outer": 25.0,
+			"thickness": 1.5,
+			"cone_angle": 20,
+			"gap_deg": 0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 2093 (disc spring / Belleville, representative; nominal, unverified)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "2093"
+			}
+		]
 	}
 }

@@ -35,6 +35,36 @@
 			"sha256": "3fec3507143fde676036fbb19ea7d654ae3b8ecc3358e762c68b13e438431c6d",
 			"source": "DIN 9021:1990 (M12, large OD)",
 			"svg": "din9021.svg"
+		},
+		"iso7089": {
+			"family": "flat_washer",
+			"sha256": "11d6b6ae303961281cd4a4dd8edc881ffa77ad63c3330232ed5220aa0b88c608",
+			"source": "ISO 7089:2000 (M12) = DIN 125A",
+			"svg": "iso7089.svg"
+		},
+		"iso7091": {
+			"family": "flat_washer",
+			"sha256": "72da716823f0dd6ec06c82dc7573ac9c31912f61908eff7d2d0e3ca73646cae9",
+			"source": "ISO 7091:2000 (M12) = DIN 126",
+			"svg": "iso7091.svg"
+		},
+		"iso7092": {
+			"family": "flat_washer",
+			"sha256": "d3c0da77578b0794c13b0e6f154037c53b8a09b765b17ffffb882d7643afe0fe",
+			"source": "ISO 7092:2000 (M12) = DIN 433",
+			"svg": "iso7092.svg"
+		},
+		"iso7093": {
+			"family": "flat_washer",
+			"sha256": "77b564dc975c7e5551248edf4d34ebde7614310f9e2f2b3367ca531faf1a6c29",
+			"source": "ISO 7093-1 (M12, large series; nominal, unverified)",
+			"svg": "iso7093.svg"
+		},
+		"iso7094": {
+			"family": "flat_washer",
+			"sha256": "3fec3507143fde676036fbb19ea7d654ae3b8ecc3358e762c68b13e438431c6d",
+			"source": "ISO 7094 (M12, extra large series; nominal, unverified)",
+			"svg": "iso7094.svg"
 		}
 	},
 	"toolchain": {

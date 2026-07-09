@@ -185,5 +185,107 @@
 				"code": "7094"
 			}
 		]
+	},
+	"din440": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 13.5,
+			"d_outer": 44.0,
+			"thickness": 4.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 440-R (M12, large flat washer)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "440"
+			}
+		]
+	},
+	"din7349": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 30.0,
+			"thickness": 6.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 7349 (M12, thick washer for clamping sleeves)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "7349"
+			}
+		]
+	},
+	"din6916": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 24.0,
+			"thickness": 3.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 6916 (M12, HV structural washer)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6916"
+			}
+		]
+	},
+	"din988": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 12.0,
+			"d_outer": 18.0,
+			"thickness": 0.2
+		},
+		"hardwareType": "washer",
+		"source": "DIN 988 (12x18x0.2 shim ring, representative)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "988"
+			}
+		]
+	},
+	"din7603": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 12.0,
+			"d_outer": 18.0,
+			"thickness": 1.5
+		},
+		"hardwareType": "washer",
+		"source": "DIN 7603-A (12x18 sealing ring; thickness ~1.5 unverified)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "7603"
+			}
+		]
+	},
+	"iso7416": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 24.0,
+			"thickness": 3.0
+		},
+		"hardwareType": "washer",
+		"source": "ISO 7416 (M12, structural washer = DIN 6916)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "ISO",
+				"code": "7416"
+			}
+		]
 	}
 }

@@ -1,4 +1,5 @@
 """Generate an HTML review page pairing each new SVG with the current PNG + source."""
+import html
 import json
 from pathlib import Path
 
@@ -32,7 +33,8 @@ def render(manifest_path, image_mappings_path, out_dir, png_dir, html_path) -> s
     for sid, meta in sorted(standards.items()):
         png = mappings.get(sid, {}).get("image", "").lstrip("/")
         svg_rel = str(Path(out_dir) / meta["svg"])
-        rows.append(_ROW.format(sid=sid, source=meta.get("source", ""), png=png, svg=svg_rel))
+        rows.append(_ROW.format(
+            sid=html.escape(sid), source=html.escape(meta.get("source", "")), png=png, svg=svg_rel))
     Path(html_path).write_text(_PAGE.format(rows="".join(rows)))
     return html_path
 

@@ -13,6 +13,8 @@ def apply(manifest_path, out_dir, static_dir, image_mappings_path) -> list[str]:
     changed = []
     for sid, meta in standards.items():
         src = Path(out_dir) / meta["svg"]
+        if not src.exists():
+            raise FileNotFoundError(f"generated SVG missing for {sid}: {src}")
         shutil.copyfile(src, static / meta["svg"])
         entry = mappings.setdefault(sid, {})
         entry["image"] = f"/images/standards/{meta['svg']}"

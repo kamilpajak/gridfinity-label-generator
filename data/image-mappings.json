@@ -552,15 +552,15 @@
 		"hardwareType": "nut"
 	},
 	"din125": {
-		"image": "/images/standards/din_125.png",
+		"image": "/images/standards/din125.svg",
 		"hardwareType": "washer"
 	},
 	"din126": {
-		"image": "/images/standards/din_126.png",
+		"image": "/images/standards/din126.svg",
 		"hardwareType": "washer"
 	},
 	"din9021": {
-		"image": "/images/standards/din_9021.png",
+		"image": "/images/standards/din9021.svg",
 		"hardwareType": "washer"
 	},
 	"din440r": {
@@ -588,7 +588,7 @@
 		"hardwareType": "washer"
 	},
 	"din433": {
-		"image": "/images/standards/din_433.png",
+		"image": "/images/standards/din433.svg",
 		"hardwareType": "washer"
 	},
 	"din988": {
@@ -600,7 +600,7 @@
 		"hardwareType": "washer"
 	},
 	"din127": {
-		"image": "/images/standards/din_127.png",
+		"image": "/images/standards/din127.svg",
 		"hardwareType": "washer"
 	},
 	"din6797a": {
@@ -1332,7 +1332,7 @@
 		"hardwareType": "washer"
 	},
 	"din128": {
-		"image": "/images/standards/din_128.png",
+		"image": "/images/standards/din128.svg",
 		"hardwareType": "washer"
 	},
 	"din7980p": {

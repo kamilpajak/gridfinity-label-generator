@@ -83,3 +83,7 @@ backups/
 .gemini-clipboard/
 # Maintainer-only standards metadata cache (not redistributed)
 data/dinmedia-*.json
+
+# Python bytecode (maintainer catalog pipeline)
+__pycache__/
+*.pyc

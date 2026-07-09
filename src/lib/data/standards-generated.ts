@@ -142,7 +142,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din127.svg'
+		image: '/images/standards/din_127.png'
 	},
 	{
 		id: 'din128',
@@ -155,7 +155,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din128.svg'
+		image: '/images/standards/din_128.png'
 	},
 	{
 		id: 'din137',

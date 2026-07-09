@@ -13,14 +13,14 @@
 			"svg": "din126.svg"
 		},
 		"din127": {
-			"family": "spring_washer",
-			"sha256": "664d28158f567c15589891fbdc5d60efa19562332bc2997f1dac11ce789b2229",
+			"family": "helical_spring_washer",
+			"sha256": "df98e8a72ff512c85d14c4cc63a410b41ea30ba80e2443193099c8e24af3c330",
 			"source": "DIN 127-B:1997 (M12)",
 			"svg": "din127.svg"
 		},
 		"din128": {
-			"family": "spring_washer",
-			"sha256": "00e190eadf9172fd0ad77c7ed57e3b11f86c44ddae1413b93c12b8fc5e6bc235",
+			"family": "curved_washer",
+			"sha256": "d2d6f96b24b108d28e8b90b4f904fd32b95a810b038ba72463553a11f0787f2d",
 			"source": "DIN 128-A:2011 (M12, curved)",
 			"svg": "din128.svg"
 		},

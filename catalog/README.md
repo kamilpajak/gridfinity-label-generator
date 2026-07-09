@@ -14,8 +14,21 @@ The app and `pnpm build` do NOT run this — outputs are committed files.
    - `./catalog/run python catalog/build_catalog.py`
    - `./catalog/run python catalog/qa/coverage.py`
    - `./catalog/run python catalog/qa/contact_sheet.py` (review the HTML)
-4. Integrate: `./catalog/run python catalog/integrate.py` then `pnpm standards:build`.
-5. Commit the new SVG(s), `image-mappings.json`, and `manifest.json`.
+4. Integrate the SVGs into the app:
+   - `./catalog/run python catalog/integrate.py` — copies the SVGs into
+     `static/images/standards/` and repoints `data/image-mappings.json`.
+   - Update `src/lib/data/standards-generated.ts` **surgically**: change the `image`
+     path only for the migrated **top-level** entries to the new `.svg`.
+5. Commit the new SVG(s), `image-mappings.json`, the surgical
+   `standards-generated.ts` image edits, and `manifest.json`.
+
+> **Do NOT run `pnpm standards:build` to integrate.** That command regenerates the
+> whole `standards-generated.ts` from the maintainer pipeline and **requires the local
+> `data/dinmedia-*.json` cache** (git-ignored, not committed). Without the cache it
+> produces a **lossy** dataset — it drops fields and breaks search (721→711 passing
+> unit tests). `standards-generated.ts` is the authoritative committed artifact; edit
+> its `image` paths by hand for a migration, and only run `standards:build` when the
+> full dinmedia cache is present.
 
 Determinism: versions are pinned in `requirements.txt` / `requirements.lock` and
 recorded in `manifest.json`. Regenerating the whole catalog is a deliberate,

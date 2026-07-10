@@ -45,3 +45,11 @@ the ISO rendering-entries to the generated SVGs is deferred to the supervised
 data/mapping pass: each ISO→SVG assignment must be verified on the contact sheet
 before committing. DIN 127 and DIN 128 are top-level entries with no ISO alias
 and already render the new SVG live.
+
+**Toothed lock washers — only external Form A generated.** `toothed_lock_washer`
+covers external-tooth washers (teeth on the outer edge): DIN 6797 A (coarse
+toothed / Zahnscheibe) and DIN 6798 A (fine serrated / Fächerscheibe) — same body,
+tooth count differs. The internal-tooth (Form I / J) and countersunk (Form V)
+variants still show in the coverage gate as gaps (`din6797j`, `din6798j`,
+`din6798d`, `din6798v`); they need a separate internal-tooth model (teeth on the
+bore) and are a follow-up, not fabricated here.

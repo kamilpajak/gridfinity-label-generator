@@ -325,5 +325,41 @@
 				"code": "2093"
 			}
 		]
+	},
+	"din6797a": {
+		"family": "toothed_lock_washer",
+		"shape": {
+			"d_inner": 12.5,
+			"d_outer": 20.5,
+			"thickness": 1.0,
+			"teeth": 10
+		},
+		"hardwareType": "washer",
+		"source": "DIN 6797 A (M12, external tooth / Zahnscheibe, 10 teeth)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6797 A"
+			}
+		]
+	},
+	"din6798a": {
+		"family": "toothed_lock_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 20.0,
+			"thickness": 1.0,
+			"teeth": 16
+		},
+		"hardwareType": "washer",
+		"source": "DIN 6798 A (M12, external serrated / Fächerscheibe, min 16 teeth)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6798 A"
+			}
+		]
 	}
 }

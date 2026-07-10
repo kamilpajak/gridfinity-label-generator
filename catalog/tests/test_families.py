@@ -82,6 +82,12 @@ def test_toothed_lock_washer_guards_bad_geometry():
     with pytest.raises(ValueError):
         # tooth_depth deeper than the ring land -> no material between bore and root
         toothed_lock_washer(d_inner=12.5, d_outer=20.5, thickness=1.0, teeth=10, tooth_depth=10.0)
+    with pytest.raises(ValueError):
+        # tip_ratio >= 1 would make teeth self-overlap
+        toothed_lock_washer(d_inner=12.5, d_outer=20.5, thickness=1.0, teeth=10, tip_ratio=1.0)
+    with pytest.raises(ValueError):
+        # negative tooth_depth would invert the teeth (root beyond the tip circle)
+        toothed_lock_washer(d_inner=12.5, d_outer=20.5, thickness=1.0, teeth=10, tooth_depth=-1.0)
 
 
 def test_new_families_dispatch_via_registry():

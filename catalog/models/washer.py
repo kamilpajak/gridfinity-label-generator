@@ -60,9 +60,13 @@ def toothed_lock_washer(d_inner: float, d_outer: float, thickness: float,
         raise ValueError(f"toothed_lock_washer: need 0 < d_inner < d_outer, got {d_inner}, {d_outer}")
     if teeth < 3:
         raise ValueError(f"toothed_lock_washer: need teeth >= 3, got {teeth}")
+    if not (0 < tip_ratio < 1):
+        raise ValueError(f"toothed_lock_washer: need 0 < tip_ratio < 1, got {tip_ratio}")
     r_tip = d_outer / 2.0
     r_bore = d_inner / 2.0
     depth = tooth_depth if tooth_depth is not None else (r_tip - r_bore) * 0.35
+    if depth <= 0:
+        raise ValueError(f"toothed_lock_washer: tooth_depth must be positive, got {depth}")
     r_root = r_tip - depth
     if r_root <= r_bore:
         raise ValueError(

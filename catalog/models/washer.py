@@ -1,7 +1,9 @@
 """Washer family generators."""
+import math
+
 from build123d import (
     BuildPart, BuildSketch, Rectangle, Plane, Axis, Locations,
-    Cylinder, Box, Align, Mode, Helix, sweep, revolve,
+    Cylinder, Box, Align, Mode, Helix, sweep, revolve, extrude, Polygon,
 )
 
 
@@ -44,6 +46,47 @@ def helical_spring_washer(d_inner: float, d_outer: float, section: float, gap_de
         with BuildSketch(Plane(origin=path @ 0, z_dir=path % 0)):
             Rectangle(radial_w, section)
         sweep(path=path)
+    return bp.part
+
+
+def toothed_lock_washer(d_inner: float, d_outer: float, thickness: float,
+                        teeth: int, tooth_depth: float = None, tip_ratio: float = 0.45):
+    """External-tooth lock washer: an annular disc whose outer edge carries `teeth`
+    radial teeth, tips reaching `d_outer`. Covers DIN 6797 A (toothed / Zahnscheibe,
+    few coarse teeth) and DIN 6798 A (serrated / Fächerscheibe, many fine teeth) —
+    same body, the standard differs only in tooth count. `tip_ratio` sets the flat
+    tooth-tip width as a fraction of the angular pitch."""
+    if not (0 < d_inner < d_outer):
+        raise ValueError(f"toothed_lock_washer: need 0 < d_inner < d_outer, got {d_inner}, {d_outer}")
+    if teeth < 3:
+        raise ValueError(f"toothed_lock_washer: need teeth >= 3, got {teeth}")
+    if not (0 < tip_ratio < 1):
+        raise ValueError(f"toothed_lock_washer: need 0 < tip_ratio < 1, got {tip_ratio}")
+    r_tip = d_outer / 2.0
+    r_bore = d_inner / 2.0
+    depth = tooth_depth if tooth_depth is not None else (r_tip - r_bore) * 0.35
+    if depth <= 0:
+        raise ValueError(f"toothed_lock_washer: tooth_depth must be positive, got {depth}")
+    r_root = r_tip - depth
+    if r_root <= r_bore:
+        raise ValueError(
+            f"toothed_lock_washer: tooth_depth {depth} leaves no ring "
+            f"(r_root {r_root} <= r_bore {r_bore})")
+    pitch = 2 * math.pi / teeth
+    half_tip = pitch * tip_ratio / 2.0
+    pts = []
+    for i in range(teeth):
+        a = i * pitch
+        pts.append((r_root * math.cos(a), r_root * math.sin(a)))                       # valley
+        pts.append((r_tip * math.cos(a + pitch / 2 - half_tip),
+                    r_tip * math.sin(a + pitch / 2 - half_tip)))                        # tip left
+        pts.append((r_tip * math.cos(a + pitch / 2 + half_tip),
+                    r_tip * math.sin(a + pitch / 2 + half_tip)))                        # tip right
+    with BuildPart() as bp:
+        with BuildSketch():
+            Polygon(*pts, align=None)
+        extrude(amount=thickness / 2.0, both=True)
+        Cylinder(radius=r_bore, height=thickness, mode=Mode.SUBTRACT)
     return bp.part
 
 

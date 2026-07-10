@@ -44,6 +44,52 @@ def test_curved_washer_is_domed_and_split():
     assert dome.bounding_box().size.Z > 1.5
 
 
+def _max_radius(part):
+    return max((v.X ** 2 + v.Y ** 2) ** 0.5 for v in part.vertices())
+
+
+def test_toothed_lock_washer_is_a_toothed_ring():
+    from catalog.models.washer import toothed_lock_washer, flat_washer
+
+    toothed = toothed_lock_washer(d_inner=12.5, d_outer=20.5, thickness=1.0, teeth=10)
+    full = flat_washer(d_inner=12.5, d_outer=20.5, thickness=1.0)
+    assert toothed.volume > 0
+    assert toothed.volume < full.volume                 # tooth valleys remove material
+    assert round(_max_radius(toothed), 2) == 10.25      # tooth tips reach d_outer / 2
+    assert round(toothed.bounding_box().size.Z, 1) == 1.0    # flat, one thickness
+
+
+def test_toothed_tooth_count_changes_geometry_within_same_envelope():
+    from catalog.models.washer import toothed_lock_washer, flat_washer
+
+    coarse = toothed_lock_washer(d_inner=8.4, d_outer=15.0, thickness=0.8, teeth=8)   # DIN 6797
+    fine = toothed_lock_washer(d_inner=8.4, d_outer=15.0, thickness=0.8, teeth=16)    # DIN 6798
+    full = flat_washer(d_inner=8.4, d_outer=15.0, thickness=0.8)
+    # Same body + tip circle for both; only the tooth count differs.
+    assert round(_max_radius(coarse), 2) == round(_max_radius(fine), 2) == 7.5
+    assert coarse.volume < full.volume and fine.volume < full.volume
+    assert round(coarse.volume, 3) != round(fine.volume, 3)   # tooth count is a real geometry knob
+
+
+def test_toothed_lock_washer_guards_bad_geometry():
+    from catalog.models.washer import toothed_lock_washer
+    import pytest
+
+    with pytest.raises(ValueError):
+        toothed_lock_washer(d_inner=20.5, d_outer=12.5, thickness=1.0, teeth=10)  # inner>outer
+    with pytest.raises(ValueError):
+        toothed_lock_washer(d_inner=12.5, d_outer=20.5, thickness=1.0, teeth=2)   # too few teeth
+    with pytest.raises(ValueError):
+        # tooth_depth deeper than the ring land -> no material between bore and root
+        toothed_lock_washer(d_inner=12.5, d_outer=20.5, thickness=1.0, teeth=10, tooth_depth=10.0)
+    with pytest.raises(ValueError):
+        # tip_ratio >= 1 would make teeth self-overlap
+        toothed_lock_washer(d_inner=12.5, d_outer=20.5, thickness=1.0, teeth=10, tip_ratio=1.0)
+    with pytest.raises(ValueError):
+        # negative tooth_depth would invert the teeth (root beyond the tip circle)
+        toothed_lock_washer(d_inner=12.5, d_outer=20.5, thickness=1.0, teeth=10, tooth_depth=-1.0)
+
+
 def test_new_families_dispatch_via_registry():
     from catalog.models._registry import build_part
 
@@ -51,3 +97,5 @@ def test_new_families_dispatch_via_registry():
                       {"d_inner": 12.2, "d_outer": 20.2, "section": 3.5}).volume > 0
     assert build_part("curved_washer",
                       {"d_inner": 12.2, "d_outer": 21.0, "thickness": 1.5}).volume > 0
+    assert build_part("toothed_lock_washer",
+                      {"d_inner": 12.5, "d_outer": 20.5, "thickness": 1.0, "teeth": 10}).volume > 0

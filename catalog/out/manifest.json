@@ -48,6 +48,18 @@
 			"source": "DIN 6796 (M12 conical spring washer; nominal, unverified)",
 			"svg": "din6796.svg"
 		},
+		"din6797a": {
+			"family": "toothed_lock_washer",
+			"sha256": "d4682fe25e378749838c4875a8a234101281848f7ceb4dadd58714634ea9726b",
+			"source": "DIN 6797 A (M12, external tooth / Zahnscheibe, 10 teeth)",
+			"svg": "din6797a.svg"
+		},
+		"din6798a": {
+			"family": "toothed_lock_washer",
+			"sha256": "3fe4e3780a230193330e02310bfce184d39b662fa608039131ac9877526f292a",
+			"source": "DIN 6798 A (M12, external serrated / F\u00e4cherscheibe, min 16 teeth)",
+			"svg": "din6798a.svg"
+		},
 		"din6916": {
 			"family": "flat_washer",
 			"sha256": "d7100dce55c7e48daa305635e4014c075297dcfff8717a68a6c72aeeab743bcb",

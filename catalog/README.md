@@ -90,3 +90,19 @@ the plan view; revolved families avoid this, sweeps cannot. `din137b` stays in t
 coverage gate until that plan-view seam is resolved (a seamless closed-pipe primitive, or
 seam-edge filtering in `render.py`). The generator and its geometry tests are kept so the
 work is ready to wire up once the render side can drop the seam.
+
+**Plain flat washers (DIN 6340 / 1440 / 7349 / 7603 / 988, ISO 8738) — generated.**
+These reuse `flat_washer` (annular disc); each is one sourced data entry, no new
+generator. DIN 6340 (13×35×5, clamping fixtures), DIN 1440 and ISO 8738 (12×25×3, the two
+are dimensionally equivalent clevis-pin washers), and DIN 7349 (13×30×6, heavy thick) come
+straight from Fasteners.eu tables. DIN 7603 (12×18, sealing ring) and DIN 988 (12×18, shim
+ring) have a **representative thickness** — both are thickness _series_ rather than a single
+value — flagged in each `source`. The duplicate/variant app keys that share these standards'
+images (`din6340d`, `din1440i`, `iso8738p`, and the plated `p`-suffix set) are left for the
+later alias pass. **DIN 25201 wedge-lock is intentionally not generated:** its cam angle,
+cam count, and tooth geometry are proprietary (absent even from the patents), and for M12
+the cams are ~0.2 mm — sub-visible at label scale — so there is nothing faithful to draw.
+
+**DIN 440 / DIN 74361 not generated.** DIN 440 Form V (`din440v`) has a _square_ bore, which
+`flat_washer` (round bore) does not model; Form R (`din440r`) OD/thickness are not cleanly
+published. DIN 74361 C (`din74361c`) is a conical wheel-bolt collar washer, a separate shape.

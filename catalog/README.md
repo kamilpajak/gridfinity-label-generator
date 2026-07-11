@@ -46,11 +46,14 @@ data/mapping pass: each ISO→SVG assignment must be verified on the contact she
 before committing. DIN 127 and DIN 128 are top-level entries with no ISO alias
 and already render the new SVG live.
 
-**Toothed lock washers — external and internal (flat) forms generated.**
-`toothed_lock_washer` covers external-tooth forms (teeth on the outer edge):
-DIN 6797 A (coarse toothed / Zahnscheibe) and DIN 6798 A (fine serrated /
-Fächerscheibe). `toothed_lock_washer_internal` covers internal-tooth forms
-(teeth on the bore): DIN 6797 J and DIN 6798 J. Same body per standard; tooth
-count carries the coarse-vs-fine identity. Only the countersunk / dished forms
-remain in the coverage gate (`din6798d`, `din6798v`) — they need a conical body
-matching a countersunk screw head, a separate model, and are a follow-up.
+**Toothed lock washers — all real DIN forms generated.** Three generators cover
+the family: `toothed_lock_washer` (external teeth on the outer edge — DIN 6797 A
+/ 6798 A), `toothed_lock_washer_internal` (teeth on the bore — DIN 6797 J /
+6798 J), and `countersunk_toothed_washer` (external teeth on a body dished for a
+90° countersunk screw — DIN 6798 V). Same body per standard; tooth count carries
+the coarse-vs-fine identity.
+
+`din6798d` still shows in the coverage gate but is **not a real DIN form** — "Form
+D" is a catalog-specific label whose geometry maps to Form V. It is deliberately
+not generated (nothing to fabricate); resolve it at the app-data level (alias
+`din6798d` to the Form V drawing, or drop the key), not with a new generator.

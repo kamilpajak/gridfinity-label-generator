@@ -130,6 +130,44 @@ def test_internal_toothed_guards_bad_geometry():
         toothed_lock_washer_internal(d_inner=13.0, d_outer=20.5, thickness=1.0, teeth=10, tooth_depth=-1.0)
 
 
+def test_countersunk_toothed_is_dished_and_toothed():
+    from catalog.models.washer import countersunk_toothed_washer, toothed_lock_washer
+
+    dished = countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18)
+    flat = toothed_lock_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18)
+    assert dished.volume > 0
+    assert round(max(_radii(dished)), 1) <= 11.0        # teeth stay within d_outer / 2
+    # the cone lifts the rim well above one flat thickness — this is what makes it "countersunk"
+    assert dished.bounding_box().size.Z > 0.8 * 1.5
+    assert dished.bounding_box().size.Z > flat.bounding_box().size.Z
+
+
+def test_countersunk_tooth_count_changes_geometry():
+    from catalog.models.washer import countersunk_toothed_washer
+
+    coarse = countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=12)
+    fine = countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18)
+    assert round(coarse.volume, 3) != round(fine.volume, 3)
+
+
+def test_countersunk_toothed_guards_bad_geometry():
+    from catalog.models.washer import countersunk_toothed_washer
+    import pytest
+
+    with pytest.raises(ValueError):
+        countersunk_toothed_washer(d_inner=22.0, d_outer=13.0, thickness=0.8, teeth=18)   # inner>outer
+    with pytest.raises(ValueError):
+        countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18, tooth_depth=10.0)
+    with pytest.raises(ValueError):
+        countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18, tip_ratio=0)
+    with pytest.raises(ValueError):
+        # a near-flat tooth leaves the valleys outside the tilted body -> would carve no teeth
+        countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18, tooth_depth=0.05)
+    with pytest.raises(ValueError):
+        # a near-vertical cone would self-intersect the revolved wall
+        countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18, cone_angle=85)
+
+
 def test_new_families_dispatch_via_registry():
     from catalog.models._registry import build_part
 
@@ -141,3 +179,5 @@ def test_new_families_dispatch_via_registry():
                       {"d_inner": 12.5, "d_outer": 20.5, "thickness": 1.0, "teeth": 10}).volume > 0
     assert build_part("toothed_lock_washer_internal",
                       {"d_inner": 13.0, "d_outer": 20.5, "thickness": 1.0, "teeth": 10}).volume > 0
+    assert build_part("countersunk_toothed_washer",
+                      {"d_inner": 13.0, "d_outer": 22.0, "thickness": 0.8, "teeth": 18}).volume > 0

@@ -130,6 +130,50 @@ def toothed_lock_washer_internal(d_inner: float, d_outer: float, thickness: floa
     return bp.part
 
 
+def countersunk_toothed_washer(d_inner: float, d_outer: float, thickness: float,
+                               teeth: int, cone_angle: float = 32,
+                               tooth_depth: float = None, tip_ratio: float = 0.45):
+    """Countersunk external-tooth lock washer (DIN 6798 V, Senkzahn): the external
+    toothed washer dished into a cone so it seats under a countersunk (90°) screw
+    head. Built as a revolved tilted cross-section (the dish) intersected with a
+    toothed star prism that carves the outer rim into `teeth` teeth. `cone_angle` is
+    the tilt of the washer wall from flat, in degrees."""
+    _check_toothed(d_inner, d_outer, teeth, tip_ratio, "countersunk_toothed_washer")
+    if not (0 < cone_angle < 80):
+        raise ValueError(f"countersunk_toothed_washer: need 0 < cone_angle < 80, got {cone_angle}")
+    r_tip = d_outer / 2.0
+    r_bore = d_inner / 2.0
+    depth = tooth_depth if tooth_depth is not None else (r_tip - r_bore) * 0.35
+    if depth <= 0:
+        raise ValueError(f"countersunk_toothed_washer: tooth_depth must be positive, got {depth}")
+    r_root = r_tip - depth
+    if r_root <= r_bore:
+        raise ValueError(
+            f"countersunk_toothed_washer: tooth_depth {depth} leaves no ring "
+            f"(r_root {r_root} <= r_bore {r_bore})")
+    r_mean = (r_bore + r_tip) / 2.0
+    radial_w = r_tip - r_bore
+    # The tilt pulls the body's real outer radius inside r_tip; if the tooth valleys
+    # sit outside it the INTERSECT carves nothing and the result is a smooth cone.
+    body_outer = r_mean + (radial_w / 2.0) * math.cos(math.radians(cone_angle))
+    if r_root >= body_outer:
+        raise ValueError(
+            f"countersunk_toothed_washer: tooth valleys (r_root {r_root:.3f}) fall outside the "
+            f"dished body (outer radius {body_outer:.3f}) — no teeth would form; "
+            f"reduce cone_angle or increase tooth_depth")
+    pts = _toothed_ring_points(r_tip, r_root, teeth, tip_ratio)
+    cutter_h = radial_w * 2.0 + thickness * 4.0   # tall enough to span the dished body in Z
+    with BuildPart() as bp:
+        with BuildSketch(Plane.XZ):
+            with Locations((r_mean, 0)):
+                Rectangle(radial_w, thickness, rotation=cone_angle)
+        revolve(axis=Axis.Z, revolution_arc=360)
+        with BuildSketch():
+            Polygon(*pts, align=None)
+        extrude(amount=cutter_h, both=True, mode=Mode.INTERSECT)
+    return bp.part
+
+
 def curved_washer(d_inner: float, d_outer: float, thickness: float,
                   cone_angle: float = 18, gap_deg: float = 16):
     """DIN 128: curved (domed) split spring washer — a radial cross-section tilted by

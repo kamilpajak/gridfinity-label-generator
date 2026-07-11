@@ -210,6 +210,41 @@ def test_square_washer_guards_bad_geometry():
         square_washer(side=40.0, thickness=4.0, d_bore=13.5, taper=-1.0)
 
 
+def test_tab_washer_has_a_disc_and_an_upright_tab():
+    from catalog.models.washer import tab_washer, flat_washer
+
+    part = tab_washer(13.0, 30.0, 1.2, [{"angle": 0, "length": 5.0, "width": 4.5}])
+    disc = flat_washer(13.0, 30.0, 1.2)
+    assert part.volume > disc.volume                       # the tab adds material
+    # the tab stands up out of the disc plane, so Z spans the tab length, not the thickness
+    assert round(part.bounding_box().size.Z, 1) == 5.0
+
+
+def test_tab_washer_more_tabs_add_material():
+    from catalog.models.washer import tab_washer
+
+    one = tab_washer(13.0, 30.0, 1.0, [{"angle": 0, "length": 10.0, "width": 10.0}])
+    two = tab_washer(13.0, 30.0, 1.0, [{"angle": 0, "length": 10.0, "width": 10.0},
+                                       {"angle": 180, "length": 10.0, "width": 10.0}])
+    assert two.volume > one.volume
+
+
+def test_tab_washer_guards_bad_geometry():
+    from catalog.models.washer import tab_washer
+    import pytest
+
+    with pytest.raises(ValueError):
+        tab_washer(30.0, 13.0, 1.0, [{"angle": 0, "length": 5.0, "width": 4.5}])   # inner>outer
+    with pytest.raises(ValueError):
+        tab_washer(13.0, 30.0, 1.0, [])                                            # no tabs
+    with pytest.raises(ValueError):
+        tab_washer(13.0, 30.0, 0.0, [{"angle": 0, "length": 5.0, "width": 4.5}])   # zero thickness
+    with pytest.raises(ValueError):
+        tab_washer(13.0, 30.0, 1.0, [{"angle": 0, "length": -1.0, "width": 4.5}])  # bad tab length
+    with pytest.raises(ValueError):
+        tab_washer(13.0, 30.0, 1.0, [{"angle": 0, "length": 5.0, "width": 0.0}])   # zero tab width
+
+
 def test_new_families_dispatch_via_registry():
     from catalog.models._registry import build_part
 
@@ -225,3 +260,6 @@ def test_new_families_dispatch_via_registry():
                       {"d_inner": 13.0, "d_outer": 22.0, "thickness": 0.8, "teeth": 18}).volume > 0
     assert build_part("square_washer",
                       {"side": 40.0, "thickness": 4.0, "d_bore": 13.5}).volume > 0
+    assert build_part("tab_washer",
+                      {"d_inner": 13.0, "d_outer": 30.0, "thickness": 1.2,
+                       "tabs": [{"angle": 0, "length": 5.0, "width": 4.5}]}).volume > 0

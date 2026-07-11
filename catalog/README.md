@@ -78,3 +78,15 @@ spherical recess. Form G (enlarged outer diameter for slotted holes) is supporte
 mating `sphere_radius` is representative: DIN tables publish it inconsistently, so it
 is chosen to mate the two forms and leave a sensible floor under the seat's recess
 (flagged in each `source`).
+
+**Spring washers (DIN 137) — Form A shipped, Form B deferred.** DIN 137 A (gewölbt /
+curved-domed, a continuous washer with no split) reuses `curved_washer` with `gap_deg` = 0
+and renders cleanly. DIN 137 B (gewellt / waved, the multi-wave ring) has a working
+`wave_washer` generator — it sweeps the rectangular section along a closed sinusoidal path
+(three waves is typical; DIN does not fix the count) and sews the result into a seamless
+four-face solid — but it is **not yet wired to a data entry**. A swept periodic surface
+carries a parametric seam that the generic edge projector draws as a short radial line in
+the plan view; revolved families avoid this, sweeps cannot. `din137b` stays in the
+coverage gate until that plan-view seam is resolved (a seamless closed-pipe primitive, or
+seam-edge filtering in `render.py`). The generator and its geometry tests are kept so the
+work is ready to wire up once the render side can drop the seam.

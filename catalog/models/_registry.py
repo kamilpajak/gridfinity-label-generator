@@ -2,7 +2,7 @@
 from catalog.models.washer import (
     flat_washer, spring_washer, helical_spring_washer, curved_washer,
     toothed_lock_washer, toothed_lock_washer_internal, countersunk_toothed_washer,
-    square_washer, tab_washer, spherical_seating_washer,
+    square_washer, tab_washer, spherical_seating_washer, wave_washer,
 )
 from catalog.models.hex_nut import hex_nut
 
@@ -17,6 +17,7 @@ KNOWN_FAMILIES = {
     "square_washer": square_washer,
     "tab_washer": tab_washer,
     "spherical_seating_washer": spherical_seating_washer,
+    "wave_washer": wave_washer,
     "hex_nut": hex_nut,
 }
 

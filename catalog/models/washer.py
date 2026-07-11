@@ -4,7 +4,7 @@ import math
 from build123d import (
     BuildPart, BuildSketch, BuildLine, Rectangle, Plane, Axis, Locations,
     Cylinder, Box, Align, Mode, Helix, sweep, revolve, extrude, Polygon,
-    Line, RadiusArc, make_face, Pos, Rotation,
+    Line, RadiusArc, Spline, Solid, Shell, make_face, Pos, Rotation,
 )
 
 # Minimum solid material to leave opposite a curved face (floor of a seat recess,
@@ -326,10 +326,69 @@ def spherical_seating_washer(d_inner: float, d_outer: float, thickness: float,
     return bp.part
 
 
+def wave_washer(d_inner: float, d_outer: float, thickness: float,
+                waves: int = 3, wave_height: float = 1.4):
+    """DIN 137 B: waved spring washer (gewellt). A continuous annular ring whose mid-line
+    undulates up and down `waves` times around the circumference (DIN does not fix the
+    count; three is typical). Built by sweeping the rectangular radial cross-section along
+    a closed sinusoidal path, mirroring `helical_spring_washer`. `wave_height` is the
+    peak-to-peak swing of the mid-line, so the overall free height is roughly
+    `wave_height + thickness`. Unlike DIN 127/128 spring rings there is no split — it is a
+    closed washer, so the path is periodic."""
+    if not (0 < d_inner < d_outer):
+        raise ValueError(f"wave_washer: need 0 < d_inner < d_outer, got {d_inner}, {d_outer}")
+    if thickness <= 0:
+        raise ValueError(f"wave_washer: thickness must be positive, got {thickness}")
+    if waves < 2:
+        raise ValueError(f"wave_washer: need waves >= 2, got {waves}")
+    if wave_height <= 0:
+        raise ValueError(f"wave_washer: wave_height must be positive, got {wave_height}")
+    r_mean = (d_inner + d_outer) / 4.0
+    radial_w = (d_outer - d_inner) / 2.0
+    amp = wave_height / 2.0
+    # A steep-enough vertical undulation folds the section onto itself where the wave bends
+    # tightest. amp*(waves/r_mean)**2 is the small-slope peak curvature of z = amp*sin(waves*t)
+    # along the mean circle; the concave side pinches once its radius drops to the section's
+    # half-thickness. Guard it so an extreme wave_height cannot silently sew a corrupt solid.
+    peak_curvature = amp * (waves / r_mean) ** 2
+    if peak_curvature * (thickness / 2.0) >= 1.0:
+        raise ValueError(
+            f"wave_washer: wave_height {wave_height} is too steep for thickness {thickness} "
+            f"at this diameter — the undulating section would fold onto itself")
+    n = max(waves * 24, 48)                     # samples: dense enough for a smooth wave
+    pts = []
+    for i in range(n):                          # no closing duplicate; the spline is periodic
+        t = 2.0 * math.pi * i / n
+        pts.append((r_mean * math.cos(t), r_mean * math.sin(t), amp * math.sin(waves * t)))
+    with BuildLine() as ln:
+        path = Spline(*pts, periodic=True)
+    # Orient the section plane so its X points radially and its Y is vertical-ish; otherwise
+    # the swept frame maps the radial width into Z and the ring collapses. Derive the radial
+    # direction from the first sample (its XY position vector) so the framing holds wherever
+    # the path happens to start, not only at angle 0. Sweep the rectangle OUTLINE (a wire),
+    # not a filled face: a face-sweep along a closed path caps both ends and leaves a radial
+    # seam stub in the plan view, whereas the outline yields a seamless four-face tube that
+    # closes on itself. Sew that shell into a solid and confirm it is a valid closed body.
+    radial_dir = (pts[0][0], pts[0][1], 0.0)
+    section = Plane(origin=path @ 0, z_dir=path % 0, x_dir=radial_dir)
+    profile = section.location * Rectangle(radial_w, thickness).wire()
+    solid = Solid(Shell(sweep(profile, path=path).faces()))
+    # A failed or degenerate sew collapses the volume; guard on that rather than on OCCT's
+    # strict is_valid, which flags these sewn periodic-surface shells even when they render
+    # and measure correctly.
+    if solid.volume <= 0:
+        raise ValueError(
+            "wave_washer: swept section did not sew into a closed solid (zero volume)")
+    return solid
+
+
 def curved_washer(d_inner: float, d_outer: float, thickness: float,
                   cone_angle: float = 18, gap_deg: float = 16):
-    """DIN 128: curved (domed) split spring washer — a radial cross-section tilted by
-    `cone_angle`, revolved with a gap about the axis, giving a dished ring."""
+    """Curved (domed) spring washer — a radial cross-section tilted by `cone_angle`,
+    revolved about the axis, giving a dished ring. With `gap_deg` > 0 it is the split
+    form DIN 128 (Federring); with `gap_deg` = 0 it is the closed form DIN 137 A
+    (gewölbte Federscheibe), a continuous domed washer with no split. Revolving keeps the
+    face view a clean pair of circles (no swept-surface seam)."""
     if not (0 < d_inner < d_outer):
         raise ValueError(f"curved_washer: need 0 < d_inner < d_outer, got {d_inner}, {d_outer}")
     r_mean = (d_inner + d_outer) / 4.0

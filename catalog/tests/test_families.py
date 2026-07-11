@@ -160,6 +160,12 @@ def test_countersunk_toothed_guards_bad_geometry():
         countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18, tooth_depth=10.0)
     with pytest.raises(ValueError):
         countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18, tip_ratio=0)
+    with pytest.raises(ValueError):
+        # a near-flat tooth leaves the valleys outside the tilted body -> would carve no teeth
+        countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18, tooth_depth=0.05)
+    with pytest.raises(ValueError):
+        # a near-vertical cone would self-intersect the revolved wall
+        countersunk_toothed_washer(d_inner=13.0, d_outer=22.0, thickness=0.8, teeth=18, cone_angle=85)
 
 
 def test_new_families_dispatch_via_registry():

@@ -264,6 +264,63 @@ def test_tab_washer_guards_bad_geometry():
         tab_washer(13.0, 30.0, 12.0, [{"angle": 0, "length": 5.0, "width": 4.5}])
 
 
+def test_spherical_seating_convex_washer_is_a_domed_ring():
+    from catalog.models.washer import spherical_seating_washer, flat_washer
+
+    part = spherical_seating_washer(13.0, 24.0, 4.0, sphere_radius=26.0)   # DIN 6319 Form C
+    assert round(part.bounding_box().size.X, 1) == 24.0                    # outer diameter
+    assert round(part.bounding_box().size.Z, 1) == 4.0                     # thickness spans Z
+    # convex underside removes material toward the rim, so it holds less than a flat annulus
+    ring = flat_washer(13.0, 24.0, 4.0)
+    assert part.volume < ring.volume
+    # flat top sits on z=0, the dome bulges downward (deepest at the bore)
+    assert round(part.bounding_box().max.Z, 3) == 0.0
+    assert round(part.bounding_box().min.Z, 1) == -4.0
+
+
+def test_spherical_seating_concave_seat_has_a_recess():
+    from catalog.models.washer import spherical_seating_washer, flat_washer
+
+    part = spherical_seating_washer(13.0, 24.0, 3.0, sphere_radius=26.0, concave=True)  # Form D
+    assert round(part.bounding_box().size.X, 1) == 24.0
+    assert round(part.bounding_box().size.Z, 1) == 3.0
+    # the concave recess dishes material out of the top, so it holds less than a flat annulus
+    ring = flat_washer(13.0, 24.0, 3.0)
+    assert part.volume < ring.volume
+    # flat bottom on z=0, recess opens upward
+    assert round(part.bounding_box().min.Z, 3) == 0.0
+
+
+def test_spherical_seating_form_g_flange_widens_the_seat():
+    from catalog.models.washer import spherical_seating_washer
+
+    seat_d = spherical_seating_washer(13.0, 24.0, 3.0, sphere_radius=26.0, concave=True)  # Form D
+    seat_g = spherical_seating_washer(13.0, 30.0, 3.0, sphere_radius=26.0, concave=True,
+                                      seat_diameter=24.0)                                  # Form G
+    assert round(seat_g.bounding_box().size.X, 1) == 30.0     # enlarged outer diameter
+    # the recess band is identical; Form G only adds a flat flange, so it carries more material
+    assert seat_g.volume > seat_d.volume
+
+
+def test_spherical_seating_guards_bad_geometry():
+    from catalog.models.washer import spherical_seating_washer
+    import pytest
+
+    with pytest.raises(ValueError):
+        spherical_seating_washer(24.0, 13.0, 4.0, sphere_radius=26.0)          # inner > outer
+    with pytest.raises(ValueError):
+        spherical_seating_washer(13.0, 24.0, 0.0, sphere_radius=26.0)          # zero thickness
+    with pytest.raises(ValueError):
+        spherical_seating_washer(13.0, 24.0, 4.0, sphere_radius=10.0)          # sphere <= seat radius
+    with pytest.raises(ValueError):
+        # spherical drop exceeds thickness -> curved face breaks through the flat face
+        spherical_seating_washer(13.0, 24.0, 0.5, sphere_radius=26.0)
+    with pytest.raises(ValueError):
+        # seat_diameter must sit between the bore and the outer diameter
+        spherical_seating_washer(13.0, 24.0, 3.0, sphere_radius=26.0, concave=True,
+                                 seat_diameter=30.0)
+
+
 def test_new_families_dispatch_via_registry():
     from catalog.models._registry import build_part
 
@@ -282,3 +339,9 @@ def test_new_families_dispatch_via_registry():
     assert build_part("tab_washer",
                       {"d_inner": 13.0, "d_outer": 30.0, "thickness": 1.2,
                        "tabs": [{"angle": 0, "length": 5.0, "width": 4.5}]}).volume > 0
+    assert build_part("spherical_seating_washer",
+                      {"d_inner": 13.0, "d_outer": 24.0, "thickness": 4.0,
+                       "sphere_radius": 26.0}).volume > 0
+    assert build_part("spherical_seating_washer",
+                      {"d_inner": 13.0, "d_outer": 24.0, "thickness": 3.0,
+                       "sphere_radius": 26.0, "concave": True}).volume > 0

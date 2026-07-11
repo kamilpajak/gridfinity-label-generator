@@ -2,9 +2,9 @@
 import math
 
 from build123d import (
-    BuildPart, BuildSketch, Rectangle, Plane, Axis, Locations,
+    BuildPart, BuildSketch, BuildLine, Rectangle, Plane, Axis, Locations,
     Cylinder, Box, Align, Mode, Helix, sweep, revolve, extrude, Polygon,
-    Pos, Rotation,
+    Line, RadiusArc, make_face, Pos, Rotation,
 )
 
 
@@ -241,6 +241,74 @@ def square_washer(side: float, thickness: float, d_bore: float,
             Polygon(*section, align=None)
         extrude(amount=width / 2.0, both=True)
         Cylinder(radius=d_bore / 2.0, height=(thickness + taper) * 3.0, mode=Mode.SUBTRACT)
+    return bp.part
+
+
+def spherical_seating_washer(d_inner: float, d_outer: float, thickness: float,
+                             sphere_radius: float, concave: bool = False,
+                             seat_diameter: float = None):
+    """DIN 6319 spherical seating washer set. The convex form (Form C, `concave`=False,
+    Kugelscheibe) is an annular washer with a flat top and a convex spherical underside
+    of radius `sphere_radius`, seating under the bolt head or nut. The concave form
+    (Form D / G, `concave`=True, Kegelpfanne) is the mating seat: a flat-bottomed ring
+    whose top is a concave spherical recess of the same radius. Resting one in the other
+    lets the pair pivot a few degrees to take up angular misalignment. Built by revolving
+    a meridian cross-section with a true spherical arc, so the face view stays a clean
+    bore-plus-rim pair of circles.
+
+    Form D and Form G share the seat geometry; Form G just carries an enlarged outer
+    diameter for slotted holes. `seat_diameter` (concave only, defaults to `d_outer`)
+    is the diameter the spherical recess reaches; when it is smaller than `d_outer` the
+    band between them is a flat full-height flange (that is Form G). `sphere_radius` is
+    representative: DIN tables publish the mating radius inconsistently, so it is chosen
+    to mate the two forms and to leave a sensible floor under the seat's recess."""
+    if not (0 < d_inner < d_outer):
+        raise ValueError(
+            f"spherical_seating_washer: need 0 < d_inner < d_outer, got {d_inner}, {d_outer}")
+    if thickness <= 0:
+        raise ValueError(f"spherical_seating_washer: thickness must be positive, got {thickness}")
+    r_bore = d_inner / 2.0
+    r_out = d_outer / 2.0
+    R = sphere_radius
+    # The concave recess reaches r_seat; beyond it (up to r_out) is a flat flange.
+    # The convex washer has no flange, so its curved band always runs bore -> rim.
+    r_seat = (seat_diameter / 2.0) if (concave and seat_diameter is not None) else r_out
+    if not (r_bore < r_seat <= r_out):
+        raise ValueError(
+            f"spherical_seating_washer: need d_inner < seat_diameter <= d_outer, "
+            f"got seat_diameter {seat_diameter}, d_inner {d_inner}, d_outer {d_outer}")
+    if R <= r_seat:
+        raise ValueError(
+            f"spherical_seating_washer: sphere_radius {R} must exceed seat radius {r_seat}")
+    # Axial fall of the spherical surface across the seated band (bore radius -> seat radius).
+    # Same magnitude for the convex underside and the concave recess since they share R.
+    drop = math.sqrt(R * R - r_bore * r_bore) - math.sqrt(R * R - r_seat * r_seat)
+    if drop >= thickness:
+        raise ValueError(
+            f"spherical_seating_washer: spherical drop {drop:.3f} >= thickness {thickness} — "
+            f"the curved face would break through the opposite flat face; "
+            f"increase sphere_radius or thickness")
+    with BuildPart() as bp:
+        with BuildSketch(Plane.XZ):
+            with BuildLine():
+                if concave:
+                    # Flat bottom on z=0; concave recess dips from the seat rim down toward
+                    # the bore, leaving a (thickness - drop) floor at the bore. A flat flange
+                    # spans r_seat -> r_out at full height when r_seat < r_out (Form G).
+                    Line((r_bore, 0.0), (r_out, 0.0))                 # flat bottom
+                    Line((r_out, 0.0), (r_out, thickness))            # outer wall (rim)
+                    if r_seat < r_out:
+                        Line((r_out, thickness), (r_seat, thickness))  # flat flange top
+                    RadiusArc((r_seat, thickness), (r_bore, thickness - drop), -R)  # recess
+                    Line((r_bore, thickness - drop), (r_bore, 0.0))   # bore wall
+                else:
+                    # Flat top on z=0; convex underside bulges down, deepest at the bore.
+                    Line((r_bore, 0.0), (r_out, 0.0))                 # flat top
+                    Line((r_out, 0.0), (r_out, -(thickness - drop)))  # outer wall
+                    RadiusArc((r_out, -(thickness - drop)), (r_bore, -thickness), -R)  # dome
+                    Line((r_bore, -thickness), (r_bore, 0.0))         # bore wall
+            make_face()
+        revolve(axis=Axis.Z, revolution_arc=360)
     return bp.part
 
 

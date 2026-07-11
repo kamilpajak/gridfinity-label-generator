@@ -86,3 +86,55 @@ def test_build_reports_failed_entry_without_aborting(tmp_path: Path):
     report = build(str(dims), str(tmp_path / "out"), str(tmp_path / "manifest.json"))
     assert "din125" in report["ok"]
     assert any(f["id"] == "bad1" for f in report["failed"])
+
+
+def test_alias_points_at_base_svg_without_a_new_file(tmp_path: Path):
+    from catalog.build_catalog import build
+
+    dims = tmp_path / "dimensions"
+    dims.mkdir()
+    (dims / "washers.json").write_text(json.dumps({
+        "din125": {
+            "family": "flat_washer",
+            "shape": {"d_inner": 13.0, "d_outer": 24.0, "thickness": 2.5},
+            "hardwareType": "washer",
+            "source": "DIN 125-1:2011 (M12)",
+            "designations": [{"system": "DIN", "code": "125"}],
+        },
+        "din125p": {
+            "alias_of": "din125",
+            "hardwareType": "washer",
+            "source": "DIN 125 P (plated variant of DIN 125; identical geometry)",
+            "designations": [{"system": "DIN", "code": "125 P"}],
+        },
+    }))
+    out = tmp_path / "out"
+    manifest = tmp_path / "manifest.json"
+
+    report = build(str(dims), str(out), str(manifest))
+
+    assert "din125p" in report["ok"]
+    m = json.loads(manifest.read_text())["standards"]
+    # the alias points at the base's rendered file and hash, and records the link
+    assert m["din125p"]["svg"] == "din125.svg"
+    assert m["din125p"]["sha256"] == m["din125"]["sha256"]
+    assert m["din125p"]["alias_of"] == "din125"
+    # no duplicate SVG file is written for the alias
+    assert not (out / "din125p.svg").exists()
+
+
+def test_alias_to_missing_base_is_reported(tmp_path: Path):
+    from catalog.build_catalog import build
+
+    dims = tmp_path / "dimensions"
+    dims.mkdir()
+    (dims / "washers.json").write_text(json.dumps({
+        "din125p": {
+            "alias_of": "din125",
+            "hardwareType": "washer",
+            "source": "alias whose base is absent",
+            "designations": [{"system": "DIN", "code": "125 P"}],
+        },
+    }))
+    report = build(str(dims), str(tmp_path / "out"), str(tmp_path / "manifest.json"))
+    assert any(f["id"] == "din125p" for f in report["failed"])

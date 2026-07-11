@@ -397,5 +397,24 @@
 				"code": "6798 J"
 			}
 		]
+	},
+	"din6798v": {
+		"family": "countersunk_toothed_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 22.0,
+			"thickness": 0.8,
+			"teeth": 18,
+			"cone_angle": 32
+		},
+		"hardwareType": "washer",
+		"source": "DIN 6798 V (M12, countersunk external serrated / Senkzahn, min 18 teeth, 90° head)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6798 V"
+			}
+		]
 	}
 }

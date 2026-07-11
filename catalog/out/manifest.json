@@ -72,6 +72,12 @@
 			"source": "DIN 6798 J (M12, internal serrated / F\u00e4cherscheibe, min 16 teeth)",
 			"svg": "din6798j.svg"
 		},
+		"din6798v": {
+			"family": "countersunk_toothed_washer",
+			"sha256": "3f82002f48777a0e24c1e085fcb67063c257079bd7edbabe2849c4252ee70571",
+			"source": "DIN 6798 V (M12, countersunk external serrated / Senkzahn, min 18 teeth, 90\u00b0 head)",
+			"svg": "din6798v.svg"
+		},
 		"din6916": {
 			"family": "flat_washer",
 			"sha256": "d7100dce55c7e48daa305635e4014c075297dcfff8717a68a6c72aeeab743bcb",

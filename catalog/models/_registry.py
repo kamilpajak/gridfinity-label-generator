@@ -1,7 +1,7 @@
 """Map family names to generator callables and dispatch."""
 from catalog.models.washer import (
     flat_washer, spring_washer, helical_spring_washer, curved_washer,
-    toothed_lock_washer,
+    toothed_lock_washer, toothed_lock_washer_internal,
 )
 from catalog.models.hex_nut import hex_nut
 
@@ -11,6 +11,7 @@ KNOWN_FAMILIES = {
     "helical_spring_washer": helical_spring_washer,
     "curved_washer": curved_washer,
     "toothed_lock_washer": toothed_lock_washer,
+    "toothed_lock_washer_internal": toothed_lock_washer_internal,
     "hex_nut": hex_nut,
 }
 

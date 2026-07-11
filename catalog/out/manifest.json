@@ -78,6 +78,18 @@
 			"source": "DIN 463 (M12, two-tab lock washer, long+short; d2=30, s=1; tab lengths representative; standard withdrawn)",
 			"svg": "din463.svg"
 		},
+		"din6319c": {
+			"family": "spherical_seating_washer",
+			"sha256": "4351712b62bd3c5ae800eff4c53733f7eccacd693f22b761807de11a615625ca",
+			"source": "DIN 6319 Form C (M12, Kugelscheibe / spherical washer; d1=13, d3=24, h2=4, flat top with convex spherical underside). Mating sphere radius representative (~26 mm): DIN tables publish it inconsistently, chosen to seat in the Form D/G cup.",
+			"svg": "din6319c.svg"
+		},
+		"din6319d": {
+			"family": "spherical_seating_washer",
+			"sha256": "1d956e60b4353065b190e8b81f205dc84237550c18fae7bde44b4556ff409874",
+			"source": "DIN 6319 Form D (M12, Kegelpfanne / conical seat; d2=13, d3=24, h3=3, flat bottom with concave spherical recess receiving the Form C washer). Mating sphere radius representative (~26 mm), same as Form C.",
+			"svg": "din6319d.svg"
+		},
 		"din6796": {
 			"family": "curved_washer",
 			"sha256": "8e0857660aad46c59c953aa5ba459f6e6301aa4d7335914e6173ddf6a12f4e3c",

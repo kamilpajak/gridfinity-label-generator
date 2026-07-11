@@ -589,5 +589,42 @@
 				"code": "7980"
 			}
 		]
+	},
+	"din6319c": {
+		"family": "spherical_seating_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 24.0,
+			"thickness": 4.0,
+			"sphere_radius": 26.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 6319 Form C (M12, Kugelscheibe / spherical washer; d1=13, d3=24, h2=4, flat top with convex spherical underside). Mating sphere radius representative (~26 mm): DIN tables publish it inconsistently, chosen to seat in the Form D/G cup.",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6319 C"
+			}
+		]
+	},
+	"din6319d": {
+		"family": "spherical_seating_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 24.0,
+			"thickness": 3.0,
+			"sphere_radius": 26.0,
+			"concave": true
+		},
+		"hardwareType": "washer",
+		"source": "DIN 6319 Form D (M12, Kegelpfanne / conical seat; d2=13, d3=24, h3=3, flat bottom with concave spherical recess receiving the Form C washer). Mating sphere radius representative (~26 mm), same as Form C.",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6319 D"
+			}
+		]
 	}
 }

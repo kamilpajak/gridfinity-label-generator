@@ -65,3 +65,16 @@ Disc dimensions and tab widths are sourced; tab **lengths** are representative (
 manufacturer tables datum them inconsistently) and flagged in each `source` string.
 DIN 7980 is a split spring lock washer (not a tab) and reuses `helical_spring_washer`,
 like DIN 127. The `p`-suffix variants are plated duplicates for a later alias pass.
+
+**Spherical seating washers (DIN 6319) — generated.** `spherical_seating_washer`
+builds the matched pair by revolving a meridian cross-section with a true spherical
+arc (the first family to use arc edges, so the face view stays a clean bore + rim
+pair of circles rather than a stack of facet circles). The convex form (Form C,
+`concave` = false, Kugelscheibe) has a flat top and a convex spherical underside; the
+concave form (Form D, `concave` = true, Kegelpfanne) is the mating seat with a concave
+spherical recess. Form G (enlarged outer diameter for slotted holes) is supported via
+`seat_diameter` — the recess reaches that diameter and a flat flange fills out to
+`d_outer` — but only C and D are app-served, so no Form G data entry is shipped. The
+mating `sphere_radius` is representative: DIN tables publish it inconsistently, so it
+is chosen to mate the two forms and leave a sensible floor under the seat's recess
+(flagged in each `source`).

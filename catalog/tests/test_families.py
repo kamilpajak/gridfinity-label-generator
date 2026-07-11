@@ -319,6 +319,9 @@ def test_spherical_seating_guards_bad_geometry():
         # seat_diameter must sit between the bore and the outer diameter
         spherical_seating_washer(13.0, 24.0, 3.0, sphere_radius=26.0, concave=True,
                                  seat_diameter=30.0)
+    with pytest.raises(ValueError):
+        # seat_diameter has no meaning for a convex washer (no flange) -> rejected
+        spherical_seating_washer(13.0, 24.0, 4.0, sphere_radius=26.0, seat_diameter=20.0)
 
 
 def test_new_families_dispatch_via_registry():

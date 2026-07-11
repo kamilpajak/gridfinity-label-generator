@@ -7,6 +7,10 @@ from build123d import (
     Line, RadiusArc, make_face, Pos, Rotation,
 )
 
+# Minimum solid material to leave opposite a curved face (floor of a seat recess,
+# rim of a convex washer). Below this the CAD kernel gets a fragile, near-zero sliver.
+_MIN_SOLID_MM = 0.05
+
 
 def flat_washer(d_inner: float, d_outer: float, thickness: float):
     """Plain flat washer: an annular disc (DIN 125/126/433/440/9021 & ISO equivalents)."""
@@ -271,22 +275,32 @@ def spherical_seating_washer(d_inner: float, d_outer: float, thickness: float,
     r_out = d_outer / 2.0
     R = sphere_radius
     # The concave recess reaches r_seat; beyond it (up to r_out) is a flat flange.
-    # The convex washer has no flange, so its curved band always runs bore -> rim.
-    r_seat = (seat_diameter / 2.0) if (concave and seat_diameter is not None) else r_out
-    if not (r_bore < r_seat <= r_out):
-        raise ValueError(
-            f"spherical_seating_washer: need d_inner < seat_diameter <= d_outer, "
-            f"got seat_diameter {seat_diameter}, d_inner {d_inner}, d_outer {d_outer}")
+    # The convex washer has no flange, so its curved band always runs bore -> rim and
+    # seat_diameter does not apply — reject it rather than silently drop it.
+    if concave:
+        r_seat = (seat_diameter / 2.0) if seat_diameter is not None else r_out
+        if not (r_bore < r_seat <= r_out):
+            raise ValueError(
+                f"spherical_seating_washer: need d_inner < seat_diameter <= d_outer, "
+                f"got seat_diameter {seat_diameter}, d_inner {d_inner}, d_outer {d_outer}")
+    else:
+        if seat_diameter is not None:
+            raise ValueError(
+                "spherical_seating_washer: seat_diameter applies only to the concave seat "
+                "form (concave=True); a convex washer has no flange")
+        r_seat = r_out
     if R <= r_seat:
         raise ValueError(
             f"spherical_seating_washer: sphere_radius {R} must exceed seat radius {r_seat}")
     # Axial fall of the spherical surface across the seated band (bore radius -> seat radius).
     # Same magnitude for the convex underside and the concave recess since they share R.
     drop = math.sqrt(R * R - r_bore * r_bore) - math.sqrt(R * R - r_seat * r_seat)
-    if drop >= thickness:
+    # Leave a real floor (concave) / rim (convex) opposite the curved face: a near-zero
+    # remainder both breaks through the flat face and hands the CAD kernel a fragile sliver.
+    if thickness - drop < _MIN_SOLID_MM:
         raise ValueError(
-            f"spherical_seating_washer: spherical drop {drop:.3f} >= thickness {thickness} — "
-            f"the curved face would break through the opposite flat face; "
+            f"spherical_seating_washer: spherical drop {drop:.3f} leaves under {_MIN_SOLID_MM} mm "
+            f"of solid material ({thickness - drop:.3f}) opposite the curved face; "
             f"increase sphere_radius or thickness")
     with BuildPart() as bp:
         with BuildSketch(Plane.XZ):

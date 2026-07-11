@@ -64,7 +64,7 @@ DIN 463 two tabs) or internal at the bore (DIN 462, `"internal": true` per tab).
 Disc dimensions and tab widths are sourced; tab **lengths** are representative (the
 manufacturer tables datum them inconsistently) and flagged in each `source` string.
 DIN 7980 is a split spring lock washer (not a tab) and reuses `helical_spring_washer`,
-like DIN 127. The `p`-suffix variants are plated duplicates for a later alias pass.
+like DIN 127. The plated `p`-suffix variants are handled by the alias mechanism (below).
 
 **Spherical seating washers (DIN 6319) — generated.** `spherical_seating_washer`
 builds the matched pair by revolving a meridian cross-section with a true spherical
@@ -98,11 +98,25 @@ are dimensionally equivalent clevis-pin washers), and DIN 7349 (13×30×6, heavy
 straight from Fasteners.eu tables. DIN 7603 (12×18, sealing ring) and DIN 988 (12×18, shim
 ring) have a **representative thickness** — both are thickness _series_ rather than a single
 value — flagged in each `source`. The duplicate/variant app keys that share these standards'
-images (`din6340d`, `din1440i`, `iso8738p`, and the plated `p`-suffix set) are left for the
-later alias pass. **DIN 25201 wedge-lock is intentionally not generated:** its cam angle,
+images (`din6340d`, `din1440i`, `iso8738p`, and the plated `p`-suffix set) are covered by the
+alias mechanism (below). **DIN 25201 wedge-lock is intentionally not generated:** its cam angle,
 cam count, and tooth geometry are proprietary (absent even from the patents), and for M12
 the cams are ~0.2 mm — sub-visible at label scale — so there is nothing faithful to draw.
 
 **DIN 440 / DIN 74361 not generated.** DIN 440 Form V (`din440v`) has a _square_ bore, which
 `flat_washer` (round bore) does not model; Form R (`din440r`) OD/thickness are not cleanly
 published. DIN 74361 C (`din74361c`) is a conical wheel-bolt collar washer, a separate shape.
+
+**Alias entries — variant keys reuse a base drawing.** A dimension entry may carry
+`alias_of: "<base-id>"` instead of `family` + `shape`. The build renders bases first, then
+points each alias at its base's SVG and hash (recording `alias_of` in the manifest) — no
+duplicate file is written. This covers standards whose geometry is identical to a base:
+plated `p`-variants (plating does not change shape), the `i`-suffix variant keys (the app
+already serves them the base image), `din128a` (Form A is the base curved washer),
+`din2093d` / `din6340d`, and `din6798d` (its "Form D" label resolves to Form V, so it
+aliases `din6798v`). An `alias_of` target must be a rendered base, not another alias.
+
+**Remaining washer gaps (all deliberate).** After the alias pass only five entries stay in
+the coverage gate: `din137b` (wave washer — generator ready, plan-view seam deferred),
+`din25201` (wedge-lock — proprietary, sub-visible), `din440r` / `din440v` (DIN 440 not
+generated — see above), and `din74361c` (conical collar, a different shape).

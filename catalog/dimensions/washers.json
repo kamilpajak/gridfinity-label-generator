@@ -747,5 +747,291 @@
 				"code": "988"
 			}
 		]
+	},
+	"din127p": {
+		"alias_of": "din127",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of DIN 127; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "127 P"
+			}
+		]
+	},
+	"din432p": {
+		"alias_of": "din432",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of DIN 432; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "432 P"
+			}
+		]
+	},
+	"din434p": {
+		"alias_of": "din434",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of DIN 434; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "434 P"
+			}
+		]
+	},
+	"din435p": {
+		"alias_of": "din435",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of DIN 435; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "435 P"
+			}
+		]
+	},
+	"din436p": {
+		"alias_of": "din436",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of DIN 436; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "436 P"
+			}
+		]
+	},
+	"din462p": {
+		"alias_of": "din462",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of DIN 462; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "462 P"
+			}
+		]
+	},
+	"din463p": {
+		"alias_of": "din463",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of DIN 463; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "463 P"
+			}
+		]
+	},
+	"din7980p": {
+		"alias_of": "din7980",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of DIN 7980; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "7980 P"
+			}
+		]
+	},
+	"din93p": {
+		"alias_of": "din93",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of DIN 93; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "93 P"
+			}
+		]
+	},
+	"iso7089p": {
+		"alias_of": "iso7089",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of ISO 7089; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "ISO",
+				"code": "7089 P"
+			}
+		]
+	},
+	"iso7091p": {
+		"alias_of": "iso7091",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of ISO 7091; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "ISO",
+				"code": "7091 P"
+			}
+		]
+	},
+	"iso7092p": {
+		"alias_of": "iso7092",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of ISO 7092; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "ISO",
+				"code": "7092 P"
+			}
+		]
+	},
+	"iso7093p": {
+		"alias_of": "iso7093",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of ISO 7093; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "ISO",
+				"code": "7093 P"
+			}
+		]
+	},
+	"iso7094p": {
+		"alias_of": "iso7094",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of ISO 7094; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "ISO",
+				"code": "7094 P"
+			}
+		]
+	},
+	"iso7416p": {
+		"alias_of": "iso7416",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of ISO 7416; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "ISO",
+				"code": "7416 P"
+			}
+		]
+	},
+	"iso8738p": {
+		"alias_of": "iso8738",
+		"hardwareType": "washer",
+		"source": "plated (electro-zinc) variant of ISO 8738; plating does not change geometry, so this aliases the base drawing.",
+		"designations": [
+			{
+				"system": "ISO",
+				"code": "8738 P"
+			}
+		]
+	},
+	"din125i": {
+		"alias_of": "din125",
+		"hardwareType": "washer",
+		"source": "variant key sharing DIN 125 geometry; the app already serves it the base drawing, so this aliases the base.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "125"
+			}
+		]
+	},
+	"din126i": {
+		"alias_of": "din126",
+		"hardwareType": "washer",
+		"source": "variant key sharing DIN 126 geometry; the app already serves it the base drawing, so this aliases the base.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "126"
+			}
+		]
+	},
+	"din433i": {
+		"alias_of": "din433",
+		"hardwareType": "washer",
+		"source": "variant key sharing DIN 433 geometry; the app already serves it the base drawing, so this aliases the base.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "433"
+			}
+		]
+	},
+	"din9021i": {
+		"alias_of": "din9021",
+		"hardwareType": "washer",
+		"source": "variant key sharing DIN 9021 geometry; the app already serves it the base drawing, so this aliases the base.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "9021"
+			}
+		]
+	},
+	"din6916i": {
+		"alias_of": "din6916",
+		"hardwareType": "washer",
+		"source": "variant key sharing DIN 6916 geometry; the app already serves it the base drawing, so this aliases the base.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6916"
+			}
+		]
+	},
+	"din1440i": {
+		"alias_of": "din1440",
+		"hardwareType": "washer",
+		"source": "variant key sharing DIN 1440 geometry; the app already serves it the base drawing, so this aliases the base.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "1440"
+			}
+		]
+	},
+	"din128a": {
+		"alias_of": "din128",
+		"hardwareType": "washer",
+		"source": "DIN 128 Form A is the base curved spring washer; this key aliases it.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "128 A"
+			}
+		]
+	},
+	"din2093d": {
+		"alias_of": "din2093",
+		"hardwareType": "washer",
+		"source": "variant key for the DIN 2093 disc spring; identical geometry, aliased to the base.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "2093"
+			}
+		]
+	},
+	"din6340d": {
+		"alias_of": "din6340",
+		"hardwareType": "washer",
+		"source": "variant key for DIN 6340; identical geometry, aliased to the base.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6340"
+			}
+		]
+	},
+	"din6798d": {
+		"alias_of": "din6798v",
+		"hardwareType": "washer",
+		"source": "catalog 'Form D' label is not a real DIN 6798 form; its geometry is Form V, so this aliases din6798v.",
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6798 D"
+			}
+		]
 	}
 }

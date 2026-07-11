@@ -470,5 +470,82 @@
 				"code": "435"
 			}
 		]
+	},
+	"din432": {
+		"family": "tab_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 30.0,
+			"thickness": 1.2,
+			"tabs": [
+				{
+					"angle": 0,
+					"length": 5.0,
+					"width": 4.5
+				}
+			]
+		},
+		"hardwareType": "washer",
+		"source": "DIN 432 (M12, external nose lock washer; d2=30, s=1.2, nose width 4.5; nose length representative)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "432"
+			}
+		]
+	},
+	"din93": {
+		"family": "tab_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 30.0,
+			"thickness": 1.0,
+			"tabs": [
+				{
+					"angle": 0,
+					"length": 14.0,
+					"width": 12.0
+				}
+			]
+		},
+		"hardwareType": "washer",
+		"source": "DIN 93 (M12, one-tab lock washer; d2=30, s=1, tab width 12; tab length representative)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "93"
+			}
+		]
+	},
+	"din463": {
+		"family": "tab_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 30.0,
+			"thickness": 1.0,
+			"tabs": [
+				{
+					"angle": 0,
+					"length": 14.0,
+					"width": 10.0
+				},
+				{
+					"angle": 180,
+					"length": 8.0,
+					"width": 10.0
+				}
+			]
+		},
+		"hardwareType": "washer",
+		"source": "DIN 463 (M12, two-tab lock washer, long+short; d2=30, s=1; tab lengths representative; standard withdrawn)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "463"
+			}
+		]
 	}
 }

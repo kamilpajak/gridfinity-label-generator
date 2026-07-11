@@ -4,6 +4,7 @@ import math
 from build123d import (
     BuildPart, BuildSketch, Rectangle, Plane, Axis, Locations,
     Cylinder, Box, Align, Mode, Helix, sweep, revolve, extrude, Polygon,
+    Pos, Rotation,
 )
 
 
@@ -172,6 +173,33 @@ def countersunk_toothed_washer(d_inner: float, d_outer: float, thickness: float,
             Polygon(*pts, align=None)
         extrude(amount=cutter_h, both=True, mode=Mode.INTERSECT)
     return bp.part
+
+
+def tab_washer(d_inner: float, d_outer: float, thickness: float, tabs: list):
+    """Round washer with one or more external locking tabs bent up ~90° at the rim
+    (DIN 432 external nose, DIN 93 one tab, DIN 463 two tabs). `tabs` is a list of
+    dicts, each {"angle": deg, "length": mm (tab height once bent up), "width": mm}.
+    Each tab is a flap standing vertically at the outer rim, fused to the disc."""
+    if not (0 < d_inner < d_outer):
+        raise ValueError(f"tab_washer: need 0 < d_inner < d_outer, got {d_inner}, {d_outer}")
+    if thickness <= 0:
+        raise ValueError(f"tab_washer: thickness must be positive, got {thickness}")
+    if not tabs:
+        raise ValueError("tab_washer: need at least one tab")
+    r_out = d_outer / 2.0
+    part = flat_washer(d_inner, d_outer, thickness)
+    for tab in tabs:
+        length, width = tab["length"], tab["width"]
+        if length <= 0 or width <= 0:
+            raise ValueError(f"tab_washer: tab length and width must be positive, got {tab}")
+        # Upright flap: radial depth = thickness, tangential = width, vertical = length.
+        # Straddle the rim (centre at r_out) with its base flush to the disc bottom so it
+        # overlaps the disc for a solid fuse, then swing it to the tab's angular position.
+        flap = Box(thickness, width, length)
+        flap = Pos(r_out, 0, length / 2.0 - thickness / 2.0) * flap
+        flap = Rotation(0, 0, tab.get("angle", 0)) * flap
+        part = part + flap
+    return part
 
 
 def square_washer(side: float, thickness: float, d_bore: float,

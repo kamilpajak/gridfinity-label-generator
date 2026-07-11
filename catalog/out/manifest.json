@@ -30,6 +30,12 @@
 			"source": "DIN 2093 (disc spring / Belleville, representative; nominal, unverified)",
 			"svg": "din2093.svg"
 		},
+		"din432": {
+			"family": "tab_washer",
+			"sha256": "3679e3a6548a0aa20d010e0027cef92a9e7cead53a2ecfc1ad950a1a3b10a3f0",
+			"source": "DIN 432 (M12, external nose lock washer; d2=30, s=1.2, nose width 4.5; nose length representative)",
+			"svg": "din432.svg"
+		},
 		"din433": {
 			"family": "flat_washer",
 			"sha256": "092e37274008d84175042949f6b059db197d41922206ea89abf6f67bce0e26cf",
@@ -59,6 +65,12 @@
 			"sha256": "c7ba049249922ba7fd7842395fda59a2c8f4b838f8837c7707070cce9a45ea13",
 			"source": "DIN 440-R (M12, large flat washer)",
 			"svg": "din440.svg"
+		},
+		"din463": {
+			"family": "tab_washer",
+			"sha256": "d4371c0d1f23823b348067bd6d413a02094a8ddc4b089779bd40236d65a048e2",
+			"source": "DIN 463 (M12, two-tab lock washer, long+short; d2=30, s=1; tab lengths representative; standard withdrawn)",
+			"svg": "din463.svg"
 		},
 		"din6796": {
 			"family": "curved_washer",
@@ -119,6 +131,12 @@
 			"sha256": "3fec3507143fde676036fbb19ea7d654ae3b8ecc3358e762c68b13e438431c6d",
 			"source": "DIN 9021:1990 (M12, large OD)",
 			"svg": "din9021.svg"
+		},
+		"din93": {
+			"family": "tab_washer",
+			"sha256": "b6341cc0910df15970af225b87096b08bc62111c7be0caa920652b78810682f5",
+			"source": "DIN 93 (M12, one-tab lock washer; d2=30, s=1, tab width 12; tab length representative)",
+			"svg": "din93.svg"
 		},
 		"din988": {
 			"family": "flat_washer",

@@ -57,3 +57,12 @@ the coarse-vs-fine identity.
 D" is a catalog-specific label whose geometry maps to Form V. It is deliberately
 not generated (nothing to fabricate); resolve it at the app-data level (alias
 `din6798d` to the Form V drawing, or drop the key), not with a new generator.
+
+**Tab lock washers — external forms generated.** `tab_washer` builds a round disc
+with one or more locking tabs bent up ~90° at the rim: DIN 432 (external nose),
+DIN 93 (one tab), DIN 463 (two tabs, long + short). Disc dimensions and tab
+widths are sourced; tab **lengths** are representative (the manufacturer tables
+datum them inconsistently) and flagged in each `source` string. Still gaps:
+`din462` (internal tab — teeth-on-bore variant, needs an inward tab) and
+`din7980` (a split spring lock washer, not a tab — belongs to the spring family).
+The `p`-suffix variants are plated duplicates for a later alias pass.

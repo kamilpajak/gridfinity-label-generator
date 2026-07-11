@@ -54,11 +54,23 @@
 			"source": "DIN 6797 A (M12, external tooth / Zahnscheibe, 10 teeth)",
 			"svg": "din6797a.svg"
 		},
+		"din6797j": {
+			"family": "toothed_lock_washer_internal",
+			"sha256": "a03d862dc7766faa1ac2b18b4847280a0e989b58564cee3641eb6fc95f0bc5b5",
+			"source": "DIN 6797 J (M12, internal tooth / Innenzahn, 10 teeth)",
+			"svg": "din6797j.svg"
+		},
 		"din6798a": {
 			"family": "toothed_lock_washer",
 			"sha256": "3fe4e3780a230193330e02310bfce184d39b662fa608039131ac9877526f292a",
 			"source": "DIN 6798 A (M12, external serrated / F\u00e4cherscheibe, min 16 teeth)",
 			"svg": "din6798a.svg"
+		},
+		"din6798j": {
+			"family": "toothed_lock_washer_internal",
+			"sha256": "4cbe47ca2202b2058c01796bd1b87976acdbe992801e1d83d0cad877f622583d",
+			"source": "DIN 6798 J (M12, internal serrated / F\u00e4cherscheibe, min 16 teeth)",
+			"svg": "din6798j.svg"
 		},
 		"din6916": {
 			"family": "flat_washer",

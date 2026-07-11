@@ -361,5 +361,41 @@
 				"code": "6798 A"
 			}
 		]
+	},
+	"din6797j": {
+		"family": "toothed_lock_washer_internal",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 20.5,
+			"thickness": 1.0,
+			"teeth": 10
+		},
+		"hardwareType": "washer",
+		"source": "DIN 6797 J (M12, internal tooth / Innenzahn, 10 teeth)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6797 J"
+			}
+		]
+	},
+	"din6798j": {
+		"family": "toothed_lock_washer_internal",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 21.0,
+			"thickness": 1.3,
+			"teeth": 16
+		},
+		"hardwareType": "washer",
+		"source": "DIN 6798 J (M12, internal serrated / Fächerscheibe, min 16 teeth)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6798 J"
+			}
+		]
 	}
 }

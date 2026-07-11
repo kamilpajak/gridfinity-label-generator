@@ -90,6 +90,46 @@ def test_toothed_lock_washer_guards_bad_geometry():
         toothed_lock_washer(d_inner=12.5, d_outer=20.5, thickness=1.0, teeth=10, tooth_depth=-1.0)
 
 
+def _radii(part):
+    return [(v.X ** 2 + v.Y ** 2) ** 0.5 for v in part.vertices()]
+
+
+def test_internal_toothed_has_plain_rim_and_toothed_bore():
+    import math
+    from catalog.models.washer import toothed_lock_washer_internal
+
+    part = toothed_lock_washer_internal(d_inner=13.0, d_outer=20.5, thickness=1.0, teeth=10)
+    radii = _radii(part)
+    assert round(max(radii), 2) == 10.25            # plain outer disc at d_outer / 2
+    assert round(min(radii), 2) == 6.5              # inward tips reach d_inner / 2 (the bore)
+    assert round(part.bounding_box().size.Z, 1) == 1.0
+    assert 0 < part.volume < math.pi * 10.25 ** 2 * 1.0   # disc minus a star-shaped hole
+
+
+def test_internal_tooth_count_changes_geometry_within_same_envelope():
+    from catalog.models.washer import toothed_lock_washer_internal
+
+    coarse = toothed_lock_washer_internal(d_inner=13.0, d_outer=20.5, thickness=1.0, teeth=10)  # 6797 J
+    fine = toothed_lock_washer_internal(d_inner=13.0, d_outer=20.5, thickness=1.0, teeth=16)    # 6798 J
+    assert round(max(_radii(coarse)), 2) == round(max(_radii(fine)), 2) == 10.25   # same plain rim
+    assert round(coarse.volume, 3) != round(fine.volume, 3)
+
+
+def test_internal_toothed_guards_bad_geometry():
+    from catalog.models.washer import toothed_lock_washer_internal
+    import pytest
+
+    with pytest.raises(ValueError):
+        toothed_lock_washer_internal(d_inner=20.5, d_outer=13.0, thickness=1.0, teeth=10)  # inner>outer
+    with pytest.raises(ValueError):
+        # tooth_depth so deep the valleys pass the outer edge -> no rim left
+        toothed_lock_washer_internal(d_inner=13.0, d_outer=20.5, thickness=1.0, teeth=10, tooth_depth=10.0)
+    with pytest.raises(ValueError):
+        toothed_lock_washer_internal(d_inner=13.0, d_outer=20.5, thickness=1.0, teeth=10, tip_ratio=1.0)
+    with pytest.raises(ValueError):
+        toothed_lock_washer_internal(d_inner=13.0, d_outer=20.5, thickness=1.0, teeth=10, tooth_depth=-1.0)
+
+
 def test_new_families_dispatch_via_registry():
     from catalog.models._registry import build_part
 
@@ -99,3 +139,5 @@ def test_new_families_dispatch_via_registry():
                       {"d_inner": 12.2, "d_outer": 21.0, "thickness": 1.5}).volume > 0
     assert build_part("toothed_lock_washer",
                       {"d_inner": 12.5, "d_outer": 20.5, "thickness": 1.0, "teeth": 10}).volume > 0
+    assert build_part("toothed_lock_washer_internal",
+                      {"d_inner": 13.0, "d_outer": 20.5, "thickness": 1.0, "teeth": 10}).volume > 0

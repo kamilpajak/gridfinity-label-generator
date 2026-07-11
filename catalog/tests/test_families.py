@@ -241,6 +241,8 @@ def test_tab_washer_guards_bad_geometry():
         tab_washer(13.0, 30.0, 0.0, [{"angle": 0, "length": 5.0, "width": 4.5}])   # zero thickness
     with pytest.raises(ValueError):
         tab_washer(13.0, 30.0, 1.0, [{"angle": 0, "length": -1.0, "width": 4.5}])  # bad tab length
+    with pytest.raises(ValueError):
+        tab_washer(13.0, 30.0, 1.0, [{"angle": 0, "length": 5.0, "width": 0.0}])   # zero tab width
 
 
 def test_new_families_dispatch_via_registry():

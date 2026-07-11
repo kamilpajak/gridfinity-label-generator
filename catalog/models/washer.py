@@ -193,10 +193,13 @@ def tab_washer(d_inner: float, d_outer: float, thickness: float, tabs: list):
         if length <= 0 or width <= 0:
             raise ValueError(f"tab_washer: tab length and width must be positive, got {tab}")
         # Upright flap: radial depth = thickness, tangential = width, vertical = length.
-        # Straddle the rim (centre at r_out) with its base flush to the disc bottom so it
-        # overlaps the disc for a solid fuse, then swing it to the tab's angular position.
+        # Seat its outer face at the rim (centre at r_out - thickness/2) so the whole flap
+        # lies inside the disc's circular edge — this gives a full-thickness volumetric
+        # overlap at the fuse instead of the thin chord sliver a rim-straddling flap leaves.
+        # Base is flush with the disc bottom. Position first, THEN rotate about Z: the
+        # rotation carries the already-placed flap around to the tab's angular position.
         flap = Box(thickness, width, length)
-        flap = Pos(r_out, 0, length / 2.0 - thickness / 2.0) * flap
+        flap = Pos(r_out - thickness / 2.0, 0, length / 2.0 - thickness / 2.0) * flap
         flap = Rotation(0, 0, tab.get("angle", 0)) * flap
         part = part + flap
     return part

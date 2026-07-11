@@ -324,6 +324,45 @@ def test_spherical_seating_guards_bad_geometry():
         spherical_seating_washer(13.0, 24.0, 4.0, sphere_radius=26.0, seat_diameter=20.0)
 
 
+def test_din137a_curved_is_a_closed_dished_ring():
+    from catalog.models.washer import curved_washer
+
+    # DIN 137 A reuses curved_washer with gap_deg=0 (a closed ring, no split)
+    closed = curved_washer(13.0, 24.0, 1.2, cone_angle=20, gap_deg=0)
+    split = curved_washer(13.0, 24.0, 1.2, cone_angle=20, gap_deg=16)     # DIN 128 form
+    # the cone tilt pushes the rim a touch past d_outer, so allow a small margin
+    assert abs(closed.bounding_box().size.X - 24.0) < 0.5                 # ~outer diameter
+    assert closed.bounding_box().size.Z > 1.2                             # dished: taller than flat
+    assert closed.volume > split.volume                                   # no gap removed
+
+
+def test_wave_washer_undulates_taller_than_its_thickness():
+    from catalog.models.washer import wave_washer
+
+    part = wave_washer(13.0, 24.0, 1.2, waves=3, wave_height=1.4)         # DIN 137 B
+    assert round(part.bounding_box().size.X, 1) == 24.0                   # outer diameter
+    assert part.volume > 0
+    # the wave lifts the ring well above a flat washer's thickness
+    assert part.bounding_box().size.Z > 1.2 + 1.0
+    # a taller wave makes a taller ring
+    taller = wave_washer(13.0, 24.0, 1.2, waves=3, wave_height=2.4)
+    assert taller.bounding_box().size.Z > part.bounding_box().size.Z
+
+
+def test_wave_washer_guards_bad_geometry():
+    from catalog.models.washer import wave_washer
+    import pytest
+
+    with pytest.raises(ValueError):
+        wave_washer(24.0, 13.0, 1.2, waves=3, wave_height=1.4)            # inner > outer
+    with pytest.raises(ValueError):
+        wave_washer(13.0, 24.0, 0.0, waves=3, wave_height=1.4)            # zero thickness
+    with pytest.raises(ValueError):
+        wave_washer(13.0, 24.0, 1.2, waves=1, wave_height=1.4)            # need >= 2 waves
+    with pytest.raises(ValueError):
+        wave_washer(13.0, 24.0, 1.2, waves=3, wave_height=0.0)            # zero wave height
+
+
 def test_new_families_dispatch_via_registry():
     from catalog.models._registry import build_part
 
@@ -348,3 +387,6 @@ def test_new_families_dispatch_via_registry():
     assert build_part("spherical_seating_washer",
                       {"d_inner": 13.0, "d_outer": 24.0, "thickness": 3.0,
                        "sphere_radius": 26.0, "concave": True}).volume > 0
+    assert build_part("wave_washer",
+                      {"d_inner": 13.0, "d_outer": 24.0, "thickness": 1.2,
+                       "waves": 3, "wave_height": 1.4}).volume > 0

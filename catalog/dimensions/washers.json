@@ -626,5 +626,24 @@
 				"code": "6319 D"
 			}
 		]
+	},
+	"din137a": {
+		"family": "curved_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 24.0,
+			"thickness": 1.2,
+			"cone_angle": 20.0,
+			"gap_deg": 0.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 137 A (M12, curved/domed spring washer, gewölbt; d1=13, d2=24, s=1.2, continuous ring with no split). Reuses curved_washer with gap_deg=0. Dome height representative (free height ~3 mm; DIN envelope 2.5-5 mm) — the cone tilt is chosen to sit in that range, not a published value.",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "137 A"
+			}
+		]
 	}
 }

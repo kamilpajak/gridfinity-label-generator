@@ -24,6 +24,12 @@
 			"source": "DIN 128-A:2011 (M12, curved)",
 			"svg": "din128.svg"
 		},
+		"din137a": {
+			"family": "curved_washer",
+			"sha256": "440c0cbb0327cf243bc5da86b3d619e71f52bfc1bfe72e055510141ae85bbcff",
+			"source": "DIN 137 A (M12, curved/domed spring washer, gew\u00f6lbt; d1=13, d2=24, s=1.2, continuous ring with no split). Reuses curved_washer with gap_deg=0. Dome height representative (free height ~3 mm; DIN envelope 2.5-5 mm) \u2014 the cone tilt is chosen to sit in that range, not a published value.",
+			"svg": "din137a.svg"
+		},
 		"din2093": {
 			"family": "curved_washer",
 			"sha256": "38df6af4e97bde60389066ed4800d2488875c883aeff2df2e23ad94bd294c284",

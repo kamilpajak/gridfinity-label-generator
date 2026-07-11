@@ -416,5 +416,59 @@
 				"code": "6798 V"
 			}
 		]
+	},
+	"din436": {
+		"family": "square_washer",
+		"shape": {
+			"side": 40.0,
+			"thickness": 4.0,
+			"d_bore": 13.5
+		},
+		"hardwareType": "washer",
+		"source": "DIN 436 (M12, flat square washer, 40x40x4)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "436"
+			}
+		]
+	},
+	"din434": {
+		"family": "square_washer",
+		"shape": {
+			"side": 30.0,
+			"thickness": 2.5,
+			"d_bore": 13.5,
+			"taper": 2.4,
+			"side_b": 26.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 434 (M12, square taper washer for U-channel, 8% slope, 26x30, s 2.5->4.9)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "434"
+			}
+		]
+	},
+	"din435": {
+		"family": "square_washer",
+		"shape": {
+			"side": 30.0,
+			"thickness": 4.1,
+			"d_bore": 13.5,
+			"taper": 2.1
+		},
+		"hardwareType": "washer",
+		"source": "DIN 435 (M12, square taper washer for I-beam, 14% slope, s 4.1->6.2; side representative)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "435"
+			}
+		]
 	}
 }

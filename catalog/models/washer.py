@@ -174,6 +174,35 @@ def countersunk_toothed_washer(d_inner: float, d_outer: float, thickness: float,
     return bp.part
 
 
+def square_washer(side: float, thickness: float, d_bore: float,
+                  taper: float = 0.0, side_b: float = None):
+    """Square (or slightly rectangular) plate washer with a central round bore.
+    DIN 436 is the flat form (`taper` = 0). DIN 434 / 435 add a wedge: `taper` is the
+    extra thickness at the thick edge over `thickness` (the thin edge), sloping along
+    the `side` (length) axis to match a channel (8%) or I-beam (14%) flange. `side_b`
+    sets the width when the plate is rectangular (defaults to a square `side`)."""
+    width = side_b if side_b is not None else side
+    if side <= 0 or width <= 0:
+        raise ValueError(f"square_washer: need positive side lengths, got {side}, {width}")
+    if thickness <= 0:
+        raise ValueError(f"square_washer: thickness must be positive, got {thickness}")
+    if taper < 0:
+        raise ValueError(f"square_washer: taper must be >= 0, got {taper}")
+    if not (0 < d_bore < min(side, width)):
+        raise ValueError(
+            f"square_washer: need 0 < d_bore < min(side, side_b), got {d_bore} vs {min(side, width)}")
+    half = side / 2.0
+    # Cross-section in the X-Z plane: a trapezoid (rectangle when taper == 0) sitting on
+    # z = 0, rising from `thickness` at the thin edge to `thickness + taper` at the thick.
+    section = [(-half, 0), (half, 0), (half, thickness + taper), (-half, thickness)]
+    with BuildPart() as bp:
+        with BuildSketch(Plane.XZ):
+            Polygon(*section, align=None)
+        extrude(amount=width / 2.0, both=True)
+        Cylinder(radius=d_bore / 2.0, height=(thickness + taper) * 3.0, mode=Mode.SUBTRACT)
+    return bp.part
+
+
 def curved_washer(d_inner: float, d_outer: float, thickness: float,
                   cone_angle: float = 18, gap_deg: float = 16):
     """DIN 128: curved (domed) split spring washer — a radial cross-section tilted by

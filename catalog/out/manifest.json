@@ -36,6 +36,24 @@
 			"source": "DIN 433-1:2020 (M12, small OD)",
 			"svg": "din433.svg"
 		},
+		"din434": {
+			"family": "square_washer",
+			"sha256": "ae335846d70d0b8de5205b24d98ecbdce13da95b54f96117bea1f1693d2d4910",
+			"source": "DIN 434 (M12, square taper washer for U-channel, 8% slope, 26x30, s 2.5->4.9)",
+			"svg": "din434.svg"
+		},
+		"din435": {
+			"family": "square_washer",
+			"sha256": "c3a14baee29e17627e96fb727a9195d31cd69acd8db8e9fabb8a75b6937dd058",
+			"source": "DIN 435 (M12, square taper washer for I-beam, 14% slope, s 4.1->6.2; side representative)",
+			"svg": "din435.svg"
+		},
+		"din436": {
+			"family": "square_washer",
+			"sha256": "33e32e06ce382fa822351c945ec8d351011c0819e4f6fe3c013e276d201eafad",
+			"source": "DIN 436 (M12, flat square washer, 40x40x4)",
+			"svg": "din436.svg"
+		},
 		"din440": {
 			"family": "flat_washer",
 			"sha256": "c7ba049249922ba7fd7842395fda59a2c8f4b838f8837c7707070cce9a45ea13",

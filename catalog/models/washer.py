@@ -192,9 +192,10 @@ def square_washer(side: float, thickness: float, d_bore: float,
         raise ValueError(
             f"square_washer: need 0 < d_bore < min(side, side_b), got {d_bore} vs {min(side, width)}")
     half = side / 2.0
-    # Cross-section in the X-Z plane: a trapezoid (rectangle when taper == 0) sitting on
-    # z = 0, rising from `thickness` at the thin edge to `thickness + taper` at the thick.
-    section = [(-half, 0), (half, 0), (half, thickness + taper), (-half, thickness)]
+    z0 = -(thickness + taper) / 2.0   # centre the plate on z = 0, matching the round washers
+    # Cross-section in the X-Z plane: a trapezoid (rectangle when taper == 0) with a flat
+    # bottom, rising from `thickness` at the thin edge to `thickness + taper` at the thick.
+    section = [(-half, z0), (half, z0), (half, z0 + thickness + taper), (-half, z0 + thickness)]
     with BuildPart() as bp:
         with BuildSketch(Plane.XZ):
             Polygon(*section, align=None)

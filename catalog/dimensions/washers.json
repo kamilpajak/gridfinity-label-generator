@@ -456,13 +456,13 @@
 	"din435": {
 		"family": "square_washer",
 		"shape": {
-			"side": 30.0,
+			"side": 20.1,
 			"thickness": 4.1,
 			"d_bore": 13.5,
 			"taper": 2.1
 		},
 		"hardwareType": "washer",
-		"source": "DIN 435 (M12, square taper washer for I-beam, 14% slope, s 4.1->6.2; side representative)",
+		"source": "DIN 435 (M12, square taper washer for I-beam flanges; a=20.1, s 4.1->6.2)",
 		"verified": false,
 		"designations": [
 			{

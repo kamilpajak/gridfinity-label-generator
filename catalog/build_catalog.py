@@ -73,9 +73,16 @@ def build(dimensions_dir: str, out_dir: str, manifest_path: str) -> dict:
             continue
         target = entry["alias_of"]
         base = manifest["standards"].get(target)
-        if base is None or "alias_of" in base:
-            report["failed"].append(
-                {"id": sid, "reason": f"alias_of '{target}' is not a rendered base standard"})
+        if target not in entries:
+            reason = f"alias_of '{target}' does not exist in the data"
+        elif base is None:
+            reason = f"alias_of '{target}' exists but failed to build — fix its geometry first"
+        elif "alias_of" in base:
+            reason = f"alias_of '{target}' is itself an alias (chains are not resolved)"
+        else:
+            reason = None
+        if reason is not None:
+            report["failed"].append({"id": sid, "reason": reason})
             continue
         manifest["standards"][sid] = {
             "svg": base["svg"],

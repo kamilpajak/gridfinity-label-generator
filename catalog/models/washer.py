@@ -346,6 +346,15 @@ def wave_washer(d_inner: float, d_outer: float, thickness: float,
     r_mean = (d_inner + d_outer) / 4.0
     radial_w = (d_outer - d_inner) / 2.0
     amp = wave_height / 2.0
+    # A steep-enough vertical undulation folds the section onto itself where the wave bends
+    # tightest. amp*(waves/r_mean)**2 is the small-slope peak curvature of z = amp*sin(waves*t)
+    # along the mean circle; the concave side pinches once its radius drops to the section's
+    # half-thickness. Guard it so an extreme wave_height cannot silently sew a corrupt solid.
+    peak_curvature = amp * (waves / r_mean) ** 2
+    if peak_curvature * (thickness / 2.0) >= 1.0:
+        raise ValueError(
+            f"wave_washer: wave_height {wave_height} is too steep for thickness {thickness} "
+            f"at this diameter — the undulating section would fold onto itself")
     n = max(waves * 24, 48)                     # samples: dense enough for a smooth wave
     pts = []
     for i in range(n):                          # no closing duplicate; the spline is periodic
@@ -353,16 +362,24 @@ def wave_washer(d_inner: float, d_outer: float, thickness: float,
         pts.append((r_mean * math.cos(t), r_mean * math.sin(t), amp * math.sin(waves * t)))
     with BuildLine() as ln:
         path = Spline(*pts, periodic=True)
-    # Orient the section plane so its X points radially (the path starts at angle 0, i.e.
-    # on +X) and its Y is vertical-ish; otherwise the swept frame maps the radial width into
-    # Z and the ring collapses. Sweep the rectangle OUTLINE (a wire), not a filled face:
-    # sweeping a face along a closed path caps both ends and leaves a radial seam stub in the
-    # plan view, whereas sweeping the outline yields a seamless four-face tube that closes on
-    # itself. Sew that shell into a solid.
-    section = Plane(origin=path @ 0, z_dir=path % 0, x_dir=(1, 0, 0))
+    # Orient the section plane so its X points radially and its Y is vertical-ish; otherwise
+    # the swept frame maps the radial width into Z and the ring collapses. Derive the radial
+    # direction from the first sample (its XY position vector) so the framing holds wherever
+    # the path happens to start, not only at angle 0. Sweep the rectangle OUTLINE (a wire),
+    # not a filled face: a face-sweep along a closed path caps both ends and leaves a radial
+    # seam stub in the plan view, whereas the outline yields a seamless four-face tube that
+    # closes on itself. Sew that shell into a solid and confirm it is a valid closed body.
+    radial_dir = (pts[0][0], pts[0][1], 0.0)
+    section = Plane(origin=path @ 0, z_dir=path % 0, x_dir=radial_dir)
     profile = section.location * Rectangle(radial_w, thickness).wire()
-    tube = sweep(profile, path=path)
-    return Solid(Shell(tube.faces()))
+    solid = Solid(Shell(sweep(profile, path=path).faces()))
+    # A failed or degenerate sew collapses the volume; guard on that rather than on OCCT's
+    # strict is_valid, which flags these sewn periodic-surface shells even when they render
+    # and measure correctly.
+    if solid.volume <= 0:
+        raise ValueError(
+            "wave_washer: swept section did not sew into a closed solid (zero volume)")
+    return solid
 
 
 def curved_washer(d_inner: float, d_outer: float, thickness: float,

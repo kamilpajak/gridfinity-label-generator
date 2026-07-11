@@ -361,6 +361,9 @@ def test_wave_washer_guards_bad_geometry():
         wave_washer(13.0, 24.0, 1.2, waves=1, wave_height=1.4)            # need >= 2 waves
     with pytest.raises(ValueError):
         wave_washer(13.0, 24.0, 1.2, waves=3, wave_height=0.0)            # zero wave height
+    with pytest.raises(ValueError):
+        # a wildly steep wave folds the section onto itself -> rejected
+        wave_washer(13.0, 24.0, 1.2, waves=3, wave_height=40.0)
 
 
 def test_new_families_dispatch_via_registry():

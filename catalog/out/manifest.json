@@ -30,6 +30,12 @@
 			"source": "DIN 137 A (M12, curved/domed spring washer, gew\u00f6lbt; d1=13, d2=24, s=1.2, continuous ring with no split). Reuses curved_washer with gap_deg=0. Dome height representative (free height ~3 mm; DIN envelope 2.5-5 mm) \u2014 the cone tilt is chosen to sit in that range, not a published value.",
 			"svg": "din137a.svg"
 		},
+		"din1440": {
+			"family": "flat_washer",
+			"sha256": "2e6567bd0e6b883d686bf12bc17fb9c46839e89f1630e33a295efefba43c7734",
+			"source": "DIN 1440 (pin \u00d812 / M12, medium washer for bolts and pins; d1=12, d2=25, s=3). Dimensions from Fasteners.eu.",
+			"svg": "din1440.svg"
+		},
 		"din2093": {
 			"family": "curved_washer",
 			"sha256": "38df6af4e97bde60389066ed4800d2488875c883aeff2df2e23ad94bd294c284",
@@ -96,6 +102,12 @@
 			"source": "DIN 6319 Form D (M12, Kegelpfanne / conical seat; d2=13, d3=24, h3=3, flat bottom with concave spherical recess receiving the Form C washer). Mating sphere radius representative (~26 mm), same as Form C.",
 			"svg": "din6319d.svg"
 		},
+		"din6340": {
+			"family": "flat_washer",
+			"sha256": "b5546789de226b4a0910a918b642a463cf9cd57aaa4338e226f75e2050ceec08",
+			"source": "DIN 6340 (M12, washer for clamping fixtures / Scheiben f\u00fcr Spannzeuge, heavy; d1=13, d2=35, s=5). Dimensions from Fasteners.eu / Ganter tables.",
+			"svg": "din6340.svg"
+		},
 		"din6796": {
 			"family": "curved_washer",
 			"sha256": "8e0857660aad46c59c953aa5ba459f6e6301aa4d7335914e6173ddf6a12f4e3c",
@@ -144,11 +156,23 @@
 			"source": "DIN 7349 (M12, thick washer for clamping sleeves)",
 			"svg": "din7349.svg"
 		},
+		"din7349d": {
+			"family": "flat_washer",
+			"sha256": "4a159886212cdda9f0a33cd2744ece3642077f25293ee6f599e7708cf0d9ccab",
+			"source": "DIN 7349 (M12, heavy thick washer for bolts with heavy clamping sleeves; d1=13, d2=30, s=6). Dimensions from Fasteners.eu.",
+			"svg": "din7349d.svg"
+		},
 		"din7603": {
 			"family": "flat_washer",
 			"sha256": "d444f47427ee87293751a160f1ec40c72fe867e54250156f756288e0f20e89fc",
 			"source": "DIN 7603-A (12x18 sealing ring; thickness ~1.5 unverified)",
 			"svg": "din7603.svg"
+		},
+		"din7603d": {
+			"family": "flat_washer",
+			"sha256": "d444f47427ee87293751a160f1ec40c72fe867e54250156f756288e0f20e89fc",
+			"source": "DIN 7603 (12x18, sealing ring / Dichtring, copper/aluminium; d1=12, d2=18). Thickness representative (form/material dependent, commonly 1.0-1.5 mm; 1.5 chosen).",
+			"svg": "din7603d.svg"
 		},
 		"din7980": {
 			"family": "helical_spring_washer",
@@ -173,6 +197,12 @@
 			"sha256": "5ed3721e7733d8892848dc86cc5c3aa507105a86cfe71d48b1c6fa9425bae381",
 			"source": "DIN 988 (12x18x0.2 shim ring, representative)",
 			"svg": "din988.svg"
+		},
+		"din988d": {
+			"family": "flat_washer",
+			"sha256": "f7c999bf562073d01f459cd62dcb2cc606683a2c307bb20f7cd8852317870187",
+			"source": "DIN 988 (12x18, shim ring / Passscheibe; d1=12, d2=18). Thickness representative (DIN 988 is a shim series 0.1-2 mm; a mid 1.0 mm ring is drawn).",
+			"svg": "din988d.svg"
 		},
 		"iso7089": {
 			"family": "flat_washer",
@@ -209,6 +239,12 @@
 			"sha256": "d7100dce55c7e48daa305635e4014c075297dcfff8717a68a6c72aeeab743bcb",
 			"source": "ISO 7416 (M12, structural washer = DIN 6916)",
 			"svg": "iso7416.svg"
+		},
+		"iso8738": {
+			"family": "flat_washer",
+			"sha256": "2e6567bd0e6b883d686bf12bc17fb9c46839e89f1630e33a295efefba43c7734",
+			"source": "ISO 8738 (size 12, plain washer for clevis pins, dimensionally equivalent to DIN 1440; d1=12, d2=25, s=3).",
+			"svg": "iso8738.svg"
 		}
 	},
 	"toolchain": {

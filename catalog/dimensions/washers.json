@@ -645,5 +645,107 @@
 				"code": "137 A"
 			}
 		]
+	},
+	"din6340": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 35.0,
+			"thickness": 5.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 6340 (M12, washer for clamping fixtures / Scheiben für Spannzeuge, heavy; d1=13, d2=35, s=5). Dimensions from Fasteners.eu / Ganter tables.",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "6340"
+			}
+		]
+	},
+	"din1440": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 12.0,
+			"d_outer": 25.0,
+			"thickness": 3.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 1440 (pin Ø12 / M12, medium washer for bolts and pins; d1=12, d2=25, s=3). Dimensions from Fasteners.eu.",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "1440"
+			}
+		]
+	},
+	"iso8738": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 12.0,
+			"d_outer": 25.0,
+			"thickness": 3.0
+		},
+		"hardwareType": "washer",
+		"source": "ISO 8738 (size 12, plain washer for clevis pins, dimensionally equivalent to DIN 1440; d1=12, d2=25, s=3).",
+		"verified": false,
+		"designations": [
+			{
+				"system": "ISO",
+				"code": "8738"
+			}
+		]
+	},
+	"din7349d": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 30.0,
+			"thickness": 6.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 7349 (M12, heavy thick washer for bolts with heavy clamping sleeves; d1=13, d2=30, s=6). Dimensions from Fasteners.eu.",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "7349"
+			}
+		]
+	},
+	"din7603d": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 12.0,
+			"d_outer": 18.0,
+			"thickness": 1.5
+		},
+		"hardwareType": "washer",
+		"source": "DIN 7603 (12x18, sealing ring / Dichtring, copper/aluminium; d1=12, d2=18). Thickness representative (form/material dependent, commonly 1.0-1.5 mm; 1.5 chosen).",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "7603"
+			}
+		]
+	},
+	"din988d": {
+		"family": "flat_washer",
+		"shape": {
+			"d_inner": 12.0,
+			"d_outer": 18.0,
+			"thickness": 1.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 988 (12x18, shim ring / Passscheibe; d1=12, d2=18). Thickness representative (DIN 988 is a shim series 0.1-2 mm; a mid 1.0 mm ring is drawn).",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "988"
+			}
+		]
 	}
 }

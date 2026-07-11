@@ -66,6 +66,12 @@
 			"source": "DIN 440-R (M12, large flat washer)",
 			"svg": "din440.svg"
 		},
+		"din462": {
+			"family": "tab_washer",
+			"sha256": "4bbfa24b63d7fafb13a759a67c5329330b616a650a34ac93a55ff2dbfc2a7738",
+			"source": "DIN 462 (M12, internal tab lock washer; d1=12, d2=28, s=0.8, tab 5x9.3, bent up at the bore)",
+			"svg": "din462.svg"
+		},
 		"din463": {
 			"family": "tab_washer",
 			"sha256": "ae52a604f7aafd29c70e8090824384ec722ea32f5d5c81cb3560de3b7f975d71",
@@ -125,6 +131,12 @@
 			"sha256": "d444f47427ee87293751a160f1ec40c72fe867e54250156f756288e0f20e89fc",
 			"source": "DIN 7603-A (12x18 sealing ring; thickness ~1.5 unverified)",
 			"svg": "din7603.svg"
+		},
+		"din7980": {
+			"family": "helical_spring_washer",
+			"sha256": "aa37c6fd49e32bea828ccaa76f21918e9d12927bdd084c67402c9c16bb0bdfab",
+			"source": "DIN 7980 (M12, spring lock washer for cylinder-head screws; d1=12.2, d2=18, section 2.5, split ring)",
+			"svg": "din7980.svg"
 		},
 		"din9021": {
 			"family": "flat_washer",

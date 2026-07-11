@@ -547,5 +547,47 @@
 				"code": "463"
 			}
 		]
+	},
+	"din462": {
+		"family": "tab_washer",
+		"shape": {
+			"d_inner": 12.0,
+			"d_outer": 28.0,
+			"thickness": 0.8,
+			"tabs": [
+				{
+					"angle": 0,
+					"length": 9.3,
+					"width": 5.0,
+					"internal": true
+				}
+			]
+		},
+		"hardwareType": "washer",
+		"source": "DIN 462 (M12, internal tab lock washer; d1=12, d2=28, s=0.8, tab 5x9.3, bent up at the bore)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "462"
+			}
+		]
+	},
+	"din7980": {
+		"family": "helical_spring_washer",
+		"shape": {
+			"d_inner": 12.2,
+			"d_outer": 18.0,
+			"section": 2.5
+		},
+		"hardwareType": "washer",
+		"source": "DIN 7980 (M12, spring lock washer for cylinder-head screws; d1=12.2, d2=18, section 2.5, split ring)",
+		"verified": false,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "7980"
+			}
+		]
 	}
 }

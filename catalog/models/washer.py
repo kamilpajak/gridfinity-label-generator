@@ -185,6 +185,10 @@ def tab_washer(d_inner: float, d_outer: float, thickness: float, tabs: list):
         raise ValueError(f"tab_washer: need 0 < d_inner < d_outer, got {d_inner}, {d_outer}")
     if thickness <= 0:
         raise ValueError(f"tab_washer: thickness must be positive, got {thickness}")
+    if thickness > (d_outer - d_inner) / 2.0:
+        raise ValueError(
+            f"tab_washer: thickness {thickness} exceeds the radial land "
+            f"({(d_outer - d_inner) / 2.0}) — a tab would protrude past the opposite edge")
     if not tabs:
         raise ValueError("tab_washer: need at least one tab")
     r_out = d_outer / 2.0
@@ -201,7 +205,8 @@ def tab_washer(d_inner: float, d_outer: float, thickness: float, tabs: list):
         # (centre r_out - thickness/2). Internal: inner face on the bore (centre r_in +
         # thickness/2). Base is flush with the disc bottom. Position first, THEN rotate
         # about Z so the rotation carries the placed flap to the tab's angular position.
-        cx = (r_in + thickness / 2.0) if tab.get("internal") else (r_out - thickness / 2.0)
+        is_internal = tab.get("internal") is True   # absent/any non-True -> external (at the rim)
+        cx = (r_in + thickness / 2.0) if is_internal else (r_out - thickness / 2.0)
         flap = Box(thickness, width, length)
         flap = Pos(cx, 0, length / 2.0 - thickness / 2.0) * flap
         flap = Rotation(0, 0, tab.get("angle", 0)) * flap

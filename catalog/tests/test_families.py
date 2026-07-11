@@ -126,6 +126,8 @@ def test_internal_toothed_guards_bad_geometry():
         toothed_lock_washer_internal(d_inner=13.0, d_outer=20.5, thickness=1.0, teeth=10, tooth_depth=10.0)
     with pytest.raises(ValueError):
         toothed_lock_washer_internal(d_inner=13.0, d_outer=20.5, thickness=1.0, teeth=10, tip_ratio=1.0)
+    with pytest.raises(ValueError):
+        toothed_lock_washer_internal(d_inner=13.0, d_outer=20.5, thickness=1.0, teeth=10, tooth_depth=-1.0)
 
 
 def test_new_families_dispatch_via_registry():

@@ -49,21 +49,21 @@ def helical_spring_washer(d_inner: float, d_outer: float, section: float, gap_de
     return bp.part
 
 
-def _check_toothed(d_inner, d_outer, teeth, tip_ratio, fn):
-    """Shared guards for the toothed-washer families."""
+def _check_toothed(d_inner, d_outer, teeth, tip_ratio, caller):
+    """Shared guards for the toothed-washer families (`caller` names them in errors)."""
     if not (0 < d_inner < d_outer):
-        raise ValueError(f"{fn}: need 0 < d_inner < d_outer, got {d_inner}, {d_outer}")
+        raise ValueError(f"{caller}: need 0 < d_inner < d_outer, got {d_inner}, {d_outer}")
     if teeth < 3:
-        raise ValueError(f"{fn}: need teeth >= 3, got {teeth}")
+        raise ValueError(f"{caller}: need teeth >= 3, got {teeth}")
     if not (0 < tip_ratio < 1):
-        raise ValueError(f"{fn}: need 0 < tip_ratio < 1, got {tip_ratio}")
+        raise ValueError(f"{caller}: need 0 < tip_ratio < 1, got {tip_ratio}")
 
 
 def _toothed_ring_points(r_tip, r_root, teeth, tip_ratio):
-    """2D vertices of a `teeth`-pointed star ring: one valley vertex at `r_root` on
-    each pitch line, plus two tip vertices at `r_tip` straddling each pitch midpoint.
-    Works for outward teeth (r_tip > r_root, external form) and inward teeth
-    (r_tip < r_root, internal form) alike."""
+    """2D vertices of a `teeth`-pointed star ring: one vertex at `r_root` on each pitch
+    line, plus two vertices at `r_tip` straddling each pitch midpoint. `r_tip` is always
+    the pointed end — for external teeth it is the larger radius (teeth point outward),
+    for internal teeth it is the smaller radius (teeth point inward toward the bore)."""
     pitch = 2 * math.pi / teeth
     half_tip = pitch * tip_ratio / 2.0
     pts = []

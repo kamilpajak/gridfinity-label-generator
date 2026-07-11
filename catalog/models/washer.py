@@ -176,10 +176,11 @@ def countersunk_toothed_washer(d_inner: float, d_outer: float, thickness: float,
 
 
 def tab_washer(d_inner: float, d_outer: float, thickness: float, tabs: list):
-    """Round washer with one or more external locking tabs bent up ~90° at the rim
-    (DIN 432 external nose, DIN 93 one tab, DIN 463 two tabs). `tabs` is a list of
-    dicts, each {"angle": deg, "length": mm (tab height once bent up), "width": mm}.
-    Each tab is a flap standing vertically at the outer rim, fused to the disc."""
+    """Round washer with one or more locking tabs bent up ~90°, fused to the disc.
+    External tabs stand at the outer rim (DIN 432 nose, DIN 93 one tab, DIN 463 two
+    tabs); an internal tab stands at the bore (DIN 462). `tabs` is a list of dicts,
+    each {"angle": deg, "length": mm (tab height once bent up), "width": mm,
+    "internal": bool (default False, i.e. at the rim)}."""
     if not (0 < d_inner < d_outer):
         raise ValueError(f"tab_washer: need 0 < d_inner < d_outer, got {d_inner}, {d_outer}")
     if thickness <= 0:
@@ -187,19 +188,22 @@ def tab_washer(d_inner: float, d_outer: float, thickness: float, tabs: list):
     if not tabs:
         raise ValueError("tab_washer: need at least one tab")
     r_out = d_outer / 2.0
+    r_in = d_inner / 2.0
     part = flat_washer(d_inner, d_outer, thickness)
     for tab in tabs:
         length, width = tab["length"], tab["width"]
         if length <= 0 or width <= 0:
             raise ValueError(f"tab_washer: tab length and width must be positive, got {tab}")
         # Upright flap: radial depth = thickness, tangential = width, vertical = length.
-        # Seat its outer face at the rim (centre at r_out - thickness/2) so the whole flap
-        # lies inside the disc's circular edge — this gives a full-thickness volumetric
-        # overlap at the fuse instead of the thin chord sliver a rim-straddling flap leaves.
-        # Base is flush with the disc bottom. Position first, THEN rotate about Z: the
-        # rotation carries the already-placed flap around to the tab's angular position.
+        # Seat the face touching the disc edge exactly on that edge so the whole flap lies
+        # within the disc ring — a full-thickness volumetric overlap for the fuse, not the
+        # thin chord sliver an edge-straddling flap leaves. External: outer face on the rim
+        # (centre r_out - thickness/2). Internal: inner face on the bore (centre r_in +
+        # thickness/2). Base is flush with the disc bottom. Position first, THEN rotate
+        # about Z so the rotation carries the placed flap to the tab's angular position.
+        cx = (r_in + thickness / 2.0) if tab.get("internal") else (r_out - thickness / 2.0)
         flap = Box(thickness, width, length)
-        flap = Pos(r_out - thickness / 2.0, 0, length / 2.0 - thickness / 2.0) * flap
+        flap = Pos(cx, 0, length / 2.0 - thickness / 2.0) * flap
         flap = Rotation(0, 0, tab.get("angle", 0)) * flap
         part = part + flap
     return part

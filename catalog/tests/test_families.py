@@ -229,6 +229,20 @@ def test_tab_washer_more_tabs_add_material():
     assert two.volume > one.volume
 
 
+def test_tab_washer_internal_tab_stands_at_the_bore():
+    from catalog.models.washer import tab_washer, flat_washer
+
+    part = tab_washer(12.0, 28.0, 0.8, [{"angle": 0, "length": 9.3, "width": 5.0, "internal": True}])
+    disc = flat_washer(12.0, 28.0, 0.8)
+    assert part.volume > disc.volume                       # the tab adds material
+    assert round(part.bounding_box().size.Z, 1) == 9.3     # tab stands up out of the plane
+    # the tab sits at the bore, so the min in-plane radius of any vertex is the bore radius
+    # minus nothing (the flap's inner face is on the bore), well inside the disc's inner edge
+    tab_pts = [v for v in part.vertices() if v.Z > 0.5]    # vertices above the disc = the tab
+    assert tab_pts, "internal tab should contribute vertices above the disc plane"
+    assert min((v.X ** 2 + v.Y ** 2) ** 0.5 for v in tab_pts) < 8.0   # near the bore (r=6), not the rim (r=14)
+
+
 def test_tab_washer_guards_bad_geometry():
     from catalog.models.washer import tab_washer
     import pytest

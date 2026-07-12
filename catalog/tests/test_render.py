@@ -25,29 +25,28 @@ def test_render_two_views_writes_svg_with_all_layers(tmp_path: Path):
     assert vb is not None and float(vb.group(1)) > 20.0
 
 
-def test_centerline_coords_cross_gives_horizontal_and_vertical_through_center():
+def test_centerline_coords_cross_emits_four_half_axes_from_the_center():
     from catalog.render import _centerline_coords
 
     # A 20 x 10 box centered at (5, 5); ext overhang of 2.
     coords = _centerline_coords((-5.0, 0.0, 15.0, 10.0), ext=2.0, cross=True)
-    assert len(coords) == 2
 
-    (hx1, hy1), (hx2, hy2) = coords[0]  # horizontal axis at center y = 5
-    assert hy1 == hy2 == 5.0
-    assert hx1 == -7.0 and hx2 == 17.0  # spans full width + ext on both ends
-
-    (vx1, vy1), (vx2, vy2) = coords[1]  # vertical axis at center x = 5
-    assert vx1 == vx2 == 5.0
-    assert vy1 == -2.0 and vy2 == 12.0
+    # Each axis is two half-lines, so a cross is four segments, every one of them
+    # starting at the center (5, 5) and running outward past the outline by ext.
+    assert len(coords) == 4
+    assert all(start == (5.0, 5.0) for start, _ in coords)
+    ends = sorted(end for _, end in coords)
+    assert ends == [(-7.0, 5.0), (5.0, -2.0), (5.0, 12.0), (17.0, 5.0)]
 
 
-def test_centerline_coords_without_cross_gives_horizontal_axis_only():
+def test_centerline_coords_without_cross_emits_two_horizontal_half_axes():
     from catalog.render import _centerline_coords
 
     coords = _centerline_coords((-5.0, 0.0, 15.0, 10.0), ext=2.0, cross=False)
-    assert len(coords) == 1
-    (_, hy1), (_, hy2) = coords[0]
-    assert hy1 == hy2 == 5.0
+    assert len(coords) == 2
+    assert all(start == (5.0, 5.0) for start, _ in coords)
+    ends = sorted(end for _, end in coords)
+    assert ends == [(-7.0, 5.0), (17.0, 5.0)]
 
 
 def test_center_layer_holds_the_symmetry_axis_lines_as_a_dashed_chain(tmp_path: Path):
@@ -69,5 +68,6 @@ def test_center_layer_holds_the_symmetry_axis_lines_as_a_dashed_chain(tmp_path: 
     # A chain-line dash pattern is what makes it read as an engineering centerline.
     assert center.get("stroke-dasharray")
     lines = [c for c in center if strip(c.tag) == "line"]
-    # Full cross on the round face view (2 lines) + rotation axis on the profile (1).
-    assert len(lines) == 3
+    # Each axis is two half-lines from the center: face-view cross (4) + profile
+    # rotation axis (2) = 6.
+    assert len(lines) == 6

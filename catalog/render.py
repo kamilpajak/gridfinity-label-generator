@@ -53,17 +53,19 @@ DEFAULT_AXIS_Z = CameraPreset(
 def _centerline_coords(bbox, ext, cross):
     """Endpoint pairs for the symmetry axes of a view.
 
-    bbox is (xmin, ymin, xmax, ymax). The horizontal axis runs through the
-    vertical center and overhangs the outline by ``ext`` on each end; with
-    ``cross`` it is joined by a vertical axis through the horizontal center
-    (the full cross a circular face view needs). A profile view, symmetric
-    only about its rotation axis, takes the horizontal line alone.
+    bbox is (xmin, ymin, xmax, ymax). Each axis is emitted as two half-lines
+    running from the view's own center outward (overhanging the outline by
+    ``ext``), with the center as the first point of every pair. Because the
+    dash pattern begins at that first point, a long dash always starts at the
+    crossing and the two arms mirror each other — the ISO 128 rule that
+    centerlines meet on dashes, not gaps. The horizontal (rotation) axis is
+    always drawn; ``cross`` adds the vertical axis a circular face view needs.
     """
     xmin, ymin, xmax, ymax = bbox
     cx, cy = (xmin + xmax) / 2.0, (ymin + ymax) / 2.0
-    coords = [((xmin - ext, cy), (xmax + ext, cy))]
+    coords = [((cx, cy), (xmin - ext, cy)), ((cx, cy), (xmax + ext, cy))]
     if cross:
-        coords.append(((cx, ymin - ext), (cx, ymax + ext)))
+        coords += [((cx, cy), (cx, ymin - ext)), ((cx, cy), (cx, ymax + ext))]
     return coords
 
 

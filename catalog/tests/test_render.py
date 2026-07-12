@@ -48,3 +48,26 @@ def test_centerline_coords_without_cross_gives_horizontal_axis_only():
     assert len(coords) == 1
     (_, hy1), (_, hy2) = coords[0]
     assert hy1 == hy2 == 5.0
+
+
+def test_center_layer_holds_the_symmetry_axis_lines_as_a_dashed_chain(tmp_path: Path):
+    import xml.etree.ElementTree as ET
+    from build123d import BuildPart, Cylinder, Mode
+    from catalog.render import render_two_views, DEFAULT_AXIS_Z
+
+    with BuildPart() as bp:
+        Cylinder(radius=10, height=4)
+        Cylinder(radius=4, height=4, mode=Mode.SUBTRACT)  # through hole
+    out = tmp_path / "ring.svg"
+    render_two_views(bp.part, DEFAULT_AXIS_Z, str(out))
+
+    root = ET.fromstring(out.read_text())
+    strip = lambda tag: tag.rsplit("}", 1)[-1]  # noqa: E731 - drop the SVG namespace
+    center = next(
+        g for g in root.iter() if strip(g.tag) == "g" and g.get("id") == "Center"
+    )
+    # A chain-line dash pattern is what makes it read as an engineering centerline.
+    assert center.get("stroke-dasharray")
+    lines = [c for c in center if strip(c.tag) == "line"]
+    # Full cross on the round face view (2 lines) + rotation axis on the profile (1).
+    assert len(lines) == 3

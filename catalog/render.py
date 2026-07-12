@@ -98,10 +98,16 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
     side_bbox = _edges_bbox(v_side + h_side)
 
     # Centerlines: a full cross on the circular face view, a single axis on the
-    # profile view. Overhang scales with the (larger) face view so both views
-    # share one consistent extension length.
+    # profile view. A single overhang, scaled to the largest span across both
+    # views, keeps the extension length consistent between them.
+    #
+    # Placement uses each view's bounding-box center as the symmetry center. That
+    # is exact for the axisymmetric parts this catalog draws (washers); a future
+    # non-symmetric family would need its axis passed in explicitly rather than
+    # inferred from the bbox.
     fw, fh = front_bbox[2] - front_bbox[0], front_bbox[3] - front_bbox[1]
-    ext = round(max(_CENTER_MIN_EXT_MM, _CENTER_EXT_FRAC * max(fw, fh)), 2)
+    sw, sh = side_bbox[2] - side_bbox[0], side_bbox[3] - side_bbox[1]
+    ext = round(max(_CENTER_MIN_EXT_MM, _CENTER_EXT_FRAC * max(fw, fh, sw, sh)), 2)
     center_coords = _centerline_coords(front_bbox, ext, cross=True)
     center_coords += _centerline_coords(side_bbox, ext, cross=False)
     centerlines = [Polyline((a[0], a[1], 0), (b[0], b[1], 0)) for a, b in center_coords]

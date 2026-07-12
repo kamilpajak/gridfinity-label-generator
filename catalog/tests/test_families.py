@@ -181,10 +181,10 @@ def test_square_washer_is_a_flat_square_plate_with_a_bore():
 def test_square_taper_washer_is_a_wedge():
     from catalog.models.washer import square_washer
 
-    flat = square_washer(side=30.0, thickness=4.1, d_bore=13.5)               # no taper
-    wedge = square_washer(side=30.0, thickness=4.1, d_bore=13.5, taper=2.1)   # DIN 435
+    flat = square_washer(side=30.0, thickness=5.0, d_bore=13.5, side_b=26.0)              # no taper
+    wedge = square_washer(side=30.0, thickness=5.0, d_bore=13.5, taper=2.4, side_b=26.0)  # DIN 435
     # the wedge spans thickness -> thickness+taper in Z, and holds more material
-    assert round(wedge.bounding_box().size.Z, 1) == round(4.1 + 2.1, 1)
+    assert round(wedge.bounding_box().size.Z, 1) == round(5.0 + 2.4, 1)
     assert wedge.volume > flat.volume
 
 

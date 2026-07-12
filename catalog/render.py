@@ -7,6 +7,12 @@ VISIBLE_WEIGHT_MM = 0.4
 HIDDEN_WEIGHT_MM = 0.3
 HIDDEN_COLOR = (110, 110, 110)
 
+# Engineering centerlines (thin chain lines marking the axes of symmetry).
+CENTERLINE_WEIGHT_MM = 0.2
+CENTERLINE_COLOR = (0, 0, 0)
+_CENTER_EXT_FRAC = 0.08  # overhang past the outline, as a fraction of view size
+_CENTER_MIN_EXT_MM = 1.5  # floor so small drawings still get a visible overhang
+
 _SEGMENTS = 72  # per-edge discretization; smooth enough for label-size icons
 
 
@@ -44,6 +50,23 @@ DEFAULT_AXIS_Z = CameraPreset(
 )
 
 
+def _centerline_coords(bbox, ext, cross):
+    """Endpoint pairs for the symmetry axes of a view.
+
+    bbox is (xmin, ymin, xmax, ymax). The horizontal axis runs through the
+    vertical center and overhangs the outline by ``ext`` on each end; with
+    ``cross`` it is joined by a vertical axis through the horizontal center
+    (the full cross a circular face view needs). A profile view, symmetric
+    only about its rotation axis, takes the horizontal line alone.
+    """
+    xmin, ymin, xmax, ymax = bbox
+    cx, cy = (xmin + xmax) / 2.0, (ymin + ymax) / 2.0
+    coords = [((xmin - ext, cy), (xmax + ext, cy))]
+    if cross:
+        coords.append(((cx, ymin - ext), (cx, ymax + ext)))
+    return coords
+
+
 def _edges_bbox(edges):
     """Combined (xmin, ymin, xmax, ymax) of projected 2D edges."""
     xs_min = ys_min = float("inf")
@@ -65,19 +88,34 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
         viewport_origin=preset.side_origin, viewport_up=preset.side_up
     )
 
-    fx_min, _, fx_max, _ = _edges_bbox(v_front + h_front)
-    sx_min, _, sx_max, _ = _edges_bbox(v_side + h_side)
+    front_bbox = _edges_bbox(v_front + h_front)
+    side_bbox0 = _edges_bbox(v_side + h_side)
     # Place the side view to the right of the front view with a fixed gap.
-    dx = (fx_max + gap_mm) - sx_min
+    dx = (front_bbox[2] + gap_mm) - side_bbox0[0]
     move = Location((dx, 0, 0))
     v_side = [move * e for e in v_side]
     h_side = [move * e for e in h_side]
+    side_bbox = _edges_bbox(v_side + h_side)
+
+    # Centerlines: a full cross on the circular face view, a single axis on the
+    # profile view. Overhang scales with the (larger) face view so both views
+    # share one consistent extension length.
+    fw, fh = front_bbox[2] - front_bbox[0], front_bbox[3] - front_bbox[1]
+    ext = round(max(_CENTER_MIN_EXT_MM, _CENTER_EXT_FRAC * max(fw, fh)), 2)
+    center_coords = _centerline_coords(front_bbox, ext, cross=True)
+    center_coords += _centerline_coords(side_bbox, ext, cross=False)
+    centerlines = [Polyline((a[0], a[1], 0), (b[0], b[1], 0)) for a, b in center_coords]
 
     exporter = ExportSVG(unit=Unit.MM, precision=4, margin=2.0)
     exporter.add_layer("Visible", line_weight=VISIBLE_WEIGHT_MM, line_type=LineType.CONTINUOUS)
     exporter.add_layer(
         "Hidden", line_color=HIDDEN_COLOR, line_weight=HIDDEN_WEIGHT_MM, line_type=LineType.ISO_DASH
     )
+    exporter.add_layer(
+        "Center", line_color=CENTERLINE_COLOR, line_weight=CENTERLINE_WEIGHT_MM,
+        line_type=LineType.CENTER,
+    )
     exporter.add_shape(_to_polylines(v_front + v_side), layer="Visible")
     exporter.add_shape(_to_polylines(h_front + h_side), layer="Hidden")
+    exporter.add_shape(centerlines, layer="Center")
     exporter.write(out_path)

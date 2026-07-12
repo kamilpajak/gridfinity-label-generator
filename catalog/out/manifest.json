@@ -2,429 +2,429 @@
 	"standards": {
 		"din125": {
 			"family": "flat_washer",
-			"sha256": "11d6b6ae303961281cd4a4dd8edc881ffa77ad63c3330232ed5220aa0b88c608",
+			"sha256": "61fb6aa669d31fce4095ad01047eaed8544675fbb334e8446270520a389bd068",
 			"source": "DIN 125-1:2011 (M12)",
 			"svg": "din125.svg"
 		},
 		"din125i": {
 			"alias_of": "din125",
 			"family": "flat_washer",
-			"sha256": "11d6b6ae303961281cd4a4dd8edc881ffa77ad63c3330232ed5220aa0b88c608",
+			"sha256": "61fb6aa669d31fce4095ad01047eaed8544675fbb334e8446270520a389bd068",
 			"source": "variant key sharing DIN 125 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din125.svg"
 		},
 		"din126": {
 			"family": "flat_washer",
-			"sha256": "72da716823f0dd6ec06c82dc7573ac9c31912f61908eff7d2d0e3ca73646cae9",
+			"sha256": "a088d26ee12156ddddc488b8e2272092c0a9148935d10c1d87401510a277196f",
 			"source": "DIN 126:2020 (M12, coarse)",
 			"svg": "din126.svg"
 		},
 		"din126i": {
 			"alias_of": "din126",
 			"family": "flat_washer",
-			"sha256": "72da716823f0dd6ec06c82dc7573ac9c31912f61908eff7d2d0e3ca73646cae9",
+			"sha256": "a088d26ee12156ddddc488b8e2272092c0a9148935d10c1d87401510a277196f",
 			"source": "variant key sharing DIN 126 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din126.svg"
 		},
 		"din127": {
 			"family": "helical_spring_washer",
-			"sha256": "df98e8a72ff512c85d14c4cc63a410b41ea30ba80e2443193099c8e24af3c330",
+			"sha256": "c7af7b4c1905f5a1738dfa9d0138bb139e5d1a0578783326093c341363d9bbb5",
 			"source": "DIN 127-B:1997 (M12)",
 			"svg": "din127.svg"
 		},
 		"din127p": {
 			"alias_of": "din127",
 			"family": "helical_spring_washer",
-			"sha256": "df98e8a72ff512c85d14c4cc63a410b41ea30ba80e2443193099c8e24af3c330",
+			"sha256": "c7af7b4c1905f5a1738dfa9d0138bb139e5d1a0578783326093c341363d9bbb5",
 			"source": "plated (electro-zinc) variant of DIN 127; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din127.svg"
 		},
 		"din128": {
 			"family": "curved_washer",
-			"sha256": "d2d6f96b24b108d28e8b90b4f904fd32b95a810b038ba72463553a11f0787f2d",
+			"sha256": "b2138cb6d6d852a6719124539367c6157d8e548e70d853e9cfc3bb8575bbb2a3",
 			"source": "DIN 128-A:2011 (M12, curved)",
 			"svg": "din128.svg"
 		},
 		"din128a": {
 			"alias_of": "din128",
 			"family": "curved_washer",
-			"sha256": "d2d6f96b24b108d28e8b90b4f904fd32b95a810b038ba72463553a11f0787f2d",
+			"sha256": "b2138cb6d6d852a6719124539367c6157d8e548e70d853e9cfc3bb8575bbb2a3",
 			"source": "DIN 128 Form A is the base curved spring washer; this key aliases it.",
 			"svg": "din128.svg"
 		},
 		"din137a": {
 			"family": "curved_washer",
-			"sha256": "440c0cbb0327cf243bc5da86b3d619e71f52bfc1bfe72e055510141ae85bbcff",
+			"sha256": "d2ee907d4c3552270b63ee3f3ff65fef15968dc85e3171f92e9bb056d4f1d029",
 			"source": "DIN 137 A (M12, curved/domed spring washer, gew\u00f6lbt; d1=13, d2=24, s=1.2, continuous ring with no split). Reuses curved_washer with gap_deg=0. Dome height representative (free height ~3 mm; DIN envelope 2.5-5 mm) \u2014 the cone tilt is chosen to sit in that range, not a published value.",
 			"svg": "din137a.svg"
 		},
 		"din1440": {
 			"family": "flat_washer",
-			"sha256": "2e6567bd0e6b883d686bf12bc17fb9c46839e89f1630e33a295efefba43c7734",
+			"sha256": "98e5cc5bb9d73df091bdb090fbe9b59c457d7f09ab42114e325107317a147c23",
 			"source": "DIN 1440 (pin \u00d812 / M12, medium washer for bolts and pins; d1=12, d2=25, s=3). Dimensions from Fasteners.eu.",
 			"svg": "din1440.svg"
 		},
 		"din1440i": {
 			"alias_of": "din1440",
 			"family": "flat_washer",
-			"sha256": "2e6567bd0e6b883d686bf12bc17fb9c46839e89f1630e33a295efefba43c7734",
+			"sha256": "98e5cc5bb9d73df091bdb090fbe9b59c457d7f09ab42114e325107317a147c23",
 			"source": "variant key sharing DIN 1440 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din1440.svg"
 		},
 		"din2093": {
 			"family": "curved_washer",
-			"sha256": "38df6af4e97bde60389066ed4800d2488875c883aeff2df2e23ad94bd294c284",
+			"sha256": "d3415ea77e307e7c3cfae5c6f068ac364d5f34b30d40e4db799ce1b5fb3232fd",
 			"source": "DIN 2093 (disc spring / Belleville, representative; nominal, unverified)",
 			"svg": "din2093.svg"
 		},
 		"din2093d": {
 			"alias_of": "din2093",
 			"family": "curved_washer",
-			"sha256": "38df6af4e97bde60389066ed4800d2488875c883aeff2df2e23ad94bd294c284",
+			"sha256": "d3415ea77e307e7c3cfae5c6f068ac364d5f34b30d40e4db799ce1b5fb3232fd",
 			"source": "variant key for the DIN 2093 disc spring; identical geometry, aliased to the base.",
 			"svg": "din2093.svg"
 		},
 		"din432": {
 			"family": "tab_washer",
-			"sha256": "9fc6ee584baf66d7606c37424e9386e0b9ff57ae3919c2b20b9057a09e8a4b7a",
+			"sha256": "bee1843338e3db85b8fc96f4a4e93d8c272227323ffb21832e1a1294a750e2f5",
 			"source": "DIN 432 (M12, external nose lock washer; d2=30, s=1.2, nose width 4.5; nose length representative)",
 			"svg": "din432.svg"
 		},
 		"din432p": {
 			"alias_of": "din432",
 			"family": "tab_washer",
-			"sha256": "9fc6ee584baf66d7606c37424e9386e0b9ff57ae3919c2b20b9057a09e8a4b7a",
+			"sha256": "bee1843338e3db85b8fc96f4a4e93d8c272227323ffb21832e1a1294a750e2f5",
 			"source": "plated (electro-zinc) variant of DIN 432; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din432.svg"
 		},
 		"din433": {
 			"family": "flat_washer",
-			"sha256": "092e37274008d84175042949f6b059db197d41922206ea89abf6f67bce0e26cf",
+			"sha256": "81c38fba59395e433641746745792564daf4c97431a435cf17259f321aa84e63",
 			"source": "DIN 433-1:2020 (M12, small OD)",
 			"svg": "din433.svg"
 		},
 		"din433i": {
 			"alias_of": "din433",
 			"family": "flat_washer",
-			"sha256": "092e37274008d84175042949f6b059db197d41922206ea89abf6f67bce0e26cf",
+			"sha256": "81c38fba59395e433641746745792564daf4c97431a435cf17259f321aa84e63",
 			"source": "variant key sharing DIN 433 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din433.svg"
 		},
 		"din434": {
 			"family": "square_washer",
-			"sha256": "050cbe781ac2c60e3f368e10bcaa04ce10aa164bfaaec546d21c3a55a3038a3a",
+			"sha256": "ae21e7be2af77b5aa90f97b91462e051cbfcc9a7ca53a905147f7e77183a53f9",
 			"source": "DIN 434 (M12, square taper washer for U-channel, 8% slope, 26x30, s 2.5->4.9)",
 			"svg": "din434.svg"
 		},
 		"din434p": {
 			"alias_of": "din434",
 			"family": "square_washer",
-			"sha256": "050cbe781ac2c60e3f368e10bcaa04ce10aa164bfaaec546d21c3a55a3038a3a",
+			"sha256": "ae21e7be2af77b5aa90f97b91462e051cbfcc9a7ca53a905147f7e77183a53f9",
 			"source": "plated (electro-zinc) variant of DIN 434; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din434.svg"
 		},
 		"din435": {
 			"family": "square_washer",
-			"sha256": "fd3901b720e668865d7a19cb5ec5677a59ca9db731a2f59eb9c91037f2c21082",
+			"sha256": "03a3e708348af740ddaad0147f9091cae49950aa6314079543e4e519d598f7b7",
 			"source": "DIN 435 (M12, square taper washer for I-beam flanges; a=20.1, s 4.1->6.2)",
 			"svg": "din435.svg"
 		},
 		"din435p": {
 			"alias_of": "din435",
 			"family": "square_washer",
-			"sha256": "fd3901b720e668865d7a19cb5ec5677a59ca9db731a2f59eb9c91037f2c21082",
+			"sha256": "03a3e708348af740ddaad0147f9091cae49950aa6314079543e4e519d598f7b7",
 			"source": "plated (electro-zinc) variant of DIN 435; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din435.svg"
 		},
 		"din436": {
 			"family": "square_washer",
-			"sha256": "c4ed9e9ebe3e9b19dd2c24dc54f995a795c10f6ad8aaaa94b78e847f71dbdaa6",
+			"sha256": "cc1cb128c24ebfae034fbe7ab2f681fcc5fef740f5d0af09890ae75eb45d2c18",
 			"source": "DIN 436 (M12, flat square washer, 40x40x4)",
 			"svg": "din436.svg"
 		},
 		"din436p": {
 			"alias_of": "din436",
 			"family": "square_washer",
-			"sha256": "c4ed9e9ebe3e9b19dd2c24dc54f995a795c10f6ad8aaaa94b78e847f71dbdaa6",
+			"sha256": "cc1cb128c24ebfae034fbe7ab2f681fcc5fef740f5d0af09890ae75eb45d2c18",
 			"source": "plated (electro-zinc) variant of DIN 436; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din436.svg"
 		},
 		"din440": {
 			"family": "flat_washer",
-			"sha256": "c7ba049249922ba7fd7842395fda59a2c8f4b838f8837c7707070cce9a45ea13",
+			"sha256": "4407097fa43828beecc9604f29a14cadbfc4b68adae8cd27b26500463a92f235",
 			"source": "DIN 440-R (M12, large flat washer)",
 			"svg": "din440.svg"
 		},
 		"din462": {
 			"family": "tab_washer",
-			"sha256": "4bbfa24b63d7fafb13a759a67c5329330b616a650a34ac93a55ff2dbfc2a7738",
+			"sha256": "2afbe20506ddc74701fd446208d792e7e4b10680830e93e01973ca451971795a",
 			"source": "DIN 462 (M12, internal tab lock washer; d1=12, d2=28, s=0.8, tab 5x9.3, bent up at the bore)",
 			"svg": "din462.svg"
 		},
 		"din462p": {
 			"alias_of": "din462",
 			"family": "tab_washer",
-			"sha256": "4bbfa24b63d7fafb13a759a67c5329330b616a650a34ac93a55ff2dbfc2a7738",
+			"sha256": "2afbe20506ddc74701fd446208d792e7e4b10680830e93e01973ca451971795a",
 			"source": "plated (electro-zinc) variant of DIN 462; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din462.svg"
 		},
 		"din463": {
 			"family": "tab_washer",
-			"sha256": "ae52a604f7aafd29c70e8090824384ec722ea32f5d5c81cb3560de3b7f975d71",
+			"sha256": "2925f65ba22588ee7e686d182477277bf1546d733af58037d82d8ff57938d8b5",
 			"source": "DIN 463 (M12, two-tab lock washer, long+short; d2=30, s=1; tab lengths representative; standard withdrawn)",
 			"svg": "din463.svg"
 		},
 		"din463p": {
 			"alias_of": "din463",
 			"family": "tab_washer",
-			"sha256": "ae52a604f7aafd29c70e8090824384ec722ea32f5d5c81cb3560de3b7f975d71",
+			"sha256": "2925f65ba22588ee7e686d182477277bf1546d733af58037d82d8ff57938d8b5",
 			"source": "plated (electro-zinc) variant of DIN 463; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din463.svg"
 		},
 		"din6319c": {
 			"family": "spherical_seating_washer",
-			"sha256": "4351712b62bd3c5ae800eff4c53733f7eccacd693f22b761807de11a615625ca",
+			"sha256": "4d891c76f91008added30512a87b1e25d43a2ac24faa753de891534959e77dbb",
 			"source": "DIN 6319 Form C (M12, Kugelscheibe / spherical washer; d1=13, d3=24, h2=4, flat top with convex spherical underside). Mating sphere radius representative (~26 mm): DIN tables publish it inconsistently, chosen to seat in the Form D/G cup.",
 			"svg": "din6319c.svg"
 		},
 		"din6319d": {
 			"family": "spherical_seating_washer",
-			"sha256": "1d956e60b4353065b190e8b81f205dc84237550c18fae7bde44b4556ff409874",
+			"sha256": "a8b9e63960da9b2105bd25bbe6c1fd5987e8796f176b1980cc0ae05391695668",
 			"source": "DIN 6319 Form D (M12, Kegelpfanne / conical seat; d2=13, d3=24, h3=3, flat bottom with concave spherical recess receiving the Form C washer). Mating sphere radius representative (~26 mm), same as Form C.",
 			"svg": "din6319d.svg"
 		},
 		"din6340": {
 			"family": "flat_washer",
-			"sha256": "b5546789de226b4a0910a918b642a463cf9cd57aaa4338e226f75e2050ceec08",
+			"sha256": "ce75a45ad436302c5eb1b1c33115c961acdd42b796beefae34e5ed3b31d42dcf",
 			"source": "DIN 6340 (M12, washer for clamping fixtures / Scheiben f\u00fcr Spannzeuge, heavy; d1=13, d2=35, s=5). Dimensions from Fasteners.eu / Ganter tables.",
 			"svg": "din6340.svg"
 		},
 		"din6340d": {
 			"alias_of": "din6340",
 			"family": "flat_washer",
-			"sha256": "b5546789de226b4a0910a918b642a463cf9cd57aaa4338e226f75e2050ceec08",
+			"sha256": "ce75a45ad436302c5eb1b1c33115c961acdd42b796beefae34e5ed3b31d42dcf",
 			"source": "variant key for DIN 6340; identical geometry, aliased to the base.",
 			"svg": "din6340.svg"
 		},
 		"din6796": {
 			"family": "curved_washer",
-			"sha256": "8e0857660aad46c59c953aa5ba459f6e6301aa4d7335914e6173ddf6a12f4e3c",
+			"sha256": "8d55432ffbbe42c0ebb7a83673d4837a578ab6924ad712028e1ec82a78ebaa51",
 			"source": "DIN 6796 (M12 conical spring washer; nominal, unverified)",
 			"svg": "din6796.svg"
 		},
 		"din6797a": {
 			"family": "toothed_lock_washer",
-			"sha256": "d4682fe25e378749838c4875a8a234101281848f7ceb4dadd58714634ea9726b",
+			"sha256": "b241eea627bbb0761aa218b1a8e0d7c9bf0d589288a135b570d1671da024868f",
 			"source": "DIN 6797 A (M12, external tooth / Zahnscheibe, 10 teeth)",
 			"svg": "din6797a.svg"
 		},
 		"din6797j": {
 			"family": "toothed_lock_washer_internal",
-			"sha256": "a03d862dc7766faa1ac2b18b4847280a0e989b58564cee3641eb6fc95f0bc5b5",
+			"sha256": "cdf1ea3f730e8157456c45b1199aa460fc91213467fef6ffb91bb3e270e39eb8",
 			"source": "DIN 6797 J (M12, internal tooth / Innenzahn, 10 teeth)",
 			"svg": "din6797j.svg"
 		},
 		"din6798a": {
 			"family": "toothed_lock_washer",
-			"sha256": "3fe4e3780a230193330e02310bfce184d39b662fa608039131ac9877526f292a",
+			"sha256": "2ab3c912d7133ae47a6bd7a21d754ef53df3815c53ce3986f331a5dad3d9c3e0",
 			"source": "DIN 6798 A (M12, external serrated / F\u00e4cherscheibe, min 16 teeth)",
 			"svg": "din6798a.svg"
 		},
 		"din6798d": {
 			"alias_of": "din6798v",
 			"family": "countersunk_toothed_washer",
-			"sha256": "3f82002f48777a0e24c1e085fcb67063c257079bd7edbabe2849c4252ee70571",
+			"sha256": "cb87973f2f2bd64b7933945effb9d25a978ef0335331cc4f8d3a4ca1351bd2d8",
 			"source": "catalog 'Form D' label is not a real DIN 6798 form; its geometry is Form V, so this aliases din6798v.",
 			"svg": "din6798v.svg"
 		},
 		"din6798j": {
 			"family": "toothed_lock_washer_internal",
-			"sha256": "4cbe47ca2202b2058c01796bd1b87976acdbe992801e1d83d0cad877f622583d",
+			"sha256": "da979efb56fc5e1e8602767f294405055acfccf17399d1c53289b00bf5fb4384",
 			"source": "DIN 6798 J (M12, internal serrated / F\u00e4cherscheibe, min 16 teeth)",
 			"svg": "din6798j.svg"
 		},
 		"din6798v": {
 			"family": "countersunk_toothed_washer",
-			"sha256": "3f82002f48777a0e24c1e085fcb67063c257079bd7edbabe2849c4252ee70571",
+			"sha256": "cb87973f2f2bd64b7933945effb9d25a978ef0335331cc4f8d3a4ca1351bd2d8",
 			"source": "DIN 6798 V (M12, countersunk external serrated / Senkzahn, min 18 teeth, 90\u00b0 head)",
 			"svg": "din6798v.svg"
 		},
 		"din6916": {
 			"family": "flat_washer",
-			"sha256": "d7100dce55c7e48daa305635e4014c075297dcfff8717a68a6c72aeeab743bcb",
+			"sha256": "b0c4dc807a2e81a8f9d18cff86c014cedd2cd52f6b577df546b144c0ea3c2e2b",
 			"source": "DIN 6916 (M12, HV structural washer)",
 			"svg": "din6916.svg"
 		},
 		"din6916i": {
 			"alias_of": "din6916",
 			"family": "flat_washer",
-			"sha256": "d7100dce55c7e48daa305635e4014c075297dcfff8717a68a6c72aeeab743bcb",
+			"sha256": "b0c4dc807a2e81a8f9d18cff86c014cedd2cd52f6b577df546b144c0ea3c2e2b",
 			"source": "variant key sharing DIN 6916 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din6916.svg"
 		},
 		"din7349": {
 			"family": "flat_washer",
-			"sha256": "4a159886212cdda9f0a33cd2744ece3642077f25293ee6f599e7708cf0d9ccab",
+			"sha256": "3d5e809d7b3fd89a0c10a9529fb70a3a24b686b8840a02921b98f01505fff6f9",
 			"source": "DIN 7349 (M12, thick washer for clamping sleeves)",
 			"svg": "din7349.svg"
 		},
 		"din7349d": {
 			"family": "flat_washer",
-			"sha256": "4a159886212cdda9f0a33cd2744ece3642077f25293ee6f599e7708cf0d9ccab",
+			"sha256": "3d5e809d7b3fd89a0c10a9529fb70a3a24b686b8840a02921b98f01505fff6f9",
 			"source": "DIN 7349 (M12, heavy thick washer for bolts with heavy clamping sleeves; d1=13, d2=30, s=6). Dimensions from Fasteners.eu.",
 			"svg": "din7349d.svg"
 		},
 		"din7603": {
 			"family": "flat_washer",
-			"sha256": "d444f47427ee87293751a160f1ec40c72fe867e54250156f756288e0f20e89fc",
+			"sha256": "7e7e1a79893ec325e59bb66eb7cb5c47ccdcbb4c9586cd2eae1a7c27cd38a9aa",
 			"source": "DIN 7603-A (12x18 sealing ring; thickness ~1.5 unverified)",
 			"svg": "din7603.svg"
 		},
 		"din7603d": {
 			"family": "flat_washer",
-			"sha256": "d444f47427ee87293751a160f1ec40c72fe867e54250156f756288e0f20e89fc",
+			"sha256": "7e7e1a79893ec325e59bb66eb7cb5c47ccdcbb4c9586cd2eae1a7c27cd38a9aa",
 			"source": "DIN 7603 (12x18, sealing ring / Dichtring, copper/aluminium; d1=12, d2=18). Thickness representative (form/material dependent, commonly 1.0-1.5 mm; 1.5 chosen).",
 			"svg": "din7603d.svg"
 		},
 		"din7980": {
 			"family": "helical_spring_washer",
-			"sha256": "aa37c6fd49e32bea828ccaa76f21918e9d12927bdd084c67402c9c16bb0bdfab",
+			"sha256": "a6127bfeeafe18e261e5fdaca20521b053750de62d4e867229a241464e955397",
 			"source": "DIN 7980 (M12, spring lock washer for cylinder-head screws; d1=12.2, d2=18, section 2.5, split ring)",
 			"svg": "din7980.svg"
 		},
 		"din7980p": {
 			"alias_of": "din7980",
 			"family": "helical_spring_washer",
-			"sha256": "aa37c6fd49e32bea828ccaa76f21918e9d12927bdd084c67402c9c16bb0bdfab",
+			"sha256": "a6127bfeeafe18e261e5fdaca20521b053750de62d4e867229a241464e955397",
 			"source": "plated (electro-zinc) variant of DIN 7980; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din7980.svg"
 		},
 		"din9021": {
 			"family": "flat_washer",
-			"sha256": "3fec3507143fde676036fbb19ea7d654ae3b8ecc3358e762c68b13e438431c6d",
+			"sha256": "f714b776f8baa421aff01c44e9a8b7e14c87a2d5959f25303b26f69571cd4db8",
 			"source": "DIN 9021:1990 (M12, large OD)",
 			"svg": "din9021.svg"
 		},
 		"din9021i": {
 			"alias_of": "din9021",
 			"family": "flat_washer",
-			"sha256": "3fec3507143fde676036fbb19ea7d654ae3b8ecc3358e762c68b13e438431c6d",
+			"sha256": "f714b776f8baa421aff01c44e9a8b7e14c87a2d5959f25303b26f69571cd4db8",
 			"source": "variant key sharing DIN 9021 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din9021.svg"
 		},
 		"din93": {
 			"family": "tab_washer",
-			"sha256": "0ac604fc7713a70ca145a1e957258a5932d35d2c15bc14adbfaad9535bc2305b",
+			"sha256": "595c03f968cd6b8423bc525d23df18296ef11482be3a95502209c666d4842ac0",
 			"source": "DIN 93 (M12, one-tab lock washer; d2=30, s=1, tab width 12; tab length representative)",
 			"svg": "din93.svg"
 		},
 		"din93p": {
 			"alias_of": "din93",
 			"family": "tab_washer",
-			"sha256": "0ac604fc7713a70ca145a1e957258a5932d35d2c15bc14adbfaad9535bc2305b",
+			"sha256": "595c03f968cd6b8423bc525d23df18296ef11482be3a95502209c666d4842ac0",
 			"source": "plated (electro-zinc) variant of DIN 93; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din93.svg"
 		},
 		"din988": {
 			"family": "flat_washer",
-			"sha256": "5ed3721e7733d8892848dc86cc5c3aa507105a86cfe71d48b1c6fa9425bae381",
+			"sha256": "863f07ea15cd91b9aaa814ac1ba0c0e24124d29464640374a5289a28dcc73381",
 			"source": "DIN 988 (12x18x0.2 shim ring, representative)",
 			"svg": "din988.svg"
 		},
 		"din988d": {
 			"family": "flat_washer",
-			"sha256": "f7c999bf562073d01f459cd62dcb2cc606683a2c307bb20f7cd8852317870187",
+			"sha256": "74bc1ff14f30398a4f5a940203926e77f9b29e0fd0b6cc7b6fa7873bcaecf42b",
 			"source": "DIN 988 (12x18, shim ring / Passscheibe; d1=12, d2=18). Thickness representative (DIN 988 is a shim series 0.1-2 mm; a mid 1.0 mm ring is drawn).",
 			"svg": "din988d.svg"
 		},
 		"iso7089": {
 			"family": "flat_washer",
-			"sha256": "11d6b6ae303961281cd4a4dd8edc881ffa77ad63c3330232ed5220aa0b88c608",
+			"sha256": "61fb6aa669d31fce4095ad01047eaed8544675fbb334e8446270520a389bd068",
 			"source": "ISO 7089:2000 (M12) = DIN 125A",
 			"svg": "iso7089.svg"
 		},
 		"iso7089p": {
 			"alias_of": "iso7089",
 			"family": "flat_washer",
-			"sha256": "11d6b6ae303961281cd4a4dd8edc881ffa77ad63c3330232ed5220aa0b88c608",
+			"sha256": "61fb6aa669d31fce4095ad01047eaed8544675fbb334e8446270520a389bd068",
 			"source": "plated (electro-zinc) variant of ISO 7089; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7089.svg"
 		},
 		"iso7091": {
 			"family": "flat_washer",
-			"sha256": "72da716823f0dd6ec06c82dc7573ac9c31912f61908eff7d2d0e3ca73646cae9",
+			"sha256": "a088d26ee12156ddddc488b8e2272092c0a9148935d10c1d87401510a277196f",
 			"source": "ISO 7091:2000 (M12) = DIN 126",
 			"svg": "iso7091.svg"
 		},
 		"iso7091p": {
 			"alias_of": "iso7091",
 			"family": "flat_washer",
-			"sha256": "72da716823f0dd6ec06c82dc7573ac9c31912f61908eff7d2d0e3ca73646cae9",
+			"sha256": "a088d26ee12156ddddc488b8e2272092c0a9148935d10c1d87401510a277196f",
 			"source": "plated (electro-zinc) variant of ISO 7091; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7091.svg"
 		},
 		"iso7092": {
 			"family": "flat_washer",
-			"sha256": "d3c0da77578b0794c13b0e6f154037c53b8a09b765b17ffffb882d7643afe0fe",
+			"sha256": "f088034f2303540212be6de02382ecf45619212c090e7afd0261521f443982f2",
 			"source": "ISO 7092:2000 (M12) = DIN 433",
 			"svg": "iso7092.svg"
 		},
 		"iso7092p": {
 			"alias_of": "iso7092",
 			"family": "flat_washer",
-			"sha256": "d3c0da77578b0794c13b0e6f154037c53b8a09b765b17ffffb882d7643afe0fe",
+			"sha256": "f088034f2303540212be6de02382ecf45619212c090e7afd0261521f443982f2",
 			"source": "plated (electro-zinc) variant of ISO 7092; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7092.svg"
 		},
 		"iso7093": {
 			"family": "flat_washer",
-			"sha256": "77b564dc975c7e5551248edf4d34ebde7614310f9e2f2b3367ca531faf1a6c29",
+			"sha256": "f21863b76cbc185a34b61513ed723d07bbe1f7a56ba36a010f77c9ae0e4eaa7e",
 			"source": "ISO 7093-1 (M12, large series; nominal, unverified)",
 			"svg": "iso7093.svg"
 		},
 		"iso7093p": {
 			"alias_of": "iso7093",
 			"family": "flat_washer",
-			"sha256": "77b564dc975c7e5551248edf4d34ebde7614310f9e2f2b3367ca531faf1a6c29",
+			"sha256": "f21863b76cbc185a34b61513ed723d07bbe1f7a56ba36a010f77c9ae0e4eaa7e",
 			"source": "plated (electro-zinc) variant of ISO 7093; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7093.svg"
 		},
 		"iso7094": {
 			"family": "flat_washer",
-			"sha256": "3fec3507143fde676036fbb19ea7d654ae3b8ecc3358e762c68b13e438431c6d",
+			"sha256": "f714b776f8baa421aff01c44e9a8b7e14c87a2d5959f25303b26f69571cd4db8",
 			"source": "ISO 7094 (M12, extra large series; nominal, unverified)",
 			"svg": "iso7094.svg"
 		},
 		"iso7094p": {
 			"alias_of": "iso7094",
 			"family": "flat_washer",
-			"sha256": "3fec3507143fde676036fbb19ea7d654ae3b8ecc3358e762c68b13e438431c6d",
+			"sha256": "f714b776f8baa421aff01c44e9a8b7e14c87a2d5959f25303b26f69571cd4db8",
 			"source": "plated (electro-zinc) variant of ISO 7094; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7094.svg"
 		},
 		"iso7416": {
 			"family": "flat_washer",
-			"sha256": "d7100dce55c7e48daa305635e4014c075297dcfff8717a68a6c72aeeab743bcb",
+			"sha256": "b0c4dc807a2e81a8f9d18cff86c014cedd2cd52f6b577df546b144c0ea3c2e2b",
 			"source": "ISO 7416 (M12, structural washer = DIN 6916)",
 			"svg": "iso7416.svg"
 		},
 		"iso7416p": {
 			"alias_of": "iso7416",
 			"family": "flat_washer",
-			"sha256": "d7100dce55c7e48daa305635e4014c075297dcfff8717a68a6c72aeeab743bcb",
+			"sha256": "b0c4dc807a2e81a8f9d18cff86c014cedd2cd52f6b577df546b144c0ea3c2e2b",
 			"source": "plated (electro-zinc) variant of ISO 7416; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7416.svg"
 		},
 		"iso8738": {
 			"family": "flat_washer",
-			"sha256": "2e6567bd0e6b883d686bf12bc17fb9c46839e89f1630e33a295efefba43c7734",
+			"sha256": "98e5cc5bb9d73df091bdb090fbe9b59c457d7f09ab42114e325107317a147c23",
 			"source": "ISO 8738 (size 12, plain washer for clevis pins, dimensionally equivalent to DIN 1440; d1=12, d2=25, s=3).",
 			"svg": "iso8738.svg"
 		},
 		"iso8738p": {
 			"alias_of": "iso8738",
 			"family": "flat_washer",
-			"sha256": "2e6567bd0e6b883d686bf12bc17fb9c46839e89f1630e33a295efefba43c7734",
+			"sha256": "98e5cc5bb9d73df091bdb090fbe9b59c457d7f09ab42114e325107317a147c23",
 			"source": "plated (electro-zinc) variant of ISO 8738; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso8738.svg"
 		}

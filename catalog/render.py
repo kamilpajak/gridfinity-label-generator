@@ -61,9 +61,9 @@ DEFAULT_AXIS_Z = CameraPreset(
 NUT_PRESET = DEFAULT_AXIS_Z
 
 
-def preset_for_family(family: str) -> CameraPreset:
-    """Camera preset for a family. Nuts use NUT_PRESET; everything else the default."""
-    return NUT_PRESET if family == "nut" else DEFAULT_AXIS_Z
+def preset_for_hardware_type(hardware_type: str) -> CameraPreset:
+    """Camera preset selected by hardware type. Nuts use NUT_PRESET; everything else the default."""
+    return NUT_PRESET if hardware_type == "nut" else DEFAULT_AXIS_Z
 
 
 def _centerline_coords(bbox, ext, cross):

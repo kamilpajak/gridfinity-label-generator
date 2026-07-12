@@ -163,5 +163,6 @@ def test_build_renders_a_hex_nut_entry(tmp_path: Path):
     assert report["ok"] == ["iso4032"]
     assert (out / "iso4032.svg").exists()
     m = json.loads(manifest.read_text())["standards"]
-    assert m["iso4032"]["family"] == "nut" or m["iso4032"]["svg"] == "iso4032.svg"
+    assert m["iso4032"]["svg"] == "iso4032.svg"
+    assert m["iso4032"]["family"] == "hex_nut"
     assert len(m["iso4032"]["sha256"]) == 64

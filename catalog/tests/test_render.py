@@ -73,12 +73,12 @@ def test_center_layer_holds_the_symmetry_axis_lines_as_a_dashed_chain(tmp_path: 
     assert len(lines) == 6
 
 
-def test_preset_for_family_selects_the_nut_preset():
-    from catalog.render import preset_for_family, NUT_PRESET, DEFAULT_AXIS_Z
+def test_preset_for_hardware_type_selects_the_nut_preset():
+    from catalog.render import preset_for_hardware_type, NUT_PRESET, DEFAULT_AXIS_Z
 
-    assert preset_for_family("nut") is NUT_PRESET
-    assert preset_for_family("flat_washer") is DEFAULT_AXIS_Z
-    assert preset_for_family("anything-else") is DEFAULT_AXIS_Z
+    assert preset_for_hardware_type("nut") is NUT_PRESET
+    assert preset_for_hardware_type("washer") is DEFAULT_AXIS_Z
+    assert preset_for_hardware_type("screw") is DEFAULT_AXIS_Z
 
 
 def test_nut_preset_renders_two_height_aligned_views(tmp_path):
@@ -91,7 +91,6 @@ def test_nut_preset_renders_two_height_aligned_views(tmp_path):
     render_two_views(part, NUT_PRESET, str(out))
 
     text = out.read_text()
-    assert out.exists()
     assert "Visible" in text and "Hidden" in text and "Center" in text
     # Two views side by side: wider than a single face view of an 18mm-across-flats nut.
     vb = re.search(r'viewBox="[-\d.]+ [-\d.]+ ([\d.]+) [\d.]+"', text)

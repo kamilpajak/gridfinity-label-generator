@@ -6,7 +6,7 @@ from pathlib import Path
 
 from catalog.schema import validate_entry
 from catalog.models._registry import build_part
-from catalog.render import render_two_views, DEFAULT_AXIS_Z
+from catalog.render import render_two_views, preset_for_family
 
 
 def _toolchain() -> dict:
@@ -47,7 +47,7 @@ def build(dimensions_dir: str, out_dir: str, manifest_path: str) -> dict:
         try:
             part = build_part(entry["family"], entry["shape"])
             svg_path = out / f"{sid}.svg"
-            render_two_views(part, DEFAULT_AXIS_Z, str(svg_path))
+            render_two_views(part, preset_for_family(entry["family"]), str(svg_path))
             sha = hashlib.sha256(svg_path.read_bytes()).hexdigest()
             manifest["standards"][sid] = {
                 "svg": f"{sid}.svg",

@@ -54,6 +54,17 @@ DEFAULT_AXIS_Z = CameraPreset(
     side_up=(1, 0, 0),   # standing: length/diameter vertical, thickness horizontal
 )
 
+# Nuts share the washer camera geometry: look down the axis for the hex face view,
+# look along -Y for the profile, X vertical in both so the two views are height-aligned
+# (the orthographic-projection rule). The hex itself is oriented flats-horizontal by the
+# generator, so no preset change is needed beyond reusing these axes.
+NUT_PRESET = DEFAULT_AXIS_Z
+
+
+def preset_for_family(family: str) -> CameraPreset:
+    """Camera preset for a family. Nuts use NUT_PRESET; everything else the default."""
+    return NUT_PRESET if family == "nut" else DEFAULT_AXIS_Z
+
 
 def _centerline_coords(bbox, ext, cross):
     """Endpoint pairs for the symmetry axes of a view.

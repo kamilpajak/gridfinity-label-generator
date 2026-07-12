@@ -71,3 +71,28 @@ def test_center_layer_holds_the_symmetry_axis_lines_as_a_dashed_chain(tmp_path: 
     # Each axis is two half-lines from the center: face-view cross (4) + profile
     # rotation axis (2) = 6.
     assert len(lines) == 6
+
+
+def test_preset_for_family_selects_the_nut_preset():
+    from catalog.render import preset_for_family, NUT_PRESET, DEFAULT_AXIS_Z
+
+    assert preset_for_family("nut") is NUT_PRESET
+    assert preset_for_family("flat_washer") is DEFAULT_AXIS_Z
+    assert preset_for_family("anything-else") is DEFAULT_AXIS_Z
+
+
+def test_nut_preset_renders_two_height_aligned_views(tmp_path):
+    import re
+    from catalog.models.hex_nut import hex_nut
+    from catalog.render import render_two_views, NUT_PRESET
+
+    part = hex_nut(s=18.0, m=10.8, bore=10.2)
+    out = tmp_path / "nut.svg"
+    render_two_views(part, NUT_PRESET, str(out))
+
+    text = out.read_text()
+    assert out.exists()
+    assert "Visible" in text and "Hidden" in text and "Center" in text
+    # Two views side by side: wider than a single face view of an 18mm-across-flats nut.
+    vb = re.search(r'viewBox="[-\d.]+ [-\d.]+ ([\d.]+) [\d.]+"', text)
+    assert vb is not None and float(vb.group(1)) > 20.0

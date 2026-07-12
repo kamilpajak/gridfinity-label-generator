@@ -8,7 +8,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 125-1:2011 (M12)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -25,7 +25,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 126:2020 (M12, coarse)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -38,11 +38,11 @@
 		"shape": {
 			"d_inner": 13.0,
 			"d_outer": 20.0,
-			"thickness": 2.5
+			"thickness": 2.0
 		},
 		"hardwareType": "washer",
-		"source": "DIN 433-1:2020 (M12, small OD)",
-		"verified": false,
+		"source": "DIN 433-1:2020 (M12, small OD; d1 13, d2 20, s 2.0). Thickness matches ISO 7092 (same washer); was wrongly 2.5 (the DIN 125 thickness). Fasteners.eu / Accu.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -59,7 +59,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 9021:1990 (M12, large OD)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -71,12 +71,12 @@
 		"family": "helical_spring_washer",
 		"shape": {
 			"d_inner": 12.2,
-			"d_outer": 20.2,
-			"section": 3.5
+			"d_outer": 21.1,
+			"section": 2.5
 		},
 		"hardwareType": "washer",
-		"source": "DIN 127-B:1997 (M12)",
-		"verified": false,
+		"source": "DIN 127-B:1997 (M12; d1 12.2, d2 21.1, cross-section width b 4.0 x thickness s 2.5). Was wrongly d2 20.2 / section 3.5. section is the axial thickness (2.5); the radial width follows from d2-d1. Aspen/Fasteners.eu.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -88,12 +88,12 @@
 		"family": "curved_washer",
 		"shape": {
 			"d_inner": 12.2,
-			"d_outer": 21.0,
-			"thickness": 1.5
+			"d_outer": 21.1,
+			"thickness": 2.1
 		},
 		"hardwareType": "washer",
-		"source": "DIN 128-A:2011 (M12, curved)",
-		"verified": false,
+		"source": "DIN 128-A:2011 (M12, curved; d1 12.2, d2 21.1, material thickness s 2.1, free height ~3.35). Was wrongly d2 21.0 / s 1.5 (1.5 is not a DIN 128 M12 value). Aspen/Fasteners.eu.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -110,7 +110,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "ISO 7089:2000 (M12) = DIN 125A",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "ISO",
@@ -127,7 +127,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "ISO 7091:2000 (M12) = DIN 126",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "ISO",
@@ -144,7 +144,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "ISO 7092:2000 (M12) = DIN 433",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "ISO",
@@ -156,12 +156,12 @@
 		"family": "flat_washer",
 		"shape": {
 			"d_inner": 13.0,
-			"d_outer": 30.0,
+			"d_outer": 37.0,
 			"thickness": 3.0
 		},
 		"hardwareType": "washer",
-		"source": "ISO 7093-1 (M12, large series; nominal, unverified)",
-		"verified": false,
+		"source": "ISO 7093-1 (M12, large series; d1 13, d2 37, s 3). Dimensionally identical to DIN 9021; was wrongly d2 30. Fasteners.eu.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "ISO",
@@ -172,13 +172,13 @@
 	"iso7094": {
 		"family": "flat_washer",
 		"shape": {
-			"d_inner": 13.0,
-			"d_outer": 37.0,
-			"thickness": 3.0
+			"d_inner": 13.5,
+			"d_outer": 44.0,
+			"thickness": 4.0
 		},
 		"hardwareType": "washer",
-		"source": "ISO 7094 (M12, extra large series; nominal, unverified)",
-		"verified": false,
+		"source": "ISO 7094 (M12, extra large series, grade C; d1 13.5, d2 44, s 4). Dimensionally equivalent to DIN 440 R; was wrongly holding the DIN 9021 values (13/37/3). Fasteners.eu / Keller-Kalmbach.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "ISO",
@@ -195,7 +195,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 440-R (M12, large flat washer)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -212,7 +212,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 7349 (M12, thick washer for clamping sleeves)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -229,7 +229,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 6916 (M12, HV structural washer)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -246,7 +246,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 988 (12x18x0.2 shim ring, representative)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -263,7 +263,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 7603-A (12x18 sealing ring; thickness ~1.5 unverified)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -280,7 +280,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "ISO 7416 (M12, structural washer = DIN 6916)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "ISO",
@@ -293,13 +293,13 @@
 		"shape": {
 			"d_inner": 13.0,
 			"d_outer": 29.0,
-			"thickness": 3.2,
+			"thickness": 3.0,
 			"cone_angle": 16,
 			"gap_deg": 0
 		},
 		"hardwareType": "washer",
-		"source": "DIN 6796 (M12 conical spring washer; nominal, unverified)",
-		"verified": false,
+		"source": "DIN 6796 (M12 conical spring lock washer; d1 13, d2 29, material thickness s 3.0, free height ~3.95). Was s 3.2. cone_angle representative. Fuller/Monroe/DIN 6796.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -336,7 +336,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 6797 A (M12, external tooth / Zahnscheibe, 10 teeth)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -348,13 +348,13 @@
 		"family": "toothed_lock_washer",
 		"shape": {
 			"d_inner": 13.0,
-			"d_outer": 20.0,
+			"d_outer": 20.5,
 			"thickness": 1.0,
 			"teeth": 16
 		},
 		"hardwareType": "washer",
-		"source": "DIN 6798 A (M12, external serrated / Fächerscheibe, min 16 teeth)",
-		"verified": false,
+		"source": "DIN 6798 A (M12, external serrated / Fächerscheibe; d1 13, d2 20.5, s 1.0, min 16 teeth). Was d2 20.0. Fasteners.eu / Aspen.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -372,7 +372,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 6797 J (M12, internal tooth / Innenzahn, 10 teeth)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -384,13 +384,13 @@
 		"family": "toothed_lock_washer_internal",
 		"shape": {
 			"d_inner": 13.0,
-			"d_outer": 21.0,
-			"thickness": 1.3,
+			"d_outer": 20.5,
+			"thickness": 1.0,
 			"teeth": 16
 		},
 		"hardwareType": "washer",
-		"source": "DIN 6798 J (M12, internal serrated / Fächerscheibe, min 16 teeth)",
-		"verified": false,
+		"source": "DIN 6798 J (M12, internal serrated / Fächerscheibe; d1 13, d2 20.5, s 1.0, min 16 teeth). Shares the A-form d1/d2/s series. Was d2 21.0 / s 1.3. Fasteners.eu / Aspen.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -402,14 +402,14 @@
 		"family": "countersunk_toothed_washer",
 		"shape": {
 			"d_inner": 13.0,
-			"d_outer": 22.0,
-			"thickness": 0.8,
-			"teeth": 18,
+			"d_outer": 23.0,
+			"thickness": 0.5,
+			"teeth": 26,
 			"cone_angle": 32
 		},
 		"hardwareType": "washer",
-		"source": "DIN 6798 V (M12, countersunk external serrated / Senkzahn, min 18 teeth, 90° head)",
-		"verified": false,
+		"source": "DIN 6798 V (M12, countersunk external serrated / Senkzahn; d1 13, d3 23.0, s2 0.5, min 26 teeth, countersunk head). Was d3 22 / s 0.8 / 18 teeth (the M8 row). cone_angle representative. Fasteners.eu / Ferrobolt.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -438,14 +438,14 @@
 		"family": "square_washer",
 		"shape": {
 			"side": 30.0,
-			"thickness": 2.5,
+			"thickness": 3.7,
 			"d_bore": 13.5,
 			"taper": 2.4,
 			"side_b": 26.0
 		},
 		"hardwareType": "washer",
-		"source": "DIN 434 (M12, square taper washer for U-channel, 8% slope, 26x30, s 2.5->4.9)",
-		"verified": false,
+		"source": "DIN 434 (M12, square taper washer for U-channel, 8% slope, 26x30, hole 13.5; thin edge e 3.7, mean h 4.9, thick edge 6.1). Dimensions from Fasteners.eu / Fuller Fasteners / Wegertseder tables.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -456,14 +456,15 @@
 	"din435": {
 		"family": "square_washer",
 		"shape": {
-			"side": 20.1,
-			"thickness": 4.1,
+			"side": 30.0,
+			"thickness": 5.0,
 			"d_bore": 13.5,
-			"taper": 2.1
+			"taper": 2.4,
+			"side_b": 26.0
 		},
 		"hardwareType": "washer",
-		"source": "DIN 435 (M12, square taper washer for I-beam flanges; a=20.1, s 4.1->6.2)",
-		"verified": false,
+		"source": "DIN 435 (M12, taper washer for I-beam flanges, 14% slope, 26x30, hole 13.5; thin edge 5.0, mean h 6.2, thick edge 7.4). Rectangular like DIN 434, not square. Dimensions from Fasteners.eu / Fuller Fasteners / Intafast tables.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -487,7 +488,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 432 (M12, external nose lock washer; d2=30, s=1.2, nose width 4.5; nose length representative)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -511,7 +512,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 93 (M12, one-tab lock washer; d2=30, s=1, tab width 12; tab length representative)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -523,24 +524,24 @@
 		"family": "tab_washer",
 		"shape": {
 			"d_inner": 13.0,
-			"d_outer": 30.0,
+			"d_outer": 24.0,
 			"thickness": 1.0,
 			"tabs": [
 				{
 					"angle": 0,
-					"length": 14.0,
-					"width": 10.0
+					"length": 16.0,
+					"width": 12.0
 				},
 				{
 					"angle": 180,
-					"length": 8.0,
-					"width": 10.0
+					"length": 3.0,
+					"width": 12.0
 				}
 			]
 		},
 		"hardwareType": "washer",
-		"source": "DIN 463 (M12, two-tab lock washer, long+short; d2=30, s=1; tab lengths representative; standard withdrawn)",
-		"verified": false,
+		"source": "DIN 463 (M12, two-tab lock washer, long+short; d1 13, d2 24, s 1, tab width b 12, l1 28 / l2 15 from centre). Was d2 30 (the DIN 93/432 value) with tab width 10 (the M10 value). Tab lengths here are the projections beyond the OD (l1/l2 minus radius). Standard withdrawn. Westfield/Ferrobolt DIN 463.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -565,7 +566,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 462 (M12, internal tab lock washer; d1=12, d2=28, s=0.8, tab 5x9.3, bent up at the bore)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -582,7 +583,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 7980 (M12, spring lock washer for cylinder-head screws; d1=12.2, d2=18, section 2.5, split ring)",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -595,12 +596,12 @@
 		"shape": {
 			"d_inner": 13.0,
 			"d_outer": 24.0,
-			"thickness": 4.0,
+			"thickness": 4.6,
 			"sphere_radius": 26.0
 		},
 		"hardwareType": "washer",
-		"source": "DIN 6319 Form C (M12, Kugelscheibe / spherical washer; d1=13, d3=24, h2=4, flat top with convex spherical underside). Mating sphere radius representative (~26 mm): DIN tables publish it inconsistently, chosen to seat in the Form D/G cup.",
-		"verified": false,
+		"source": "DIN 6319 Form C (M12, Kugelscheibe / spherical washer; d1=13, d3=24, h2=4.6, flat top with convex spherical underside). Was h2=4.0 (the M10 value). Mating sphere radius representative (~26 mm): DIN tables publish it inconsistently, chosen to seat in the Form D/G cup. Aspen/Halder DIN 6319.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -611,15 +612,15 @@
 	"din6319d": {
 		"family": "spherical_seating_washer",
 		"shape": {
-			"d_inner": 13.0,
+			"d_inner": 14.2,
 			"d_outer": 24.0,
-			"thickness": 3.0,
+			"thickness": 5.0,
 			"sphere_radius": 26.0,
 			"concave": true
 		},
 		"hardwareType": "washer",
-		"source": "DIN 6319 Form D (M12, Kegelpfanne / conical seat; d2=13, d3=24, h3=3, flat bottom with concave spherical recess receiving the Form C washer). Mating sphere radius representative (~26 mm), same as Form C.",
-		"verified": false,
+		"source": "DIN 6319 Form D (M12, Kegelpfanne / conical seat; d2=14.2, d4=24, h3=5.0, flat bottom with concave spherical recess receiving the Form C washer). Was d2=13 / h3=3: the seat bore (14.2) is larger than the Form C washer bore (13.0), and h3 is 5.0 not 3.0. Mating sphere radius representative (~26 mm), same as Form C. Aspen/Halder/Growermetal DIN 6319.",
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -638,7 +639,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 137 A (M12, curved/domed spring washer, gewölbt; d1=13, d2=24, s=1.2, continuous ring with no split). Reuses curved_washer with gap_deg=0. Dome height representative (free height ~3 mm; DIN envelope 2.5-5 mm) — the cone tilt is chosen to sit in that range, not a published value.",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -655,7 +656,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 6340 (M12, washer for clamping fixtures / Scheiben für Spannzeuge, heavy; d1=13, d2=35, s=5). Dimensions from Fasteners.eu / Ganter tables.",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -672,7 +673,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "DIN 1440 (pin Ø12 / M12, medium washer for bolts and pins; d1=12, d2=25, s=3). Dimensions from Fasteners.eu.",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "DIN",
@@ -689,7 +690,7 @@
 		},
 		"hardwareType": "washer",
 		"source": "ISO 8738 (size 12, plain washer for clevis pins, dimensionally equivalent to DIN 1440; d1=12, d2=25, s=3).",
-		"verified": false,
+		"verified": true,
 		"designations": [
 			{
 				"system": "ISO",

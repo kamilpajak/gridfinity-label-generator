@@ -28,27 +28,27 @@
 		},
 		"din127": {
 			"family": "helical_spring_washer",
-			"sha256": "648a25129a47d13c5b0023dec514dae76ebbc3e42380c8a8ac65d77d105aa345",
-			"source": "DIN 127-B:1997 (M12)",
+			"sha256": "10cfc9484ab06c77c805dfd6d288559cf6e7181ee93996f4cb09fcb845f88952",
+			"source": "DIN 127-B:1997 (M12; d1 12.2, d2 21.1, cross-section width b 4.0 x thickness s 2.5). Was wrongly d2 20.2 / section 3.5. section is the axial thickness (2.5); the radial width follows from d2-d1. Aspen/Fasteners.eu.",
 			"svg": "din127.svg"
 		},
 		"din127p": {
 			"alias_of": "din127",
 			"family": "helical_spring_washer",
-			"sha256": "648a25129a47d13c5b0023dec514dae76ebbc3e42380c8a8ac65d77d105aa345",
+			"sha256": "10cfc9484ab06c77c805dfd6d288559cf6e7181ee93996f4cb09fcb845f88952",
 			"source": "plated (electro-zinc) variant of DIN 127; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din127.svg"
 		},
 		"din128": {
 			"family": "curved_washer",
-			"sha256": "66d5012e7f3bb60b8c2f8b07f4b809dd0e16921ab17c10c759170d66e43d00a1",
-			"source": "DIN 128-A:2011 (M12, curved)",
+			"sha256": "55e9691cc13e3c886df50597d9b5f0c99def1a50915b5b403493db61e54316f6",
+			"source": "DIN 128-A:2011 (M12, curved; d1 12.2, d2 21.1, material thickness s 2.1, free height ~3.35). Was wrongly d2 21.0 / s 1.5 (1.5 is not a DIN 128 M12 value). Aspen/Fasteners.eu.",
 			"svg": "din128.svg"
 		},
 		"din128a": {
 			"alias_of": "din128",
 			"family": "curved_washer",
-			"sha256": "66d5012e7f3bb60b8c2f8b07f4b809dd0e16921ab17c10c759170d66e43d00a1",
+			"sha256": "55e9691cc13e3c886df50597d9b5f0c99def1a50915b5b403493db61e54316f6",
 			"source": "DIN 128 Form A is the base curved spring washer; this key aliases it.",
 			"svg": "din128.svg"
 		},
@@ -99,40 +99,40 @@
 		},
 		"din433": {
 			"family": "flat_washer",
-			"sha256": "58be706e007d774f2f083edf6d752bc1704acbfa6093043e4e5af7b66ccea334",
-			"source": "DIN 433-1:2020 (M12, small OD)",
+			"sha256": "d10a55878c13326a8804286bb309ccd2760db4f90a65abe9d84bae8e67e0a497",
+			"source": "DIN 433-1:2020 (M12, small OD; d1 13, d2 20, s 2.0). Thickness matches ISO 7092 (same washer); was wrongly 2.5 (the DIN 125 thickness). Fasteners.eu / Accu.",
 			"svg": "din433.svg"
 		},
 		"din433i": {
 			"alias_of": "din433",
 			"family": "flat_washer",
-			"sha256": "58be706e007d774f2f083edf6d752bc1704acbfa6093043e4e5af7b66ccea334",
+			"sha256": "d10a55878c13326a8804286bb309ccd2760db4f90a65abe9d84bae8e67e0a497",
 			"source": "variant key sharing DIN 433 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din433.svg"
 		},
 		"din434": {
 			"family": "square_washer",
-			"sha256": "04c1cbf33fadbcf365dbb456fb9469539ba8f5102c7d3b730051784ed008d5df",
-			"source": "DIN 434 (M12, square taper washer for U-channel, 8% slope, 26x30, s 2.5->4.9)",
+			"sha256": "bf9bbe670f170a97c0e3a84a43613e6b2ba7502e293f0ba2b15fad8e7bef9ac5",
+			"source": "DIN 434 (M12, square taper washer for U-channel, 8% slope, 26x30, hole 13.5; thin edge e 3.7, mean h 4.9, thick edge 6.1). Dimensions from Fasteners.eu / Fuller Fasteners / Wegertseder tables.",
 			"svg": "din434.svg"
 		},
 		"din434p": {
 			"alias_of": "din434",
 			"family": "square_washer",
-			"sha256": "04c1cbf33fadbcf365dbb456fb9469539ba8f5102c7d3b730051784ed008d5df",
+			"sha256": "bf9bbe670f170a97c0e3a84a43613e6b2ba7502e293f0ba2b15fad8e7bef9ac5",
 			"source": "plated (electro-zinc) variant of DIN 434; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din434.svg"
 		},
 		"din435": {
 			"family": "square_washer",
-			"sha256": "3817df9374244d59730c8da4140104e48efba2a8361234135945bf312565907d",
-			"source": "DIN 435 (M12, square taper washer for I-beam flanges; a=20.1, s 4.1->6.2)",
+			"sha256": "6e8428eb4247b2df32c387801bc50b9460d3f686385b07cdabe732be19078994",
+			"source": "DIN 435 (M12, taper washer for I-beam flanges, 14% slope, 26x30, hole 13.5; thin edge 5.0, mean h 6.2, thick edge 7.4). Rectangular like DIN 434, not square. Dimensions from Fasteners.eu / Fuller Fasteners / Intafast tables.",
 			"svg": "din435.svg"
 		},
 		"din435p": {
 			"alias_of": "din435",
 			"family": "square_washer",
-			"sha256": "3817df9374244d59730c8da4140104e48efba2a8361234135945bf312565907d",
+			"sha256": "6e8428eb4247b2df32c387801bc50b9460d3f686385b07cdabe732be19078994",
 			"source": "plated (electro-zinc) variant of DIN 435; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din435.svg"
 		},
@@ -170,27 +170,27 @@
 		},
 		"din463": {
 			"family": "tab_washer",
-			"sha256": "d53fc7900350fda43becbba2d7c63fb0af5a9ebcedc71eb07f06ff7ec42fa340",
-			"source": "DIN 463 (M12, two-tab lock washer, long+short; d2=30, s=1; tab lengths representative; standard withdrawn)",
+			"sha256": "8551b7e68197f0fc03a01059fe8798d7ac948e1fe5398a6b58633de58437834e",
+			"source": "DIN 463 (M12, two-tab lock washer, long+short; d1 13, d2 24, s 1, tab width b 12, l1 28 / l2 15 from centre). Was d2 30 (the DIN 93/432 value) with tab width 10 (the M10 value). Tab lengths here are the projections beyond the OD (l1/l2 minus radius). Standard withdrawn. Westfield/Ferrobolt DIN 463.",
 			"svg": "din463.svg"
 		},
 		"din463p": {
 			"alias_of": "din463",
 			"family": "tab_washer",
-			"sha256": "d53fc7900350fda43becbba2d7c63fb0af5a9ebcedc71eb07f06ff7ec42fa340",
+			"sha256": "8551b7e68197f0fc03a01059fe8798d7ac948e1fe5398a6b58633de58437834e",
 			"source": "plated (electro-zinc) variant of DIN 463; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din463.svg"
 		},
 		"din6319c": {
 			"family": "spherical_seating_washer",
-			"sha256": "e65f83bc7eea3f3222d2c646605cf8aaf0d087dcda4075633c58230268b76c6e",
-			"source": "DIN 6319 Form C (M12, Kugelscheibe / spherical washer; d1=13, d3=24, h2=4, flat top with convex spherical underside). Mating sphere radius representative (~26 mm): DIN tables publish it inconsistently, chosen to seat in the Form D/G cup.",
+			"sha256": "1f8e98dc72a549a260decac88d0d03adf6a05481c3e9566df7d83044e071a669",
+			"source": "DIN 6319 Form C (M12, Kugelscheibe / spherical washer; d1=13, d3=24, h2=4.6, flat top with convex spherical underside). Was h2=4.0 (the M10 value). Mating sphere radius representative (~26 mm): DIN tables publish it inconsistently, chosen to seat in the Form D/G cup. Aspen/Halder DIN 6319.",
 			"svg": "din6319c.svg"
 		},
 		"din6319d": {
 			"family": "spherical_seating_washer",
-			"sha256": "da334cabb5a78093e229e0bb06b3c487df8a27587c1a36cd822ca1b3b340d6ef",
-			"source": "DIN 6319 Form D (M12, Kegelpfanne / conical seat; d2=13, d3=24, h3=3, flat bottom with concave spherical recess receiving the Form C washer). Mating sphere radius representative (~26 mm), same as Form C.",
+			"sha256": "6ee8ddcca21f2e097c1b24f602e7458b9f0c0db3638346956c946a641fc1067a",
+			"source": "DIN 6319 Form D (M12, Kegelpfanne / conical seat; d2=14.2, d4=24, h3=5.0, flat bottom with concave spherical recess receiving the Form C washer). Was d2=13 / h3=3: the seat bore (14.2) is larger than the Form C washer bore (13.0), and h3 is 5.0 not 3.0. Mating sphere radius representative (~26 mm), same as Form C. Aspen/Halder/Growermetal DIN 6319.",
 			"svg": "din6319d.svg"
 		},
 		"din6340": {
@@ -208,8 +208,8 @@
 		},
 		"din6796": {
 			"family": "curved_washer",
-			"sha256": "ed41bf36f05e085037c046c355ed28dbfb6351afa85123b216def3d7e3a5bb59",
-			"source": "DIN 6796 (M12 conical spring washer; nominal, unverified)",
+			"sha256": "3f78199fc386a2b4ddef777ff728573ef8f4591ad2b243539c439964ad99b587",
+			"source": "DIN 6796 (M12 conical spring lock washer; d1 13, d2 29, material thickness s 3.0, free height ~3.95). Was s 3.2. cone_angle representative. Fuller/Monroe/DIN 6796.",
 			"svg": "din6796.svg"
 		},
 		"din6797a": {
@@ -226,27 +226,27 @@
 		},
 		"din6798a": {
 			"family": "toothed_lock_washer",
-			"sha256": "bff22ec9df8f64973e1646d7ee8432fbf0c0066bf3dcf6e9a91ef91a7368acb4",
-			"source": "DIN 6798 A (M12, external serrated / F\u00e4cherscheibe, min 16 teeth)",
+			"sha256": "4f97878b4afde4ddabc2ee9755f56c19b538ad9e359492b9c6551d524050c9e2",
+			"source": "DIN 6798 A (M12, external serrated / F\u00e4cherscheibe; d1 13, d2 20.5, s 1.0, min 16 teeth). Was d2 20.0. Fasteners.eu / Aspen.",
 			"svg": "din6798a.svg"
 		},
 		"din6798d": {
 			"alias_of": "din6798v",
 			"family": "countersunk_toothed_washer",
-			"sha256": "b1d145b7ab2c177cb35c02dfaeba8f9c11bab9a04fa9726bcf7ecd9bdecf6b4f",
+			"sha256": "caf5a119f00def20f69569dd1a0fc8acb1c01c3d837f0bd9df9ce7c61c2c9998",
 			"source": "catalog 'Form D' label is not a real DIN 6798 form; its geometry is Form V, so this aliases din6798v.",
 			"svg": "din6798v.svg"
 		},
 		"din6798j": {
 			"family": "toothed_lock_washer_internal",
-			"sha256": "7806b2c1a6de88df8a42e078f3f147b4f24992faadde477389e7afb110e37a0a",
-			"source": "DIN 6798 J (M12, internal serrated / F\u00e4cherscheibe, min 16 teeth)",
+			"sha256": "ffdb771097380dc9102cc2bf302fb24c9abbc38f29437025bcbc6de6dfd3a35d",
+			"source": "DIN 6798 J (M12, internal serrated / F\u00e4cherscheibe; d1 13, d2 20.5, s 1.0, min 16 teeth). Shares the A-form d1/d2/s series. Was d2 21.0 / s 1.3. Fasteners.eu / Aspen.",
 			"svg": "din6798j.svg"
 		},
 		"din6798v": {
 			"family": "countersunk_toothed_washer",
-			"sha256": "b1d145b7ab2c177cb35c02dfaeba8f9c11bab9a04fa9726bcf7ecd9bdecf6b4f",
-			"source": "DIN 6798 V (M12, countersunk external serrated / Senkzahn, min 18 teeth, 90\u00b0 head)",
+			"sha256": "caf5a119f00def20f69569dd1a0fc8acb1c01c3d837f0bd9df9ce7c61c2c9998",
+			"source": "DIN 6798 V (M12, countersunk external serrated / Senkzahn; d1 13, d3 23.0, s2 0.5, min 26 teeth, countersunk head). Was d3 22 / s 0.8 / 18 teeth (the M8 row). cone_angle representative. Fasteners.eu / Ferrobolt.",
 			"svg": "din6798v.svg"
 		},
 		"din6916": {
@@ -378,27 +378,27 @@
 		},
 		"iso7093": {
 			"family": "flat_washer",
-			"sha256": "57c03a2eeb507b4757ccff4c53c96e0cdcf9b83b73821bd6e47170cb0d5181d7",
-			"source": "ISO 7093-1 (M12, large series; nominal, unverified)",
+			"sha256": "04bfae8a8b4b9fb43669991d1635f12c740d60719f5ebd7eaf9668880e8c9260",
+			"source": "ISO 7093-1 (M12, large series; d1 13, d2 37, s 3). Dimensionally identical to DIN 9021; was wrongly d2 30. Fasteners.eu.",
 			"svg": "iso7093.svg"
 		},
 		"iso7093p": {
 			"alias_of": "iso7093",
 			"family": "flat_washer",
-			"sha256": "57c03a2eeb507b4757ccff4c53c96e0cdcf9b83b73821bd6e47170cb0d5181d7",
+			"sha256": "04bfae8a8b4b9fb43669991d1635f12c740d60719f5ebd7eaf9668880e8c9260",
 			"source": "plated (electro-zinc) variant of ISO 7093; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7093.svg"
 		},
 		"iso7094": {
 			"family": "flat_washer",
-			"sha256": "04bfae8a8b4b9fb43669991d1635f12c740d60719f5ebd7eaf9668880e8c9260",
-			"source": "ISO 7094 (M12, extra large series; nominal, unverified)",
+			"sha256": "c8bd469fcb5d5a11da748dee93709bf7d4b2345c6a103b2b1d60b2e16f011dad",
+			"source": "ISO 7094 (M12, extra large series, grade C; d1 13.5, d2 44, s 4). Dimensionally equivalent to DIN 440 R; was wrongly holding the DIN 9021 values (13/37/3). Fasteners.eu / Keller-Kalmbach.",
 			"svg": "iso7094.svg"
 		},
 		"iso7094p": {
 			"alias_of": "iso7094",
 			"family": "flat_washer",
-			"sha256": "04bfae8a8b4b9fb43669991d1635f12c740d60719f5ebd7eaf9668880e8c9260",
+			"sha256": "c8bd469fcb5d5a11da748dee93709bf7d4b2345c6a103b2b1d60b2e16f011dad",
 			"source": "plated (electro-zinc) variant of ISO 7094; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7094.svg"
 		},

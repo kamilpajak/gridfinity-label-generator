@@ -11,11 +11,11 @@ CIRCUMRADIUS = S / math.sqrt(3.0)          # corner radius
 ACROSS_CORNERS = 2.0 * CIRCUMRADIUS
 
 
-def test_hex_nut_is_flats_horizontal_with_correct_extents():
+def test_hex_nut_is_vertex_up_with_correct_extents():
     part = hex_nut(s=S, m=M, bore=BORE)
     bb = part.bounding_box()
-    assert round(bb.size.X, 2) == round(S, 2)               # flats top/bottom -> across-flats on X
-    assert round(bb.size.Y, 2) == round(ACROSS_CORNERS, 2)  # corners left/right -> across-corners on Y
+    assert round(bb.size.X, 2) == round(ACROSS_CORNERS, 2)  # corners top/bottom -> across-corners on X
+    assert round(bb.size.Y, 2) == round(S, 2)               # flats left/right -> across-flats on Y
     assert round(bb.size.Z, 2) == round(M, 2)               # height along Z
     assert part.volume > 0
 

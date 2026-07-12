@@ -371,7 +371,7 @@ def test_hex_nut_dispatches_via_registry():
 
     part = build_part("hex_nut", {"s": 18.0, "m": 10.8, "bore": 10.2})
     assert part.volume > 0
-    assert round(part.bounding_box().size.X, 1) == 18.0   # across-flats on X
+    assert round(part.bounding_box().size.Y, 1) == 18.0   # across-flats on Y (vertex-up)
 
 
 def test_new_families_dispatch_via_registry():

@@ -15,9 +15,9 @@ def hex_nut(s: float, m: float, bore: float, chamfer: float | None = None):
 
     ``chamfer`` is the chamfer-circle diameter the top/bottom bevel starts from
     (the flat end-face circle); by ISO it equals the across-flats ``s``, so it
-    defaults to ``s``. The nut is oriented flats-horizontal: a flat lies at the
-    top and bottom (``s`` along X), corners left and right (``2s/√3`` along Y),
-    height along Z.
+    defaults to ``s``. The nut is oriented vertex-up: a corner points along +X
+    (the view's up axis), flats on the left and right (``s`` along Y),
+    across-corners (``2s/√3``) along X, height along Z. Matches legacy nut drawings.
 
     Built as a revolved silhouette (a full-radius body coned down to the chamfer
     circle at each end face) intersected with the hex prism, so the cone bevels
@@ -50,10 +50,11 @@ def hex_nut(s: float, m: float, bore: float, chamfer: float | None = None):
         (r_flat, m),
         (0.0, m),
     ]
-    # Rotate the hex 30° so a flat (not a corner) points along +X -> flats-horizontal.
+    # rotation=0: a vertex (corner) points along +X, which is the view's up axis -> vertex-up.
+    # The flats then fall on the left/right (±Y), matching the legacy nut drawings.
     with BuildPart() as bp:
         with BuildSketch():
-            RegularPolygon(radius=circumradius, side_count=6, rotation=30)
+            RegularPolygon(radius=circumradius, side_count=6, rotation=0)
         extrude(amount=m)
         with BuildSketch(Plane.XZ):
             Polygon(*profile, align=None)

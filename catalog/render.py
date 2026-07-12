@@ -42,11 +42,16 @@ class CameraPreset:
 # For a part whose main axis is Z:
 #   front = look down the axis (face view: hex/ring outline + bore),
 #   side  = look along -Y (profile view: thickness + hidden bore).
+# Both views use X as the vertical axis, so the front and side views share the
+# same height — the orthographic-projection alignment rule. It is invisible on
+# axisymmetric parts (X == Y == diameter) but matters for rectangular ones: a
+# taper washer's length axis (X) then reads at true height in BOTH views, and
+# its wedge profile stays visible in the side view (which looks along Y).
 DEFAULT_AXIS_Z = CameraPreset(
     front_origin=(0, 0, 1000),
-    front_up=(0, 1, 0),
+    front_up=(1, 0, 0),   # X up: shared with the side view (height alignment)
     side_origin=(0, -1000, 0),
-    side_up=(1, 0, 0),   # standing: diameter vertical, thickness horizontal
+    side_up=(1, 0, 0),   # standing: length/diameter vertical, thickness horizontal
 )
 
 

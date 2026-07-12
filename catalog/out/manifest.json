@@ -84,6 +84,12 @@
 			"source": "variant key for the DIN 2093 disc spring; identical geometry, aliased to the base.",
 			"svg": "din2093.svg"
 		},
+		"din431": {
+			"family": "hex_nut",
+			"sha256": "34c3152c34c58beaeb2147adc48aae0350e8e2ac54071d44169b0baa8d963165",
+			"source": "DIN 431 hexagon pipe nut, representative size G 3/8: s=27.0, m=8.0, bore=16.66 (G3/8 major dia per ISO 228-1). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 431 tables.",
+			"svg": "din431.svg"
+		},
 		"din432": {
 			"family": "tab_washer",
 			"sha256": "44af34cbc546370b6268584d08b5f83963f50a81ff43bc46d49af65f05793708",
@@ -193,6 +199,12 @@
 			"source": "DIN 6319 Form D (M12, Kegelpfanne / conical seat; d2=14.2, d4=24, h3=5.0, flat bottom with concave spherical recess receiving the Form C washer). Was d2=13 / h3=3: the seat bore (14.2) is larger than the Form C washer bore (13.0), and h3 is 5.0 not 3.0. Mating sphere radius representative (~26 mm), same as Form C. Aspen/Halder/Growermetal DIN 6319.",
 			"svg": "din6319d.svg"
 		},
+		"din6330": {
+			"family": "hex_nut",
+			"sha256": "1f7c1080e429edd317f68bd18159b6d5edf58062ae0f69d13732da5f7cbeaad9",
+			"source": "DIN 6330 hexagon nut height 1.5d (version B), M12: s=18.0, m=18.0 (=1.5x12). Confirmed vs Fasteners.eu DIN 6330 table + Norelem/Kipp DIN 6330 datasheets.",
+			"svg": "din6330.svg"
+		},
 		"din6340": {
 			"family": "flat_washer",
 			"sha256": "87e5040c59a25ff4d5d9c66d240e8aa6cbc25985570025a9f7b27c857ff1212a",
@@ -299,6 +311,12 @@
 			"source": "plated (electro-zinc) variant of DIN 7980; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din7980.svg"
 		},
+		"din80705": {
+			"family": "hex_nut",
+			"sha256": "d65c8a9b11daa647ef1ca34efc55fa45644bb9817c948f86ab5c239efb6795fb",
+			"source": "DIN 80705 thin hexagon nut with reduced width across flats, M12x1.5: s=17.0, m=6.0. Confirmed vs Fasteners.eu + din-fasteners.com + Ferrobend DIN 80705 tables.",
+			"svg": "din80705.svg"
+		},
 		"din9021": {
 			"family": "flat_washer",
 			"sha256": "04bfae8a8b4b9fb43669991d1635f12c740d60719f5ebd7eaf9668880e8c9260",
@@ -318,6 +336,12 @@
 			"source": "DIN 93 (M12, one-tab lock washer; d2=30, s=1, tab width 12; tab length representative)",
 			"svg": "din93.svg"
 		},
+		"din936": {
+			"family": "hex_nut",
+			"sha256": "f859842fa441c30ffed9cf268aad6deb3cf341d3ce4fd4cd32c3c6f67dc311ca",
+			"source": "DIN 936 hexagon thin/jam nut, M12: s=19.0, m=7.0. Distinct from ISO 4035 (wider flats, 1mm taller). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 936 tables.",
+			"svg": "din936.svg"
+		},
 		"din93p": {
 			"alias_of": "din93",
 			"family": "tab_washer",
@@ -336,6 +360,24 @@
 			"sha256": "cdcb7f0fc92f988b89b6ef254975d5f756f106495754c5a2e56f0c3a3521f672",
 			"source": "DIN 988 (12x18, shim ring / Passscheibe; d1=12, d2=18). Thickness representative (DIN 988 is a shim series 0.1-2 mm; a mid 1.0 mm ring is drawn).",
 			"svg": "din988d.svg"
+		},
+		"iso4032": {
+			"family": "hex_nut",
+			"sha256": "789a872ff26e8a6437132914da86605122d2bc55751c7caf5ab44a285d2a8ed6",
+			"source": "ISO 4032 hexagon regular nut (style 1), M12: s=18.0, m=10.8. Confirmed vs Fasteners.eu + wermac.org ISO 4032 dimension tables.",
+			"svg": "iso4032.svg"
+		},
+		"iso4033": {
+			"family": "hex_nut",
+			"sha256": "43554a196443cc6b22036cded92e82a128dde25ddad58cadf3e525e2cdbb6063",
+			"source": "ISO 4033 hexagon high nut (style 2), M12: s=18.0, m=12.0 (m=1.0d). Confirmed vs TorqBolt + fasten.it ISO 4033 tables.",
+			"svg": "iso4033.svg"
+		},
+		"iso4035": {
+			"family": "hex_nut",
+			"sha256": "16b07da7b43a1e71524fbc9f890b01689318f825f2ca38342ae2dbc6d9725e21",
+			"source": "ISO 4035 hexagon thin nut (style 0), M12: s=18.0 (ISO value; the 19mm seen in some catalogues is the DIN 439B deviation), m=6.0. Confirmed vs Fuller Fasteners ISO 4035 spec + BS EN ISO 4035 table (Engineers Edge).",
+			"svg": "iso4035.svg"
 		},
 		"iso7089": {
 			"family": "flat_washer",
@@ -414,6 +456,27 @@
 			"sha256": "9808145a2e993320c1964617143725a148a02437b0091ce2bc459def96ad48ba",
 			"source": "plated (electro-zinc) variant of ISO 7416; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7416.svg"
+		},
+		"iso8673": {
+			"alias_of": "iso4032",
+			"family": "hex_nut",
+			"sha256": "789a872ff26e8a6437132914da86605122d2bc55751c7caf5ab44a285d2a8ed6",
+			"source": "ISO 8673 = ISO 4032 regular hex nut with fine pitch; external body geometry identical to ISO 4032, aliased to that base drawing.",
+			"svg": "iso4032.svg"
+		},
+		"iso8674": {
+			"alias_of": "iso4033",
+			"family": "hex_nut",
+			"sha256": "43554a196443cc6b22036cded92e82a128dde25ddad58cadf3e525e2cdbb6063",
+			"source": "ISO 8674 = ISO 4033 high hex nut with fine pitch; identical body, aliased to the base.",
+			"svg": "iso4033.svg"
+		},
+		"iso8675": {
+			"alias_of": "iso4035",
+			"family": "hex_nut",
+			"sha256": "16b07da7b43a1e71524fbc9f890b01689318f825f2ca38342ae2dbc6d9725e21",
+			"source": "ISO 8675 = ISO 4035 thin hex nut with fine pitch; identical body, aliased to the base.",
+			"svg": "iso4035.svg"
 		},
 		"iso8738": {
 			"family": "flat_washer",

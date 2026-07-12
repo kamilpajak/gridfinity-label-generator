@@ -13,11 +13,13 @@ def test_flat_washer_is_a_ring_with_correct_extents():
 
 
 def test_hex_nut_has_six_side_faces_and_a_bore():
+    import math
     from catalog.models.hex_nut import hex_nut
 
     part = hex_nut(s=34.0, m=8.5, bore=20.96)
     bb = part.bounding_box()
     assert round(bb.size.Z, 1) == 8.5
-    # Across-flats 34 => across-corners ~39.26; X extent is the corner-to-corner span.
-    assert 38.0 < bb.size.X < 40.5
+    # flats-horizontal: X extent is across-flats (34), Y extent is across-corners (~39.3)
+    assert round(bb.size.X, 1) == 34.0
+    assert round(bb.size.Y, 1) == round(2 * 34.0 / math.sqrt(3.0), 1)
     assert part.volume > 0

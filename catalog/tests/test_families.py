@@ -366,6 +366,14 @@ def test_wave_washer_guards_bad_geometry():
         wave_washer(13.0, 24.0, 1.2, waves=3, wave_height=40.0)
 
 
+def test_hex_nut_dispatches_via_registry():
+    from catalog.models._registry import build_part
+
+    part = build_part("hex_nut", {"s": 18.0, "m": 10.8, "bore": 10.2})
+    assert part.volume > 0
+    assert round(part.bounding_box().size.X, 1) == 18.0   # across-flats on X
+
+
 def test_new_families_dispatch_via_registry():
     from catalog.models._registry import build_part
 

@@ -14,6 +14,8 @@ import { dev } from '$app/environment';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
+// process.cwd() is the project root under the Node adapter, which is all this
+// dev-only route runs on (it 404s in production and never sees edge/serverless).
 const ROOT = process.cwd();
 const MANIFEST = join(ROOT, 'catalog', 'out', 'manifest.json');
 const CATALOG_OUT = join(ROOT, 'catalog', 'out');
@@ -48,11 +50,7 @@ function stripXmlProlog(svg: string): string {
 	return svg.replace(/^\s*<\?xml[^>]*\?>\s*/i, '').trim();
 }
 
-export const load: PageServerLoad = async () => {
-	if (!dev) {
-		error(404, 'Not Found');
-	}
-
+function readComparison() {
 	const manifest = JSON.parse(readFileSync(MANIFEST, 'utf-8')).standards as Record<
 		string,
 		ManifestEntry
@@ -97,4 +95,21 @@ export const load: PageServerLoad = async () => {
 			missingLegacy: items.filter((i) => i.legacyImage === null).length
 		}
 	};
+}
+
+export const load: PageServerLoad = async () => {
+	if (!dev) {
+		error(404, 'Not Found');
+	}
+	try {
+		return readComparison();
+	} catch (e) {
+		// The catalog output is likely missing (deleted or never generated). Give a
+		// maintainer a clear next step instead of a raw filesystem stack trace.
+		error(
+			500,
+			`Could not load catalog assets: ${(e as Error).message}. ` +
+				'Run `./catalog/run python -m catalog.build_catalog` to (re)generate them.'
+		);
+	}
 };

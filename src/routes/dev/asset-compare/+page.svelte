@@ -146,6 +146,7 @@
 									<img class="base" src={item.legacyImage} alt="legacy {item.id}" loading="lazy" />
 								{/if}
 								<div class="over" style="opacity:{overlayMix / 100}">
+									<!-- Trusted content: see the generated-vector pane below. -->
 									<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 									{@html item.svg}
 								</div>
@@ -163,6 +164,8 @@
 							</figure>
 							<figure class="pane">
 								<span class="tag gen">generated · vector</span>
+								<!-- Trusted content: item.svg is committed build output (catalog/out/)
+									named by a committed manifest — no user input reaches this HTML. -->
 								<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 								{@html item.svg}
 							</figure>

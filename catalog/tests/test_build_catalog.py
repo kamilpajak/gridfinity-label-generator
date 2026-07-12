@@ -138,3 +138,30 @@ def test_alias_to_missing_base_is_reported(tmp_path: Path):
     }))
     report = build(str(dims), str(tmp_path / "out"), str(tmp_path / "manifest.json"))
     assert any(f["id"] == "din125p" for f in report["failed"])
+
+
+def test_build_renders_a_hex_nut_entry(tmp_path: Path):
+    from catalog.build_catalog import build
+
+    dims = tmp_path / "dimensions"
+    dims.mkdir()
+    (dims / "nuts.json").write_text(json.dumps({
+        "iso4032": {
+            "family": "hex_nut",
+            "shape": {"s": 18.0, "m": 10.8, "bore": 10.2},
+            "hardwareType": "nut",
+            "source": "ISO 4032 (M12) — fixture",
+            "verified": False,
+            "designations": [{"system": "ISO", "code": "4032"}],
+        }
+    }))
+    out = tmp_path / "out"
+    manifest = tmp_path / "manifest.json"
+
+    report = build(str(dims), str(out), str(manifest))
+
+    assert report["ok"] == ["iso4032"]
+    assert (out / "iso4032.svg").exists()
+    m = json.loads(manifest.read_text())["standards"]
+    assert m["iso4032"]["family"] == "nut" or m["iso4032"]["svg"] == "iso4032.svg"
+    assert len(m["iso4032"]["sha256"]) == 64

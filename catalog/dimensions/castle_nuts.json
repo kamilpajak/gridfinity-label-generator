@@ -1,0 +1,33 @@
+{
+	"din935": {
+		"family": "castle_nut",
+		"shape": { "s": 18.0, "m": 15.0, "bore": 10.1, "dk": 16.0, "m1": 10.0, "n_slots": 6, "e": 3.5 },
+		"hardwareType": "nut",
+		"source": "DIN 935 hexagon slotted / castle nut (M12): s=18 (current ISO 272 / SW18; legacy SW19 not shipped), m=15, un-slotted height w/m1=10, crown dk=16, 6 slots, slot width n/e=3.5 (min; max 3.8), bore=10.1 (M12 minor dia). Crown modelled fully slotted (no solid crown band below the slots; hex/crown transition not tabulated). Confirmed vs Fuller Fasteners + Aspen Fasteners + Trojan SF + Fabory DIN 935 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "935" }]
+	},
+	"din937": {
+		"family": "castle_nut",
+		"shape": { "s": 19.0, "m": 10.0, "bore": 10.1, "dk": 17.0, "m1": 6.0, "n_slots": 6, "e": 3.5 },
+		"hardwareType": "nut",
+		"source": "DIN 937 hexagon thin (low) slotted / castle nut (M12): s=19 (SW19, the withdrawn legacy standard's actual across-flats), m=10, m1=6.0 (w slot-floor height, not the 5.3 m' proof-load minimum), crown dk=17, 6 slots, slot width 3.5, bore=10.1. Crown modelled fully slotted. Confirmed vs fasteners.eu + Fuller Fasteners + fasenco + Aspen Fasteners DIN 937 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "937" }]
+	},
+	"din979": {
+		"family": "castle_nut",
+		"shape": { "s": 18.0, "m": 10.0, "bore": 10.1, "dk": 16.0, "m1": 5.0, "n_slots": 6, "e": 3.5 },
+		"hardwareType": "nut",
+		"source": "DIN 979 hexagon thin slotted / castle nut (M12, current successor to DIN 937): s=18 (ISO 272 / SW18), m=10, m1=5, crown dk=16 (Aspen's 17 is a mixed-edition outlier), 6 slots, slot width 3.5, bore=10.1. Crown modelled fully slotted. Confirmed vs Fuller Fasteners + Trojan SF DIN 979 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "979" }]
+	},
+	"iso7035": {
+		"alias_of": "din935",
+		"hardwareType": "nut",
+		"source": "ISO 7035 hexagon slotted nut, style 1 (M12): the ISO counterpart of DIN 935 with an identical M12 envelope (s=18, m=15, w=10, dk=16, 6 slots, 3.5), so it aliases the DIN 935 drawing. Confirmed vs fasteners.eu ISO 7035 + TorqBolt ISO 7035 + Bolting Specialist + combined DIN 935/ISO 7035 product listings.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "7035" }]
+	}
+}

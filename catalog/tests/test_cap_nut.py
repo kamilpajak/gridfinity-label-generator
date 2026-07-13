@@ -66,3 +66,5 @@ def test_cap_nut_guards_bad_geometry():
         cap_nut(s=S, m=30.0, dome_height=28.0)               # dome > 3x base radius: likely bad data
     with pytest.raises(ValueError):
         cap_nut(s=S, m=10.0, dome_height=9.0)               # hex body 1mm too short for its chamfers (helper raises)
+    with pytest.raises(ValueError):
+        cap_nut(s=S, m=M_HEMI, dome_height=DOME_HEMI, chamfer=S + 2.0)  # chamfer > s: cap base would overhang the flats

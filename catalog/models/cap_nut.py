@@ -3,6 +3,7 @@ from build123d import BuildPart, Sphere, Box, Locations, Mode, add
 
 from catalog.models.hex_nut import _chamfered_hex_solid
 
+
 def cap_nut(s: float, m: float, dome_height: float, chamfer: float | None = None):
     """Closed cap (dome / acorn) nut: across-flats ``s``, total height ``m``, dome of
     height ``dome_height`` rising from the top chamfer circle.
@@ -19,6 +20,12 @@ def cap_nut(s: float, m: float, dome_height: float, chamfer: float | None = None
         raise ValueError(
             f"cap_nut: dome_height {dome_height} leaves no hex body under height {m}")
     r_flat = (s if chamfer is None else chamfer) / 2.0
+    if r_flat > s / 2.0:
+        raise ValueError(
+            f"cap_nut: dome base radius {r_flat} exceeds the hex inradius {s / 2.0:.3f}; "
+            f"the cap would overhang the flats (needs chamfer <= s)")
+    # 3x the base radius is a sanity ceiling to reject obviously bad data, not a
+    # geometric limit (a spherical cap fits any dome_height > 0).
     if dome_height > 3.0 * r_flat:
         raise ValueError(
             f"cap_nut: dome_height {dome_height} exceeds 3x the base radius {r_flat} "

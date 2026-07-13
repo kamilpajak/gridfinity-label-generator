@@ -7,6 +7,7 @@ from catalog.models.washer import (
 from catalog.models.hex_nut import hex_nut
 from catalog.models.flange_nut import flange_nut
 from catalog.models.cap_nut import cap_nut
+from catalog.models.castle_nut import castle_nut
 
 KNOWN_FAMILIES = {
     "flat_washer": flat_washer,
@@ -23,6 +24,7 @@ KNOWN_FAMILIES = {
     "hex_nut": hex_nut,
     "flange_nut": flange_nut,
     "cap_nut": cap_nut,
+    "castle_nut": castle_nut,
 }
 
 

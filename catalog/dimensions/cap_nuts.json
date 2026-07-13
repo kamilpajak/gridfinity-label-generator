@@ -1,0 +1,26 @@
+{
+	"din1587": {
+		"family": "cap_nut",
+		"shape": { "s": 18.0, "m": 22.0, "dome_height": 12.0 },
+		"hardwareType": "nut",
+		"source": "DIN 1587 hexagon domed cap (acorn) nut (M12): s=18 (current ISO 272-aligned width; legacy pre-1992 s=19 not shipped), total height m=22, hex body 10 -> dome_height=12 (derived, not directly tabulated). Confirmed vs Westfield Fasteners + Andrews Fasteners + fasteners.eu DIN 1587 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "1587" }]
+	},
+	"din917": {
+		"family": "cap_nut",
+		"shape": { "s": 18.0, "m": 16.0, "dome_height": 8.0 },
+		"hardwareType": "nut",
+		"source": "DIN 917 hexagon cap nut, low type (M12): s=18, total height m=16, hex body 8 (m' minimum) -> dome_height=8 (derived). Confirmed vs fasteners.eu + Fuller Fasteners + TorqBolt DIN 917 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "917" }]
+	},
+	"din986": {
+		"family": "cap_nut",
+		"shape": { "s": 18.0, "m": 22.5, "dome_height": 9.0 },
+		"hardwareType": "nut",
+		"source": "DIN 986 all-metal prevailing-torque hexagon domed cap nut (M12): s=18 (ISO 4032-aligned SW18; legacy SW19 not shipped), total height h2=22.5, hex body h1=13.5 -> dome_height=9. The prevailing-torque crown deformation is not modelled (envelope-only, same precedent as DIN 6927). Confirmed vs Fabory + Bossard BN 167 + Fuller Fasteners + fasteners.eu.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "986" }]
+	}
+}

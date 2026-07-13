@@ -1,0 +1,18 @@
+{
+	"din557": {
+		"family": "square_nut",
+		"shape": { "s": 18.0, "m": 10.0, "bore": 10.1, "chamfer": 18.0 },
+		"hardwareType": "nut",
+		"source": "DIN 557 square nut, product grade C (M12): s=18 (current ISO 272 / SW18; obsolescent pre-1994 s=19 not shipped), m=10 (max/nominal), bore=10.1 (M12 minor dia). Top face chamfered (chamfer-circle diameter = s, a drawing form requirement, not tabulated -> representative), bearing face flat. Confirmed vs fasteners.eu + Fuller Fasteners + TC Fixings + Aspen Fasteners DIN 557 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "557" }]
+	},
+	"din928": {
+		"family": "square_nut",
+		"shape": { "s": 19.0, "m": 9.5, "bore": 10.1 },
+		"hardwareType": "nut",
+		"source": "DIN 928 square weld nut, product grade A (M12): s=19, m=9.5 (nut body height), bore=10.1 (M12 minor dia). Plain flat square prism, no top chamfer; the three resistance-weld projections on the bearing face are consumed during welding and are not modelled (don't-fabricate). Confirmed vs fasteners.eu + Fuller Fasteners + fasten.it + McMaster-Carr DIN 928 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "928" }]
+	}
+}

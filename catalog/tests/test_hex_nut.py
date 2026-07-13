@@ -67,3 +67,16 @@ def test_hex_nut_guards_bad_geometry():
         hex_nut(s=S, m=M, bore=S)                # bore >= across-flats: no wall left
     with pytest.raises(ValueError):
         hex_nut(s=S, m=M, bore=BORE, chamfer=S * 3)   # chamfer circle wider than the corners
+
+
+def test_chamfered_hex_solid_is_a_solid_hex_with_no_bore():
+    import math
+    from catalog.models.hex_nut import _chamfered_hex_solid, hex_nut
+
+    solid = _chamfered_hex_solid(s=S, m=M)
+    bb = solid.bounding_box()
+    assert round(bb.size.X, 2) == round(ACROSS_CORNERS, 2)   # vertex-up: corners on X
+    assert round(bb.size.Y, 2) == round(S, 2)                # flats on Y
+    assert round(bb.size.Z, 2) == round(M, 2)
+    # No bore: the solid body holds more material than the same nut with a hole.
+    assert solid.volume > hex_nut(s=S, m=M, bore=BORE).volume

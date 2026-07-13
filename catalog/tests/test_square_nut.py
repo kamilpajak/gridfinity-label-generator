@@ -11,11 +11,13 @@ CIRCUMRADIUS = S / math.sqrt(2.0)          # half-diagonal (across-corners / 2)
 DIAGONAL = 2.0 * CIRCUMRADIUS              # s * sqrt(2)
 
 
-def test_square_nut_is_flat_up_with_across_flats_extents():
+def test_square_nut_is_vertex_up_with_across_corners_extents():
     part = square_nut(s=S, m=M, bore=BORE, chamfer=S)
     bb = part.bounding_box()
-    assert round(bb.size.X, 2) == round(S, 2)     # flat-up: sides axis-aligned -> bbox = across-flats
-    assert round(bb.size.Y, 2) == round(S, 2)
+    # vertex-up (a corner points up, like the hex nuts): the diagonal runs along the view
+    # axes, so both plan extents equal the across-corners (s * sqrt(2)), not the flats.
+    assert round(bb.size.X, 2) == round(DIAGONAL, 2)
+    assert round(bb.size.Y, 2) == round(DIAGONAL, 2)
     assert round(bb.size.Z, 2) == round(M, 2)
     assert part.volume > 0
 
@@ -24,7 +26,7 @@ def test_square_nut_plain_prism_keeps_full_square_corners():
     part = square_nut(s=S, m=M, bore=BORE)         # chamfer=None
     radii = [math.hypot(v.X, v.Y) for v in part.vertices()]
     assert max(radii) > CIRCUMRADIUS - 0.01        # corners reach the full half-diagonal
-    assert round(part.bounding_box().size.X, 2) == round(S, 2)
+    assert round(part.bounding_box().size.X, 2) == round(DIAGONAL, 2)   # vertex-up: diagonal on the axes
 
 
 def test_square_nut_top_chamfer_bevels_the_top_corners_only():

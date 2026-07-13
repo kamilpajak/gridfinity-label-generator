@@ -1,0 +1,10 @@
+{
+	"din6331": {
+		"family": "collar_nut",
+		"shape": { "s": 18.0, "m": 18.0, "bore": 10.1, "dc": 25.0, "collar_height": 4.0 },
+		"hardwareType": "nut",
+		"source": "DIN 6331 hexagon nut with collar, height 1.5d (M12): s=18 (current ISO 272 / SW18), m=18 (=1.5x12, total height incl. collar), collar diameter d1/dc=25, collar height a=4, bore=10.1 (M12 minor dia). Collar dc=25 exceeds the hex across-corners (20.78), a visible bearing ring; plain cylindrical (no edge chamfer). Confirmed vs fasteners.eu + Aspen Fasteners + Hommel-Hercules + NF GAB + Wurth DIN 6331 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6331" }]
+	}
+}

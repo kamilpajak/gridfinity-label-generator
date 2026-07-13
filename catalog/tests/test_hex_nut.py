@@ -70,7 +70,6 @@ def test_hex_nut_guards_bad_geometry():
 
 
 def test_chamfered_hex_solid_is_a_solid_hex_with_no_bore():
-    import math
     from catalog.models.hex_nut import _chamfered_hex_solid, hex_nut
 
     solid = _chamfered_hex_solid(s=S, m=M)

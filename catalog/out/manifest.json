@@ -211,6 +211,12 @@
 			"source": "DIN 6330 hexagon nut height 1.5d (version B), M12: s=18.0, m=18.0 (=1.5x12). Confirmed vs Fasteners.eu DIN 6330 table + Norelem/Kipp DIN 6330 datasheets.",
 			"svg": "din6330.svg"
 		},
+		"din6331": {
+			"family": "collar_nut",
+			"sha256": "e59dbb43c9c0a757d09b32eac800a215b1d5ae8ae958b38ab5302e869975d657",
+			"source": "DIN 6331 hexagon nut with collar, height 1.5d (M12): s=18 (current ISO 272 / SW18), m=18 (=1.5x12, total height incl. collar), collar diameter d1/dc=25, collar height a=4, bore=10.1 (M12 minor dia). Collar dc=25 exceeds the hex across-corners (20.78), a visible bearing ring; plain cylindrical (no edge chamfer). Confirmed vs fasteners.eu + Aspen Fasteners + Hommel-Hercules + NF GAB + Wurth DIN 6331 tables.",
+			"svg": "din6331.svg"
+		},
 		"din6340": {
 			"family": "flat_washer",
 			"sha256": "87e5040c59a25ff4d5d9c66d240e8aa6cbc25985570025a9f7b27c857ff1212a",

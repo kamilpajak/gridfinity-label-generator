@@ -401,3 +401,13 @@ def test_new_families_dispatch_via_registry():
     assert build_part("wave_washer",
                       {"d_inner": 13.0, "d_outer": 24.0, "thickness": 1.2,
                        "waves": 3, "wave_height": 1.4}).volume > 0
+
+
+def test_flange_nut_dispatches_via_registry():
+    from catalog.models._registry import build_part
+
+    part = build_part("flange_nut",
+                      {"s": 18.0, "m": 15.0, "bore": 10.1,
+                       "d_flange": 26.0, "flange_thickness": 2.6})
+    assert part.volume > 0
+    assert round(part.bounding_box().size.X, 1) == 26.0   # flange diameter is the widest

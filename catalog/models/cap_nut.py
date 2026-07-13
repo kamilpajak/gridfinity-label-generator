@@ -3,13 +3,6 @@ from build123d import BuildPart, Sphere, Box, Locations, Mode, add
 
 from catalog.models.hex_nut import _chamfered_hex_solid
 
-# Representative dome height as a fraction of across-flats s, used ONLY when a standard
-# publishes neither a dome height nor a total-minus-hex-body split. Same role as
-# _FLANGE_CONE_ANGLE_DEG in flange_nut: one documented constant for the single
-# untabulated transition, while every tabulated dimension stays sourced.
-_CAP_DOME_HEIGHT_FRACTION = 2.0 / 3.0
-
-
 def cap_nut(s: float, m: float, dome_height: float, chamfer: float | None = None):
     """Closed cap (dome / acorn) nut: across-flats ``s``, total height ``m``, dome of
     height ``dome_height`` rising from the top chamfer circle.

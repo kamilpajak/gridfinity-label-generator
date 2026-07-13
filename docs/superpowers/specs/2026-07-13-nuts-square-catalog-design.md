@@ -7,9 +7,13 @@
 ## Goal
 
 Add a **square nut** family to the maintainer-only generative catalog — the first
-**non-hex** base shape, so it does **not** reuse `_chamfered_hex_solid`. A flat-up square
+**non-hex** base shape, so it does **not** reuse `_chamfered_hex_solid`. A vertex-up square
 prism with a through bore and an optional top-only chamfer. Ship DIN 557 (chamfered) and
 DIN 928 (plain weld nut) at M12.
+
+> **Orientation update:** the family originally shipped **flat-up** (PR #96); a follow-up
+> corrected it to **vertex-up** (a corner at top, matching the hex nuts) per user request.
+> The generator, tests, and drawings below reflect **vertex-up** (`rotation=0`).
 
 ## Non-goals
 

@@ -45,7 +45,19 @@ def test_castle_nut_has_an_open_bore():
     assert holed.volume < solid.volume                       # the bore removes material
 
 
+def test_castle_nut_hex_body_is_intact_below_the_slot_floor():
+    # Below m1 the part is the full chamfered hex (wider than the crown) — the slots,
+    # whose floor is pinned at z=m1, never reach it.
+    part = castle_nut(s=S, m=M, bore=BORE, dk=DK, m1=M1, n_slots=N, e=E)
+    lower = [math.hypot(v.X, v.Y) for v in part.vertices() if v.Z < M1 - 0.1]
+    assert lower, "expected hex-body vertices below the slot floor"
+    # material reaches out past the crown (dk/2) toward the hex corners, and no further.
+    assert DK / 2.0 + 0.5 < max(lower) <= CIRCUMRADIUS + 0.01
+
+
 def test_castle_nut_guards_bad_geometry():
+    with pytest.raises(ValueError):
+        castle_nut(s=S, m=M, bore=0.0, dk=DK, m1=M1, n_slots=N, e=E)      # non-positive bore
     with pytest.raises(ValueError):
         castle_nut(s=S, m=M, bore=S, dk=DK, m1=M1, n_slots=N, e=E)        # bore too big
     with pytest.raises(ValueError):
@@ -53,9 +65,15 @@ def test_castle_nut_guards_bad_geometry():
     with pytest.raises(ValueError):
         castle_nut(s=S, m=M, bore=BORE, dk=S + 1.0, m1=M1, n_slots=N, e=E)  # crown wider than hex
     with pytest.raises(ValueError):
-        castle_nut(s=S, m=M, bore=DK, dk=DK, m1=M1, n_slots=N, e=E)       # bore >= crown
+        castle_nut(s=S, m=M, bore=BORE, dk=DK, m1=M1, n_slots=N, e=E, chamfer=DK - 1.0)  # crown overhangs chamfer
+    with pytest.raises(ValueError):
+        castle_nut(s=S, m=M, bore=DK - 0.05, dk=DK, m1=M1, n_slots=N, e=E)  # crown wall too thin (subsumes dk<=bore)
+    with pytest.raises(ValueError):
+        castle_nut(s=S, m=M, bore=BORE, dk=DK, m1=M1, n_slots=N, e=0.0)   # non-positive slot width
     with pytest.raises(ValueError):
         castle_nut(s=S, m=M, bore=BORE, dk=DK, m1=M1, n_slots=N, e=DK)    # slot as wide as crown
+    with pytest.raises(ValueError):
+        castle_nut(s=S, m=M, bore=BORE, dk=DK, m1=M1, n_slots=2.5, e=E)   # non-integer slot count
     with pytest.raises(ValueError):
         castle_nut(s=S, m=M, bore=BORE, dk=DK, m1=M1, n_slots=100, e=E)   # towers can't survive
     with pytest.raises(ValueError):

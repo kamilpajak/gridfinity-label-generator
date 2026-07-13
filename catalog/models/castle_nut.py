@@ -36,9 +36,15 @@ def castle_nut(s: float, m: float, bore: float, dk: float, m1: float,
     if dk > s:
         raise ValueError(
             f"castle_nut: crown dk {dk} exceeds across-flats {s} (crown must sit within the hex)")
-    if dk <= bore:
+    chamfer_d = s if chamfer is None else chamfer
+    if dk > chamfer_d:
         raise ValueError(
-            f"castle_nut: crown dk {dk} must exceed bore {bore} (a crown wall must remain)")
+            f"castle_nut: crown dk {dk} exceeds the top chamfer circle {chamfer_d:.3f} "
+            f"(crown base would overhang the chamfer)")
+    if (dk - bore) / 2.0 < _MIN_WALL_MM:
+        raise ValueError(
+            f"castle_nut: crown wall (dk-bore)/2 = {(dk - bore) / 2.0:.3f} is too thin "
+            f"(needs >= {_MIN_WALL_MM} mm; also requires dk > bore)")
     if not (0 < e < dk):
         raise ValueError(f"castle_nut: need 0 < slot width e < dk, got e={e}, dk={dk}")
     if n_slots < 1 or int(n_slots) != n_slots:
@@ -50,7 +56,7 @@ def castle_nut(s: float, m: float, bore: float, dk: float, m1: float,
 
     hex_solid = _chamfered_hex_solid(s, m1, chamfer)   # validates s, m1, chamfer geometry
     crown_h = m - m1
-    margin = 0.5 * (dk + m)                # generous build overshoot (not a physical value)
+    margin = max(dk, crown_h) + 1.0        # generous overshoot past the crown (not a physical value)
     slot_len = dk / 2.0 + margin           # from the axis out past the crown surface
     slot_hh = crown_h + margin             # overshoot the top only; floor stays at m1
     slot_zc = m1 + slot_hh / 2.0           # box centred so its bottom face is exactly at z=m1

@@ -54,6 +54,8 @@ def _chamfered_hex_solid(s: float, m: float, chamfer: float | None = None):
         with BuildSketch(Plane.XZ):
             Polygon(*profile, align=None)
         revolve(axis=Axis.Z, revolution_arc=360, mode=Mode.INTERSECT)
+    if bp.part.volume <= 0:                      # fail loudly on our own, before any reuse
+        raise ValueError("chamfered hex: produced an empty solid")
     return bp.part
 
 

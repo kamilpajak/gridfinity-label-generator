@@ -27,8 +27,11 @@ def flange_nut(s: float, m: float, bore: float, d_flange: float,
     if bore <= 0:
         raise ValueError(f"flange_nut: need bore > 0, got {bore}")
     if bore >= s - _MIN_WALL_MM:
+        # The thinnest wall on a flange nut is at the hex flats (the flange is wider),
+        # so the across-flats `s` sets the wall limit — same convention as hex_nut.
         raise ValueError(
-            f"flange_nut: bore {bore} leaves too thin a wall (under across-flats {s})")
+            f"flange_nut: bore {bore} leaves too thin a wall across the hex flats "
+            f"(across-flats {s})")
     circumradius = s / math.sqrt(3.0)
     if d_flange <= 2 * circumradius:
         raise ValueError(
@@ -45,7 +48,8 @@ def flange_nut(s: float, m: float, bore: float, d_flange: float,
 
     # Flange silhouette in the XZ half-plane (x = radius, y = height), revolved about Z:
     # flat bearing bottom out to the rim, up the thin rim edge, then coning inward and up
-    # to the hex corner circle.
+    # to the hex corner circle. The profile deliberately touches the Z axis at both ends
+    # (x=0); build123d revolves it to a sound solid (the volume guard below is the net).
     flange_profile = [
         (0.0, 0.0),
         (r_flange, 0.0),

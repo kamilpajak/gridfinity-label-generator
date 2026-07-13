@@ -274,6 +274,25 @@
 			"source": "variant key sharing DIN 6916 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din6916.svg"
 		},
+		"din6923": {
+			"family": "flange_nut",
+			"sha256": "2ff27067196c1fc9c8cc99f5972a77936d24860e03159081c557e20335584664",
+			"source": "DIN 6923 hex flange nut (M12): s=18, m=12, d_flange=26, flange_thickness(c)=1.8, bore=10.1 (M12 minor dia). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 6923 tables.",
+			"svg": "din6923.svg"
+		},
+		"din6926": {
+			"alias_of": "din6923",
+			"family": "flange_nut",
+			"sha256": "2ff27067196c1fc9c8cc99f5972a77936d24860e03159081c557e20335584664",
+			"source": "DIN 6926 prevailing-torque nylon-insert hex flange nut (M12): metal envelope (s=18, m=12, d_flange=26, c=1.8) identical to DIN 6923; the nylon crown (total height 16.1) sits above the metal body and is not modelled, so this aliases the DIN 6923 drawing. Confirmed vs Fasteners.eu + Fuller Fasteners DIN 6926.",
+			"svg": "din6923.svg"
+		},
+		"din6927": {
+			"family": "flange_nut",
+			"sha256": "b14bc6723194d45d230dec5c52e1dafc1c900501199a0fb32e596b0b056c6b5d",
+			"source": "DIN 6927 prevailing-torque all-metal hex flange nut (M12): s/d_flange/c identical to DIN 6923; total metal envelope height m=13.8 (all-metal locking crown adds ~1.8mm). The locking deformation is not modelled (drawn as a smooth flange nut of the true envelope height). Confirmed vs Fasteners.eu + bwindustrialsales DIN 6927.",
+			"svg": "din6927.svg"
+		},
 		"din7349": {
 			"family": "flat_washer",
 			"sha256": "03a503f072ebdba60b12908cf3204e5ba320cb0ed261dbd31d7b920d5450ae28",
@@ -360,6 +379,12 @@
 			"sha256": "cdcb7f0fc92f988b89b6ef254975d5f756f106495754c5a2e56f0c3a3521f672",
 			"source": "DIN 988 (12x18, shim ring / Passscheibe; d1=12, d2=18). Thickness representative (DIN 988 is a shim series 0.1-2 mm; a mid 1.0 mm ring is drawn).",
 			"svg": "din988d.svg"
+		},
+		"iso21670": {
+			"family": "flange_nut",
+			"sha256": "7a96cf17af2035e2c4b6d54695e47f778488db356a98a9300c244946c69a87c7",
+			"source": "ISO 21670 hex weld nut with flange (M12): s=18, m=15, d_flange=30.5, flange_thickness(c)=1.2 (rim 1.1-1.3 range), bore=10.1. Distinct from DIN 6923 (wider flange, thinner rim, taller). Weld projections on the bearing face are sub-visible and not modelled. Confirmed vs fasenco.com + globalfastener.com (ISO 21670:2003/2014) + Wurth.",
+			"svg": "iso21670.svg"
 		},
 		"iso4032": {
 			"family": "hex_nut",

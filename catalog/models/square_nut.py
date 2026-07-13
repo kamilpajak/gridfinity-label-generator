@@ -15,7 +15,8 @@ _CHAMFER_ANGLE_DEG = 30.0
 def square_nut(s: float, m: float, bore: float, chamfer: float | None = None):
     """Square nut: across-flats ``s`` (the square side), height ``m``, drawn bore ``bore``.
 
-    Flat-up (square sides axis-aligned, so the plan bounding box is ``s`` x ``s``). A plain
+    Vertex-up (a corner points along +X, the view's up axis, matching the hex nuts), so the
+    plan bounding box is the across-corners ``s*sqrt(2)`` on both axes. A plain
     prism when ``chamfer`` is None (e.g. DIN 928); when ``chamfer`` is the top chamfer-circle
     diameter (ISO default ``s``, e.g. DIN 557) the TOP face corners bevel in to the chamfer
     circle while the bearing (bottom) face stays a sharp full square. Bore subtracted last,
@@ -49,7 +50,7 @@ def square_nut(s: float, m: float, bore: float, chamfer: float | None = None):
 
     with BuildPart() as bp:
         with BuildSketch():
-            RegularPolygon(radius=circumradius, side_count=4, rotation=45)   # flat-up square
+            RegularPolygon(radius=circumradius, side_count=4, rotation=0)   # vertex-up (corner on +X)
         extrude(amount=m)
         if profile is not None:
             with BuildSketch(Plane.XZ):

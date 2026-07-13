@@ -193,6 +193,12 @@
 			"source": "plated (electro-zinc) variant of DIN 463; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din463.svg"
 		},
+		"din557": {
+			"family": "square_nut",
+			"sha256": "bf09cbe86ce33ef789ba03e64bb4fe24ee76e01d9505a370266db450e79b32b7",
+			"source": "DIN 557 square nut, product grade C (M12): s=18 (current ISO 272 / SW18; obsolescent pre-1994 s=19 not shipped), m=10 (max/nominal), bore=10.1 (M12 minor dia). Top face chamfered (chamfer-circle diameter = s, a drawing form requirement, not tabulated -> representative), bearing face flat. Confirmed vs fasteners.eu + Fuller Fasteners + TC Fixings + Aspen Fasteners DIN 557 tables.",
+			"svg": "din557.svg"
+		},
 		"din6319c": {
 			"family": "spherical_seating_washer",
 			"sha256": "1f8e98dc72a549a260decac88d0d03adf6a05481c3e9566df7d83044e071a669",
@@ -366,6 +372,12 @@
 			"sha256": "6f81752d90b4af47bcfcd7165c5a1f4ffbf31e364f661abb976b3e898b4a57c6",
 			"source": "DIN 917 hexagon cap nut, low type (M12): s=18, total height m=16, hex body 8 (m' minimum) -> dome_height=8 (derived). Confirmed vs fasteners.eu + Fuller Fasteners + TorqBolt DIN 917 tables.",
 			"svg": "din917.svg"
+		},
+		"din928": {
+			"family": "square_nut",
+			"sha256": "d8e66f6dce6848855935acd24f208c9dbf58ce413739a938fe40b39b2a47342a",
+			"source": "DIN 928 square weld nut, product grade A (M12): s=19, m=9.5 (nut body height), bore=10.1 (M12 minor dia). Plain flat square prism, no top chamfer; the three resistance-weld projections on the bearing face are consumed during welding and are not modelled (don't-fabricate). Confirmed vs fasteners.eu + Fuller Fasteners + fasten.it + McMaster-Carr DIN 928 tables.",
+			"svg": "din928.svg"
 		},
 		"din93": {
 			"family": "tab_washer",

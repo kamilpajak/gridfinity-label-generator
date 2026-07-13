@@ -1,0 +1,33 @@
+{
+	"din6923": {
+		"family": "flange_nut",
+		"shape": { "s": 18.0, "m": 12.0, "bore": 10.1, "d_flange": 26.0, "flange_thickness": 1.8 },
+		"hardwareType": "nut",
+		"source": "DIN 6923 hex flange nut (M12): s=18, m=12, d_flange=26, flange_thickness(c)=1.8, bore=10.1 (M12 minor dia). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 6923 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6923" }]
+	},
+	"din6927": {
+		"family": "flange_nut",
+		"shape": { "s": 18.0, "m": 13.8, "bore": 10.1, "d_flange": 26.0, "flange_thickness": 1.8 },
+		"hardwareType": "nut",
+		"source": "DIN 6927 prevailing-torque all-metal hex flange nut (M12): s/d_flange/c identical to DIN 6923; total metal envelope height m=13.8 (all-metal locking crown adds ~1.8mm). The locking deformation is not modelled (drawn as a smooth flange nut of the true envelope height). Confirmed vs Fasteners.eu + bwindustrialsales DIN 6927.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6927" }]
+	},
+	"iso21670": {
+		"family": "flange_nut",
+		"shape": { "s": 18.0, "m": 15.0, "bore": 10.1, "d_flange": 30.5, "flange_thickness": 1.2 },
+		"hardwareType": "nut",
+		"source": "ISO 21670 hex weld nut with flange (M12): s=18, m=15, d_flange=30.5, flange_thickness(c)=1.2 (rim 1.1-1.3 range), bore=10.1. Distinct from DIN 6923 (wider flange, thinner rim, taller). Weld projections on the bearing face are sub-visible and not modelled. Confirmed vs fasenco.com + globalfastener.com (ISO 21670:2003/2014) + Wurth.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "21670" }]
+	},
+	"din6926": {
+		"alias_of": "din6923",
+		"hardwareType": "nut",
+		"source": "DIN 6926 prevailing-torque nylon-insert hex flange nut (M12): metal envelope (s=18, m=12, d_flange=26, c=1.8) identical to DIN 6923; the nylon crown (total height 16.1) sits above the metal body and is not modelled, so this aliases the DIN 6923 drawing. Confirmed vs Fasteners.eu + Fuller Fasteners DIN 6926.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6926" }]
+	}
+}

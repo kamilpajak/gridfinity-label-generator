@@ -54,6 +54,19 @@ DEFAULT_AXIS_Z = CameraPreset(
     side_up=(1, 0, 0),   # standing: length/diameter vertical, thickness horizontal
 )
 
+# Nuts share the washer camera geometry: look down the axis for the hex face view,
+# look along -Y for the profile, X vertical in both so the two views are height-aligned
+# (the orthographic-projection rule). The hex is oriented vertex-up by the generator, so
+# no preset change is needed beyond reusing these axes — NUT_PRESET is intentionally the
+# same object as DEFAULT_AXIS_Z today. It exists as the seam to diverge later: when a
+# non-axisymmetric nut family arrives (e.g. a square nut) this can point at its own preset.
+NUT_PRESET = DEFAULT_AXIS_Z
+
+
+def preset_for_hardware_type(hardware_type: str) -> CameraPreset:
+    """Camera preset selected by hardware type. Nuts use NUT_PRESET; everything else the default."""
+    return NUT_PRESET if hardware_type == "nut" else DEFAULT_AXIS_Z
+
 
 def _centerline_coords(bbox, ext, cross):
     """Endpoint pairs for the symmetry axes of a view.

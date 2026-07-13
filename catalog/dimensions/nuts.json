@@ -1,0 +1,79 @@
+{
+	"iso4032": {
+		"family": "hex_nut",
+		"shape": { "s": 18.0, "m": 10.8, "bore": 10.1 },
+		"hardwareType": "nut",
+		"source": "ISO 4032 hexagon regular nut (style 1), M12: s=18.0, m=10.8. Confirmed vs Fasteners.eu + wermac.org ISO 4032 dimension tables.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4032" }]
+	},
+	"iso4033": {
+		"family": "hex_nut",
+		"shape": { "s": 18.0, "m": 12.0, "bore": 10.1 },
+		"hardwareType": "nut",
+		"source": "ISO 4033 hexagon high nut (style 2), M12: s=18.0, m=12.0 (m=1.0d). Confirmed vs TorqBolt + fasten.it ISO 4033 tables.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4033" }]
+	},
+	"iso4035": {
+		"family": "hex_nut",
+		"shape": { "s": 18.0, "m": 6.0, "bore": 10.1 },
+		"hardwareType": "nut",
+		"source": "ISO 4035 hexagon thin nut (style 0), M12: s=18.0 (ISO value; the 19mm seen in some catalogues is the DIN 439B deviation), m=6.0. Confirmed vs Fuller Fasteners ISO 4035 spec + BS EN ISO 4035 table (Engineers Edge).",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4035" }]
+	},
+	"din6330": {
+		"family": "hex_nut",
+		"shape": { "s": 18.0, "m": 18.0, "bore": 10.1 },
+		"hardwareType": "nut",
+		"source": "DIN 6330 hexagon nut height 1.5d (version B), M12: s=18.0, m=18.0 (=1.5x12). Confirmed vs Fasteners.eu DIN 6330 table + Norelem/Kipp DIN 6330 datasheets.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6330" }]
+	},
+	"din936": {
+		"family": "hex_nut",
+		"shape": { "s": 19.0, "m": 7.0, "bore": 10.1 },
+		"hardwareType": "nut",
+		"source": "DIN 936 hexagon thin/jam nut, M12: s=19.0, m=7.0. Distinct from ISO 4035 (wider flats, 1mm taller). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 936 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "936" }]
+	},
+	"din80705": {
+		"family": "hex_nut",
+		"shape": { "s": 17.0, "m": 6.0, "bore": 10.4 },
+		"hardwareType": "nut",
+		"source": "DIN 80705 thin hexagon nut with reduced width across flats, M12x1.5: s=17.0, m=6.0. Confirmed vs Fasteners.eu + din-fasteners.com + Ferrobend DIN 80705 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "80705" }]
+	},
+	"din431": {
+		"family": "hex_nut",
+		"shape": { "s": 27.0, "m": 8.0, "bore": 16.66 },
+		"hardwareType": "nut",
+		"source": "DIN 431 hexagon pipe nut, representative size G 3/8: s=27.0, m=8.0, bore=16.66 (G3/8 major dia per ISO 228-1). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 431 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "431" }]
+	},
+	"iso8673": {
+		"alias_of": "iso4032",
+		"hardwareType": "nut",
+		"source": "ISO 8673 = ISO 4032 regular hex nut with fine pitch; external body geometry identical to ISO 4032, aliased to that base drawing.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "8673" }]
+	},
+	"iso8674": {
+		"alias_of": "iso4033",
+		"hardwareType": "nut",
+		"source": "ISO 8674 = ISO 4033 high hex nut with fine pitch; identical body, aliased to the base.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "8674" }]
+	},
+	"iso8675": {
+		"alias_of": "iso4035",
+		"hardwareType": "nut",
+		"source": "ISO 8675 = ISO 4035 thin hex nut with fine pitch; identical body, aliased to the base.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "8675" }]
+	}
+}

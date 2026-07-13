@@ -6,8 +6,14 @@ from build123d import (
     Plane, Axis, Mode, extrude, revolve,
 )
 
-# Standard hex-nut chamfer angle, measured from the flat bearing (end) face.
+# Standard hex-nut chamfer angle (ISO 4032 and its family), measured from the
+# flat bearing (end) face. A non-standard nut needing a different angle would
+# pass its own value rather than change this constant.
 _CHAMFER_ANGLE_DEG = 30.0
+
+# Leave at least this much wall between the bore and the across-flats faces, so a
+# near-tangent bore cannot leave a razor-thin sliver the volume check would miss.
+_MIN_WALL_MM = 0.1
 
 
 def hex_nut(s: float, m: float, bore: float, chamfer: float | None = None):
@@ -29,8 +35,10 @@ def hex_nut(s: float, m: float, bore: float, chamfer: float | None = None):
     chamfer_d = s if chamfer is None else chamfer
     circumradius = s / math.sqrt(3.0)          # hex corner radius (across-corners / 2)
     r_flat = chamfer_d / 2.0                    # radius of the flat end-face circle
-    if bore >= s:
-        raise ValueError(f"hex_nut: bore {bore} leaves no wall (>= across-flats {s})")
+    if bore >= s - _MIN_WALL_MM:
+        raise ValueError(
+            f"hex_nut: bore {bore} leaves too thin a wall (needs to be under "
+            f"across-flats {s} by at least {_MIN_WALL_MM} mm)")
     if not (0 < r_flat < circumradius):
         raise ValueError(
             f"hex_nut: chamfer circle radius {r_flat} must sit between 0 and the "

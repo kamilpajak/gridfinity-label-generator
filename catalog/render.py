@@ -56,8 +56,10 @@ DEFAULT_AXIS_Z = CameraPreset(
 
 # Nuts share the washer camera geometry: look down the axis for the hex face view,
 # look along -Y for the profile, X vertical in both so the two views are height-aligned
-# (the orthographic-projection rule). The hex itself is oriented flats-horizontal by the
-# generator, so no preset change is needed beyond reusing these axes.
+# (the orthographic-projection rule). The hex is oriented vertex-up by the generator, so
+# no preset change is needed beyond reusing these axes — NUT_PRESET is intentionally the
+# same object as DEFAULT_AXIS_Z today. It exists as the seam to diverge later: when a
+# non-axisymmetric nut family arrives (e.g. a square nut) this can point at its own preset.
 NUT_PRESET = DEFAULT_AXIS_Z
 
 

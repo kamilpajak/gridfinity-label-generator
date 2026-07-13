@@ -15,10 +15,6 @@ CIRCUMRADIUS = S / math.sqrt(3.0)
 ACROSS_CORNERS = 2.0 * CIRCUMRADIUS
 
 
-def _radii(part):
-    return [math.hypot(v.X, v.Y) for v in part.vertices()]
-
-
 def test_castle_nut_is_vertex_up_with_correct_extents():
     part = castle_nut(s=S, m=M, bore=BORE, dk=DK, m1=M1, n_slots=N, e=E)
     bb = part.bounding_box()

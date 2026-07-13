@@ -71,6 +71,12 @@
 			"source": "variant key sharing DIN 1440 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din1440.svg"
 		},
+		"din1587": {
+			"family": "cap_nut",
+			"sha256": "7e28b5d2207a51f5d3d3151c265ce23dc49aab1a88c2484480b65f22391c2c6b",
+			"source": "DIN 1587 hexagon domed cap (acorn) nut (M12): s=18 (current ISO 272-aligned width; legacy pre-1992 s=19 not shipped), total height m=22, hex body 10 -> dome_height=12 (derived, not directly tabulated). Confirmed vs Westfield Fasteners + Andrews Fasteners + fasteners.eu DIN 1587 tables.",
+			"svg": "din1587.svg"
+		},
 		"din2093": {
 			"family": "curved_washer",
 			"sha256": "c7f37f5c465629d360d8dfa6b71f0d752d69689baf16094ec1a68cfe1886f1be",
@@ -349,6 +355,12 @@
 			"source": "variant key sharing DIN 9021 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din9021.svg"
 		},
+		"din917": {
+			"family": "cap_nut",
+			"sha256": "6f81752d90b4af47bcfcd7165c5a1f4ffbf31e364f661abb976b3e898b4a57c6",
+			"source": "DIN 917 hexagon cap nut, low type (M12): s=18, total height m=16, hex body 8 (m' minimum) -> dome_height=8 (derived). Confirmed vs fasteners.eu + Fuller Fasteners + TorqBolt DIN 917 tables.",
+			"svg": "din917.svg"
+		},
 		"din93": {
 			"family": "tab_washer",
 			"sha256": "764a5d0d6403d8b2ab91cb2ea235fdd980e01dd2ed6067b08aa2cb6438b6a521",
@@ -367,6 +379,12 @@
 			"sha256": "764a5d0d6403d8b2ab91cb2ea235fdd980e01dd2ed6067b08aa2cb6438b6a521",
 			"source": "plated (electro-zinc) variant of DIN 93; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din93.svg"
+		},
+		"din986": {
+			"family": "cap_nut",
+			"sha256": "28b8f539ca2f09631bc6a44d9fa2c4c5a71429ea56dfc249abd8f164dcd06353",
+			"source": "DIN 986 all-metal prevailing-torque hexagon domed cap nut (M12): s=18 (ISO 4032-aligned SW18; legacy SW19 not shipped), total height h2=22.5, hex body h1=13.5 -> dome_height=9. The prevailing-torque crown deformation is not modelled (envelope-only, same precedent as DIN 6927). Confirmed vs Fabory + Bossard BN 167 + Fuller Fasteners + fasteners.eu.",
+			"svg": "din986.svg"
 		},
 		"din988": {
 			"family": "flat_washer",

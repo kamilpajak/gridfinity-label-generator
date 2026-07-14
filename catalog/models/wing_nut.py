@@ -4,7 +4,7 @@ from build123d import (
     Plane, Align, Mode, extrude,
 )
 
-from catalog.models.hex_nut import _MIN_WALL_MM
+from catalog.models.hex_nut import _MIN_WALL_MM   # shared minimum wall thickness (same rule as hex_nut)
 
 
 def wing_nut(bore: float, boss_d: float, boss_h: float, span: float,

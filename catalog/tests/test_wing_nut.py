@@ -65,6 +65,23 @@ def test_boss_wall_and_open_bore():
     assert part.volume < solid.volume            # the M12 bore removes more than a pinhole
 
 
+@pytest.mark.parametrize("cfg", [
+    # dip barely survives: span just above the merge boundary boss_d + 2*tip_r (=43)
+    dict(bore=10.1, boss_d=23.0, boss_h=14.0, span=44.0, height=24.0, wing_t=4.9, tip_r=10.0),
+    # tip_r exactly height/2: the lobe top just reaches the top face
+    dict(bore=10.1, boss_d=23.0, boss_h=8.0, span=65.0, height=20.0, wing_t=4.9, tip_r=10.0),
+    # very thin blade
+    dict(bore=10.1, boss_d=23.0, boss_h=14.0, span=65.0, height=33.5, wing_t=1.0, tip_r=10.0),
+])
+def test_wing_nut_builds_at_valid_boundary_configs(cfg):
+    # extreme-but-valid parameter combinations still produce a non-empty solid
+    part = wing_nut(**cfg)
+    assert part.volume > 0
+    top = cfg["height"] - 0.5
+    assert not _has_material(part, x=0.0, z=top, probe=0.4)                       # dip survives
+    assert _has_material(part, x=cfg["span"] / 2.0 - cfg["tip_r"], z=cfg["height"] - cfg["tip_r"])  # lobe present
+
+
 def test_wing_nut_guards_bad_geometry():
     base = dict(bore=BORE, boss_d=BOSS_D, boss_h=BOSS_H, span=SPAN,
                 height=HEIGHT, wing_t=WING_T, tip_r=TIP_R)

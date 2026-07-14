@@ -1,0 +1,116 @@
+{
+	"iso10511": {
+		"family": "lock_nut",
+		"shape": {
+			"s": 18.0,
+			"m": 10.2,
+			"bore": 10.1,
+			"top_style": "cylinder",
+			"top_h": 4.5,
+			"top_d": 15.3
+		},
+		"hardwareType": "nut",
+		"source": "ISO 10511 prevailing-torque thin hexagon nut with non-metallic (nylon) insert (M12): s=18 (SW18, ISO 4035 base) and total height m=10.2 (h_max 10.23) tabulated from the ISO 10511:2012 Table 1 PDF, cross-checked against fasteners.eu. Metal envelope only (nylon ring not drawn). top_h/top_d are representative form (the metal skirt profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "10511" }]
+	},
+	"iso7040": {
+		"family": "lock_nut",
+		"shape": {
+			"s": 18.0,
+			"m": 14.9,
+			"bore": 10.1,
+			"top_style": "cylinder",
+			"top_h": 4.5,
+			"top_d": 15.3
+		},
+		"hardwareType": "nut",
+		"source": "ISO 7040 prevailing-torque regular hexagon nut with non-metallic (nylon) insert (M12): s=18 (SW18, ISO 4032 base) and total height m=14.9 (h_max) tabulated from the ISO 7040:2012 Table 1 PDF, cross-checked against Aspen Fasteners DIN 982 PDF and fasteners.eu. Note: vendor 'ISO 7040 = s19' pages substitute DIN 982 data; the ISO standard is SW18. Metal envelope only. top_h/top_d representative form. bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "7040" }]
+	},
+	"iso10512": {
+		"alias_of": "iso7040",
+		"hardwareType": "nut",
+		"source": "ISO 10512 is the fine-pitch (M12x1.5) counterpart of ISO 7040 with an identical M12 metal envelope (s=18, m=14.9 per the ISO 10512:2012 Table 1 PDF); pitch is invisible at label scale, so it aliases the ISO 7040 drawing (precedent iso8673/8674/8675).",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "10512" }]
+	},
+	"iso7041": {
+		"family": "lock_nut",
+		"shape": {
+			"s": 18.0,
+			"m": 16.1,
+			"bore": 10.1,
+			"top_style": "cylinder",
+			"top_h": 4.5,
+			"top_d": 15.3
+		},
+		"hardwareType": "nut",
+		"source": "ISO 7041 prevailing-torque high (style 2) hexagon nut with non-metallic (nylon) insert (M12): s=18 (SW18, ISO 4033 base) and total height m=16.1 (h_max) tabulated from the ISO 7041:2012 Table 1 PDF, cross-checked against stainlessfix.com (s=18, h_max=16.1, exact match). Metal envelope only. top_h/top_d representative form. bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "7041" }]
+	},
+	"iso7719": {
+		"family": "lock_nut",
+		"shape": {
+			"s": 18.0,
+			"m": 11.6,
+			"bore": 10.1,
+			"top_style": "cone",
+			"top_h": 4.0,
+			"top_d": 15.3,
+			"top_d2": 11.0
+		},
+		"hardwareType": "nut",
+		"source": "ISO 7719 prevailing-torque all-metal regular hexagon nut (M12): s=18 (SW18, ISO 4032 base) and total height m=11.6 (h_max) tabulated from the ISO 7719:2012 Table 1 PDF, cross-checked against fasten.it. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form — the crimp profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "7719" }]
+	},
+	"iso7042": {
+		"family": "lock_nut",
+		"shape": {
+			"s": 18.0,
+			"m": 13.3,
+			"bore": 10.1,
+			"top_style": "cone",
+			"top_h": 4.5,
+			"top_d": 15.3,
+			"top_d2": 11.0
+		},
+		"hardwareType": "nut",
+		"source": "ISO 7042 prevailing-torque all-metal high hexagon nut (M12): s=18 (SW18, ISO 4033 base) and total height m=13.3 (h_max) tabulated from the ISO 7042:2012 Table 1 PDF, cross-checked against globalfastener. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form). bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "7042" }]
+	},
+	"iso7720": {
+		"alias_of": "iso7042",
+		"hardwareType": "nut",
+		"source": "ISO 7720 is the property-class-9 variant of ISO 7042 (all-metal high), dimensionally identical for M12 (s=18, m=13.3 per ISO 7720:2012 / ISO 7042:2012 Table 1), so it aliases the ISO 7042 drawing. (The legacy dataset image for iso7720 was a nylon-insert drawing; ISO 7720 is all-metal, so the generated cone drawing is the correct form.)",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "7720" }]
+	},
+	"iso10513": {
+		"alias_of": "iso7042",
+		"hardwareType": "nut",
+		"source": "ISO 10513 is the fine-pitch (M12x1.5) all-metal high counterpart of ISO 7042 with an identical 2012 M12 metal envelope (s=18, m=13.3); pitch is invisible at label scale, so it aliases the ISO 7042 drawing.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "10513" }]
+	},
+	"din6925": {
+		"family": "lock_nut",
+		"shape": {
+			"s": 18.0,
+			"m": 12.0,
+			"bore": 10.1,
+			"top_style": "cone",
+			"top_h": 4.0,
+			"top_d": 15.3,
+			"top_d2": 11.0
+		},
+		"hardwareType": "nut",
+		"source": "DIN 6925 all-metal high prevailing-torque hexagon nut (M12, ISO 7042 counterpart): s=18 (SW18, ISO 4033 base, not DIN 934) and total height m=12.0 confirmed by three independent vendor tables (nan-long, fastenersco, zhenkunmach) and fasteners.eu. Kept distinct from ISO 7042 (h_max 13.3, 2012 edition) because the confirmed DIN 6925 envelope differs. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form). bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6925" }]
+	}
+}

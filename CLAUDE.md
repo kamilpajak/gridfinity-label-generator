@@ -113,6 +113,17 @@ pnpm standards:build           # Regenerate standards-generated.ts
 
 **Future:** See `docs/plan-standards-validation-pipeline.md` for planned improvements.
 
+### Generative Asset Catalog — Shape Fidelity (maintainer only)
+
+When modelling a fastener drawing in `catalog/` whose **form** you are unsure of, verify the
+shape against an **authoritative vendor drawing or CAD** — for example the dimensioned figures
+on fastener distributor pages (e.g. fasteners.eu) or the open-source
+[FreeCAD Fasteners Workbench](https://github.com/shaise/FreeCAD_FastenersWB). A low-resolution
+legacy raster is **not** enough to reverse-engineer a profile (this is how the DIN 315 wing nut
+first shipped wrong). Reimplement the geometry in `build123d` — never copy vendor CAD — and
+attribute any open-source reference in `THIRD-PARTY-NOTICES.md`. This extends the "don't
+fabricate dimensions (≥2 tables)" rule to the shape itself.
+
 ### SonarCloud API (maintainer only)
 
 Contributors do not need this — CI runs the SonarCloud quality gate automatically on every

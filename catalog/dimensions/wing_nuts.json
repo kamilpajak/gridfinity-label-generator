@@ -1,0 +1,18 @@
+{
+	"din315": {
+		"family": "wing_nut",
+		"shape": {
+			"bore": 10.1,
+			"boss_d": 23.0,
+			"boss_h": 14.0,
+			"span": 65.0,
+			"height": 33.5,
+			"wing_t": 4.9,
+			"tip_r": 10.0
+		},
+		"hardwareType": "nut",
+		"source": "DIN 315 wing nut, German Form D 'rounded wings' (M12), current standard (DIN 315:2016-12; no ISO equivalent). Envelope confirmed vs fasteners.eu + Fuller Fasteners + schrauben-lexikon + ITA Fasteners + globalfastener DIN 315-D tables: overall height h=33.5 (max), boss/hub dia dk=23 (max), wing span e=65 (max, tip-to-tip), blade thickness g1=4.9 (max), tip radius R~10 (approximate reference, no tolerance). bore=10.1 is the M12 thread minor (ISO 724, external to DIN 315's table). boss_h=14.0 is a representative hub height (the DIN 'm' symbol 10-14, read inconsistently across sources, taken as hub height) -> form, not asserted normative; wing depth and exact rounded profile are non-tabulated form features.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "315" }]
+	}
+}

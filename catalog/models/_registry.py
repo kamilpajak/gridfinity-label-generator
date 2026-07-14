@@ -10,6 +10,7 @@ from catalog.models.cap_nut import cap_nut
 from catalog.models.castle_nut import castle_nut
 from catalog.models.collar_nut import collar_nut
 from catalog.models.square_nut import square_nut
+from catalog.models.wing_nut import wing_nut
 
 KNOWN_FAMILIES = {
     "flat_washer": flat_washer,
@@ -29,6 +30,7 @@ KNOWN_FAMILIES = {
     "castle_nut": castle_nut,
     "collar_nut": collar_nut,
     "square_nut": square_nut,
+    "wing_nut": wing_nut,
 }
 
 

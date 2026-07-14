@@ -86,10 +86,12 @@ def wing_nut(bore: float, boss_d: float, collar_d: float, boss_h: float,
                 ThreePointArc(C, m_CD, D)                        # concave outer-lower edge
                 Line(D, A)                                       # close along the hub
             make_face()
+            # Filter on boss_d/2 (the wider hub base): any vertex outside it is outside the hub
+            # at every height, so the narrower top (collar_d/2) is a subset — no corner missed.
             ear_corners = sk.vertices().filter_by(lambda v: v.X > boss_d / 2.0)
             if ear_corners:
                 fillet(ear_corners, radius=ear_r)                # soften the exposed ear corners
-            mirror(about=Plane.YZ)                               # the second wing (−X)
+            mirror(about=Plane.YZ)                               # mirror duplicates the fillet onto the −X wing
         extrude(amount=wing_t / 2.0, both=True)                  # thickness wing_t, centered on Y=0
         Cylinder(radius=bore / 2.0, height=height * 3.0, mode=Mode.SUBTRACT)   # through bore, last
     part = bp.part

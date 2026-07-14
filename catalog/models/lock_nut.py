@@ -47,8 +47,11 @@ def lock_nut(s: float, m: float, bore: float, top_style: str, top_h: float, top_
     if top_d > s:
         raise ValueError(
             f"lock_nut: top_d {top_d} exceeds across-flats {s} (top feature must sit within the hex face)")
+    if top_style == "cylinder" and top_d2 is not None:
+        raise ValueError(
+            f"lock_nut: cylinder top takes no top_d2 (got {top_d2}); top_d2 is only for a cone crown")
     if top_style == "cone":
-        if top_d2 is None or top_d2 <= 0:
+        if top_d2 is None:                                # non-positive top_d2 is caught below
             raise ValueError(f"lock_nut: cone top needs top_d2 > 0, got {top_d2}")
         if not (0 < top_d2 < top_d):
             raise ValueError(

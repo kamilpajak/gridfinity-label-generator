@@ -85,3 +85,7 @@ def test_lock_nut_guards_bad_geometry():
         lock_nut(**{**CONE, "top_d2": None})                 # cone needs top_d2
     with pytest.raises(ValueError):
         lock_nut(**{**CONE, "top_d2": 16.0})                 # top_d2 >= top_d (not tapering in)
+    with pytest.raises(ValueError):
+        lock_nut(**{**CONE, "top_d2": BORE + 0.15})          # cone top ring wall around bore too thin
+    with pytest.raises(ValueError):
+        lock_nut(**{**CYL, "top_d2": 12.0})                  # cylinder top takes no top_d2

@@ -304,6 +304,12 @@
 			"source": "DIN 6923 hex flange nut (M12): s=18, m=12, d_flange=26, flange_thickness(c)=1.8, bore=10.1 (M12 minor dia). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 6923 tables.",
 			"svg": "din6923.svg"
 		},
+		"din6925": {
+			"family": "lock_nut",
+			"sha256": "944036a6e9ee5c132c4146f663e44586703261770061f9aff57e91332a8eeb6a",
+			"source": "DIN 6925 all-metal high prevailing-torque hexagon nut (M12, ISO 7042 counterpart): s=18 (SW18, ISO 4033 base, not DIN 934) and total height m=12.0 confirmed by three independent vendor tables (nan-long, fastenersco, zhenkunmach) and fasteners.eu. Kept distinct from ISO 7042 (h_max 13.3, 2012 edition) because the confirmed DIN 6925 envelope differs. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form). bore=10.1 (M12 minor, ISO 724).",
+			"svg": "din6925.svg"
+		},
 		"din6926": {
 			"alias_of": "din6923",
 			"family": "flange_nut",
@@ -440,6 +446,26 @@
 			"source": "DIN 988 (12x18, shim ring / Passscheibe; d1=12, d2=18). Thickness representative (DIN 988 is a shim series 0.1-2 mm; a mid 1.0 mm ring is drawn).",
 			"svg": "din988d.svg"
 		},
+		"iso10511": {
+			"family": "lock_nut",
+			"sha256": "5f3cc3cf2e5e72d021c4f6d0bd3fb5bd8d6deae404f0187aaa3ed017d60ca2f4",
+			"source": "ISO 10511 prevailing-torque thin hexagon nut with non-metallic (nylon) insert (M12): s=18 (SW18, ISO 4035 base) and total height m=10.2 (h_max 10.23) tabulated from the ISO 10511:2012 Table 1 PDF, cross-checked against fasteners.eu. Metal envelope only (nylon ring not drawn). top_h/top_d are representative form (the metal skirt profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
+			"svg": "iso10511.svg"
+		},
+		"iso10512": {
+			"alias_of": "iso7040",
+			"family": "lock_nut",
+			"sha256": "811d8a370cc9616a8ee08d8047173d28be3e43b9fade5a3850dc827611cfeff0",
+			"source": "ISO 10512 is the fine-pitch (M12x1.5) counterpart of ISO 7040 with an identical M12 metal envelope (s=18, m=14.9 per the ISO 10512:2012 Table 1 PDF); pitch is invisible at label scale, so it aliases the ISO 7040 drawing (precedent iso8673/8674/8675).",
+			"svg": "iso7040.svg"
+		},
+		"iso10513": {
+			"alias_of": "iso7042",
+			"family": "lock_nut",
+			"sha256": "3d100bcb32a593f02b44e233a5cc171b43cdfccb81cf4b244c75736e728d57fa",
+			"source": "ISO 10513 is the fine-pitch (M12x1.5) all-metal high counterpart of ISO 7042 with an identical 2012 M12 metal envelope (s=18, m=13.3); pitch is invisible at label scale, so it aliases the ISO 7042 drawing.",
+			"svg": "iso7042.svg"
+		},
 		"iso21670": {
 			"family": "flange_nut",
 			"sha256": "7a96cf17af2035e2c4b6d54695e47f778488db356a98a9300c244946c69a87c7",
@@ -470,6 +496,24 @@
 			"sha256": "00c8cb575c2a0acdca0a2f506b75539767f380c297ce50f5cada829bf5fc8f21",
 			"source": "ISO 7035 hexagon slotted nut, style 1 (M12): the ISO counterpart of DIN 935 with an identical M12 envelope (s=18, m=15, w=10, dk=16, 6 slots, 3.5), so it aliases the DIN 935 drawing. Confirmed vs fasteners.eu ISO 7035 + TorqBolt ISO 7035 + Bolting Specialist + combined DIN 935/ISO 7035 product listings.",
 			"svg": "din935.svg"
+		},
+		"iso7040": {
+			"family": "lock_nut",
+			"sha256": "811d8a370cc9616a8ee08d8047173d28be3e43b9fade5a3850dc827611cfeff0",
+			"source": "ISO 7040 prevailing-torque regular hexagon nut with non-metallic (nylon) insert (M12): s=18 (SW18, ISO 4032 base) and total height m=14.9 (h_max) tabulated from the ISO 7040:2012 Table 1 PDF, cross-checked against Aspen Fasteners DIN 982 PDF and fasteners.eu. Note: vendor 'ISO 7040 = s19' pages substitute DIN 982 data; the ISO standard is SW18. Metal envelope only. top_h/top_d representative form. bore=10.1 (M12 minor, ISO 724).",
+			"svg": "iso7040.svg"
+		},
+		"iso7041": {
+			"family": "lock_nut",
+			"sha256": "2374d62657d7090eb58a195a54fc05e6ac6615b7d4bd9a9a83478c2a6fae6b75",
+			"source": "ISO 7041 prevailing-torque high (style 2) hexagon nut with non-metallic (nylon) insert (M12): s=18 (SW18, ISO 4033 base) and total height m=16.1 (h_max) tabulated from the ISO 7041:2012 Table 1 PDF, cross-checked against stainlessfix.com (s=18, h_max=16.1, exact match). Metal envelope only. top_h/top_d representative form. bore=10.1 (M12 minor, ISO 724).",
+			"svg": "iso7041.svg"
+		},
+		"iso7042": {
+			"family": "lock_nut",
+			"sha256": "3d100bcb32a593f02b44e233a5cc171b43cdfccb81cf4b244c75736e728d57fa",
+			"source": "ISO 7042 prevailing-torque all-metal high hexagon nut (M12): s=18 (SW18, ISO 4033 base) and total height m=13.3 (h_max) tabulated from the ISO 7042:2012 Table 1 PDF, cross-checked against globalfastener. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form). bore=10.1 (M12 minor, ISO 724).",
+			"svg": "iso7042.svg"
 		},
 		"iso7089": {
 			"family": "flat_washer",
@@ -548,6 +592,19 @@
 			"sha256": "9808145a2e993320c1964617143725a148a02437b0091ce2bc459def96ad48ba",
 			"source": "plated (electro-zinc) variant of ISO 7416; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7416.svg"
+		},
+		"iso7719": {
+			"family": "lock_nut",
+			"sha256": "62263c61be0150548840c3c6ac58ad10baf4c14ea7dc85fc66647de9f496bafd",
+			"source": "ISO 7719 prevailing-torque all-metal regular hexagon nut (M12): s=18 (SW18, ISO 4032 base) and total height m=11.6 (h_max) tabulated from the ISO 7719:2012 Table 1 PDF, cross-checked against fasten.it. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form \u2014 the crimp profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
+			"svg": "iso7719.svg"
+		},
+		"iso7720": {
+			"alias_of": "iso7042",
+			"family": "lock_nut",
+			"sha256": "3d100bcb32a593f02b44e233a5cc171b43cdfccb81cf4b244c75736e728d57fa",
+			"source": "ISO 7720 is the property-class-9 variant of ISO 7042 (all-metal high), dimensionally identical for M12 (s=18, m=13.3 per ISO 7720:2012 / ISO 7042:2012 Table 1), so it aliases the ISO 7042 drawing. (The legacy dataset image for iso7720 was a nylon-insert drawing; ISO 7720 is all-metal, so the generated cone drawing is the correct form.)",
+			"svg": "iso7042.svg"
 		},
 		"iso8673": {
 			"alias_of": "iso4032",

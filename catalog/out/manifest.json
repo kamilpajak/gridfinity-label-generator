@@ -92,8 +92,8 @@
 		},
 		"din315": {
 			"family": "wing_nut",
-			"sha256": "10cbc760c9fee25c7ed2d0d7a21f1066124d75b83e54cfad95248d9bcf0bb85b",
-			"source": "DIN 315 wing nut, German Form D 'rounded wings' (M12), current standard (DIN 315:2016-12; no ISO equivalent). Envelope confirmed vs fasteners.eu + Fuller Fasteners + schrauben-lexikon + ITA Fasteners + globalfastener DIN 315-D tables: overall height h=33.5 (max), boss/hub dia dk=23 (max), wing span e=65 (max, tip-to-tip), blade thickness g1=4.9 (max), tip radius R~10 (approximate reference, no tolerance). bore=10.1 is the M12 thread minor (ISO 724, external to DIN 315's table). boss_h=14.0 is a representative hub height (the DIN 'm' symbol 10-14, read inconsistently across sources, taken as hub height) -> form, not asserted normative; wing depth and exact rounded profile are non-tabulated form features.",
+			"sha256": "22578fcbebbb3e18496cc3d98ed561db7146484d28e718a99c6f35d82298b387",
+			"source": "DIN 315 wing nut, German Form D 'rounded wings' (M12), current standard (DIN 315:2016-12; no ISO equivalent). Envelope confirmed vs fasteners.eu + Fuller Fasteners + schrauben-lexikon + ITA Fasteners + globalfastener DIN 315-D tables: overall height h=33.5 (max), boss/hub base dia d2=23 (max), collar/top dia d3=19.5 (max, the tapered hub top), wing span e=65 (max, tip-to-tip), blade thickness g1=4.9 (max). bore=10.1 is the M12 thread minor (ISO 724, external to DIN 315's table). boss_h=14.0 is a representative hub height (the DIN 'm' symbol 10-14, read inconsistently across sources, taken as hub height) -> form, not asserted normative. The hub taper (d2->d3) and general form follow the DIN 315 geometry (as also implemented in the open-source FreeCAD Fasteners Workbench, LGPL); the exact wing radii are not published, so the rounded wing outline is representative form matched to the legacy DIN 315 drawing. Only the envelope is a sourced dimension.",
 			"svg": "din315.svg"
 		},
 		"din431": {

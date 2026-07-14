@@ -55,6 +55,14 @@ distribute the standards documents; to obtain the official standards, purchase t
 from the relevant publisher (e.g. [DIN Media](https://www.dinmedia.de/),
 [ISO](https://www.iso.org/)).
 
+## Reference geometry — FreeCAD Fasteners Workbench (LGPL)
+
+The DIN 315 wing-nut profile construction in `catalog/models/wing_nut.py` was informed
+by the open-source [FreeCAD Fasteners Workbench](https://github.com/shaise/FreeCAD_FastenersWB),
+licensed under the GNU Lesser General Public License (LGPL). The build123d implementation
+in this project is our own; the geometry it produces is dictated by the DIN 315 standard.
+No FreeCAD source code is copied into or bundled with this project.
+
 ---
 
 ## Gridfinity

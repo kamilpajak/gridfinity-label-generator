@@ -5,12 +5,22 @@
 **Predecessors:** plain hex (#91), flange (#92), cap (#93), castle (#94), collar (#95),
 square (#96/#97)
 
+> **Revision (2026-07-14, post-#98 fidelity fix):** the wing profile shipped in #98 was a
+> stylized rounded blade that did not match the standard. Corrected to the true **DIN 315
+> Form D form**, verified against the official fasteners.eu DIN 315-D dimensioned drawing and
+> 3D render: two flat **paddle wings that rise from the hub and spread apart in a V** (large
+> outer ear, concave valley toward the hub), on a **truncated-cone hub** (`boss_d` base →
+> `collar_d` top). The construction follows the DIN 315 geometry as also implemented in the
+> open-source FreeCAD Fasteners Workbench (LGPL, reimplemented in build123d; attributed in
+> `THIRD-PARTY-NOTICES.md`). The M12 envelope was re-confirmed from the fasteners.eu table
+> (d2=23, d3=19.5, e=65, g1=4.9, h=33.5, m=14). The `shape` gains a `collar_d` field; the
+> generator signature is now `wing_nut(bore, boss_d, collar_d, boss_h, span, height, wing_t)`.
+
 ## Goal
 
-Add a **wing nut** family (DIN 315, German Form D — "rounded wings") to the
-maintainer-only generative catalog. New geometry: a cylindrical threaded boss with two
-rounded finger wings. It does **not** reuse `_chamfered_hex_solid`. Ship DIN 315 at M12
-(`din315`).
+Add a **wing nut** family (DIN 315, German Form D) to the maintainer-only generative
+catalog. New geometry: a tapered threaded boss with two paddle wings that rise and spread.
+It does **not** reuse `_chamfered_hex_solid`. Ship DIN 315 at M12 (`din315`).
 
 ## Non-goals
 

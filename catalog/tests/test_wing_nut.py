@@ -28,11 +28,12 @@ def _has_material(part, x, z, probe=1.0):
 
 
 def test_wing_nut_envelope_extents():
-    bb = _part().bounding_box()
+    part = _part()
+    bb = part.bounding_box()
     assert round(bb.size.X, 2) == round(SPAN, 2)       # wing tips define the width (X)
     assert round(bb.size.Z, 2) == round(HEIGHT, 2)     # boss axis height (Z)
     assert round(bb.size.Y, 2) == round(BOSS_D, 2)     # hub diameter is widest along Y
-    assert _part().volume > 0
+    assert part.volume > 0
 
 
 def test_wing_blade_thickness_reads_wing_t():
@@ -68,7 +69,13 @@ def test_wing_nut_guards_bad_geometry():
     base = dict(bore=BORE, boss_d=BOSS_D, boss_h=BOSS_H, span=SPAN,
                 height=HEIGHT, wing_t=WING_T, tip_r=TIP_R)
     with pytest.raises(ValueError):
-        wing_nut(**{**base, "bore": 0.0})                       # non-positive dim
+        wing_nut(**{**base, "bore": 0.0})                       # non-positive dim (zero)
+    with pytest.raises(ValueError):
+        wing_nut(**{**base, "bore": -1.0})                      # non-positive dim (negative)
+    with pytest.raises(ValueError):
+        wing_nut(**{**base, "wing_t": 0.0})                     # non-positive dim (other param)
+    with pytest.raises(ValueError):
+        wing_nut(**{**base, "tip_r": 0.0})                      # non-positive dim (other param)
     with pytest.raises(ValueError):
         wing_nut(**{**base, "boss_d": BORE})                    # wall too thin around bore
     with pytest.raises(ValueError):

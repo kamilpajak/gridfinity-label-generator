@@ -87,10 +87,10 @@ Guard on `part.volume > 0` (net guard; not `is_valid`).
 New `catalog/dimensions/slotted_round_nuts.json`. Shape =
 `{d, h, bore, n_slots, slot_w, slot_depth, slot_h}` (all explicit).
 
-| id         | family            | d       | h       | bore    | n_slots | slot_w  | slot_depth |
-| ---------- | ----------------- | ------- | ------- | ------- | ------- | ------- | ---------- |
-| `din981`   | slotted_round_nut | sourced | sourced | sourced | sourced | sourced | sourced    |
-| `din70852` | slotted_round_nut | sourced | sourced | sourced | sourced | sourced | sourced    |
+| id         | family            | d       | h       | bore    | n_slots | slot_w  | slot_depth | slot_h  |
+| ---------- | ----------------- | ------- | ------- | ------- | ------- | ------- | ---------- | ------- |
+| `din981`   | slotted_round_nut | sourced | sourced | sourced | sourced | sourced | sourced    | sourced |
+| `din70852` | slotted_round_nut | sourced | sourced | sourced | sourced | sourced | sourced    | sourced |
 
 Two distinct standards, no aliases. Every field sourced from **≥2 independent public tables**.
 **`bore` is the fine-thread minor diameter** for each standard (din981 is KM/bearing-locknut

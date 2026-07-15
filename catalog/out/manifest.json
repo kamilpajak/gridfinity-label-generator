@@ -335,6 +335,12 @@
 			"source": "DIN 6927 prevailing-torque all-metal hex flange nut (M12): s/d_flange/c identical to DIN 6923; total metal envelope height m=13.8 (all-metal locking crown adds ~1.8mm). The locking deformation is not modelled (drawn as a smooth flange nut of the true envelope height). Confirmed vs Fasteners.eu + bwindustrialsales DIN 6927.",
 			"svg": "din6927.svg"
 		},
+		"din70852": {
+			"family": "slotted_round_nut",
+			"sha256": "725368ecbaa39a45c8a13fe9370246cdfd772bf9e9a61afae2ace13c32418e8d",
+			"source": "DIN 70852 groove nut (M12x1.5 fine thread): OD d=22, height h=6, bore=10.4 (M12x1.5 minor dia), n_slots=4, slot width slot_w=4.5, slot radial depth slot_depth=2 (slot-floor dia D3=18), slot axial groove depth slot_h=c=1.8 (partial depth, opens from one face, not full height). Confirmed vs Kipp + Norelem + Maedler + ferrofast + Wegertseder tables.",
+			"svg": "din70852.svg"
+		},
 		"din7349": {
 			"family": "flat_washer",
 			"sha256": "03a503f072ebdba60b12908cf3204e5ba320cb0ed261dbd31d7b920d5450ae28",
@@ -439,6 +445,12 @@
 			"sha256": "c77d35c0016fa053134c2f1166432bcd6647b1cf2f4011531cd72682a1bae572",
 			"source": "DIN 979 hexagon thin slotted / castle nut (M12, current successor to DIN 937): s=18 (ISO 272 / SW18), m=10, m1=5, crown dk=16 (Aspen's 17 is a mixed-edition outlier), 6 slots, slot width 3.5, bore=10.1. Crown modelled fully slotted. Confirmed vs Fuller Fasteners + Trojan SF DIN 979 tables.",
 			"svg": "din979.svg"
+		},
+		"din981": {
+			"family": "slotted_round_nut",
+			"sha256": "6cbc7825a08291ab72e8b495cd9cc81a7ef76dd13ac8d32acb48fba037ab9efa",
+			"source": "DIN 981 rolling-bearing locknut (KM1, M12x1 fine thread): OD d=22, height h=4, bore=10.9 (M12x1 minor dia), n_slots=4, slot width slot_w=3, slot radial depth slot_depth=2 (slot-floor dia 18), slot axial depth slot_h=t=2 (the grooves open from one face, partial depth, not full height). Confirmed vs SKF + MISUMI/FAG + HC-Maschinentechnik + Wegertseder tables. The internal keyway (for the MB tab washer) is not modelled.",
+			"svg": "din981.svg"
 		},
 		"din986": {
 			"family": "cap_nut",

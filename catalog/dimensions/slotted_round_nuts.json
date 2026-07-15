@@ -1,0 +1,34 @@
+{
+	"din981": {
+		"family": "slotted_round_nut",
+		"shape": {
+			"d": 22.0,
+			"h": 4.0,
+			"bore": 10.9,
+			"n_slots": 4,
+			"slot_w": 3.0,
+			"slot_depth": 2.0,
+			"slot_h": 2.0
+		},
+		"hardwareType": "nut",
+		"source": "DIN 981 rolling-bearing locknut (KM1, M12x1 fine thread): OD d=22, height h=4, bore=10.9 (M12x1 minor dia), n_slots=4, slot width slot_w=3, slot radial depth slot_depth=2 (slot-floor dia 18), slot axial depth slot_h=t=2 (the grooves open from one face, partial depth, not full height). Confirmed vs SKF + MISUMI/FAG + HC-Maschinentechnik + Wegertseder tables. The internal keyway (for the MB tab washer) is not modelled.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "981" }]
+	},
+	"din70852": {
+		"family": "slotted_round_nut",
+		"shape": {
+			"d": 22.0,
+			"h": 6.0,
+			"bore": 10.4,
+			"n_slots": 4,
+			"slot_w": 4.5,
+			"slot_depth": 2.0,
+			"slot_h": 1.8
+		},
+		"hardwareType": "nut",
+		"source": "DIN 70852 groove nut (M12x1.5 fine thread): OD d=22, height h=6, bore=10.4 (M12x1.5 minor dia), n_slots=4, slot width slot_w=4.5, slot radial depth slot_depth=2 (slot-floor dia D3=18), slot axial groove depth slot_h=c=1.8 (partial depth, opens from one face, not full height). Confirmed vs Kipp + Norelem + Maedler + ferrofast + Wegertseder tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "70852" }]
+	}
+}

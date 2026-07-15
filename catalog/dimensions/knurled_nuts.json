@@ -1,0 +1,18 @@
+{
+	"din467": {
+		"family": "knurled_nut",
+		"shape": { "d": 40.0, "h": 12.0, "bore": 10.1 },
+		"hardwareType": "nut",
+		"source": "DIN 467 flat/low knurled nut (M12): knurled outer diameter d=40 and overall height h=12 tabulated, confirmed vs Aspen Fasteners DIN 467 spec + Scribd DIN 467 stainless table + Fastenright + JW Winco. Modelled as a smooth cylindrical disc (the knurl is a fine feature, not drawn, like the thread; the ~2 mm seating shoulder is likewise not modelled). bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "467" }]
+	},
+	"din466": {
+		"family": "knurled_nut",
+		"shape": { "d": 40.0, "h": 15.0, "bore": 10.1, "collar_d": 22.0, "collar_h": 10.0 },
+		"hardwareType": "nut",
+		"source": "DIN 466 high knurled nut (M12): knurled head OD d=40, total height 25 = head h=15 + plain boss (collar_d=22, collar_h=10), tabulated and confirmed vs Boutet Technics DIN 466 table + Fastenright + JW Winco (Aspen/Fuller M10 row dk=36/ds=20 extrapolates cleanly). Smooth cylindrical envelope drawn (the knurl is a fine feature, not modelled, like the thread). bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "466" }]
+	}
+}

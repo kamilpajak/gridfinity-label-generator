@@ -13,6 +13,7 @@ from catalog.models.square_nut import square_nut
 from catalog.models.wing_nut import wing_nut
 from catalog.models.lock_nut import lock_nut
 from catalog.models.knurled_nut import knurled_nut
+from catalog.models.slotted_round_nut import slotted_round_nut
 
 KNOWN_FAMILIES = {
     "flat_washer": flat_washer,
@@ -35,6 +36,7 @@ KNOWN_FAMILIES = {
     "wing_nut": wing_nut,
     "lock_nut": lock_nut,
     "knurled_nut": knurled_nut,
+    "slotted_round_nut": slotted_round_nut,
 }
 
 

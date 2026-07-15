@@ -8,7 +8,7 @@ square (#96/#97), wing (#98/#99), lock (#101), knurled (#102/#103)
 ## Goal
 
 Add a **slotted round nut** family to the maintainer-only generative catalog: a round
-cylindrical body with **N full-height radial slots cut into the outer diameter** (for a hook
+cylindrical body with **N radial slots cut into the outer diameter, opening partway from one face** (for a hook
 or face spanner) and a through bore. Covers `din981` (rolling-bearing locknut, KM type) and
 `din70852` (groove nut) — the same OD-slotted shape at different dimensions. Ships M12.
 
@@ -47,7 +47,7 @@ New generator `catalog/models/slotted_round_nut.py`. Imports **only** `_MIN_WALL
 `hex_nut`; it does **not** touch `_chamfered_hex_solid` or any existing generator.
 
 ```python
-def slotted_round_nut(d, h, bore, n_slots, slot_w, slot_depth):
+def slotted_round_nut(d, h, bore, n_slots, slot_w, slot_depth, slot_h):
     ...
 ```
 
@@ -60,12 +60,12 @@ positions → NUT_PRESET renders it without any preset change. The first slot is
 1. **Body:** `Cylinder(radius=d/2, height=h)` spanning z ∈ [−h/2, h/2] (default
    `Align.CENTER`, centred on the origin) — so the full-height slot boxes (also origin-centred
    on Z) overshoot both faces symmetrically.
-2. **N radial slots:** `PolarLocations(d/2, n_slots, start_angle=0)` placing a
-   `Box(2*slot_depth, slot_w, h*2, mode=Mode.SUBTRACT)` at each position. `PolarLocations`
-   (rotate=True) points each box's local X radially, so the box removes a `slot_depth`-deep
-   (radial), `slot_w`-wide (tangential), full-height (`h*2` overshoots top and bottom) notch
-   from the circumference. The box centre sits on the OD (`d/2`), so it cuts `slot_depth`
-   inward.
+2. **N radial slots (partial depth):** inside `Locations((0,0,h/2))` (the top face),
+   `PolarLocations(d/2, n_slots, start_angle=0)` places a `Box(2*slot_depth, slot_w,
+slot_h*2, mode=Mode.SUBTRACT)` at each position. Centred on the top face, each box removes
+   a `slot_depth`-deep (radial), `slot_w`-wide (tangential) notch that opens from the top face
+   and reaches `slot_h` down (its upper half overshoots above the nut). The DIN 981/70852
+   grooves are partial-depth (tabulated axial t/c < h), NOT full-height.
 3. **Bore:** subtract a through `Cylinder(radius=bore/2, height=h*3)` along Z **last**, like
    `hex_nut`.
 
@@ -73,18 +73,19 @@ Guard on `part.volume > 0` (net guard; not `is_valid`).
 
 ### Guards (ValueError)
 
-1. `d, h, bore` all `> 0`; `slot_w > 0`; `slot_depth > 0`; `n_slots` a positive integer.
+1. `d, h, bore` all `> 0`; `slot_w > 0`; `slot_depth > 0`; `slot_h > 0`; `n_slots` a positive integer.
 2. `bore < d - 2*_MIN_WALL_MM` (wall between the bore and the OD).
-3. `slot_depth < d/2 - bore/2 - _MIN_WALL_MM` (the slot floor leaves a wall to the bore, so
+3. `slot_h <= h` (the slot opens from one face and cannot exceed the nut height).
+4. `slot_depth < d/2 - bore/2 - _MIN_WALL_MM` (the slot floor leaves a wall to the bore, so
    the slot cannot cut through to the thread).
-4. `n_slots * slot_w < math.pi * d` (the slots fit around the circumference; the towers
-   between them survive) — the same guard shape as `castle_nut`.
-5. Final `part.volume > 0`.
+5. `n_slots * slot_w < math.pi * (d - 2*slot_depth)` (the slots fit around the slot-floor
+   circumference; the towers between them survive) — the tightened `castle_nut` guard.
+6. Final `part.volume > 0`.
 
 ## Data
 
 New `catalog/dimensions/slotted_round_nuts.json`. Shape =
-`{d, h, bore, n_slots, slot_w, slot_depth}` (all explicit).
+`{d, h, bore, n_slots, slot_w, slot_depth, slot_h}` (all explicit).
 
 | id         | family            | d       | h       | bore    | n_slots | slot_w  | slot_depth |
 | ---------- | ----------------- | ------- | ------- | ------- | ------- | ------- | ---------- |
@@ -94,7 +95,7 @@ New `catalog/dimensions/slotted_round_nuts.json`. Shape =
 Two distinct standards, no aliases. Every field sourced from **≥2 independent public tables**.
 **`bore` is the fine-thread minor diameter** for each standard (din981 is KM/bearing-locknut
 fine thread, din70852 is a fine-pitch groove nut), so `bore ≠ 10.1` (the coarse M12 constant)
-— it is sourced per standard, not assumed. `n_slots`, `slot_w`, `slot_depth`, and any top
+— it is sourced per standard, not assumed. `n_slots`, `slot_w`, `slot_depth`, `slot_h` (axial groove depth t/c) and any top
 chamfer are verified against the legacy raster **and** the tables before shipping (per the
 DIN 467 boss lesson: a feature visible in the raster with its own tabulated dimension is
 modelled, not dropped). Each `source` string states which fields are tabulated vs

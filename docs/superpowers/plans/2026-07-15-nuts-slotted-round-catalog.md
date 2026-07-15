@@ -23,6 +23,14 @@
 
 ## Task 1: `slotted_round_nut` generator + tests + registry
 
+> **Revision (2026-07-15, sourcing-gate finding):** DIN 981/70852 spanner grooves are
+> **partial-depth, opening from one face** (tabulated axial t/c < height h), not full-height.
+> The generator gained a `slot_h` param; each slot Box is centred on the top face
+> (`Locations((0,0,h/2))` + `PolarLocations`, `Box(2*slot_depth, slot_w, slot_h*2, SUBTRACT)`)
+> so it opens from the top and reaches `slot_h` down. Added guard `slot_h <= h`; the tower
+> guard tightened to `n_slots*slot_w < pi*(d-2*slot_depth)`. The committed generator/test files
+> are the source of truth; the code blocks below show the pre-revision shape.
+
 **Files:**
 
 - Create: `catalog/models/slotted_round_nut.py`
@@ -32,7 +40,7 @@
 **Interfaces:**
 
 - Consumes: `from catalog.models.hex_nut import _MIN_WALL_MM` (`= 0.1`).
-- Produces: `slotted_round_nut(d, h, bore, n_slots, slot_w, slot_depth) -> Part` and the registry key `"slotted_round_nut"`.
+- Produces: `slotted_round_nut(d, h, bore, n_slots, slot_w, slot_depth, slot_h) -> Part` and the registry key `"slotted_round_nut"`.
 
 The fixtures in the tests below are **synthetic** — geometrically valid numbers to exercise the code, **not** any real standard. Real standards come in Task 2.
 
@@ -310,7 +318,15 @@ Create `catalog/dimensions/slotted_round_nuts.json` using the controller-verifie
 {
 	"din981": {
 		"family": "slotted_round_nut",
-		"shape": { "d": 0.0, "h": 0.0, "bore": 0.0, "n_slots": 0, "slot_w": 0.0, "slot_depth": 0.0 },
+		"shape": {
+			"d": 0.0,
+			"h": 0.0,
+			"bore": 0.0,
+			"n_slots": 0,
+			"slot_w": 0.0,
+			"slot_depth": 0.0,
+			"slot_h": 0.0
+		},
 		"hardwareType": "nut",
 		"source": "DIN 981 rolling-bearing locknut (KM type, M12 fine thread): OD d, height h, bore (fine-thread minor dia), n_slots, slot width slot_w, slot depth slot_depth tabulated from <table A> + <table B>. The internal keyway is not modelled (minor internal feature). Smooth metal envelope drawn.",
 		"verified": true,
@@ -318,7 +334,15 @@ Create `catalog/dimensions/slotted_round_nuts.json` using the controller-verifie
 	},
 	"din70852": {
 		"family": "slotted_round_nut",
-		"shape": { "d": 0.0, "h": 0.0, "bore": 0.0, "n_slots": 0, "slot_w": 0.0, "slot_depth": 0.0 },
+		"shape": {
+			"d": 0.0,
+			"h": 0.0,
+			"bore": 0.0,
+			"n_slots": 0,
+			"slot_w": 0.0,
+			"slot_depth": 0.0,
+			"slot_h": 0.0
+		},
 		"hardwareType": "nut",
 		"source": "DIN 70852 groove nut (M12): OD d, height h, bore (fine-thread minor dia), n_slots, slot width slot_w, slot depth slot_depth tabulated from <table A> + <table B>. Smooth metal envelope drawn.",
 		"verified": true,
@@ -368,5 +392,5 @@ git commit -m "feat(catalog): add M12 slotted round nut standards (DIN 981 / DIN
 ## Self-review notes (for the executor)
 
 - **Spec coverage:** Task 1 delivers the generator (body + N OD slots + bore), guards, and registration; Task 2 delivers the data (≥2-table sourcing gate, slot count verified vs raster), the data test, the in-container build, and the opt-in/byte-identical checks.
-- **Signature consistency:** `slotted_round_nut(d, h, bore, n_slots, slot_w, slot_depth)` is identical in the generator, the tests, and the data `shape` keys.
+- **Signature consistency:** `slotted_round_nut(d, h, bore, n_slots, slot_w, slot_depth, slot_h)` is identical in the generator, the tests, and the data `shape` keys.
 - **Not covered by design (leave alone):** the din981 keyway (not modelled), other round-nut drive styles (din1816 face holes, din546 face slot — separate families), din1804 (no raster), integration (`integrate.py`), `image-mappings.json`, `standards-generated.ts`, any render/preset change.

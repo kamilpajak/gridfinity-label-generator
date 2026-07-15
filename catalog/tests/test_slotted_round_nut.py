@@ -47,8 +47,9 @@ def test_slots_are_partial_depth_solid_below():
     part = slotted_round_nut(**CFG)
     z = -CFG["h"] / 2 + 0.5                       # near the bottom face, below the slot band
     r = CFG["d"] / 2 - CFG["slot_depth"] / 2
-    x, y = _polar(r, 0.0)                         # on the +X slot axis
-    assert _solid_at(part, x, y, z, probe=0.6)   # solid: the slot does not reach the bottom face
+    for k in range(CFG["n_slots"]):              # every slot axis, not just +X
+        x, y = _polar(r, 360.0 / CFG["n_slots"] * k)
+        assert _solid_at(part, x, y, z, probe=0.6)   # solid: the slot does not reach the bottom face
 
 
 def test_slot_floor_leaves_a_wall_to_the_bore():

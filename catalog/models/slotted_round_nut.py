@@ -43,10 +43,13 @@ def slotted_round_nut(d: float, h: float, bore: float, n_slots: int,
         raise ValueError(
             f"slotted_round_nut: slot_depth {slot_depth} reaches the bore wall "
             f"(needs < d/2 - bore/2 - {_MIN_WALL_MM} = {d / 2.0 - bore / 2.0 - _MIN_WALL_MM:.3f} mm)")
-    if n_slots * slot_w >= math.pi * (d - 2.0 * slot_depth):
+    # slot-floor diameter — the tightest circumference the towers must fit around; positive
+    # because the slot_depth guard above keeps d - 2*slot_depth > bore + 2*_MIN_WALL_MM.
+    floor_d = d - 2.0 * slot_depth
+    if n_slots * slot_w >= math.pi * floor_d:
         raise ValueError(
             f"slotted_round_nut: {n_slots} slots of width {slot_w} exceed the slot-floor "
-            f"circumference {math.pi * (d - 2.0 * slot_depth):.3f} (no towers would survive)")
+            f"circumference {math.pi * floor_d:.3f} (no towers would survive)")
 
     with BuildPart() as bp:
         Cylinder(radius=d / 2.0, height=h)                 # Align.CENTER: spans z in [-h/2, h/2]

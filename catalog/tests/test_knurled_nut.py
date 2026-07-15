@@ -30,6 +30,7 @@ def test_high_envelope_extents():
     part = knurled_nut(**HIGH)
     bb = part.bounding_box()
     assert round(bb.size.X, 1) == round(HIGH["d"], 1)                     # head OD is the widest
+    assert round(bb.size.Y, 1) == round(HIGH["d"], 1)                     # round body: same OD on Y
     assert round(bb.size.Z, 1) == round(HIGH["collar_h"] + HIGH["h"], 1)  # collar + head stacked
 
 

@@ -24,6 +24,7 @@ def slotted_face_nut(d: float, h: float, bore: float, slot_w: float, slot_depth:
                       ("slot_w", slot_w), ("slot_depth", slot_depth)):
         if val <= 0:
             raise ValueError(f"slotted_face_nut: need {name} > 0, got {val}")
+    # also catches slot_depth > h, since h - _MIN_WALL_MM < h (the slot cannot reach the bottom)
     if slot_depth >= h - _MIN_WALL_MM:
         raise ValueError(
             f"slotted_face_nut: slot_depth {slot_depth} leaves too thin a floor vs height {h} "

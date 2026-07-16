@@ -1,0 +1,31 @@
+{
+	"din546": {
+		"family": "slotted_face_nut",
+		"shape": {
+			"d": 21.0,
+			"h": 10.0,
+			"bore": 10.1,
+			"slot_w": 4.0,
+			"slot_depth": 3.8
+		},
+		"hardwareType": "nut",
+		"source": "DIN 546 slotted round nut (Schlitzmutter), M12x1.75 coarse thread. d=21.0 and h=10.0 tabulated by fasteners.eu + definitemetal.com + torqbolt.com + westfieldfasteners.co.uk. slot_w=4.0 (n nominal) tabulated by definitemetal.com. slot_depth=3.8 is t_min per definitemetal.com (DIN 546 table); vital-parts.co.uk manufactured example gives 4.3 mm (within tolerance). bore=10.1 from ISO 724 D1=12−1.082532×1.75=10.106 mm. Single diametral face slot (partial depth, one slot across the top face, not full-height). All fields tabulated ≥2 independent sources except slot_w and slot_depth (single table; representative values).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "546" }]
+	},
+	"din1816": {
+		"family": "cross_hole_nut",
+		"shape": {
+			"d": 28.0,
+			"h": 6.0,
+			"bore": 10.4,
+			"n_holes": 4,
+			"hole_d": 3.0,
+			"hole_depth": 4.0
+		},
+		"hardwareType": "nut",
+		"source": "DIN 1816 cross-hole round nut (Kreuzlochmutter), M12x1.5 fine thread. d=28.0 and h=6.0 tabulated by theo-schrauben.de + seefelder.net + online-schrauben.de + mcmaster.com. n_holes=4 tabulated by theo-schrauben.de + seefelder.net. hole_d=3.0 (d4) tabulated by theo-schrauben.de; online-schrauben.de confirms M3. d3=23.0 (pitch circle) tabulated by theo-schrauben.de + online-schrauben.de + seefelder.net. hole_depth=4.0 derived: OD_radius(14)−(d3/2−hole_d/2)=14−10=4 mm; hole floor at r=10 mm, bore wall at r≈5.2 mm, no intersection. bore=10.4 from ISO 724 D1=12−1.082532×1.5=10.376 mm. Holes are 4 radial bores perpendicular to the nut axis drilled into the OD wall (tommy-bar spanner), NOT axial holes in the top face. Holes placed at mid-height (no axial offset dimensioned in any public table). The bold concentric ring in the DIN 1816 face-view drawing is the standard internal-thread representation (the same ring appears on the DIN 546 drawing, which has no step); it is not modelled (threads are envelope-only). Any 0.5 mm top-face Planfläche (z=0.5 mm at d3=23 mm) is a sub-visible chamfer-scale detail below the family's fine-feature threshold and is not modelled.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "1816" }]
+	}
+}

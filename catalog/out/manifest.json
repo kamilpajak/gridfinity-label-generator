@@ -77,6 +77,12 @@
 			"source": "DIN 1587 hexagon domed cap (acorn) nut (M12): s=18 (current ISO 272-aligned width; legacy pre-1992 s=19 not shipped), total height m=22, hex body 10 -> dome_height=12 (derived, not directly tabulated). Confirmed vs Westfield Fasteners + Andrews Fasteners + fasteners.eu DIN 1587 tables.",
 			"svg": "din1587.svg"
 		},
+		"din1816": {
+			"family": "cross_hole_nut",
+			"sha256": "423022b2e735acaa9544eb5e7280690a772dd9e1b602620c319f09864b8a602a",
+			"source": "DIN 1816 cross-hole round nut (Kreuzlochmutter), M12x1.5 fine thread. d=28.0 and h=6.0 tabulated by theo-schrauben.de + seefelder.net + online-schrauben.de + mcmaster.com. n_holes=4 tabulated by theo-schrauben.de + seefelder.net. hole_d=3.0 (d4) tabulated by theo-schrauben.de; online-schrauben.de confirms M3. d3=23.0 (pitch circle) tabulated by theo-schrauben.de + online-schrauben.de + seefelder.net. hole_depth=4.0 derived: OD_radius(14)\u2212(d3/2\u2212hole_d/2)=14\u221210=4 mm; hole floor at r=10 mm, bore wall at r\u22485.2 mm, no intersection. bore=10.4 from ISO 724 D1=12\u22121.082532\u00d71.5=10.376 mm. Holes are 4 radial bores perpendicular to the nut axis drilled into the OD wall (tommy-bar spanner), NOT axial holes in the top face. Holes placed at mid-height (no axial offset dimensioned in any public table). The bold concentric ring in the DIN 1816 face-view drawing is the standard internal-thread representation (the same ring appears on the DIN 546 drawing, which has no step); it is not modelled (threads are envelope-only). Any 0.5 mm top-face Planfl\u00e4che (z=0.5 mm at d3=23 mm) is a sub-visible chamfer-scale detail below the family's fine-feature threshold and is not modelled.",
+			"svg": "din1816.svg"
+		},
 		"din2093": {
 			"family": "curved_washer",
 			"sha256": "c7f37f5c465629d360d8dfa6b71f0d752d69689baf16094ec1a68cfe1886f1be",
@@ -210,6 +216,12 @@
 			"sha256": "6f8435ce7927ed8646e366afae320b9b133f6dfb77209319c2cd9898cea03870",
 			"source": "DIN 467 flat/low knurled nut (M12): knurled head OD d=40 (d1) with a reduced-diameter plain boss collar_d=22 (d2) on the bearing face; total height 12 = knurled head h=10 (k) + boss collar_h=2. Tabulated and confirmed vs Aspen Fasteners DIN 467 spec (d1=40,d2=22,h=12,k=10) + Scribd DIN 467 table + Fastenright + JW Winco. Smooth cylindrical envelope drawn (the knurl is a fine feature, not modelled, like the thread). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "din467.svg"
+		},
+		"din546": {
+			"family": "slotted_face_nut",
+			"sha256": "24c0e4313de8d828e10e96bc083b77751754540b0f8980220b76462b60ca8a4a",
+			"source": "DIN 546 slotted round nut (Schlitzmutter), M12x1.75 coarse thread. d=21.0 and h=10.0 tabulated by fasteners.eu + definitemetal.com + torqbolt.com + westfieldfasteners.co.uk. slot_w=4.0 (n nominal) tabulated by definitemetal.com. slot_depth=3.8 is t_min per definitemetal.com (DIN 546 table); vital-parts.co.uk manufactured example gives 4.3 mm (within tolerance). bore=10.1 from ISO 724 D1=12\u22121.082532\u00d71.75=10.106 mm. Single diametral face slot (partial depth, one slot across the top face, not full-height). All fields tabulated \u22652 independent sources except slot_w and slot_depth (single table; representative values).",
+			"svg": "din546.svg"
 		},
 		"din557": {
 			"family": "square_nut",

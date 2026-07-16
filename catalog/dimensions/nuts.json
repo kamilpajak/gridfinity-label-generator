@@ -55,6 +55,14 @@
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "431" }]
 	},
+	"din6334": {
+		"family": "hex_nut",
+		"shape": { "s": 19.0, "m": 36.0, "bore": 10.1 },
+		"hardwareType": "nut",
+		"source": "DIN 6334 hexagon coupling nut (Verbindungsmutter / connector nut), M12x1.75 coarse: across-flats s=19.0 (SW19 is the confirmed current value for DIN 6334, not 18), length m=l=36.0 (=3x12), bore=10.1 (M12 coarse minor). Plain hexagonal prism with double-chamfered ends, through-threaded (joins two threaded rods) - same shape as a hex nut, just tall. Confirmed vs Fasteners.eu + Fuller Fasteners + Andrews Fasteners + Bolt Depot DIN 6334 tables.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6334" }]
+	},
 	"iso8673": {
 		"alias_of": "iso4032",
 		"hardwareType": "nut",

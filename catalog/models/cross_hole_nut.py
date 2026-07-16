@@ -38,10 +38,14 @@ def cross_hole_nut(d: float, h: float, bore: float, n_holes: int,
         raise ValueError(
             f"cross_hole_nut: hole_depth {hole_depth} reaches the bore wall "
             f"(needs < d/2 - bore/2 - {_MIN_WALL_MM} = {d / 2.0 - bore / 2.0 - _MIN_WALL_MM:.3f} mm)")
-    if n_holes * hole_d >= math.pi * d:
+    # holes crowd together as they go inward, so the tightest fit is at the hole floor,
+    # not the OD (mirrors slotted_round_nut's floor-circumference tower guard). floor_d is
+    # positive because the hole_depth guard above keeps 2*hole_depth < d.
+    floor_d = d - 2.0 * hole_depth
+    if n_holes * hole_d >= math.pi * floor_d:
         raise ValueError(
-            f"cross_hole_nut: {n_holes} holes of diameter {hole_d} exceed the OD "
-            f"circumference {math.pi * d:.3f} (no towers would survive)")
+            f"cross_hole_nut: {n_holes} holes of diameter {hole_d} exceed the hole-floor "
+            f"circumference {math.pi * floor_d:.3f} (no towers would survive)")
     if bore >= d - 2.0 * _MIN_WALL_MM:
         raise ValueError(
             f"cross_hole_nut: bore {bore} leaves too thin a wall vs OD {d} "

@@ -86,6 +86,8 @@ def test_cross_hole_nut_guards_bad_geometry():
     with pytest.raises(ValueError):
         cross_hole_nut(**{**CFG, "n_holes": 200})          # holes exceed the circumference
     with pytest.raises(ValueError):
+        cross_hole_nut(**{**CFG, "n_holes": 18})           # fits the OD circle but not the hole floor
+    with pytest.raises(ValueError):
         cross_hole_nut(**{**CFG, "n_holes": 4.5})          # non-integer hole count
     with pytest.raises(ValueError):
         cross_hole_nut(**{**CFG, "n_holes": 0})            # non-positive hole count

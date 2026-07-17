@@ -34,6 +34,10 @@ def tslot_nut(length: float, foot_w: float, neck_w: float, foot_h: float,
         raise ValueError(
             f"tslot_nut: bore {bore} leaves too thin a wall vs neck_w {neck_w} "
             f"(needs < neck_w - {2.0 * _MIN_WALL_MM} mm; the neck is the binding width)")
+    if bore >= length - 2.0 * _MIN_WALL_MM:
+        raise ValueError(
+            f"tslot_nut: bore {bore} leaves too thin a wall vs length {length} "
+            f"(needs < length - {2.0 * _MIN_WALL_MM} mm; the bore must fit within the block length)")
     if chamfer is not None:
         if chamfer <= 0:
             raise ValueError(f"tslot_nut: need chamfer > 0 when given, got {chamfer}")

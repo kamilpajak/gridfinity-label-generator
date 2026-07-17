@@ -82,3 +82,5 @@ def test_tslot_nut_guards_bad_geometry():
         tslot_nut(**{**CFG, "chamfer": CFG["neck_w"] / 2})      # chamfer exceeds half the neck width
     with pytest.raises(ValueError):
         tslot_nut(**{**CFG, "foot_h": 15.0, "chamfer": 1.5})    # chamfer (1.5) exceeds neck height (16-15=1)
+    with pytest.raises(ValueError):
+        tslot_nut(**{**CFG, "length": 12.0, "bore": 13.0})     # bore fits the neck (13<13.8) but not the length (13>=11.8)

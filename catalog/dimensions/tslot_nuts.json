@@ -1,0 +1,18 @@
+{
+	"din508": {
+		"family": "tslot_nut",
+		"shape": {
+			"length": 22.0,
+			"foot_w": 22.0,
+			"neck_w": 13.7,
+			"foot_h": 8.0,
+			"height": 16.0,
+			"bore": 10.1,
+			"chamfer": 1.0
+		},
+		"hardwareType": "nut",
+		"source": "DIN 508 T-slot nut (Nutenstein), M12x1.75 coarse thread, 14 mm T-slot nominal (DIN 650). foot_w=22.0 (DIN symbol e, foot base across-slot width, sits in DIN 650 ~23.5 mm undercut) confirmed by Hoffmann Group + McMaster-Carr + Dönges/AMF + SFS tables. neck_w=13.7 (DIN symbol a, narrow neck that passes through the 14 mm slot opening) confirmed by Hoffmann Group + Fuller Fasteners + Halder USA + JW Winco + fasten.it + Dönges/AMF — nominal is 14 mm (slot designation), DIN tolerance gives a_max=13.7 mm; any appearance of '16' as a width in online tables is total height h, not neck width. length=22.0 (DIN symbol s, block length along slot direction) confirmed by Fasten.it + Fuller + Hoffmann/AMF + Dönges/AMF + SFS + McMaster + JW Winco. height=16.0 (h) confirmed by same sources. foot_h=8.0 derived as h−k (k=8 tabulated). bore=10.1 = M12x1.75 coarse minor diameter per ISO 724 (D1=12−1.082532x1.75=10.106 mm). chamfer=1.0 mm representative: DIN 508 does not tabulate a chamfer; 0.5–1.0 mm x45 deg is standard shop practice for M12 (per Fuller and Hoffmann references); not a standardized DIN feature.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "508" }]
+	}
+}

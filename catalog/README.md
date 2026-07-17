@@ -120,3 +120,17 @@ aliases `din6798v`). An `alias_of` target must be a rendered base, not another a
 the coverage gate: `din137b` (wave washer — generator ready, plan-view seam deferred),
 `din25201` (wedge-lock — proprietary, sub-visible), `din440r` / `din440v` (DIN 440 not
 generated — see above), and `din74361c` (conical collar, a different shape).
+
+**Nut families — DIN 80701 and DIN 562 not generated (deliberate).** Every other nut
+standard that carries a legacy raster is generated; two are documented skips:
+
+- **`din80701`** (toggle / long-lever wing nut) is a distinct form from the DIN 315 wing nut
+  (long straight bar wings, ~240 mm span on M16, not rounded paddles). It fails the sourcing
+  bar: only a single second-hand vendor table exists (Aspen, which states its data is "not
+  acquired through standards agencies"), it lists only M16–M24 (no M10/M12), and no second
+  independent public table was found. The representative M12 size is not publicly documented
+  and the exact wing form cannot be verified against an authoritative reference — so there is
+  nothing faithful to draw without fabricating both dimensions and shape.
+- **`din562`** (thin square nut) — the standard's normative range is M1.6–M10; **M12 is not
+  defined** by DIN 562. "DIN 562 M12" listings are manufacturer extensions coinciding with
+  DIN 557. We do not ship a size the standard does not define.

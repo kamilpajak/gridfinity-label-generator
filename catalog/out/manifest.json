@@ -217,6 +217,12 @@
 			"source": "DIN 467 flat/low knurled nut (M12): knurled head OD d=40 (d1) with a reduced-diameter plain boss collar_d=22 (d2) on the bearing face; total height 12 = knurled head h=10 (k) + boss collar_h=2. Tabulated and confirmed vs Aspen Fasteners DIN 467 spec (d1=40,d2=22,h=12,k=10) + Scribd DIN 467 table + Fastenright + JW Winco. Smooth cylindrical envelope drawn (the knurl is a fine feature, not modelled, like the thread). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "din467.svg"
 		},
+		"din508": {
+			"family": "tslot_nut",
+			"sha256": "714101991fc7387b8d6e85b51199ecef94032d0d22b9d0bf58e04d681ef60a74",
+			"source": "DIN 508 T-slot nut (Nutenstein), M12x1.75 coarse thread, 14 mm T-slot nominal (DIN 650). foot_w=22.0 (DIN symbol e, foot base across-slot width, sits in DIN 650 ~23.5 mm undercut) confirmed by Hoffmann Group + McMaster-Carr + D\u00f6nges/AMF + SFS tables. neck_w=13.7 (DIN symbol a, narrow neck that passes through the 14 mm slot opening) confirmed by Hoffmann Group + Fuller Fasteners + Halder USA + JW Winco + fasten.it + D\u00f6nges/AMF \u2014 nominal is 14 mm (slot designation), DIN tolerance gives a_max=13.7 mm; any appearance of '16' as a width in online tables is total height h, not neck width. length=22.0 (DIN symbol s, block length along slot direction) confirmed by Fasten.it + Fuller + Hoffmann/AMF + D\u00f6nges/AMF + SFS + McMaster + JW Winco. height=16.0 (h) confirmed by same sources. foot_h=8.0 derived as h\u2212k (k=8 tabulated). bore=10.1 = M12x1.75 coarse minor diameter per ISO 724 (D1=12\u22121.082532x1.75=10.106 mm). chamfer=1.0 mm representative: DIN 508 does not tabulate a chamfer; 0.5\u20131.0 mm x45 deg is standard shop practice for M12 (per Fuller and Hoffmann references); not a standardized DIN feature.",
+			"svg": "din508.svg"
+		},
 		"din546": {
 			"family": "slotted_face_nut",
 			"sha256": "24c0e4313de8d828e10e96bc083b77751754540b0f8980220b76462b60ca8a4a",

@@ -47,6 +47,11 @@ def tslot_nut(length: float, foot_w: float, neck_w: float, foot_h: float,
         if chamfer >= height - foot_h:
             raise ValueError(
                 f"tslot_nut: chamfer {chamfer} must be < neck height {height - foot_h} (stays within the neck)")
+        top_half = neck_w / 2.0 - chamfer
+        if bore / 2.0 >= top_half - _MIN_WALL_MM:
+            raise ValueError(
+                f"tslot_nut: bore {bore} leaves too thin a wall at the chamfered top "
+                f"(neck top half-width {top_half:.3f}, needs bore/2 < it by {_MIN_WALL_MM} mm)")
 
     fw, nw = foot_w / 2.0, neck_w / 2.0
     if chamfer is not None:

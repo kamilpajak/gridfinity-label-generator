@@ -6,7 +6,7 @@ from catalog.models.tslot_nut import tslot_nut
 # Synthetic geometric fixture (NOT any real standard) — geometry-only checks.
 # Foot 22 wide x 8 tall at the bottom; neck 14 wide x 8 tall on top; 2mm top-corner chamfer.
 # Length runs along Y. Foot band z in [0,8], neck band z in [8,16]. Bore radius 5 on the axis.
-CFG = dict(length=20.0, foot_w=22.0, neck_w=14.0, foot_h=8.0, height=16.0, bore=10.0, chamfer=2.0)
+CFG = dict(length=20.0, foot_w=22.0, neck_w=14.0, foot_h=8.0, height=16.0, bore=8.0, chamfer=2.0)
 
 
 def _solid_at(part, x, y, z, probe=1.0):
@@ -38,7 +38,7 @@ def test_stepped_t_narrow_neck_over_wide_foot():
 
 def test_neck_is_present():
     part = tslot_nut(**CFG)
-    x_neck = CFG["neck_w"] / 2 - 1.0         # inside the neck (x=6), outside the bore (r=5)
+    x_neck = CFG["neck_w"] / 2 - 1.0         # inside the neck (x=6), outside the bore (r=4)
     z_neck = CFG["foot_h"] + 2.0             # in the neck band (z=10)
     assert _solid_at(part, x_neck, 0.0, z_neck, probe=0.6)
 
@@ -84,3 +84,5 @@ def test_tslot_nut_guards_bad_geometry():
         tslot_nut(**{**CFG, "foot_h": 15.0, "chamfer": 1.5})    # chamfer (1.5) exceeds neck height (16-15=1)
     with pytest.raises(ValueError):
         tslot_nut(**{**CFG, "length": 12.0, "bore": 13.0})     # bore fits the neck (13<13.8) but not the length (13>=11.8)
+    with pytest.raises(ValueError):
+        tslot_nut(**{**CFG, "bore": 12.0})     # bore fits the full neck but breaks the chamfered top wall

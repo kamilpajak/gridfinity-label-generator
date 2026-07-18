@@ -101,3 +101,11 @@ def test_retaining_ring_guards_bad_geometry():
     with pytest.raises(ValueError):
         # Gap too small for the ear size: the two ears meet and close the split.
         retaining_ring(**{**CFG, "gap_deg": 5.0})
+    with pytest.raises(ValueError):
+        # Taper inverted: wider at the back than at the lugs (not this family's form).
+        retaining_ring(**{**CFG, "w_back": 3.5, "w_lug": 2.0})
+
+
+def test_equal_section_width_is_allowed():
+    # A constant-section ring (w_back == w_lug) is not an inversion — it must still build.
+    assert retaining_ring(**{**CFG, "w_back": 3.0, "w_lug": 3.0}).volume > 0

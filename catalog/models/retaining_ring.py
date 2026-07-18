@@ -46,6 +46,10 @@ def retaining_ring(d_seat: float, thickness: float, w_lug: float, w_back: float,
             raise ValueError(f"retaining_ring: need {name} > 0, got {val}")
     if not (0 < gap_deg < 180):
         raise ValueError(f"retaining_ring: need 0 < gap_deg < 180, got {gap_deg}")
+    if w_back > w_lug:
+        raise ValueError(
+            f"retaining_ring: w_back {w_back} must not exceed w_lug {w_lug} — this family "
+            f"tapers wider toward the eared lugs, not the back (equal is allowed)")
     if lug_project < _MIN_WALL_MM:
         raise ValueError(
             f"retaining_ring: lug_project {lug_project} is the ear wall around the plier hole "
@@ -93,8 +97,10 @@ def retaining_ring(d_seat: float, thickness: float, w_lug: float, w_back: float,
     with BuildPart() as bp:
         with BuildSketch():
             # Closed C: out along the growing edge (a0 -> a1), back along the seated edge
-            # (a1 -> a0); the two straight jumps are the free-end caps. Explicit coords, no
-            # auto-centring, so the polygon stays put on the seated circle.
+            # (a1 -> a0); the two straight jumps are the free-end caps. The seated edge is
+            # REVERSED so the loop is a single simple (non-self-intersecting) polygon in both
+            # cases — including the internal ring, where the growing edge sits INSIDE the seated
+            # circle (a non-reversed order would cross itself). Explicit coords, no auto-centring.
             Polygon(*(growing + seated[::-1]), align=None)
         extrude(amount=thickness / 2.0, both=True)  # thin body centred on z = 0
         for cx, cy in lug_centres:                  # fuse a round eared lug at each free end

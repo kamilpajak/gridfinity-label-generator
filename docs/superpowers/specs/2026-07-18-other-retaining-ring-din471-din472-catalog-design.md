@@ -118,14 +118,16 @@ in XY" convention as every washer family; the default preset is reused, **no pre
 
 1. `d_seat, thickness, w_lug, w_back, lug_hole_d, lug_project` all `> 0`.
 2. `0 < gap_deg < 180` (a real opening, but still a C-ring, not a bare arc).
-3. `lug_project ≥ _MIN_WALL_MM` — the ear-boss wall around the plier hole is exactly
+3. `w_back ≤ w_lug` — this family tapers wider toward the eared lugs, not the back; reject an
+   inverted taper (equal widths, a constant-section ring, are allowed).
+4. `lug_project ≥ _MIN_WALL_MM` — the ear-boss wall around the plier hole is exactly
    `lug_project`, so it must be at least the minimum wall.
-4. **Internal only** — inner radius must stay positive: `max(w_back, w_lug, 2*r_ear) <
+5. **Internal only** — inner radius must stay positive: `max(w_back, w_lug, 2*r_ear) <
 d_seat/2 − _MIN_WALL_MM` (the widest body point or the ear boss cannot cross the axis).
-5. **Open split** — the two ears must leave a real gap: `2*r_ear_center*sin(gap_deg/2) − 2*r_ear
+6. **Open split** — the two ears must leave a real gap: `2*r_ear_center*sin(gap_deg/2) − 2*r_ear
 ≥ _MIN_WALL_MM` where `r_ear_center = r_seat + sign*r_ear`. Without this the ears meet across
    the gap and fuse the ring closed (a circlip must stay open to spring on).
-6. Final `part.volume > 0`.
+7. Final `part.volume > 0`.
 
 ## Data
 

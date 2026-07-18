@@ -14,7 +14,7 @@ stamped split ring (a C with a gap) whose radial section **tapers** from the enl
 lugs at the free ends to the narrower back opposite the gap, with a **plier hole** in each
 lug. It snaps into a groove to axially locate a shaft or bore.
 
-One new generator; imports only `_MIN_WALL_MM` from `hex_nut`; `hardwareType: "other"` →
+One new generator; imports only `_MIN_WALL_MM` from `hex_nut`; `hardwareType: "ring"` →
 the existing default preset `DEFAULT_AXIS_Z` (there is no separate "washer preset" —
 `preset_for_hardware_type` returns `NUT_PRESET` only for `"nut"` and `DEFAULT_AXIS_Z` for
 everything else, and washers already render through it). Flat part: face view down the axis +
@@ -149,8 +149,8 @@ they disagree on).
 - `catalog/models/_registry.py`: add `"retaining_ring": retaining_ring` to `KNOWN_FAMILIES`
   (+ import). 24 families total.
 - `catalog/build_catalog.py`: unchanged — auto-globs `dimensions/*.json`, renders via
-  `preset_for_hardware_type("other")`, which returns `DEFAULT_AXIS_Z` (confirmed: only `"nut"`
-  gets `NUT_PRESET`; everything else, washers included, uses `DEFAULT_AXIS_Z`). No preset change.
+  `preset_for_hardware_type("ring")`, which returns `DEFAULT_AXIS_Z` (confirmed: only `"nut"`
+  gets `NUT_PRESET`; everything else — `"ring"` included — uses `DEFAULT_AXIS_Z`). No preset change.
 
 ## Testing
 

@@ -70,8 +70,10 @@ def retaining_ring(d_seat, thickness, w_lug, w_back, gap_deg,
   between `w_back` (at the back) and `w_lug` (at the ends) by angular distance from the back.
 - `gap_deg` — angular opening between the two free ends (the split).
 - `lug_hole_d` — plier-hole diameter (one hole per lug).
-- `lug_project` — how far each eared lug projects radially past the tapered body at the free
-  ends (the enlarged ear).
+- `lug_project` — the ear-boss wall around the plier hole: ear radius `r_ear = lug_hole_d/2 +
+lug_project` (ear diameter `lug_hole_d + 2*lug_project`). The ear is sized to the HOLE, not to
+  the section width — a section-wide ear would meet its twin across a small gap and fuse the ring
+  shut, so a hole-sized boss keeps the two ears clear and the split open (see guard 5).
 - `internal` — `False` (default) grows the section **outward** from `d_seat`, lugs point out
   (DIN 471). `True` grows it **inward** toward the axis, lugs point in (DIN 472).
 
@@ -92,14 +94,16 @@ the face view, matching the raster. Measuring `θ` from `+X`, the material arc r
    (constant) and the other edge is at `r_seat + sign * width(θ)`, where
    `width(θ) = w_back + (w_lug − w_back) * (angular distance of θ from the back) / (180° − gap_deg/2)`
    (so `width = w_back` at the back, `width = w_lug` at each free end). Build the closed C-face
-   from a `BuildLine`: outer spline (sampled), a cap line at one free end, the inner spline
-   back, a cap line at the other free end; `make_face`.
+   as one `Polygon` of the sampled points — the growing edge (a0→a1) then the seated edge
+   reversed (a1→a0), the two straight jumps forming the free-end caps (the many-point-polygon
+   idiom `toothed_lock_washer` uses; no spline wiggle).
 2. **Extrude:** `extrude(amount=thickness/2, both=True)` — thin body centered on `z = 0`.
-3. **Eared lugs:** at each free end, fuse a rounded ear — a `Cylinder` (axis `Z`, height
-   `thickness`) of radius `(w_lug + lug_project)/2`, centered on the free-end section so its
-   outer reach is `r_seat + sign*(w_lug + lug_project)` — the enlarged eyelet in the raster.
+3. **Eared lugs:** at each free end, fuse a round ear-boss — a `Cylinder` (axis `Z`, height
+   `thickness`) of radius `r_ear = lug_hole_d/2 + lug_project`, centered at `r_seat + sign*r_ear`
+   so its seated-side edge sits on `d_seat` (the largest radius available), keeping the two ears
+   as far apart as possible.
 4. **Plier holes:** subtract a through `Cylinder(lug_hole_d/2, thickness*3)` along `Z` at each
-   lug center, **last**.
+   ear center, **last**.
 
 Net guard on `part.volume > 0` (not `is_valid` — sewn-shell gotcha, per wave_washer).
 
@@ -114,11 +118,14 @@ in XY" convention as every washer family; the default preset is reused, **no pre
 
 1. `d_seat, thickness, w_lug, w_back, lug_hole_d, lug_project` all `> 0`.
 2. `0 < gap_deg < 180` (a real opening, but still a C-ring, not a bare arc).
-3. **Internal only** — inner radius must stay positive: `max(w_lug, w_back) + lug_project <
-d_seat/2 − _MIN_WALL_MM` (growing inward cannot cross the axis or leave a sliver).
-4. `lug_hole_d < w_lug + lug_project − 2*_MIN_WALL_MM` (the plier hole leaves a wall inside the
-   ear on each side).
-5. Final `part.volume > 0`.
+3. `lug_project ≥ _MIN_WALL_MM` — the ear-boss wall around the plier hole is exactly
+   `lug_project`, so it must be at least the minimum wall.
+4. **Internal only** — inner radius must stay positive: `max(w_back, w_lug, 2*r_ear) <
+d_seat/2 − _MIN_WALL_MM` (the widest body point or the ear boss cannot cross the axis).
+5. **Open split** — the two ears must leave a real gap: `2*r_ear_center*sin(gap_deg/2) − 2*r_ear
+≥ _MIN_WALL_MM` where `r_ear_center = r_seat + sign*r_ear`. Without this the ears meet across
+   the gap and fuse the ring closed (a circlip must stay open to spring on).
+6. Final `part.volume > 0`.
 
 ## Data
 

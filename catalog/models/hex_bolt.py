@@ -34,4 +34,6 @@ def hex_bolt(s: float, k: float, length: float, d_shank: float,
     part = bp.part
     if part.volume <= 0:                                     # net guard (not is_valid)
         raise ValueError("hex_bolt: produced an empty solid")
+    if len(part.solids()) != 1:                              # head and shank must FUSE, not just touch
+        raise ValueError("hex_bolt: head and shank did not fuse into a single solid")
     return part

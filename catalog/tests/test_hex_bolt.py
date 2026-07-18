@@ -55,6 +55,13 @@ def test_solid_core_no_bore():
     assert _solid_at(part, 0.0, 0.0, -CFG["length"] / 2.0, probe=0.6) # solid on axis in the shank
 
 
+def test_head_and_shank_fuse_into_one_solid():
+    # The head (z in [0,k]) and shank (z in [-length,0]) share only the z=0 plane; `add` must
+    # FUSE them into a single solid, not leave a compound (which every probe would miss).
+    assert len(hex_bolt(**CFG).solids()) == 1
+    assert len(hex_bolt(**{**CFG, "tip_chamfer": None}).solids()) == 1
+
+
 def test_tip_chamfer_is_cut():
     part = hex_bolt(**CFG)
     r = CFG["d_shank"] / 2.0

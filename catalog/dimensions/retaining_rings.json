@@ -1,0 +1,36 @@
+{
+	"din471": {
+		"family": "retaining_ring",
+		"shape": {
+			"d_seat": 11.0,
+			"thickness": 1.0,
+			"w_lug": 2.4,
+			"w_back": 1.8,
+			"gap_deg": 20,
+			"lug_hole_d": 1.5,
+			"lug_project": 0.5,
+			"internal": false
+		},
+		"hardwareType": "ring",
+		"source": "DIN 471 external circlip for shaft, normal type, d1=12mm. d_seat=d2=11.0mm (groove diameter, the ring's inner edge seats here; d2<d1). thickness=s=1.0mm. Radial section tapers from b=1.8mm at the back to a=2.4mm at the lug/ear ends (a>b: the pierced ears project outward past the body by a-b, the internal-thread-free stamped circlip form). lug_hole_d=d5=1.5mm. Confirmed vs DIN 471:2011 official text + RoyMech + fasten.it + Danish DIN 471 table (s=1.0, b=1.8, d2=11.0); a=2.4 from Beneri + ItaFasteners + ArconRing DIN 471 tables; d5=1.5 from Aspen Fasteners + fasten.it. gap_deg=20 and lug_project=0.5 are representative (not tabulated in public DIN 471 sources).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "471" }]
+	},
+	"din472": {
+		"family": "retaining_ring",
+		"shape": {
+			"d_seat": 12.5,
+			"thickness": 1.0,
+			"w_lug": 3.0,
+			"w_back": 1.7,
+			"gap_deg": 25,
+			"lug_hole_d": 1.5,
+			"lug_project": 0.5,
+			"internal": true
+		},
+		"hardwareType": "ring",
+		"source": "DIN 472 internal circlip for bore, normal type, d1=12mm. d_seat=d2=12.5mm (bore groove diameter, the ring's outer edge seats here; d2>d1). thickness=s=1.0mm. Radial section tapers from b=1.7mm at the back to a=3.0mm at the lug/ear ends (a>b, same taper direction as DIN 471). lug_hole_d=d5=1.5mm. Confirmed vs Westfield Fasteners DIN 472 table + fasten.it + ItaFasteners + AMESweb (s=1.0, b=1.7, a=3.0, d5=1.5); d2=12.5 from Westfield + fasten.it + engdatabase.com. gap_deg=25 and lug_project=0.5 are representative (not tabulated in public DIN 472 sources).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "472" }]
+	}
+}

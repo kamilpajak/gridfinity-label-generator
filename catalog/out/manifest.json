@@ -532,6 +532,19 @@
 			"source": "ISO 21670 hex weld nut with flange (M12): s=18, m=15, d_flange=30.5, flange_thickness(c)=1.2 (rim 1.1-1.3 range), bore=10.1. Distinct from DIN 6923 (wider flange, thinner rim, taller). Weld projections on the bearing face are sub-visible and not modelled. Confirmed vs fasenco.com + globalfastener.com (ISO 21670:2003/2014) + Wurth.",
 			"svg": "iso21670.svg"
 		},
+		"iso4014": {
+			"family": "hex_bolt",
+			"sha256": "19bc7755f9e3dd6feef244673eab71c97480f4440f4703c9cb8b99565efb37f7",
+			"source": "ISO 4014 hexagon head bolt (partial thread), M12 coarse (1.75 mm pitch). s=18.0 (across flats, ISO 4014 nominal for M12; ISO reduced this from DIN 931's 19 mm to 18 mm \u2014 Fasteners.eu EU 24014 table shows separate DIN 931 and ISO 4014 lines confirming this; confirmed also by ITAFasteners BS EN ISO 4014 table + Jignesh Steel DIN 931/ISO 4014 table + iso-fasteners.com ISO 4014 table). k=7.5 (head height nominal; same sources; Jignesh Steel gives tolerance band 7.32\u20137.68 mm around 7.5 nominal, grade A). d_shank=12.0 = M12 nominal major diameter; shank drawn as smooth cylinder (envelope only, no thread lines, no bore). length=60.0 is a representative catalog length \u2014 M12 ISO 4014 is stocked approximately 20\u2013200 mm per W\u00fcrth + ITAFasteners + Norelem catalogs; 60 mm is a common mid-range size, not a normative value. head_chamfer=18.0 = s: ISO hex heads chamfer to approximately the across-flats circle at the top face \u2014 this dimension is not tabulated separately in ISO 4014 public summaries; setting head_chamfer to s is a representative value (actual chamfer circle is between s and e_min=21.1 mm). tip_chamfer=1.0 mm: 45 degree lead chamfer at the free end of the shank; typical 1\u20131.5 mm at M12; not individually tabulated in ISO 4014 public tables; representative.",
+			"svg": "iso4014.svg"
+		},
+		"iso4017": {
+			"alias_of": "iso4014",
+			"family": "hex_bolt",
+			"sha256": "19bc7755f9e3dd6feef244673eab71c97480f4440f4703c9cb8b99565efb37f7",
+			"source": "ISO 4017 fully threaded hex bolt, M12. Shares the same hex head as ISO 4014 for M12 (s=18.0, k=7.5): confirmed by ITAFasteners (separate ISO 4014 and ISO 4017 dimension tables, M12 head row identical in both) + Andrews Fasteners ISO 4017 table (s_nom=18, k_nom=7.5, grade A tol 7.32\u20137.68) + boltsparts.github.io ISO 4017 table (s=18.0, k=7.5). Only thread coverage differs (ISO 4017 is fully threaded; ISO 4014 is partial thread). Outer envelope at the chosen representative length is identical to iso4014 -> alias.",
+			"svg": "iso4014.svg"
+		},
 		"iso4032": {
 			"family": "hex_nut",
 			"sha256": "2296102d5c64c073506331c0c4e1c6723431984769a234dba10d96f8977842ac",

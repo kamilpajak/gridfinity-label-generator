@@ -84,3 +84,7 @@ def test_hex_bolt_guards():
         hex_bolt(**{**CFG, "d_shank": CFG["s"]})                     # shank not narrower than head
     with pytest.raises(ValueError):
         hex_bolt(**{**CFG, "tip_chamfer": CFG["d_shank"] / 2})       # lead chamfer >= shank radius
+    with pytest.raises(ValueError):
+        # Head chamfer flat (10) narrower than the shank (12): the shank would overhang the
+        # bevelled head bottom. Passes d_shank<s (12<18) but fails the flat-disc guard.
+        hex_bolt(**{**CFG, "head_chamfer": 10.0})

@@ -25,6 +25,14 @@ def hex_bolt(s: float, k: float, length: float, d_shank: float,
         raise ValueError(
             f"hex_bolt: d_shank {d_shank} must be < across-flats {s} (the shank emerges from "
             f"the head bearing face and is narrower than the head)")
+    # The head's flat bottom face is a disc of radius head_chamfer/2 (defaults to s/2). The
+    # shank top (radius d_shank/2) must sit fully within it, else the shank overhangs the
+    # bevelled corners and the head/shank join is not a clean coincident face.
+    chamfer_flat = s if head_chamfer is None else head_chamfer
+    if d_shank > chamfer_flat:
+        raise ValueError(
+            f"hex_bolt: d_shank {d_shank} exceeds the head's flat chamfer diameter "
+            f"{chamfer_flat} — the shank would overhang the bevelled head bottom")
 
     head = _chamfered_hex_solid(s, k, head_chamfer)          # z in [0, k], validates s/k/chamfer
     shank = _screw_shank(d_shank, length, tip_chamfer)       # z in [-length, 0], validates chamfer

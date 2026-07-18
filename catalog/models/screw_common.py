@@ -3,6 +3,11 @@
 The threaded shank is drawn ENVELOPE-ONLY (a smooth cylinder at the major diameter) — no
 thread lines — consistent with the epic's fine-feature rule. Every screw family reuses
 ``_screw_shank`` for the body below the head.
+
+CONVENTION: ``_screw_shank`` returns a part with its **top face on z=0** (the under-head
+bearing plane). Every screw head must be built ABOVE this plane (positive Z) so a plain
+``add()`` fuses head and shank into one solid — the socket/countersunk/carriage families
+should follow this same stacking seam.
 """
 from build123d import BuildPart, BuildSketch, Polygon, Plane, Axis, revolve
 

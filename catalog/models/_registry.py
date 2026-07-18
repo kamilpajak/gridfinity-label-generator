@@ -17,6 +17,7 @@ from catalog.models.slotted_round_nut import slotted_round_nut
 from catalog.models.slotted_face_nut import slotted_face_nut
 from catalog.models.cross_hole_nut import cross_hole_nut
 from catalog.models.tslot_nut import tslot_nut
+from catalog.models.retaining_ring import retaining_ring
 
 KNOWN_FAMILIES = {
     "flat_washer": flat_washer,
@@ -43,6 +44,7 @@ KNOWN_FAMILIES = {
     "slotted_face_nut": slotted_face_nut,
     "cross_hole_nut": cross_hole_nut,
     "tslot_nut": tslot_nut,
+    "retaining_ring": retaining_ring,
 }
 
 

@@ -99,8 +99,8 @@ def hex_bolt(s, k, length, d_shank, head_chamfer=None, tip_chamfer=None):
   `z∈[0, k]`.
 - **Shank:** `_screw_shank(d_shank, length, tip_chamfer)` down `z∈[−length, 0]`, unioned to the
   head bearing face. No bore.
-- Imports **only** `_chamfered_hex_solid` and `_MIN_WALL_MM` from `hex_nut`, and `_screw_shank`
-  from `screw_common`. Net guard on `part.volume > 0` (not `is_valid`).
+- Imports **only** `_chamfered_hex_solid` from `hex_nut`, and `_screw_shank` from `screw_common`
+  (no `_MIN_WALL_MM` — there is no bore). Net guard on `part.volume > 0` (not `is_valid`).
 
 ### Orientation / preset (DEFAULT_AXIS_Z reuse)
 

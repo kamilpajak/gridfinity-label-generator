@@ -1,0 +1,24 @@
+{
+	"iso4014": {
+		"family": "hex_bolt",
+		"shape": {
+			"s": 18.0,
+			"k": 7.5,
+			"length": 60.0,
+			"d_shank": 12.0,
+			"head_chamfer": 18.0,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"source": "ISO 4014 hexagon head bolt (partial thread), M12 coarse (1.75 mm pitch). s=18.0 (across flats, ISO 4014 nominal for M12; ISO reduced this from DIN 931's 19 mm to 18 mm — Fasteners.eu EU 24014 table shows separate DIN 931 and ISO 4014 lines confirming this; confirmed also by ITAFasteners BS EN ISO 4014 table + Jignesh Steel DIN 931/ISO 4014 table + iso-fasteners.com ISO 4014 table). k=7.5 (head height nominal; same sources; Jignesh Steel gives tolerance band 7.32–7.68 mm around 7.5 nominal, grade A). d_shank=12.0 = M12 nominal major diameter; shank drawn as smooth cylinder (envelope only, no thread lines, no bore). length=60.0 is a representative catalog length — M12 ISO 4014 is stocked approximately 20–200 mm per Würth + ITAFasteners + Norelem catalogs; 60 mm is a common mid-range size, not a normative value. head_chamfer=18.0 = s: ISO hex heads chamfer to approximately the across-flats circle at the top face — this dimension is not tabulated separately in ISO 4014 public summaries; setting head_chamfer to s is a representative value (actual chamfer circle is between s and e_min=21.1 mm). tip_chamfer=1.0 mm: 45 degree lead chamfer at the free end of the shank; typical 1–1.5 mm at M12; not individually tabulated in ISO 4014 public tables; representative.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4014" }]
+	},
+	"iso4017": {
+		"alias_of": "iso4014",
+		"hardwareType": "screw",
+		"source": "ISO 4017 fully threaded hex bolt, M12. Shares the same hex head as ISO 4014 for M12 (s=18.0, k=7.5): confirmed by ITAFasteners (separate ISO 4014 and ISO 4017 dimension tables, M12 head row identical in both) + Andrews Fasteners ISO 4017 table (s_nom=18, k_nom=7.5, grade A tol 7.32–7.68) + boltsparts.github.io ISO 4017 table (s=18.0, k=7.5). Only thread coverage differs (ISO 4017 is fully threaded; ISO 4014 is partial thread). Outer envelope at the chosen representative length is identical to iso4014 -> alias.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4017" }]
+	}
+}

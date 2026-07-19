@@ -433,6 +433,13 @@
 			"source": "variant key sharing DIN 9021 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din9021.svg"
 		},
+		"din912": {
+			"alias_of": "iso4762",
+			"family": "socket_screw",
+			"sha256": "f8efbacffd42a7b42638db4ff43b5299ffcf297420190e0b1fcb86e1a28f2cf3",
+			"source": "DIN 912 hexagon socket head cap screw, M12. Same screw as ISO 4762 \u2014 identical M12 head (dk=18.0, k=12.0) and hex socket (across-flats 10.0): confirmed against >=2 public tables (engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762). Outer envelope + hex socket identical to iso4762 -> alias.",
+			"svg": "iso4762.svg"
+		},
 		"din917": {
 			"family": "cap_nut",
 			"sha256": "6f81752d90b4af47bcfcd7165c5a1f4ffbf31e364f661abb976b3e898b4a57c6",
@@ -526,6 +533,12 @@
 			"source": "ISO 10513 is the fine-pitch (M12x1.5) all-metal high counterpart of ISO 7042 with an identical 2012 M12 metal envelope (s=18, m=13.3); pitch is invisible at label scale, so it aliases the ISO 7042 drawing.",
 			"svg": "iso7042.svg"
 		},
+		"iso14579": {
+			"family": "socket_screw",
+			"sha256": "97e2d65d5d997ad908e7bd4765787de1665a251d472c568d517d297d79f791f6",
+			"source": "ISO 14579 hexalobular (Torx) socket head cap screw, M12. Same head as ISO 4762 (dk=18.0, k=12.0) \u2014 only the drive differs \u2014 verified against >=2 public tables: engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762. Torx size for M12 is approximately T50. The lobular recess is a representative rounded 6-lobe icon (see THIRD-PARTY-NOTICES.md, FreeCAD Fasteners Workbench / ISO 10664 form), not the dimensioned ISO 10664 curve; socket_af=10.0 sets the overall socket half-width. d_shank=12.0 (M12 major). length=60.0 representative. tip_chamfer=1.0 mm representative.",
+			"svg": "iso14579.svg"
+		},
 		"iso21670": {
 			"family": "flange_nut",
 			"sha256": "7a96cf17af2035e2c4b6d54695e47f778488db356a98a9300c244946c69a87c7",
@@ -562,6 +575,12 @@
 			"sha256": "4d07bfb2f1ca91e4a0af726f8b19cb4e5a94c2d0e6eb779349524f666370c48a",
 			"source": "ISO 4035 hexagon thin nut (style 0), M12: s=18.0 (ISO value; the 19mm seen in some catalogues is the DIN 439B deviation), m=6.0. Confirmed vs Fuller Fasteners ISO 4035 spec + BS EN ISO 4035 table (Engineers Edge).",
 			"svg": "iso4035.svg"
+		},
+		"iso4762": {
+			"family": "socket_screw",
+			"sha256": "f8efbacffd42a7b42638db4ff43b5299ffcf297420190e0b1fcb86e1a28f2cf3",
+			"source": "ISO 4762 hexagon socket head cap screw, M12. dk=18.0 (head diameter), k=12.0 (head height), socket_af=10.0 (hex key across-flats), socket_depth=6.0 (key engagement, representative within the tabulated min) \u2014 all M12 values verified against >=2 public tables: engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762. d_shank=12.0 (M12 nominal major diameter); shank drawn as a smooth cylinder (envelope only, no thread lines, no bore). length=60.0 is a representative catalog length (M12 stocked ~16-200 mm), not normative. tip_chamfer=1.0 mm lead chamfer, representative.",
+			"svg": "iso4762.svg"
 		},
 		"iso7035": {
 			"alias_of": "din935",

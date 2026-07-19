@@ -1,0 +1,43 @@
+{
+	"iso4762": {
+		"family": "socket_screw",
+		"shape": {
+			"dk": 18.0,
+			"k": 12.0,
+			"length": 60.0,
+			"d_shank": 12.0,
+			"drive": "hex",
+			"socket_af": 10.0,
+			"socket_depth": 6.0,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"source": "ISO 4762 hexagon socket head cap screw, M12. dk=18.0 (head diameter), k=12.0 (head height), socket_af=10.0 (hex key across-flats), socket_depth=6.0 (key engagement, representative within the tabulated min) — all M12 values verified against >=2 public tables: engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762. d_shank=12.0 (M12 nominal major diameter); shank drawn as a smooth cylinder (envelope only, no thread lines, no bore). length=60.0 is a representative catalog length (M12 stocked ~16-200 mm), not normative. tip_chamfer=1.0 mm lead chamfer, representative.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4762" }]
+	},
+	"din912": {
+		"alias_of": "iso4762",
+		"hardwareType": "screw",
+		"source": "DIN 912 hexagon socket head cap screw, M12. Same screw as ISO 4762 — identical M12 head (dk=18.0, k=12.0) and hex socket (across-flats 10.0): confirmed against >=2 public tables (engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762). Outer envelope + hex socket identical to iso4762 -> alias.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "912" }]
+	},
+	"iso14579": {
+		"family": "socket_screw",
+		"shape": {
+			"dk": 18.0,
+			"k": 12.0,
+			"length": 60.0,
+			"d_shank": 12.0,
+			"drive": "lobular",
+			"socket_af": 10.0,
+			"socket_depth": 6.0,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"source": "ISO 14579 hexalobular (Torx) socket head cap screw, M12. Same head as ISO 4762 (dk=18.0, k=12.0) — only the drive differs — verified against >=2 public tables: engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762. Torx size for M12 is approximately T50. The lobular recess is a representative rounded 6-lobe icon (see THIRD-PARTY-NOTICES.md, FreeCAD Fasteners Workbench / ISO 10664 form), not the dimensioned ISO 10664 curve; socket_af=10.0 sets the overall socket half-width. d_shank=12.0 (M12 major). length=60.0 representative. tip_chamfer=1.0 mm representative.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "14579" }]
+	}
+}

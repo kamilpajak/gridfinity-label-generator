@@ -19,6 +19,7 @@ from catalog.models.cross_hole_nut import cross_hole_nut
 from catalog.models.tslot_nut import tslot_nut
 from catalog.models.retaining_ring import retaining_ring
 from catalog.models.hex_bolt import hex_bolt
+from catalog.models.socket_screw import socket_screw
 
 KNOWN_FAMILIES = {
     "flat_washer": flat_washer,
@@ -47,6 +48,7 @@ KNOWN_FAMILIES = {
     "tslot_nut": tslot_nut,
     "retaining_ring": retaining_ring,
     "hex_bolt": hex_bolt,
+    "socket_screw": socket_screw,
 }
 
 

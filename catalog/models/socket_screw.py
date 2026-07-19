@@ -13,6 +13,8 @@ Workbench / ISO 10664). Modelled axis-along-Z: the head sits z in [0, k] (bearin
 the shank z in [-length, 0]; under the default camera the front view is the socket end view and
 the side view is the horizontal head+shank elevation.
 """
+import math
+
 from build123d import (
     BuildPart, BuildSketch, Cylinder, Circle, RegularPolygon, PolarLocations,
     Plane, Align, Mode, add, extrude,
@@ -49,10 +51,12 @@ def socket_screw(dk: float, k: float, length: float, d_shank: float, drive: str,
         raise ValueError(
             f"socket_screw: d_shank {d_shank} must be < head diameter {dk} (the shank emerges "
             f"from the head bearing face and is narrower than the head)")
-    if socket_af >= dk - 2.0 * _MIN_WALL_MM:
+    socket_outer_r = socket_af / math.sqrt(3.0) if drive == "hex" else _LOBE_TIP_FRAC * socket_af
+    if socket_outer_r >= dk / 2.0 - _MIN_WALL_MM:
         raise ValueError(
-            f"socket_screw: socket_af {socket_af} leaves too thin a wall vs head diameter {dk} "
-            f"(needs < dk - {2.0 * _MIN_WALL_MM} mm — the socket sits within the head face)")
+            f"socket_screw: {drive} socket of across-size {socket_af} reaches radius "
+            f"{socket_outer_r:.3f} which leaves too thin a wall vs head radius {dk / 2.0} "
+            f"(needs < dk/2 - {_MIN_WALL_MM} mm)")
     if socket_depth >= k:
         raise ValueError(
             f"socket_screw: socket_depth {socket_depth} must be < head height {k} "

@@ -1,5 +1,3 @@
-import math
-
 import pytest
 from build123d import Box, Pos
 
@@ -109,3 +107,12 @@ def test_socket_screw_guards():
         socket_screw(**{**HEX, "socket_depth": HEX["k"]})            # socket not blind (>= head height)
     with pytest.raises(ValueError):
         socket_screw(**{**LOB, "socket_af": HEX["dk"]})              # lobular socket too wide too
+
+
+def test_hex_wall_guard_accounts_for_socket_corners():
+    # socket_af=16 with dk=18: hex corners reach 16/sqrt(3)=9.24 > head radius 9.0 -> must raise
+    # for hex, but the lobular tips only reach 8.0 < 9.0 -> lobular still builds. This is the
+    # drive-aware wall guard (the old across-flats-only guard wrongly passed hex here).
+    with pytest.raises(ValueError):
+        socket_screw(**{**HEX, "socket_af": 16.0})
+    assert socket_screw(**{**LOB, "socket_af": 16.0}).volume > 0

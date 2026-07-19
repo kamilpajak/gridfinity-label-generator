@@ -31,6 +31,12 @@ _RECESS_EPS = 0.05               # cutter pokes this far above the top face for 
 _LOBE_TIP_FRAC = 0.5             # lobe tip radius / socket_af  (overall socket half-width)
 _LOBE_R_FRAC = 0.12              # lobe circle radius / socket_af
 _CORE_R_FRAC = 0.33              # core disc radius / socket_af
+_LOBE_OFFSET_FRAC = _LOBE_TIP_FRAC - _LOBE_R_FRAC   # 0.38: lobe-center radius / socket_af
+# Invariant (guards future edits of the fractions above): the core disc must overlap every lobe so
+# the core + six lobes form ONE connected region, and adjacent lobes must stay distinct (rounded
+# bumps, not merged into a ring). Both hold as fractions of socket_af, so they are size-invariant.
+assert _CORE_R_FRAC > _LOBE_OFFSET_FRAC - _LOBE_R_FRAC, "lobular core must overlap the lobes"
+assert _LOBE_OFFSET_FRAC > 2.0 * _LOBE_R_FRAC, "lobular lobes must stay distinct"
 
 
 def socket_screw(dk: float, k: float, length: float, d_shank: float, drive: str,
@@ -74,8 +80,7 @@ def socket_screw(dk: float, k: float, length: float, d_shank: float, drive: str,
                                major_radius=False)                 # across-flats = socket_af
             else:
                 Circle(radius=_CORE_R_FRAC * socket_af)            # connecting core disc
-                offset = _LOBE_TIP_FRAC * socket_af - _LOBE_R_FRAC * socket_af
-                with PolarLocations(offset, 6):
+                with PolarLocations(_LOBE_OFFSET_FRAC * socket_af, 6):
                     Circle(radius=_LOBE_R_FRAC * socket_af)        # six rounded lobes, unioned
         extrude(amount=socket_depth + _RECESS_EPS, mode=Mode.SUBTRACT)   # blind socket from top
     part = bp.part

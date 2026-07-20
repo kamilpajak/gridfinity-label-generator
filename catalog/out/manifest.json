@@ -440,6 +440,30 @@
 			"source": "DIN 912 hexagon socket head cap screw, M12. Same screw as ISO 4762 \u2014 identical M12 head (dk=18.0, k=12.0) and hex socket (across-flats 10.0): confirmed against >=2 public tables (engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762). Outer envelope + hex socket identical to iso4762 -> alias.",
 			"svg": "iso4762.svg"
 		},
+		"din913": {
+			"family": "set_screw",
+			"sha256": "169910ebab9bad2ad247eaa6c8e8413d70407926829acfc7e2ba1c06b5ccb636",
+			"source": "DIN 913 hexagon socket set screw with flat point, M12 x 30 (representative length). socket_af=6.0 and socket_depth=4.5 tabulated (fasteners.eu DIN 913/914/915/916 + ISO 4029 tables, cross-checked against Aspen Fasteners DIN 916); d=12.0 (M12 major). Cylinder drawn as a smooth envelope (no thread). tip_chamfer=1.0 is a representative flat-point edge break (the DIN 913 chamfered edge), not tabulated.",
+			"svg": "din913.svg"
+		},
+		"din914": {
+			"family": "set_screw",
+			"sha256": "5e24b08b585d17503c7e8bfad4bfae7b0d1995048246735ba38e3b988d4e1382",
+			"source": "DIN 914 hexagon socket set screw with cone point, M12 x 30. socket_af=6.0/socket_depth=4.5 tabulated (fasteners.eu DIN 914/916 + ISO 4029, cross-checked against Aspen Fasteners DIN 916). Cone point is 90 degrees for M12 (tabulated angle, fasteners.eu DIN 914) with tip flat diameter dt=point_d=2.5 (tabulated, fasteners.eu DIN 914 range 2.4-3, cross-checked against a second public reference); point_h=(d-point_d)/2=4.75 is derived (representative) from the tabulated 90-degree cone geometry, not itself tabulated.",
+			"svg": "din914.svg"
+		},
+		"din915": {
+			"family": "set_screw",
+			"sha256": "54189886bcb80409a5aca1924f1c89bd2b80747541d9be1fa8c4fe0c32028a2f",
+			"source": "DIN 915 hexagon socket set screw with dog point, M12 x 30. socket_af=6.0/socket_depth=4.5 tabulated (fasteners.eu DIN 915/916 + ISO 4029, cross-checked against Aspen Fasteners DIN 916); dog diameter dp=point_d=8.14 and dog length z=point_h=6.0 both tabulated for M12, cross-checked between fasteners.eu DIN 915 and a second public reference (Westfield Fasteners / Perplexity-sourced dog-point table).",
+			"svg": "din915.svg"
+		},
+		"din916": {
+			"family": "set_screw",
+			"sha256": "b313c76d0c8ce6e5c6cf9f5d4a1527313d62c1d0edaffda41ab1c5b9da16fbbf",
+			"source": "DIN 916 hexagon socket set screw with cup point, M12 x 30. socket_af=6.0/socket_depth=4.5 and cup mouth diameter dv=point_d=7.6 (from a 7.64 min / 8 max tabulated range) both tabulated, cross-checked between fasteners.eu DIN 916 and Aspen Fasteners DIN 916 (two dimensioned tables); cup depth point_h=2.0 is representative (not tabulated). d=12.0 (M12 major).",
+			"svg": "din916.svg"
+		},
 		"din917": {
 			"family": "cap_nut",
 			"sha256": "6f81752d90b4af47bcfcd7165c5a1f4ffbf31e364f661abb976b3e898b4a57c6",
@@ -557,6 +581,34 @@
 			"sha256": "19bc7755f9e3dd6feef244673eab71c97480f4440f4703c9cb8b99565efb37f7",
 			"source": "ISO 4017 fully threaded hex bolt, M12. Shares the same hex head as ISO 4014 for M12 (s=18.0, k=7.5): confirmed by ITAFasteners (separate ISO 4014 and ISO 4017 dimension tables, M12 head row identical in both) + Andrews Fasteners ISO 4017 table (s_nom=18, k_nom=7.5, grade A tol 7.32\u20137.68) + boltsparts.github.io ISO 4017 table (s=18.0, k=7.5). Only thread coverage differs (ISO 4017 is fully threaded; ISO 4014 is partial thread). Outer envelope at the chosen representative length is identical to iso4014 -> alias.",
 			"svg": "iso4014.svg"
+		},
+		"iso4026": {
+			"alias_of": "din913",
+			"family": "set_screw",
+			"sha256": "169910ebab9bad2ad247eaa6c8e8413d70407926829acfc7e2ba1c06b5ccb636",
+			"source": "ISO 4026 hexagon socket set screw with flat point, M12 \u2014 same envelope as DIN 913 (socket_af=6.0, socket_depth=4.5), so it aliases the DIN base. Confirmed vs fasteners.eu ISO 4026/4029 tables + Aspen Fasteners DIN 916.",
+			"svg": "din913.svg"
+		},
+		"iso4027": {
+			"alias_of": "din914",
+			"family": "set_screw",
+			"sha256": "5e24b08b585d17503c7e8bfad4bfae7b0d1995048246735ba38e3b988d4e1382",
+			"source": "ISO 4027 cone-point socket set screw, M12 \u2014 same envelope + cone as DIN 914, aliases the DIN base. Confirmed vs fasteners.eu ISO 4027/4029 tables + Aspen Fasteners DIN 916.",
+			"svg": "din914.svg"
+		},
+		"iso4028": {
+			"alias_of": "din915",
+			"family": "set_screw",
+			"sha256": "54189886bcb80409a5aca1924f1c89bd2b80747541d9be1fa8c4fe0c32028a2f",
+			"source": "ISO 4028 dog-point socket set screw, M12 \u2014 same envelope + dog as DIN 915, aliases the DIN base. Confirmed vs fasteners.eu ISO 4028/4029 tables + Aspen Fasteners DIN 916.",
+			"svg": "din915.svg"
+		},
+		"iso4029": {
+			"alias_of": "din916",
+			"family": "set_screw",
+			"sha256": "b313c76d0c8ce6e5c6cf9f5d4a1527313d62c1d0edaffda41ab1c5b9da16fbbf",
+			"source": "ISO 4029 cup-point socket set screw, M12 \u2014 same envelope + cup as DIN 916, aliases the DIN base. Confirmed vs fasteners.eu ISO 4029 table + Aspen Fasteners DIN 916.",
+			"svg": "din916.svg"
 		},
 		"iso4032": {
 			"family": "hex_nut",

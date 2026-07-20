@@ -92,30 +92,31 @@ this reason.
 ```python
 def slotted_screw(head, drive, dk, k, length, d_shank,
                   drive_w, drive_t,
-                  crown_r=None, dome_r=None, raised_f=None,
+                  crown_r=None, raised_f=None,
                   drive_m=None, tip_chamfer=None):
     ...
 ```
 
-Two orthogonal parametrised features:
-
-**1. Head shape (`head`)** — built by revolving a head-specific meridian in the XZ plane about Z
-(deterministic — no fragile edge selection, the same technique as `_screw_shank`, the `lock_nut`
-cone, and the `set_screw` points). The head occupies `z ∈ [0, k]` (`raised` extends to
-`k + raised_f`), bearing face on `z=0`.
+Two orthogonal parametrised features. Flat-topped heads (cheese, countersunk) are built by
+revolving a straight-segment meridian in the XZ plane about Z (the deterministic `set_screw`
+technique). Domed portions (pan crown, raised lens) reuse the codebase's proven spherical-cap
+idiom from `cap_nut`: a `Sphere` trimmed by a `Box` to leave a cap of the required height seated on
+its base circle — so **no arc-meridian and no `dome_r` parameter** (the cap's sphere radius is
+derived, `R = (r² + h²) / 2h`, from the base radius `r` and cap height `h`). The head occupies
+`z ∈ [0, k]` (`raised` extends to `k + raised_f`), bearing face on `z=0`.
 
 - **`cheese`** (din84/iso1207): a plain cylinder of radius `dk/2`, height `k`, with an optional
-  small 45° top-outer-edge break of leg `crown_r` (representative rounded cheese edge). Meridian is
-  a straight-segment polygon.
-- **`pan`** (din85/iso1580, iso7045/din7985): a shallow spherical-cap dome. Meridian is a
-  `BuildLine` — bottom bearing radius `dk/2` at `z=0`, a `RadiusArc` of radius `dome_r` sweeping to
-  the top centre `(0, k)` — closed to a face and revolved. `dome_r` sets the crown curvature.
-- **`countersunk`** (din963/iso2009, iso7046/din965): a flat 90°-ish cone frustum. Meridian
-  straight segments `(0,0)-(d_shank/2,0)-(dk/2,k)-(0,k)-(0,0)`: radius `d_shank/2` at the bearing
-  plane widening to `dk/2` at the flush flat top `z=k`.
-- **`raised`** (din966/iso2010, iso7047): the countersunk cone **plus** a raised spherical lens.
-  Meridian `BuildLine`: `(0,0)-(d_shank/2,0)-(dk/2,k)` then a `RadiusArc` of radius `dome_r` to the
-  top centre `(0, k + raised_f)`. Total head height `k + raised_f`.
+  small 45° top-outer-edge break of leg `crown_r` (representative rounded cheese edge). Revolved
+  straight-segment meridian.
+- **`pan`** (din85/iso1580, iso7045/din7985): a shallow spherical-cap dome seated on the bearing
+  circle — base radius `dk/2` at `z=0`, cap height `k`, apex at `z=k` (derived sphere radius, the
+  `cap_nut` trim idiom). No `dome_r`.
+- **`countersunk`** (din963/iso2009, iso7046/din965): a flat 90°-ish cone frustum. Revolved
+  straight-segment meridian `(0,0)-(d_shank/2,0)-(dk/2,k)-(0,k)-(0,0)`: radius `d_shank/2` at the
+  bearing plane widening to `dk/2` at the flush flat top `z=k`.
+- **`raised`** (din966/iso2010, iso7047): the countersunk cone frustum (revolved meridian, height
+  `k`) **plus** a raised spherical-cap lens on its flat top — base radius `dk/2` at `z=k`, cap
+  height `raised_f`, apex at `z = k + raised_f` (same `cap_nut` trim idiom). No `dome_r`.
 
 **2. Drive (`drive`)** — cut from the head top by SUBTRACT:
 
@@ -144,10 +145,10 @@ same idiom `socket_screw` uses).
 2. `head ∈ {cheese, pan, countersunk, raised}`; `drive ∈ {slot, cross}` (else raise).
 3. `d_shank < dk` (the shank is narrower than the head).
 4. Head-specific required params:
-   - `pan` requires `dome_r > 0` and `dome_r ≥ dk/2` (a valid, non-inverted crown arc).
-   - `raised` requires `dome_r > 0`, `dome_r ≥ dk/2`, and `raised_f > 0`.
+   - `raised` requires `raised_f > 0` (the raised-lens height).
    - `cheese` `crown_r` (when given) `> 0` and `< min(dk/2, k)`.
-   - `countersunk` needs `dk > d_shank` (already implied by guard 3; the cone must widen).
+   - `pan` needs no extra param (the cap height is `k`); `countersunk` needs `dk > d_shank`
+     (already implied by guard 3; the cone must widen).
 5. Drive-specific:
    - `cross` requires `drive_m > 0`, `drive_m ≤ dk` (recess within the head top), and
      `drive_w < drive_m` (arm narrower than the overall cross span).
@@ -160,25 +161,25 @@ same idiom `socket_screw` uses).
 ## Data
 
 New `catalog/dimensions/slotted_screws.json`. Shape =
-`{head, drive, dk, k, length, d_shank, drive_w, drive_t, crown_r?, dome_r?, raised_f?, drive_m?,
+`{head, drive, dk, k, length, d_shank, drive_w, drive_t, crown_r?, raised_f?, drive_m?,
 tip_chamfer?}`.
 
 - **Seven bases** (one per row of the matrix table above) + **six aliases** (`iso1207`, `iso1580`,
   `iso2009`, `iso2010` alias the DIN slotted bases; `din7985`, `din965` alias the ISO cross bases).
   `alias_of` targets a base, never another alias. `iso7047` has no alias.
 - **Sourcing gate (at the data task):** the **envelope** dims `dk`, `k`, `length`, `d_shank`
-  confirmed against **≥2 independent public tables** per standard; drive and crown/dome/raised
-  fields tabulated where the standard defines them, else documented as representative:
-  - `dk`, `k` — head diameter and height, tabulated per standard at M10.
+  confirmed against **≥2 independent public tables** per standard; drive and crown/raised fields
+  tabulated where the standard defines them, else documented as representative:
+  - `dk`, `k` — head diameter and height, tabulated per standard at M10. For `pan`, `k` is the
+    dome (cap) height; for `raised`, `k` is the countersunk cone height and `raised_f` the lens.
   - `d_shank = 10.0` (M10 nominal major diameter). `length` — a representative catalog length,
     documented as chosen (M10 machine screws stock a wide range).
   - `drive_w`, `drive_t` — slot width `n` and depth `t` tabulated (slotted standards); for the
     cross bases these are the recess arm width and penetration, derived from the ISO 4757 cross
     gauge for the M10 driver size (Phillips/Pozidriv ≈ size 2), documented as representative.
   - `drive_m` (cross only) — the recess overall diameter at the surface, from the same gauge.
-  - `dome_r` (pan/raised) — the head/crown spherical radius; tabulated where given, else a
-    representative crown that matches the tabulated `dk`/`k`.
-  - `raised_f` (raised only) — the raised-lens height above the cone top, tabulated where given.
+  - `raised_f` (raised only) — the raised-lens height above the cone top, tabulated where given,
+    else a representative lens; the crown sphere radius is derived, not stored.
   - `crown_r` (cheese) — a small representative top-edge break.
 - `source` strings cite only public tables — never a private catalogue (no `reyher`, `stalmut`);
   `verified: true` only after the cross-check. Perplexity and the Playwright MCP may read tables

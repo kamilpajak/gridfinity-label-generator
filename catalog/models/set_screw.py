@@ -20,6 +20,7 @@ from build123d import (
 )
 
 _MIN_WALL_MM = 0.1               # local min wall (self-contained generator)
+_MIN_CORE_MM = 0.1               # min axial solid core between the socket floor and the point
 _POINTS = ("flat", "cone", "dog", "cup")
 _RECESS_EPS = 0.05               # socket cutter overshoot above the top face for a clean rim cut
 
@@ -63,10 +64,11 @@ def set_screw(d: float, length: float, socket_af: float, socket_depth: float, po
             f"set_screw: tip_chamfer {tip_chamfer} must be > 0 and < d/2 and < length")
 
     point_h_eff = point_h if shaped else 0.0
-    if socket_depth >= length - point_h_eff:
+    if socket_depth >= length - point_h_eff - _MIN_CORE_MM:
         raise ValueError(
-            f"set_screw: socket_depth {socket_depth} collides with the point (needs a solid core: "
-            f"socket_depth < length - point-height = {length - point_h_eff})")
+            f"set_screw: socket_depth {socket_depth} leaves too thin a solid core between the "
+            f"socket floor and the point (needs socket_depth < length - point-height - "
+            f"{_MIN_CORE_MM} = {length - point_h_eff - _MIN_CORE_MM})")
 
     r = d / 2.0
     # Outer meridian in XZ (x=radius, z=axial): body z in [0, length], point at the z=0 end.

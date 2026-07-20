@@ -96,4 +96,7 @@ def test_set_screw_guards():
     with pytest.raises(ValueError):
         set_screw(**{**CONE, "socket_depth": 28.0})          # socket collides with the point
     with pytest.raises(ValueError):
+        # leaves a positive but paper-thin core (30 - 5 - 0.05 = 24.95 core 0.05 < _MIN_CORE_MM)
+        set_screw(**{**CONE, "socket_depth": 24.95})         # core below the minimum thickness
+    with pytest.raises(ValueError):
         set_screw(**{**CONE, "tip_chamfer": 1.0})            # tip_chamfer is flat-only

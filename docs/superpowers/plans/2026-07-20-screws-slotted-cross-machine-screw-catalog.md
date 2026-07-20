@@ -118,19 +118,22 @@ def test_countersunk_cone_removes_outer_head_material_cheese_keeps():
 
 def test_pan_dome_falls_away_from_the_rim_cheese_keeps():
     # pan: spherical cap, base r=8 at z=0, apex at z=6. Near the rim at z=5.5 the dome radius is
-    # well under 8, so (7.0,0,5.5) is void where the cheese cylinder is solid.
+    # well under 8, so radius 7 is void where the cheese cylinder is solid. Probe OFF the slot band
+    # (y=7, |y| > drive_w/2) so the inherited center slot does not confound the head-shape check.
     cheese = slotted_screw(**CHEESE)
     pan = slotted_screw(**PAN)
-    assert _solid_at(cheese, 7.0, 0.0, 5.5, probe=0.3)              # cheese: solid near top rim
-    assert not _solid_at(pan, 7.0, 0.0, 5.5, probe=0.3)           # pan: domed away there
+    assert _solid_at(cheese, 0.0, 7.0, 5.5, probe=0.3)              # cheese: solid near top rim
+    assert not _solid_at(pan, 0.0, 7.0, 5.5, probe=0.3)           # pan: domed away there
 
 
 def test_raised_lens_adds_material_above_the_cone_top():
     # raised: cone top flat at z=k=5; a lens rises to z=6.5. csk (no lens) is empty above z=5.
+    # Probe OFF the slot band (y=3, |y| > drive_w/2) so the inherited center slot does not cut the
+    # probed point; the lens radius at z=5.8 is ~5.5, so radius 3 sits inside the lens.
     raised = slotted_screw(**RAISED)
     csk = slotted_screw(**{**CSK, "k": 5.0})
-    assert _solid_at(raised, 0.0, 0.0, 5.8, probe=0.3)             # raised: lens on the axis
-    assert not _solid_at(csk, 0.0, 0.0, 5.8, probe=0.3)          # csk: nothing above the flat top
+    assert _solid_at(raised, 0.0, 3.0, 5.8, probe=0.3)             # raised: lens off-axis, above the cone
+    assert not _solid_at(csk, 0.0, 3.0, 5.8, probe=0.3)          # csk: nothing above the flat top
 
 
 def test_slot_is_blind_and_spans_edge_to_edge():

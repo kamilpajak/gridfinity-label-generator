@@ -57,11 +57,13 @@ from the relevant publisher (e.g. [DIN Media](https://www.dinmedia.de/),
 
 ## Reference geometry — FreeCAD Fasteners Workbench (LGPL)
 
-The DIN 315 wing-nut profile construction in `catalog/models/wing_nut.py` was informed
-by the open-source [FreeCAD Fasteners Workbench](https://github.com/shaise/FreeCAD_FastenersWB),
-licensed under the GNU Lesser General Public License (LGPL). The build123d implementation
-in this project is our own; the geometry it produces is dictated by the DIN 315 standard.
-No FreeCAD source code is copied into or bundled with this project.
+The DIN 315 wing-nut profile construction in `catalog/models/wing_nut.py`, and the
+representative hexalobular (Torx) socket recess in `catalog/models/socket_screw.py`, were
+informed by the open-source [FreeCAD Fasteners Workbench](https://github.com/shaise/FreeCAD_FastenersWB),
+licensed under the GNU Lesser General Public License (LGPL), and by the ISO 10664 hexalobular
+form. The build123d implementations in this project are our own; the wing-nut geometry is
+dictated by the DIN 315 standard and the Torx recess is a representative icon (not the
+dimensioned ISO 10664 curve). No FreeCAD source code is copied into or bundled with this project.
 
 ---
 

@@ -29,6 +29,7 @@ _DRIVES = ("slot", "cross")
 _RECESS_EPS = 0.05           # drive cutter overshoot above the crown for a clean rim cut
 _CROSS_TAPER = 0.35          # cross floor arm-span as a fraction of the surface span (converging)
 _SLOT_OVERHANG = 2.0         # slot cutter length past the head diameter, so it spans edge-to-edge
+_MIN_FLOOR_MM = 0.1          # minimum head metal left below the blind recess floor
 
 
 def _spherical_cap(base_r: float, base_z: float, height: float):
@@ -36,6 +37,7 @@ def _spherical_cap(base_r: float, base_z: float, height: float):
     ``z = base_z`` (apex at ``base_z + height``). Built as a full Sphere trimmed to the half-space
     ``z >= base_z`` -- the cap_nut idiom (deterministic, no arc-meridian). The cap's flat base
     circle has radius exactly ``base_r``."""
+    assert height > 0, f"_spherical_cap requires height > 0, got {height}"
     sphere_r = (base_r ** 2 + height ** 2) / (2.0 * height)        # cap height -> sphere radius R
     z_c = base_z + height - sphere_r                              # sphere centre on the Z axis
     big = 4.0 * (sphere_r + height + abs(base_z))                 # trim box, larger than the cap
@@ -136,6 +138,8 @@ def slotted_screw(head: str, drive: str, dk: float, k: float, length: float, d_s
     if drive == "cross":
         if drive_m is None or drive_m <= 0:
             raise ValueError(f"slotted_screw: cross drive needs drive_m > 0, got {drive_m}")
+        # drive_m may reach dk (the cross arms touch the head rim) for the representative recess;
+        # drive_w < drive_m keeps the arms finite and the net solids()==1 guard backstops manifoldness.
         if drive_m > dk:
             raise ValueError(
                 f"slotted_screw: cross drive_m {drive_m} must be <= head diameter {dk}")
@@ -145,10 +149,10 @@ def slotted_screw(head: str, drive: str, dk: float, k: float, length: float, d_s
                 f"(the arm is narrower than the overall cross span)")
     elif drive_w >= dk:
         raise ValueError(f"slotted_screw: slot drive_w {drive_w} must be < head diameter {dk}")
-    if drive_t >= k:
+    if drive_t >= k - _MIN_FLOOR_MM:
         raise ValueError(
-            f"slotted_screw: drive_t {drive_t} must be < head height k {k} "
-            f"(the recess is blind -- a floor of head metal must remain below it)")
+            f"slotted_screw: drive_t {drive_t} leaves too thin a head floor below the "
+            f"recess (needs drive_t < k - {_MIN_FLOOR_MM} = {k - _MIN_FLOOR_MM})")
 
     shank = _screw_shank(d_shank, length, tip_chamfer)            # z in [-length, 0], validates chamfer
     head_solid = _head_solid(head, dk, k, d_shank, crown_r, raised_f)

@@ -125,3 +125,6 @@ def test_slotted_screw_guards():
         slotted_screw(**{**CROSS, "drive_w": 8.0})               # cross drive_w not < drive_m
     with pytest.raises(ValueError):
         slotted_screw(**{**CHEESE, "drive_t": 6.0})              # recess not blind (drive_t >= k)
+    with pytest.raises(ValueError):
+        # CHEESE k=6; drive_t=5.95 leaves a 0.05 mm floor < _MIN_FLOOR_MM -> raises
+        slotted_screw(**{**CHEESE, "drive_t": 5.95})   # floor below the minimum thickness

@@ -414,11 +414,30 @@
 			"source": "plated (electro-zinc) variant of DIN 7980; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din7980.svg"
 		},
+		"din7985": {
+			"alias_of": "iso7045",
+			"family": "slotted_screw",
+			"sha256": "183be67eee9a25d28e4e78b2c125e8baa53d3a3ae2639f3cf4ca009f4ea4b9e6",
+			"source": "DIN 7985 cross-recess pan head, M10 \u2014 same envelope as ISO 7045 (dk=20.0, k=7.5, cross recess No. 4), aliases the ISO base. Confirmed vs Vipa ISO 7045/DIN 7985 + Fuller ISO 7045 tables.",
+			"svg": "iso7045.svg"
+		},
 		"din80705": {
 			"family": "hex_nut",
 			"sha256": "1cc09dc0e160aec47284d619913d7c62dd929011f4c4c79f57a3d3562a905951",
 			"source": "DIN 80705 thin hexagon nut with reduced width across flats, M12x1.5: s=17.0, m=6.0. Confirmed vs Fasteners.eu + din-fasteners.com + Ferrobend DIN 80705 tables.",
 			"svg": "din80705.svg"
+		},
+		"din84": {
+			"family": "slotted_screw",
+			"sha256": "27c5e9bbee3a63baa597a3fb38930a905284a9eecb4ea25ba662ee3f375fe4b2",
+			"source": "DIN 84 / ISO 1207 slotted cheese head machine screw, M10 x 30 (representative length; M10 is the largest size common to every standard in this family \u2014 M12 exceeds the ISO 1207 / DIN 84 range). dk=16.0 and k=6.0 tabulated, cross-checked against the Aramfix DIN 84 datasheet and a generic DIN slotted-head dimension chart. Slot width n=drive_w=2.5 and slot depth t=drive_t=2.4 tabulated (generic DIN slotted-head chart). crown_r=0.5 is a representative top-edge break (not tabulated). d_shank=10.0 (M10 nominal major); shank drawn as a smooth envelope cylinder (no thread).",
+			"svg": "din84.svg"
+		},
+		"din85": {
+			"family": "slotted_screw",
+			"sha256": "4bbfe4c41786eb9ff2e7f6f1310e661bbcf36a711daa444ab9e630d4cfa3ce3a",
+			"source": "DIN 85 / ISO 1580 slotted pan head machine screw, M10 x 30 (representative length; M10, not M12 \u2014 M12 exceeds the DIN 85 / ISO 1580 range). dk=20.0 and k=6.0 tabulated, cross-checked across four public tables (fasteners.eu DIN 85, Vidasan DIN 85/ISO 1580, Torqbolt ISO 1580, Fuller Fasteners DIN 85 \u2014 all give dk max 20.0, k max 6.0 for M10; the 16 mm dk is the M8 row). Slot width n=drive_w=2.5 and slot depth t=drive_t=2.6 tabulated (Ferrobolt DIN 85, t range 2.56-2.81). The pan head is drawn as a shallow spherical-cap dome of height k (a representative envelope of the tabulated dk/k). d_shank=10.0 (M10 major).",
+			"svg": "din85.svg"
 		},
 		"din9021": {
 			"family": "flat_washer",
@@ -507,6 +526,25 @@
 			"source": "plated (electro-zinc) variant of DIN 93; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din93.svg"
 		},
+		"din963": {
+			"family": "slotted_screw",
+			"sha256": "9030c262c8a2e8c084fdc1308b0d58a6c3d4de11c600b6804c102bf33b79d0ec",
+			"source": "DIN 963 / ISO 2009 slotted countersunk (flat) head machine screw, M10 x 30 (representative length; M10, not M12). dk=18.0 (max top diameter) and k=5.0 (head height) tabulated, cross-checked against the Westfield Fasteners DIN 963 table and the Ratnamani DIN 963 table. Slot width n=drive_w=2.5 (tabulated range 2.0-2.6) and slot depth t=drive_t=2.3 (tabulated range 2.0-2.6, mid). The head is drawn as a straight cone frustum from the M10 major (d_shank=10.0) at the bearing plane to the tabulated dk=18.0 over the tabulated k=5.0; the true countersink is 90 degrees, so the envelope cone angle is representative (it preserves the tabulated dk and k rather than the exact angle). d_shank=10.0 (M10 major).",
+			"svg": "din963.svg"
+		},
+		"din965": {
+			"alias_of": "iso7046",
+			"family": "slotted_screw",
+			"sha256": "75382cd82f55ab9d13944f6dba286479d07db6b04427976f3e8893dcaecbde2f",
+			"source": "DIN 965 cross-recess countersunk head, M10 \u2014 same envelope as ISO 7046 (dk=18.3, k=5.0, cross recess No. 4), aliases the ISO base. Confirmed vs BSN + Lubker ISO 7046-1 tables.",
+			"svg": "iso7046.svg"
+		},
+		"din966": {
+			"family": "slotted_screw",
+			"sha256": "f052816c1ff5fb136b7d8944b94c3c4e9a2b7f5f06d0f3e37fa2933d7e0441b9",
+			"source": "DIN 966 / ISO 2010 slotted raised countersunk (oval) head machine screw, M10 x 30 (representative length; M10, not M12). dk=18.0 and countersunk head height k=5.0 tabulated (Vidasan DIN 966/ISO 7047 table for dk; Westfield / Ratnamani DIN 963 tables for k, shared with DIN 963 at M10). Raised-lens height raised_f=2.5 tabulated nominal (Vidasan DIN 966, f nominal ~2.5, max 5.0). Slot width n=drive_w=2.5 and depth t=drive_t=2.3 as DIN 963 M10 (tabulated ranges 2.0-2.6). The cone is the DIN 963 frustum (representative angle) with a spherical-cap lens of height raised_f on top. d_shank=10.0 (M10 major).",
+			"svg": "din966.svg"
+		},
 		"din979": {
 			"family": "castle_nut",
 			"sha256": "c77d35c0016fa053134c2f1166432bcd6647b1cf2f4011531cd72682a1bae572",
@@ -557,11 +595,39 @@
 			"source": "ISO 10513 is the fine-pitch (M12x1.5) all-metal high counterpart of ISO 7042 with an identical 2012 M12 metal envelope (s=18, m=13.3); pitch is invisible at label scale, so it aliases the ISO 7042 drawing.",
 			"svg": "iso7042.svg"
 		},
+		"iso1207": {
+			"alias_of": "din84",
+			"family": "slotted_screw",
+			"sha256": "27c5e9bbee3a63baa597a3fb38930a905284a9eecb4ea25ba662ee3f375fe4b2",
+			"source": "ISO 1207 slotted cheese head, M10 \u2014 same envelope as DIN 84 (dk=16.0, k=6.0, slot 2.5/2.4), aliases the DIN base. Confirmed vs the Aramfix DIN 84 datasheet + generic DIN slotted-head chart.",
+			"svg": "din84.svg"
+		},
 		"iso14579": {
 			"family": "socket_screw",
 			"sha256": "97e2d65d5d997ad908e7bd4765787de1665a251d472c568d517d297d79f791f6",
 			"source": "ISO 14579 hexalobular (Torx) socket head cap screw, M12. Same head as ISO 4762 (dk=18.0, k=12.0) \u2014 only the drive differs \u2014 verified against >=2 public tables: engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762. Torx size for M12 is approximately T50. The lobular recess is a representative rounded 6-lobe icon (see THIRD-PARTY-NOTICES.md, FreeCAD Fasteners Workbench / ISO 10664 form), not the dimensioned ISO 10664 curve; socket_af=10.0 sets the overall socket half-width. d_shank=12.0 (M12 major). length=60.0 representative. tip_chamfer=1.0 mm representative.",
 			"svg": "iso14579.svg"
+		},
+		"iso1580": {
+			"alias_of": "din85",
+			"family": "slotted_screw",
+			"sha256": "4bbfe4c41786eb9ff2e7f6f1310e661bbcf36a711daa444ab9e630d4cfa3ce3a",
+			"source": "ISO 1580 slotted pan head, M10 \u2014 same envelope as DIN 85 (dk=20.0, k=6.0), aliases the DIN base. Confirmed vs Vidasan DIN 85/ISO 1580 + Torqbolt ISO 1580 tables.",
+			"svg": "din85.svg"
+		},
+		"iso2009": {
+			"alias_of": "din963",
+			"family": "slotted_screw",
+			"sha256": "9030c262c8a2e8c084fdc1308b0d58a6c3d4de11c600b6804c102bf33b79d0ec",
+			"source": "ISO 2009 slotted countersunk head, M10 \u2014 same screw as DIN 963, aliases the DIN base. ISO 2009 tabulates dk max 18.3 vs DIN 963 18.0 (a DIN-vs-ISO table difference of 0.3 mm, negligible at envelope scale), k=5.0. Confirmed vs Lubker ISO 2009 + Westfield DIN 963 tables.",
+			"svg": "din963.svg"
+		},
+		"iso2010": {
+			"alias_of": "din966",
+			"family": "slotted_screw",
+			"sha256": "f052816c1ff5fb136b7d8944b94c3c4e9a2b7f5f06d0f3e37fa2933d7e0441b9",
+			"source": "ISO 2010 slotted raised countersunk head, M10 \u2014 same screw as DIN 966 (dk~18, k=5.0, raised lens), aliases the DIN base. Confirmed vs Vidasan DIN 966/ISO 7047 + DIN 963 M10 tables.",
+			"svg": "din966.svg"
 		},
 		"iso21670": {
 			"family": "flange_nut",
@@ -658,6 +724,24 @@
 			"sha256": "3d100bcb32a593f02b44e233a5cc171b43cdfccb81cf4b244c75736e728d57fa",
 			"source": "ISO 7042 prevailing-torque all-metal high hexagon nut (M12): s=18 (SW18, ISO 4033 base) and total height m=13.3 (h_max) tabulated from the ISO 7042:2012 Table 1 PDF, cross-checked against globalfastener. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "iso7042.svg"
+		},
+		"iso7045": {
+			"family": "slotted_screw",
+			"sha256": "183be67eee9a25d28e4e78b2c125e8baa53d3a3ae2639f3cf4ca009f4ea4b9e6",
+			"source": "ISO 7045 / DIN 7985 cross-recess (Phillips/Pozidriv) pan head machine screw, M10 x 30 (representative length; M10, not M12). dk=20.0 and k=7.5 tabulated, cross-checked across Vipa (ISO 7045/DIN 7985), Wanhong (ISO 7045 pan cross) and Fuller Fasteners ISO 7045 tables (all dk max 20.0, k max 7.5 for M10). Cross recess is ISO 4757 recess No. 4 for M10: drive_m=10.1 is the tabulated surface reference diameter (type H, ISO 4757/ISO 7045) and drive_t=5.5 the recess penetration (ISO 7721 range ~5.2-5.8, mid). drive_w=2.8 is a representative recess arm width (ISO 4757 does not tabulate a simple arm width). The cross recess is a representative tapered-pyramidal icon, not the dimensioned ISO 4757 curve. d_shank=10.0 (M10 major).",
+			"svg": "iso7045.svg"
+		},
+		"iso7046": {
+			"family": "slotted_screw",
+			"sha256": "75382cd82f55ab9d13944f6dba286479d07db6b04427976f3e8893dcaecbde2f",
+			"source": "ISO 7046 / DIN 965 cross-recess countersunk (flat) head machine screw, M10 x 30 (representative length; M10, not M12). dk=18.3 (max) and k=5.0 (max) tabulated, cross-checked across the BSN Fastener ISO 7046-1 catalog, the Lubker ISO 7046-1 table and the Fasten.it ISO 7046-1 table (all dk max 18.3, k max 5.0 for M10; ISO 2009 slotted csk matches). Cross recess is ISO 4757 recess No. 4: drive_m=10.1 tabulated surface reference diameter (type H). drive_t=4.0 is a representative recess depth chosen < head height k=5.0 (the true ISO 7721 penetration ~5.2 mm would pierce the thin envelope head floor); drive_w=2.8 representative arm width. The cross recess is a representative tapered-pyramidal icon, not the dimensioned ISO 4757 curve. d_shank=10.0 (M10 major).",
+			"svg": "iso7046.svg"
+		},
+		"iso7047": {
+			"family": "slotted_screw",
+			"sha256": "27122d70b2357fae2cd352d2e1d6cab9eb17f091d826483487d22472a9d87766",
+			"source": "ISO 7047 cross-recess raised countersunk (oval) head machine screw, M10 x 30 (representative length; M10, not M12). Ships with NO DIN alias: the historical DIN cross raised-countersunk (DIN 966 form H) was withdrawn/merged and din966 is the slotted raised base here, so there is no clean current 1:1 DIN number (a deliberate skip, like DIN 562 / DIN 80701). dk=18.3 and countersunk head height k=5.0 tabulated as the ISO common head style shared with ISO 7046 / ISO 2009 (cross-checked BSN + Lubker + Fasten.it ISO 7046-1 / ISO 2009 M10 rows). Raised-lens height raised_f=2.5 (DIN 966 / ISO 7047 equivalence, Vidasan). Cross recess ISO 4757 No. 4: drive_m=10.1 surface reference diameter; drive_t=4.0 representative depth < k=5.0; drive_w=2.8 representative arm width. The cross recess is a representative tapered-pyramidal icon, not the ISO 4757 curve. d_shank=10.0 (M10 major).",
+			"svg": "iso7047.svg"
 		},
 		"iso7089": {
 			"family": "flat_washer",

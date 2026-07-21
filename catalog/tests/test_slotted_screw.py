@@ -97,6 +97,13 @@ def test_every_head_and_drive_builds_one_solid(head, drive):
     assert len(part.solids()) == 1                                # head + shank fused
 
 
+def test_crown_r_breaks_the_cheese_top_edge():
+    plain = slotted_screw(**CHEESE)
+    crowned = slotted_screw(**{**CHEESE, "crown_r": 1.0})
+    assert len(crowned.solids()) == 1 and crowned.volume > 0
+    assert crowned.volume < plain.volume            # 45-deg edge break removes material
+
+
 def test_slotted_screw_guards():
     with pytest.raises(ValueError):
         slotted_screw(**{**CHEESE, "dk": 0.0})                    # non-positive dim
@@ -110,6 +117,8 @@ def test_slotted_screw_guards():
         slotted_screw(**{**CHEESE, "head": "raised", "raised_f": None})   # raised needs raised_f
     with pytest.raises(ValueError):
         slotted_screw(**{**CHEESE, "crown_r": 10.0})             # crown_r not < min(dk/2, k)
+    with pytest.raises(ValueError):
+        slotted_screw(**{**PAN, "crown_r": 1.0})                 # crown_r is cheese-only
     with pytest.raises(ValueError):
         slotted_screw(**{**CROSS, "drive_m": None})              # cross needs drive_m
     with pytest.raises(ValueError):

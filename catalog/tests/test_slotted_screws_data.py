@@ -14,6 +14,12 @@ _ALIASES = {
 _BASES = {"din84", "din85", "din963", "din966", "iso7045", "iso7046", "iso7047"}
 _HEADS = ("cheese", "pan", "countersunk", "raised")
 _DRIVES = ("slot", "cross")
+_BASE_HEAD_DRIVE = {
+    "din84": ("cheese", "slot"), "din85": ("pan", "slot"),
+    "din963": ("countersunk", "slot"), "din966": ("raised", "slot"),
+    "iso7045": ("pan", "cross"), "iso7046": ("countersunk", "cross"),
+    "iso7047": ("raised", "cross"),
+}
 
 
 def test_every_slotted_screw_entry_validates_and_builds():
@@ -38,6 +44,9 @@ def test_bases_and_family_head_drive():
         assert entry["hardwareType"] == "screw"
         assert entry["shape"]["head"] in _HEADS
         assert entry["shape"]["drive"] in _DRIVES
+        head, drive = _BASE_HEAD_DRIVE[sid]
+        assert entry["shape"]["head"] == head, f"{sid}: expected head {head!r}"
+        assert entry["shape"]["drive"] == drive, f"{sid}: expected drive {drive!r}"
 
 
 def test_aliases_point_at_their_bases_and_iso7047_has_none():

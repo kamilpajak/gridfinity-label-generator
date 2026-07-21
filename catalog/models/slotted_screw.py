@@ -128,6 +128,8 @@ def slotted_screw(head: str, drive: str, dk: float, k: float, length: float, d_s
             f"(the shank emerges from the head bearing face and is narrower than the head)")
     if head == "raised" and (raised_f is None or raised_f <= 0):
         raise ValueError(f"slotted_screw: raised head needs raised_f > 0, got {raised_f}")
+    if crown_r is not None and head != "cheese":
+        raise ValueError("slotted_screw: crown_r applies only to the cheese head")
     if head == "cheese" and crown_r is not None and not (0.0 < crown_r < min(dk / 2.0, k)):
         raise ValueError(
             f"slotted_screw: crown_r {crown_r} must be > 0 and < min(dk/2, k) = {min(dk / 2.0, k)}")

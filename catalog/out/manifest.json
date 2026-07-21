@@ -429,13 +429,13 @@
 		},
 		"din84": {
 			"family": "slotted_screw",
-			"sha256": "27c5e9bbee3a63baa597a3fb38930a905284a9eecb4ea25ba662ee3f375fe4b2",
+			"sha256": "5b3385ee4c0e831adbc1b8e1fbcecd7a8b9b02eae3ed8d81e7e5c3683ec6be93",
 			"source": "DIN 84 / ISO 1207 slotted cheese head machine screw, M10 x 30 (representative length; M10 is the largest size common to every standard in this family \u2014 M12 exceeds the ISO 1207 / DIN 84 range). dk=16.0 and k=6.0 tabulated, cross-checked against the Aramfix DIN 84 datasheet and a generic DIN slotted-head dimension chart. Slot width n=drive_w=2.5 and slot depth t=drive_t=2.4 tabulated (generic DIN slotted-head chart). crown_r=0.5 is a representative top-edge break (not tabulated). d_shank=10.0 (M10 nominal major); shank drawn as a smooth envelope cylinder (no thread).",
 			"svg": "din84.svg"
 		},
 		"din85": {
 			"family": "slotted_screw",
-			"sha256": "4bbfe4c41786eb9ff2e7f6f1310e661bbcf36a711daa444ab9e630d4cfa3ce3a",
+			"sha256": "c6cbd75995a743ccdd45212b8f771d9ea30bb0136d00bd95a3bf525673d9a4fa",
 			"source": "DIN 85 / ISO 1580 slotted pan head machine screw, M10 x 30 (representative length; M10, not M12 \u2014 M12 exceeds the DIN 85 / ISO 1580 range). dk=20.0 and k=6.0 tabulated, cross-checked across four public tables (fasteners.eu DIN 85, Vidasan DIN 85/ISO 1580, Torqbolt ISO 1580, Fuller Fasteners DIN 85 \u2014 all give dk max 20.0, k max 6.0 for M10; the 16 mm dk is the M8 row). Slot width n=drive_w=2.5 and slot depth t=drive_t=2.6 tabulated (Ferrobolt DIN 85, t range 2.56-2.81). The pan head is drawn as a shallow spherical-cap dome of height k (a representative envelope of the tabulated dk/k). d_shank=10.0 (M10 major).",
 			"svg": "din85.svg"
 		},
@@ -528,7 +528,7 @@
 		},
 		"din963": {
 			"family": "slotted_screw",
-			"sha256": "9030c262c8a2e8c084fdc1308b0d58a6c3d4de11c600b6804c102bf33b79d0ec",
+			"sha256": "fe836440e91d0bd6788dd9bc73b3e223385645ca4d58e3f0b051727297ae2ff9",
 			"source": "DIN 963 / ISO 2009 slotted countersunk (flat) head machine screw, M10 x 30 (representative length; M10, not M12). dk=18.0 (max top diameter) and k=5.0 (head height) tabulated, cross-checked against the Westfield Fasteners DIN 963 table and the Ratnamani DIN 963 table. Slot width n=drive_w=2.5 (tabulated range 2.0-2.6) and slot depth t=drive_t=2.3 (tabulated range 2.0-2.6, mid). The head is drawn as a straight cone frustum from the M10 major (d_shank=10.0) at the bearing plane to the tabulated dk=18.0 over the tabulated k=5.0; the true countersink is 90 degrees, so the envelope cone angle is representative (it preserves the tabulated dk and k rather than the exact angle). d_shank=10.0 (M10 major).",
 			"svg": "din963.svg"
 		},
@@ -541,7 +541,7 @@
 		},
 		"din966": {
 			"family": "slotted_screw",
-			"sha256": "f052816c1ff5fb136b7d8944b94c3c4e9a2b7f5f06d0f3e37fa2933d7e0441b9",
+			"sha256": "b1babacba1c043fb6113198b71cd36be73056571c4342bb3c84e2ac762b62341",
 			"source": "DIN 966 / ISO 2010 slotted raised countersunk (oval) head machine screw, M10 x 30 (representative length; M10, not M12). dk=18.0 and countersunk head height k=5.0 tabulated (Vidasan DIN 966/ISO 7047 table for dk; Westfield / Ratnamani DIN 963 tables for k, shared with DIN 963 at M10). Raised-lens height raised_f=2.5 tabulated nominal (Vidasan DIN 966, f nominal ~2.5, max 5.0). Slot width n=drive_w=2.5 and depth t=drive_t=2.3 as DIN 963 M10 (tabulated ranges 2.0-2.6). The cone is the DIN 963 frustum (representative angle) with a spherical-cap lens of height raised_f on top. d_shank=10.0 (M10 major).",
 			"svg": "din966.svg"
 		},
@@ -598,7 +598,7 @@
 		"iso1207": {
 			"alias_of": "din84",
 			"family": "slotted_screw",
-			"sha256": "27c5e9bbee3a63baa597a3fb38930a905284a9eecb4ea25ba662ee3f375fe4b2",
+			"sha256": "5b3385ee4c0e831adbc1b8e1fbcecd7a8b9b02eae3ed8d81e7e5c3683ec6be93",
 			"source": "ISO 1207 slotted cheese head, M10 \u2014 same envelope as DIN 84 (dk=16.0, k=6.0, slot 2.5/2.4), aliases the DIN base. Confirmed vs the Aramfix DIN 84 datasheet + generic DIN slotted-head chart.",
 			"svg": "din84.svg"
 		},
@@ -611,21 +611,21 @@
 		"iso1580": {
 			"alias_of": "din85",
 			"family": "slotted_screw",
-			"sha256": "4bbfe4c41786eb9ff2e7f6f1310e661bbcf36a711daa444ab9e630d4cfa3ce3a",
+			"sha256": "c6cbd75995a743ccdd45212b8f771d9ea30bb0136d00bd95a3bf525673d9a4fa",
 			"source": "ISO 1580 slotted pan head, M10 \u2014 same envelope as DIN 85 (dk=20.0, k=6.0), aliases the DIN base. Confirmed vs Vidasan DIN 85/ISO 1580 + Torqbolt ISO 1580 tables.",
 			"svg": "din85.svg"
 		},
 		"iso2009": {
 			"alias_of": "din963",
 			"family": "slotted_screw",
-			"sha256": "9030c262c8a2e8c084fdc1308b0d58a6c3d4de11c600b6804c102bf33b79d0ec",
+			"sha256": "fe836440e91d0bd6788dd9bc73b3e223385645ca4d58e3f0b051727297ae2ff9",
 			"source": "ISO 2009 slotted countersunk head, M10 \u2014 same screw as DIN 963, aliases the DIN base. ISO 2009 tabulates dk max 18.3 vs DIN 963 18.0 (a DIN-vs-ISO table difference of 0.3 mm, negligible at envelope scale), k=5.0. Confirmed vs Lubker ISO 2009 + Westfield DIN 963 tables.",
 			"svg": "din963.svg"
 		},
 		"iso2010": {
 			"alias_of": "din966",
 			"family": "slotted_screw",
-			"sha256": "f052816c1ff5fb136b7d8944b94c3c4e9a2b7f5f06d0f3e37fa2933d7e0441b9",
+			"sha256": "b1babacba1c043fb6113198b71cd36be73056571c4342bb3c84e2ac762b62341",
 			"source": "ISO 2010 slotted raised countersunk head, M10 \u2014 same screw as DIN 966 (dk~18, k=5.0, raised lens), aliases the DIN base. Confirmed vs Vidasan DIN 966/ISO 7047 + DIN 963 M10 tables.",
 			"svg": "din966.svg"
 		},

@@ -88,7 +88,9 @@ def _drive_cutter(drive: str, dk: float, drive_w: float, drive_t: float,
         span = dk + _SLOT_OVERHANG                                # edge-to-edge, past both rims
         with BuildPart() as cut:
             with Locations((0.0, 0.0, top)):
-                Box(span, drive_w, depth, align=(Align.CENTER, Align.CENTER, Align.MAX))
+                # Slot runs along Y (drive_w in X), so it reads HORIZONTAL in the front/end view
+                # (which looks down Z with X vertical on screen).
+                Box(drive_w, span, depth, align=(Align.CENTER, Align.CENTER, Align.MAX))
         return cut.part
     # cross: a lofted tapered four-arm cutter, wide "+" at the surface converging toward the floor
     floor_m = drive_m * _CROSS_TAPER

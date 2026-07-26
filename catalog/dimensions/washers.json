@@ -1093,7 +1093,7 @@
 			"gap_deg": 0
 		},
 		"hardwareType": "washer",
-		"source": "DIN 74361 Form C conical (Belleville) spring washer for wheel bolts, representative wheel-bolt size (16.5 x 27, commonly listed for M14 wheel bolts): d_inner=16.5, d_outer=27.0 from commercial DIN 74361 Form C listings. thickness=2.5 (material) and cone_angle=25 are representative — the DIN cone/thickness figures are paywalled; a closed dished cone (gap_deg=0) reuses curved_washer like din2093/din137a.",
+		"source": "DIN 74361 Form C conical (Belleville) spring washer for wheel bolts, representative wheel-bolt size (inner 16.5, outer ~27, commonly listed for M14 wheel bolts): d_inner=16.5 confirmed vs two named vendor tables (Reidl DIN 74361 Form C 16.5x27x7 + Krepcom DIN 74361 type C, which tabulates inner 16.5 / outer 26.5); d_outer=27.0 per Reidl (Krepcom lists 26.5 — a minor vendor difference). thickness=2.5 (material) and cone_angle=25 are representative — the vendor h (~6.5-7) is the overall free height, not the material thickness, and the DIN cone/material figures are paywalled; a closed dished cone (gap_deg=0) reuses curved_washer like din2093/din137a.",
 		"verified": true,
 		"designations": [
 			{

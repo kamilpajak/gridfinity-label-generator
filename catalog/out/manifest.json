@@ -58,6 +58,12 @@
 			"source": "DIN 137 A (M12, curved/domed spring washer, gew\u00f6lbt; d1=13, d2=24, s=1.2, continuous ring with no split). Reuses curved_washer with gap_deg=0. Dome height representative (free height ~3 mm; DIN envelope 2.5-5 mm) \u2014 the cone tilt is chosen to sit in that range, not a published value.",
 			"svg": "din137a.svg"
 		},
+		"din137b": {
+			"family": "wave_washer",
+			"sha256": "8df11caff48e44376e7053577784956d5caeb619225e0dc075411e7d90a7f5dc",
+			"source": "DIN 137 B waved spring washer, M12: d_inner=13.0, d_outer=24.0, thickness=1.2 tabulated, cross-checked fasteners.eu DIN 137-B + Ferrofast DIN 137-B tables. waves=3 and wave_height=0.9 are representative (DIN 137 does not fix the wave count; wave_height chosen for a legible undulation).",
+			"svg": "din137b.svg"
+		},
 		"din1440": {
 			"family": "flat_washer",
 			"sha256": "8bb6d3f3d2311744dff705b801f9d85ef835b1c3af615b0205b548fcf0c420aa",
@@ -95,6 +101,12 @@
 			"sha256": "c7f37f5c465629d360d8dfa6b71f0d752d69689baf16094ec1a68cfe1886f1be",
 			"source": "variant key for the DIN 2093 disc spring; identical geometry, aliased to the base.",
 			"svg": "din2093.svg"
+		},
+		"din25201": {
+			"family": "wedge_lock_washer",
+			"sha256": "6bd2dd4009c0f3729fb91e983a5e5e26487260918fbbe68c06ceb070b6833449",
+			"source": "DIN 25201 wedge-lock washer, M12 (single washer of the pair): d_inner=13.0, d_outer=24.0 confirmed vs ITA Fasteners DIN 25201 data and the ISO 7089 M12 washer series (13/24). thickness=2.0, teeth=20, cam_count=12, cam_height=0.6, tooth_depth=0.4 are a REPRESENTATIVE legible icon \u2014 the DIN 25201 cam curve, serration pitch and single-washer height are paywalled/sub-mm, not the dimensioned form.",
+			"svg": "din25201.svg"
 		},
 		"din315": {
 			"family": "wing_nut",
@@ -178,6 +190,19 @@
 			"sha256": "c8bd469fcb5d5a11da748dee93709bf7d4b2345c6a103b2b1d60b2e16f011dad",
 			"source": "DIN 440-R (M12, large flat washer)",
 			"svg": "din440.svg"
+		},
+		"din440r": {
+			"alias_of": "din440",
+			"family": "flat_washer",
+			"sha256": "c8bd469fcb5d5a11da748dee93709bf7d4b2345c6a103b2b1d60b2e16f011dad",
+			"source": "DIN 440 Form R (round hole) large washer, M12 \u2014 identical envelope to din440 (d_inner=13.5, d_outer=44, thickness=4), so it aliases the din440 base. Confirmed vs Westfield DIN 440 R + PTS DIN 440-R tables.",
+			"svg": "din440.svg"
+		},
+		"din440v": {
+			"family": "square_hole_washer",
+			"sha256": "8f98315cd1311d7875bdb3664ed7beeb8870396e067a48e9d5fad4e9f1702b24",
+			"source": "DIN 440 Form V (square hole) large washer for square-neck bolts, M12: d_outer=44.0, thickness=4.0, square hole side hole_side=14.0 \u2014 all tabulated, cross-checked fasteners.eu DIN 440-V + Krepcom DIN 440 Form V tables (square hole a=14 for M12; the round Form R hole is 13.5).",
+			"svg": "din440v.svg"
 		},
 		"din462": {
 			"family": "tab_washer",
@@ -388,6 +413,12 @@
 			"sha256": "03a503f072ebdba60b12908cf3204e5ba320cb0ed261dbd31d7b920d5450ae28",
 			"source": "DIN 7349 (M12, heavy thick washer for bolts with heavy clamping sleeves; d1=13, d2=30, s=6). Dimensions from Fasteners.eu.",
 			"svg": "din7349d.svg"
+		},
+		"din74361c": {
+			"family": "curved_washer",
+			"sha256": "b445f33594efcd4ffed9af436b7628fd39b34ea1d95e7e744a1004efbeac8d3d",
+			"source": "DIN 74361 Form C conical (Belleville) spring washer for wheel bolts, representative wheel-bolt size (16.5 x 27, commonly listed for M14 wheel bolts): d_inner=16.5, d_outer=27.0 from commercial DIN 74361 Form C listings. thickness=2.5 (material) and cone_angle=25 are representative \u2014 the DIN cone/thickness figures are paywalled; a closed dished cone (gap_deg=0) reuses curved_washer like din2093/din137a.",
+			"svg": "din74361c.svg"
 		},
 		"din7603": {
 			"family": "flat_washer",

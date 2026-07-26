@@ -34,3 +34,26 @@ def test_aliases_point_at_real_non_alias_bases():
 def test_all_entries_have_a_source_citation():
     entries = json.loads(DATA.read_text())
     assert all(len(e["source"]) >= 3 for e in entries.values())
+
+
+def test_coverage_gap_washers_present_and_typed():
+    entries = json.loads(DATA.read_text())
+    expected = {
+        "din137b": "wave_washer",
+        "din440v": "square_hole_washer",
+        "din74361c": "curved_washer",
+        "din25201": "wedge_lock_washer",
+    }
+    for sid, fam in expected.items():
+        assert sid in entries, f"{sid} missing from washers.json"
+        assert entries[sid]["family"] == fam, f"{sid}: expected family {fam}"
+        assert entries[sid]["hardwareType"] == "washer"
+    # din440r is the round-hole form, identical envelope to din440 -> alias.
+    assert entries["din440r"]["alias_of"] == "din440"
+
+
+def test_no_washer_source_names_a_private_catalogue():
+    entries = json.loads(DATA.read_text())
+    for sid, entry in entries.items():
+        low = entry["source"].lower()
+        assert "reyher" not in low and "stalmut" not in low, f"{sid}: forbidden source token"

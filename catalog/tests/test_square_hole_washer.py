@@ -35,6 +35,18 @@ def test_single_solid():
     assert len(part.solids()) == 1
 
 
+def test_rounded_corner_hole_softens_the_corners():
+    # The optional hole_corner_r rounds the square hole's corners: it removes LESS material than the
+    # sharp square (so volume is larger), and the near-corner point (6.3,6.3) -- inside the sharp
+    # square (void) -- becomes solid once the corner is rounded away.
+    sharp = square_hole_washer(**SQ)
+    rounded = square_hole_washer(**{**SQ, "hole_corner_r": 2.0})
+    assert len(rounded.solids()) == 1 and rounded.volume > 0
+    assert rounded.volume > sharp.volume                      # rounded corners leave more metal
+    assert not _solid_at(sharp, 6.3, 6.3, 0.0, probe=0.2)     # sharp: corner inside the square (void)
+    assert _solid_at(rounded, 6.3, 6.3, 0.0, probe=0.2)       # rounded: corner rounded away (solid)
+
+
 def test_square_hole_washer_guards():
     with pytest.raises(ValueError):
         square_hole_washer(**{**SQ, "d_outer": 0.0})          # non-positive dim

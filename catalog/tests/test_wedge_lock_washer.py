@@ -78,6 +78,8 @@ def test_wedge_lock_washer_guards():
     with pytest.raises(ValueError):
         wedge_lock_washer(**{**WL, "teeth": 2})               # need teeth >= 3
     with pytest.raises(ValueError):
+        wedge_lock_washer(**{**WL, "cam_count": 2})           # need cam_count >= 3
+    with pytest.raises(ValueError):
         wedge_lock_washer(**{**WL, "cam_height": 3.0})        # cam_height >= thickness
     with pytest.raises(ValueError):
         wedge_lock_washer(**{**WL, "cam_height": 2.0, "tooth_depth": 1.5})  # sum >= thickness

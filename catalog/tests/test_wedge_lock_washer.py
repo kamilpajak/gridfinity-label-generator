@@ -42,21 +42,29 @@ def test_features_remove_material():
     assert part.volume < plain.volume                         # teeth + cam notches removed metal
 
 
+def _void_runs(flags):
+    # Count maximal runs of False (void) around a CIRCULAR boolean scan (a solid->void transition
+    # starts each run). This is how many discrete cut features the scan crossed.
+    n = len(flags)
+    return sum(1 for i in range(n) if not flags[i] and flags[(i - 1) % n])
+
+
 def test_top_face_is_serrated_and_bottom_is_cammed():
-    # Scan a full turn at the mean radius. Just under the TOP face some angles fall in a radial
-    # groove (void) and some on a tooth (solid); just above the BOTTOM face some angles fall in a
-    # cam notch (void) and some on solid. Scanning is robust to the pattern's start angle.
+    # Scan a full turn at the mean radius. Just under the TOP face the radial grooves make void runs
+    # that repeat `teeth` times; just above the BOTTOM face the cam notches repeat `cam_count` times.
+    # Counting the void RUNS (not merely "some void exists") proves the pattern is PERIODIC: a single
+    # wide cut would give one run, not ~teeth/~cam_count. Robust to the pattern's start angle.
     import math
     part = wedge_lock_washer(**WL)
     r = (WL["d_inner"] + WL["d_outer"]) / 4.0                 # mean radius 10.75
-    top_z = WL["thickness"] / 2.0 - 0.15                      # 1.35, inside the 0.6-deep grooves
-    bot_z = -WL["thickness"] / 2.0 + 0.15                     # -1.35, inside the 0.8-deep notches
-    top = [ _solid_at(part, r*math.cos(math.radians(a)), r*math.sin(math.radians(a)), top_z, 0.15)
-            for a in range(0, 360, 3) ]
-    bot = [ _solid_at(part, r*math.cos(math.radians(a)), r*math.sin(math.radians(a)), bot_z, 0.15)
-            for a in range(0, 360, 3) ]
-    assert any(top) and not all(top)                          # top alternates solid/void -> teeth
-    assert any(bot) and not all(bot)                          # bottom alternates -> cam notches
+    top_z = WL["thickness"] / 2.0 - 0.15                      # inside the 0.6-deep grooves
+    bot_z = -WL["thickness"] / 2.0 + 0.15                     # inside the 0.8-deep notches
+    top = [ _solid_at(part, r*math.cos(math.radians(a)), r*math.sin(math.radians(a)), top_z, 0.1)
+            for a in range(0, 360) ]
+    bot = [ _solid_at(part, r*math.cos(math.radians(a)), r*math.sin(math.radians(a)), bot_z, 0.1)
+            for a in range(0, 360) ]
+    assert abs(_void_runs(top) - WL["teeth"]) <= 1            # ~20 discrete radial grooves on top
+    assert abs(_void_runs(bot) - WL["cam_count"]) <= 1        # ~12 discrete cam notches on the bottom
 
 
 def test_single_solid():

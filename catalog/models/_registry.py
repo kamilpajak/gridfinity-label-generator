@@ -5,6 +5,7 @@ from catalog.models.washer import (
     square_washer, tab_washer, spherical_seating_washer, wave_washer,
 )
 from catalog.models.square_hole_washer import square_hole_washer
+from catalog.models.wedge_lock_washer import wedge_lock_washer
 from catalog.models.hex_nut import hex_nut
 from catalog.models.flange_nut import flange_nut
 from catalog.models.cap_nut import cap_nut
@@ -37,6 +38,7 @@ KNOWN_FAMILIES = {
     "spherical_seating_washer": spherical_seating_washer,
     "wave_washer": wave_washer,
     "square_hole_washer": square_hole_washer,
+    "wedge_lock_washer": wedge_lock_washer,
     "hex_nut": hex_nut,
     "flange_nut": flange_nut,
     "cap_nut": cap_nut,

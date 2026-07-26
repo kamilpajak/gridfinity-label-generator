@@ -1034,5 +1034,93 @@
 				"code": "6798 D"
 			}
 		]
+	},
+	"din137b": {
+		"family": "wave_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 24.0,
+			"thickness": 1.2,
+			"waves": 3,
+			"wave_height": 0.9
+		},
+		"hardwareType": "washer",
+		"source": "DIN 137 B waved spring washer, M12: d_inner=13.0, d_outer=24.0, thickness=1.2 tabulated, cross-checked fasteners.eu DIN 137-B + Ferrofast DIN 137-B tables. waves=3 and wave_height=0.9 are representative (DIN 137 does not fix the wave count; wave_height chosen for a legible undulation).",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "137 B"
+			}
+		]
+	},
+	"din440r": {
+		"alias_of": "din440",
+		"hardwareType": "washer",
+		"source": "DIN 440 Form R (round hole) large washer, M12 — identical envelope to din440 (d_inner=13.5, d_outer=44, thickness=4), so it aliases the din440 base. Confirmed vs Westfield DIN 440 R + PTS DIN 440-R tables.",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "440 R"
+			}
+		]
+	},
+	"din440v": {
+		"family": "square_hole_washer",
+		"shape": {
+			"d_outer": 44.0,
+			"thickness": 4.0,
+			"hole_side": 14.0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 440 Form V (square hole) large washer for square-neck bolts, M12: d_outer=44.0, thickness=4.0, square hole side hole_side=14.0 — all tabulated, cross-checked fasteners.eu DIN 440-V + Krepcom DIN 440 Form V tables (square hole a=14 for M12; the round Form R hole is 13.5).",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "440 V"
+			}
+		]
+	},
+	"din74361c": {
+		"family": "curved_washer",
+		"shape": {
+			"d_inner": 16.5,
+			"d_outer": 27.0,
+			"thickness": 2.5,
+			"cone_angle": 25,
+			"gap_deg": 0
+		},
+		"hardwareType": "washer",
+		"source": "DIN 74361 Form C conical (Belleville) spring washer for wheel bolts, representative wheel-bolt size (inner 16.5, outer ~27, commonly listed for M14 wheel bolts): d_inner=16.5 confirmed vs two named vendor tables (Reidl DIN 74361 Form C 16.5x27x7 + Krepcom DIN 74361 type C, which tabulates inner 16.5 / outer 26.5); d_outer=27.0 per Reidl (Krepcom lists 26.5 — a minor vendor difference). thickness=2.5 (material) and cone_angle=25 are representative — the vendor h (~6.5-7) is the overall free height, not the material thickness, and the DIN cone/material figures are paywalled; a closed dished cone (gap_deg=0) reuses curved_washer like din2093/din137a.",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "74361 C"
+			}
+		]
+	},
+	"din25201": {
+		"family": "wedge_lock_washer",
+		"shape": {
+			"d_inner": 13.0,
+			"d_outer": 24.0,
+			"thickness": 2.0,
+			"teeth": 20,
+			"cam_count": 12,
+			"cam_height": 0.6,
+			"tooth_depth": 0.4
+		},
+		"hardwareType": "washer",
+		"source": "DIN 25201 wedge-lock washer, M12 (single washer of the pair): d_inner=13.0, d_outer=24.0 confirmed vs ITA Fasteners DIN 25201 data and the ISO 7089 M12 washer series (13/24). thickness=2.0, teeth=20, cam_count=12, cam_height=0.6, tooth_depth=0.4 are a REPRESENTATIVE legible icon — the DIN 25201 cam curve, serration pitch and single-washer height are paywalled/sub-mm, not the dimensioned form.",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "25201"
+			}
+		]
 	}
 }

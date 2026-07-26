@@ -115,10 +115,9 @@ edge selection):
 
 The cam ramps and radial teeth are a **representative** icon (documented in the docstring and the
 `source` string), not the dimensioned DIN 25201 cam curve. Net guards: `volume > 0` and
-`len(part.solids()) == 1`. Guards: `0 < d_inner < d_outer`; `thickness, cam_height, tooth_depth
-
-> 0`; `teeth, cam_count >= 3`(a meaningful pattern);`cam_height < thickness`and`tooth_depth <
-> thickness` (features do not sever the ring).
+`len(part.solids()) == 1`. Input guards: `0 < d_inner < d_outer`; `thickness`, `cam_height`,
+`tooth_depth` all positive; `teeth` and `cam_count` each at least 3 (a meaningful pattern);
+`cam_height < thickness` and `tooth_depth < thickness` (the features do not sever the ring).
 
 Both new generators register in `catalog/models/_registry.py` (`"square_hole_washer"`,
 `"wedge_lock_washer"`), after the existing washer entries.

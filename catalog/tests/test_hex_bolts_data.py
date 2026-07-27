@@ -79,3 +79,50 @@ def test_new_hex_aliases_resolve_to_a_real_base_without_chaining():
         assert base_id in entries and "alias_of" not in entries[base_id], \
             f"{base_id} must be a real non-alias base (no chaining)"
         assert entries[alias_id]["hardwareType"] == "screw"
+
+
+# Family 2 (structural/fit hex bolts). Two new bases:
+#   din6914 = heavy hex HV head (s=22, d=12); din609 = standard head with oversize fit shank
+#   (s=19, d=13). din7990/din7990d share din931's plain envelope (s=19, d=12).
+# Pitch and thread-portion length are not drawn, so fit/short/long variants collapse onto these.
+_STRUCT_HEX_ALIASES = {
+    "din6914i": "din6914", "din7999": "din6914",
+    "din609p": "din609", "din610": "din609", "din610p": "din609", "din7968": "din609",
+    "din7990": "din931", "din7990d": "din931",
+}
+
+
+def test_din6914_is_the_heavy_hex_hv_base():
+    entries = json.loads(DATA.read_text())
+    assert "din6914" in entries and "alias_of" not in entries["din6914"]   # real drawing, not alias
+    assert entries["din6914"]["family"] == "hex_bolt"
+    assert entries["din6914"]["hardwareType"] == "screw"
+    assert entries["din6914"]["shape"]["s"] == 22.0                        # heavy hex head (>din931 19)
+    assert entries["din6914"]["shape"]["k"] == 8.0                         # HV head height
+    assert entries["din6914"]["shape"]["d_shank"] == 12.0                  # standard (clearance) shank
+    assert entries["din6914"]["shape"]["head_chamfer"] == 22.0             # = s (representative)
+    assert entries["din6914"]["shape"]["tip_chamfer"] == 1.0
+    build_part(entries["din6914"]["family"], entries["din6914"]["shape"])  # builds without raising
+
+
+def test_din609_is_the_fit_shank_base():
+    entries = json.loads(DATA.read_text())
+    assert "din609" in entries and "alias_of" not in entries["din609"]     # real drawing, not alias
+    assert entries["din609"]["family"] == "hex_bolt"
+    assert entries["din609"]["hardwareType"] == "screw"
+    assert entries["din609"]["shape"]["s"] == 19.0                         # standard hex head
+    assert entries["din609"]["shape"]["k"] == 7.5                          # standard head height
+    assert entries["din609"]["shape"]["d_shank"] == 13.0                   # oversize fit shank (>12)
+    assert entries["din609"]["shape"]["head_chamfer"] == 19.0              # = s (representative)
+    assert entries["din609"]["shape"]["tip_chamfer"] == 1.0
+    build_part(entries["din609"]["family"], entries["din609"]["shape"])    # builds without raising
+
+
+def test_struct_hex_aliases_resolve_to_a_real_base_without_chaining():
+    entries = json.loads(DATA.read_text())
+    for alias_id, base_id in _STRUCT_HEX_ALIASES.items():
+        assert alias_id in entries, f"{alias_id} missing from hex_bolts.json"
+        assert entries[alias_id]["alias_of"] == base_id, f"{alias_id} must alias {base_id}"
+        assert base_id in entries and "alias_of" not in entries[base_id], \
+            f"{base_id} must be a real non-alias base (no chaining)"
+        assert entries[alias_id]["hardwareType"] == "screw"

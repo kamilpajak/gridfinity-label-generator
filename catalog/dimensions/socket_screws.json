@@ -39,5 +39,77 @@
 		"source": "ISO 14579 hexalobular (Torx) socket head cap screw, M12. Same head as ISO 4762 (dk=18.0, k=12.0) — only the drive differs — verified against >=2 public tables: engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762. Torx size for M12 is approximately T50. The lobular recess is a representative rounded 6-lobe icon (see THIRD-PARTY-NOTICES.md, FreeCAD Fasteners Workbench / ISO 10664 form), not the dimensioned ISO 10664 curve; socket_af=10.0 sets the overall socket half-width. d_shank=12.0 (M12 major). length=60.0 representative. tip_chamfer=1.0 mm representative.",
 		"verified": true,
 		"designations": [{ "system": "ISO", "code": "14579" }]
+	},
+	"din6912": {
+		"family": "socket_screw",
+		"shape": {
+			"dk": 18.0,
+			"k": 7.0,
+			"length": 60.0,
+			"d_shank": 12.0,
+			"drive": "hex",
+			"socket_af": 10.0,
+			"socket_depth": 4.0,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"source": "DIN 6912 hexagon socket head cap screw with LOW HEAD and key guide (Zylinderschraube mit Innensechskant, niedriger Kopf mit Schlüsselführung), M12: low cylindrical head dk=18.0, k=7.0 (vs the full DIN 912/ISO 4762 cap's k=12) confirmed by Schrauben-Lexikon DIN 6912 low-head progression (M8 dk13/k5, M10 dk16/k6 -> M12 dk18/k7) + Accu DIN 6912 M12 listing (head D=18) + Aspen Fasteners M12 DIN 6912 datasheet. Hex socket across-flats socket_af=10.0 — retains the full DIN 912 hex (the key guide lets a standard 10 mm key seat deeper), Schrauben-Lexikon + Aspen. d_shank=12.0 (M12 major); length=60.0 representative; socket_depth=4.0 representative (blind, < k); tip_chamfer=1.0 representative. Envelope only — the key-guide pilot is internal, not drawn.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6912" }]
+	},
+	"din7984": {
+		"family": "socket_screw",
+		"shape": {
+			"dk": 18.0,
+			"k": 7.0,
+			"length": 60.0,
+			"d_shank": 12.0,
+			"drive": "hex",
+			"socket_af": 8.0,
+			"socket_depth": 4.0,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"source": "DIN 7984 hexagon socket head cap screw with LOW (thin) HEAD, M12: low cylindrical head dk=18.0, k=7.0 confirmed by Westfield Fasteners DIN 7984 dimension table (M12 dk=18, k=7) + Spaenaur DIN 7984 M12 listing (head height 7, key 8) + fasteners.eu DIN 7984 table. Hex socket across-flats socket_af=8.0 — reduced from the DIN 912 10 mm to fit the thin head (Spaenaur M12 key=8 + Westfield). Same external head as DIN 6912; the socket size is the drawn difference. d_shank=12.0 (M12 major); length=60.0 representative; socket_depth=4.0 representative (blind, < k); tip_chamfer=1.0 representative. Envelope only (no thread).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "7984" }]
+	},
+	"din7984i": {
+		"alias_of": "din7984",
+		"hardwareType": "screw",
+		"source": "DIN 7984 M12, app image-variant key — identical DIN 7984 low-head envelope (dk=18, k=7, hex socket 8), aliases the din7984 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "7984" }]
+	},
+	"iso14580": {
+		"family": "socket_screw",
+		"shape": {
+			"dk": 16.0,
+			"k": 6.0,
+			"length": 50.0,
+			"d_shank": 10.0,
+			"drive": "lobular",
+			"socket_af": 7.0,
+			"socket_depth": 3.5,
+			"tip_chamfer": 0.8
+		},
+		"hardwareType": "screw",
+		"source": "ISO 14580 hexalobular (Torx) socket cheese head screw. REPRESENTATIVE SIZE M10: ISO 14580 has NO M12 size (its standard range ends at M10), so this is drawn at the standard's maximum M10. Cheese head dk=16.0, k=6.0: dk from the ISO 14580 dk-max series ending at M10=16 (DIN/ISO cross-reference; corroborated by ISO 14579/ISO 4762 M10 cap dk=16, Fastenright + Schrauben-Lexikon) and k from the ISO 7045 cheese-head height (ISO 14580 shares ISO 7045 cheese-head geometry; ISO 7045 M10 k=6, fasteners.eu ISO 7045). Lobular (Torx ~T50) drive; socket_af=7.0 is a REPRESENTATIVE across-size (the catalog's 6-lobe profile is a representative icon, not dimensioned ISO 10664). d_shank=10.0 (M10 major); length=50.0 representative M10 length; socket_depth=3.5 representative (blind, < k); tip_chamfer=0.8 representative. Envelope only.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "14580" }]
+	},
+	"din912i": {
+		"alias_of": "iso4762",
+		"hardwareType": "screw",
+		"source": "DIN 912 M12, app image-variant key — the standard hexagon socket head cap screw (dk=18, k=12, hex socket 10), identical to the iso4762 base envelope; aliases iso4762 (the real base, not the din912 alias).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "912" }]
+	},
+	"iso4762p": {
+		"alias_of": "iso4762",
+		"hardwareType": "screw",
+		"source": "ISO 4762 M12, app image-variant key — the standard hexagon socket head cap screw (dk=18, k=12, hex socket 10), identical to the iso4762 base envelope; aliases the iso4762 base.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4762" }]
 	}
 }

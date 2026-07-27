@@ -54,3 +54,47 @@ def test_no_socket_screw_source_names_a_private_catalogue():
         low = entry["source"].lower()
         for tok in _FORBIDDEN:
             assert tok not in low, f"{sid}: source names forbidden token '{tok}'"
+
+
+# Family 3 (socket low-head + Torx cheese). Three new bases: din6912 low-head cap (dk=18,k=7,hex
+# socket 10); din7984 low-head cap (dk=18,k=7,hex socket 8) — same external head, the socket size is
+# the drawn difference. iso14580 Torx cheese (dk=16,k=6,lobular) drawn at M10 (ISO 14580 has no M12).
+# din912i/iso4762p are the standard cap -> iso4762 (the real base, not the din912 alias).
+_SOCKET_LOWHEAD_ALIASES = {
+    "din7984i": "din7984", "din912i": "iso4762", "iso4762p": "iso4762",
+}
+
+
+def test_din6912_and_din7984_are_lowhead_bases_differing_by_socket():
+    entries = json.loads(DATA.read_text())
+    for sid in ("din6912", "din7984"):
+        assert sid in entries and "alias_of" not in entries[sid]          # real drawing, not alias
+        assert entries[sid]["family"] == "socket_screw"
+        assert entries[sid]["hardwareType"] == "screw"
+        assert entries[sid]["shape"]["dk"] == 18.0                        # same external head...
+        assert entries[sid]["shape"]["k"] == 7.0                          # ...low head (std cap is 12)
+        assert entries[sid]["shape"]["drive"] == "hex"
+        build_part(entries[sid]["family"], entries[sid]["shape"])         # builds without raising
+    assert entries["din6912"]["shape"]["socket_af"] == 10.0               # the drawn difference
+    assert entries["din7984"]["shape"]["socket_af"] == 8.0
+
+
+def test_iso14580_is_a_lobular_cheese_base():
+    entries = json.loads(DATA.read_text())
+    assert "iso14580" in entries and "alias_of" not in entries["iso14580"]
+    assert entries["iso14580"]["family"] == "socket_screw"
+    assert entries["iso14580"]["hardwareType"] == "screw"
+    assert entries["iso14580"]["shape"]["drive"] == "lobular"
+    assert entries["iso14580"]["shape"]["dk"] == 16.0                     # M10 cheese head (no M12)
+    assert entries["iso14580"]["shape"]["k"] == 6.0
+    build_part(entries["iso14580"]["family"], entries["iso14580"]["shape"])
+
+
+def test_socket_lowhead_aliases_resolve_to_a_real_base_without_chaining():
+    entries = json.loads(DATA.read_text())
+    for alias_id, base_id in _SOCKET_LOWHEAD_ALIASES.items():
+        assert alias_id in entries, f"{alias_id} missing from socket_screws.json"
+        assert entries[alias_id]["alias_of"] == base_id, f"{alias_id} must alias {base_id}"
+        assert base_id in entries and "alias_of" not in entries[base_id], \
+            f"{base_id} must be a real non-alias base (no chaining)"
+        assert entries[alias_id]["hardwareType"] == "screw"

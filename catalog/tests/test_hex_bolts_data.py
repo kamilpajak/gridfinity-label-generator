@@ -98,7 +98,10 @@ def test_din6914_is_the_heavy_hex_hv_base():
     assert entries["din6914"]["family"] == "hex_bolt"
     assert entries["din6914"]["hardwareType"] == "screw"
     assert entries["din6914"]["shape"]["s"] == 22.0                        # heavy hex head (>din931 19)
+    assert entries["din6914"]["shape"]["k"] == 8.0                         # HV head height
     assert entries["din6914"]["shape"]["d_shank"] == 12.0                  # standard (clearance) shank
+    assert entries["din6914"]["shape"]["head_chamfer"] == 22.0             # = s (representative)
+    assert entries["din6914"]["shape"]["tip_chamfer"] == 1.0
     build_part(entries["din6914"]["family"], entries["din6914"]["shape"])  # builds without raising
 
 
@@ -108,7 +111,10 @@ def test_din609_is_the_fit_shank_base():
     assert entries["din609"]["family"] == "hex_bolt"
     assert entries["din609"]["hardwareType"] == "screw"
     assert entries["din609"]["shape"]["s"] == 19.0                         # standard hex head
+    assert entries["din609"]["shape"]["k"] == 7.5                          # standard head height
     assert entries["din609"]["shape"]["d_shank"] == 13.0                   # oversize fit shank (>12)
+    assert entries["din609"]["shape"]["head_chamfer"] == 19.0              # = s (representative)
+    assert entries["din609"]["shape"]["tip_chamfer"] == 1.0
     build_part(entries["din609"]["family"], entries["din609"]["shape"])    # builds without raising
 
 

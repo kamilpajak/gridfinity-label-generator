@@ -138,7 +138,7 @@
 	"din7999": {
 		"alias_of": "din6914",
 		"hardwareType": "screw",
-		"source": "DIN 7999 high-strength hexagon fit bolt for structural steel (HV, große Schlüsselweite), M12 — heavy-hex HV head in the DIN 6914 class: TraceParts DIN 7999 M12 gives wrench size ~21 mm and Schrauben-Lexikon DIN 7999 confirms the große Schlüsselweite HV head (makers align it to the 22 mm heavy hex). The ~21-vs-22 mm head and the fit shank are within the representative heavy-hex drawing, and the head is single-sourced at 21 mm, so din7999 aliases the well-sourced din6914 heavy-hex base rather than shipping its own dimensioned drawing.",
+		"source": "DIN 7999 high-strength hexagon fit bolt for structural steel (HV, große Schlüsselweite), M12 — heavy-hex HV head in the DIN 6914 class: TraceParts DIN 7999 M12 gives wrench size ~21 mm and Schrauben-Lexikon DIN 7999 confirms the große Schlüsselweite HV head (makers align it to the 22 mm heavy hex). The ~21-vs-22 mm head and the fit shank are within the representative heavy-hex drawing, and the head is single-sourced at 21 mm, so din7999 aliases the well-sourced din6914 heavy-hex base rather than shipping its own dimensioned drawing. KNOWN FIDELITY TRADEOFF: because it aliases din6914, din7999 is drawn with the standard 12 mm shank — its oversize fit shank (~13 mm, like DIN 609/610/7968) is NOT separately drawn (that head width and shank are too weakly sourced to dimension a distinct base); the standard-head fit bolts still get their 13 mm shank via the din609 base.",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "7999" }]
 	},

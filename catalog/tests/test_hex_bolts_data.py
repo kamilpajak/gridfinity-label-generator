@@ -49,3 +49,33 @@ def test_no_hex_bolt_source_names_a_private_catalogue():
         low = entry["source"].lower()
         for tok in _FORBIDDEN:
             assert tok not in low, f"{sid}: source names forbidden token '{tok}'"
+
+
+# The DIN M12 hex head is s=19 (its own drawing din931); the ISO M12 head is s=18 (iso4014).
+# Pitch/thread-length are not drawn, so fine/coarse and full/partial collapse onto these two bases.
+# NOTE: the din960/din961 (+ i) alias target is confirmed at the sourcing gate; if a table shows
+# they use s=18 they alias "iso4014" instead. Update _NEW_HEX_ALIASES to match the sourced values.
+_NEW_HEX_ALIASES = {
+    "din933": "din931", "din960": "din931", "din961": "din931",
+    "din931i": "din931", "din933i": "din931", "din960i": "din931", "din961i": "din931",
+    "iso8676": "iso4014", "iso8765": "iso4014", "iso4014p": "iso4014", "iso4017p": "iso4014",
+}
+
+
+def test_din931_is_the_din_head_base():
+    entries = json.loads(DATA.read_text())
+    assert "din931" in entries and "alias_of" not in entries["din931"]   # a real drawing, not an alias
+    assert entries["din931"]["family"] == "hex_bolt"
+    assert entries["din931"]["hardwareType"] == "screw"
+    assert entries["din931"]["shape"]["s"] == 19.0                        # DIN head width (ISO is 18.0)
+    build_part(entries["din931"]["family"], entries["din931"]["shape"])   # builds without raising
+
+
+def test_new_hex_aliases_resolve_to_a_real_base_without_chaining():
+    entries = json.loads(DATA.read_text())
+    for alias_id, base_id in _NEW_HEX_ALIASES.items():
+        assert alias_id in entries, f"{alias_id} missing from hex_bolts.json"
+        assert entries[alias_id]["alias_of"] == base_id, f"{alias_id} must alias {base_id}"
+        assert base_id in entries and "alias_of" not in entries[base_id], \
+            f"{base_id} must be a real non-alias base (no chaining)"
+        assert entries[alias_id]["hardwareType"] == "screw"

@@ -417,7 +417,7 @@
 		"din74361c": {
 			"family": "curved_washer",
 			"sha256": "b445f33594efcd4ffed9af436b7628fd39b34ea1d95e7e744a1004efbeac8d3d",
-			"source": "DIN 74361 Form C conical (Belleville) spring washer for wheel bolts, representative wheel-bolt size (16.5 x 27, commonly listed for M14 wheel bolts): d_inner=16.5, d_outer=27.0 from commercial DIN 74361 Form C listings. thickness=2.5 (material) and cone_angle=25 are representative \u2014 the DIN cone/thickness figures are paywalled; a closed dished cone (gap_deg=0) reuses curved_washer like din2093/din137a.",
+			"source": "DIN 74361 Form C conical (Belleville) spring washer for wheel bolts, representative wheel-bolt size (inner 16.5, outer ~27, commonly listed for M14 wheel bolts): d_inner=16.5 confirmed vs two named vendor tables (Reidl DIN 74361 Form C 16.5x27x7 + Krepcom DIN 74361 type C, which tabulates inner 16.5 / outer 26.5); d_outer=27.0 per Reidl (Krepcom lists 26.5 \u2014 a minor vendor difference). thickness=2.5 (material) and cone_angle=25 are representative \u2014 the vendor h (~6.5-7) is the overall free height, not the material thickness, and the DIN cone/material figures are paywalled; a closed dished cone (gap_deg=0) reuses curved_washer like din2093/din137a.",
 			"svg": "din74361c.svg"
 		},
 		"din7603": {
@@ -532,6 +532,33 @@
 			"source": "DIN 93 (M12, one-tab lock washer; d2=30, s=1, tab width 12; tab length representative)",
 			"svg": "din93.svg"
 		},
+		"din931": {
+			"family": "hex_bolt",
+			"sha256": "a556a406e3d1b85e73703977d0cf8ca09def477e6d25a2111531891983eec75a",
+			"source": "DIN 931 hexagon head bolt (partial thread), M12: s=19.0 (across-flats, the DIN head width \u2014 ISO 4014 reduced it to 18.0) and k=7.5, cross-checked ITA Fasteners DIN 931 table + Aspen Fasteners M12 DIN 931/ISO 4014 listing (both s=19, k=7.5). d_shank=12.0 (M12 nominal major); shank drawn as a smooth envelope cylinder (no thread). length=60.0 representative catalog length; head_chamfer=19.0=s (representative, as iso4014); tip_chamfer=1.0 representative.",
+			"svg": "din931.svg"
+		},
+		"din931i": {
+			"alias_of": "din931",
+			"family": "hex_bolt",
+			"sha256": "a556a406e3d1b85e73703977d0cf8ca09def477e6d25a2111531891983eec75a",
+			"source": "DIN 931 M12, app image-variant key \u2014 identical DIN 931 hex envelope (s=19), aliases the din931 base.",
+			"svg": "din931.svg"
+		},
+		"din933": {
+			"alias_of": "din931",
+			"family": "hex_bolt",
+			"sha256": "a556a406e3d1b85e73703977d0cf8ca09def477e6d25a2111531891983eec75a",
+			"source": "DIN 933 fully threaded hex bolt, M12 \u2014 same M12 hex envelope as DIN 931 (s=19, k=7.5); only thread coverage differs (full vs partial, not drawn), so it aliases the DIN base. Confirmed vs ITA Fasteners + Aspen Fasteners DIN 931 tables.",
+			"svg": "din931.svg"
+		},
+		"din933i": {
+			"alias_of": "din931",
+			"family": "hex_bolt",
+			"sha256": "a556a406e3d1b85e73703977d0cf8ca09def477e6d25a2111531891983eec75a",
+			"source": "DIN 933 M12, app image-variant key \u2014 same M12 DIN hex envelope (s=19) as din931 (full thread not drawn), aliases the din931 base.",
+			"svg": "din931.svg"
+		},
 		"din935": {
 			"family": "castle_nut",
 			"sha256": "00c8cb575c2a0acdca0a2f506b75539767f380c297ce50f5cada829bf5fc8f21",
@@ -556,6 +583,34 @@
 			"sha256": "764a5d0d6403d8b2ab91cb2ea235fdd980e01dd2ed6067b08aa2cb6438b6a521",
 			"source": "plated (electro-zinc) variant of DIN 93; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din93.svg"
+		},
+		"din960": {
+			"alias_of": "din931",
+			"family": "hex_bolt",
+			"sha256": "a556a406e3d1b85e73703977d0cf8ca09def477e6d25a2111531891983eec75a",
+			"source": "DIN 960 fine-pitch (M12x1.5) partial-thread hex bolt \u2014 same 19 mm hex head as DIN 931 (confirmed Wuerth DIN 960 M12x1.5 WS19 + Bolt King DIN 960 table, s=19, k=7.5); pitch is not drawn, so it aliases din931.",
+			"svg": "din931.svg"
+		},
+		"din960i": {
+			"alias_of": "din931",
+			"family": "hex_bolt",
+			"sha256": "a556a406e3d1b85e73703977d0cf8ca09def477e6d25a2111531891983eec75a",
+			"source": "DIN 960 M12 fine, app image-variant key \u2014 same 19 mm DIN hex head, aliases the din931 base.",
+			"svg": "din931.svg"
+		},
+		"din961": {
+			"alias_of": "din931",
+			"family": "hex_bolt",
+			"sha256": "a556a406e3d1b85e73703977d0cf8ca09def477e6d25a2111531891983eec75a",
+			"source": "DIN 961 fine-pitch full-thread hex bolt, M12 \u2014 same 19 mm hex head as DIN 931 (confirmed StandardBolts DIN 961 + Khainguyen DIN 961 table, s=19); pitch and thread length are not drawn, so it aliases din931.",
+			"svg": "din931.svg"
+		},
+		"din961i": {
+			"alias_of": "din931",
+			"family": "hex_bolt",
+			"sha256": "a556a406e3d1b85e73703977d0cf8ca09def477e6d25a2111531891983eec75a",
+			"source": "DIN 961 M12 fine full, app image-variant key \u2014 same 19 mm DIN hex head, aliases the din931 base.",
+			"svg": "din931.svg"
 		},
 		"din963": {
 			"family": "slotted_screw",
@@ -672,11 +727,25 @@
 			"source": "ISO 4014 hexagon head bolt (partial thread), M12 coarse (1.75 mm pitch). s=18.0 (across flats, ISO 4014 nominal for M12; ISO reduced this from DIN 931's 19 mm to 18 mm \u2014 Fasteners.eu EU 24014 table shows separate DIN 931 and ISO 4014 lines confirming this; confirmed also by ITAFasteners BS EN ISO 4014 table + Jignesh Steel DIN 931/ISO 4014 table + iso-fasteners.com ISO 4014 table). k=7.5 (head height nominal; same sources; Jignesh Steel gives tolerance band 7.32\u20137.68 mm around 7.5 nominal, grade A). d_shank=12.0 = M12 nominal major diameter; shank drawn as smooth cylinder (envelope only, no thread lines, no bore). length=60.0 is a representative catalog length \u2014 M12 ISO 4014 is stocked approximately 20\u2013200 mm per W\u00fcrth + ITAFasteners + Norelem catalogs; 60 mm is a common mid-range size, not a normative value. head_chamfer=18.0 = s: ISO hex heads chamfer to approximately the across-flats circle at the top face \u2014 this dimension is not tabulated separately in ISO 4014 public summaries; setting head_chamfer to s is a representative value (actual chamfer circle is between s and e_min=21.1 mm). tip_chamfer=1.0 mm: 45 degree lead chamfer at the free end of the shank; typical 1\u20131.5 mm at M12; not individually tabulated in ISO 4014 public tables; representative.",
 			"svg": "iso4014.svg"
 		},
+		"iso4014p": {
+			"alias_of": "iso4014",
+			"family": "hex_bolt",
+			"sha256": "19bc7755f9e3dd6feef244673eab71c97480f4440f4703c9cb8b99565efb37f7",
+			"source": "ISO 4014 M12, app image-variant key \u2014 identical ISO 4014 hex envelope (s=18), aliases the iso4014 base.",
+			"svg": "iso4014.svg"
+		},
 		"iso4017": {
 			"alias_of": "iso4014",
 			"family": "hex_bolt",
 			"sha256": "19bc7755f9e3dd6feef244673eab71c97480f4440f4703c9cb8b99565efb37f7",
 			"source": "ISO 4017 fully threaded hex bolt, M12. Shares the same hex head as ISO 4014 for M12 (s=18.0, k=7.5): confirmed by ITAFasteners (separate ISO 4014 and ISO 4017 dimension tables, M12 head row identical in both) + Andrews Fasteners ISO 4017 table (s_nom=18, k_nom=7.5, grade A tol 7.32\u20137.68) + boltsparts.github.io ISO 4017 table (s=18.0, k=7.5). Only thread coverage differs (ISO 4017 is fully threaded; ISO 4014 is partial thread). Outer envelope at the chosen representative length is identical to iso4014 -> alias.",
+			"svg": "iso4014.svg"
+		},
+		"iso4017p": {
+			"alias_of": "iso4014",
+			"family": "hex_bolt",
+			"sha256": "19bc7755f9e3dd6feef244673eab71c97480f4440f4703c9cb8b99565efb37f7",
+			"source": "ISO 4017 M12, app image-variant key \u2014 same ISO hex head as ISO 4014 (s=18, full thread not drawn), aliases the iso4014 base.",
 			"svg": "iso4014.svg"
 		},
 		"iso4026": {
@@ -886,6 +955,13 @@
 			"source": "ISO 8675 = ISO 4035 thin hex nut with fine pitch; identical body, aliased to the base.",
 			"svg": "iso4035.svg"
 		},
+		"iso8676": {
+			"alias_of": "iso4014",
+			"family": "hex_bolt",
+			"sha256": "19bc7755f9e3dd6feef244673eab71c97480f4440f4703c9cb8b99565efb37f7",
+			"source": "ISO 8676 fine-pitch full-thread hex bolt, M12 \u2014 same M12 ISO hex head as ISO 4014 (s=18, k=7.5); pitch and thread length are not drawn, so it aliases iso4014.",
+			"svg": "iso4014.svg"
+		},
 		"iso8738": {
 			"family": "flat_washer",
 			"sha256": "8bb6d3f3d2311744dff705b801f9d85ef835b1c3af615b0205b548fcf0c420aa",
@@ -898,6 +974,13 @@
 			"sha256": "8bb6d3f3d2311744dff705b801f9d85ef835b1c3af615b0205b548fcf0c420aa",
 			"source": "plated (electro-zinc) variant of ISO 8738; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso8738.svg"
+		},
+		"iso8765": {
+			"alias_of": "iso4014",
+			"family": "hex_bolt",
+			"sha256": "19bc7755f9e3dd6feef244673eab71c97480f4440f4703c9cb8b99565efb37f7",
+			"source": "ISO 8765 fine-pitch partial-thread hex bolt, M12 \u2014 same M12 ISO hex head as ISO 4014 (s=18); pitch is not drawn, so it aliases iso4014.",
+			"svg": "iso4014.svg"
 		}
 	},
 	"toolchain": {

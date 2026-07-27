@@ -112,5 +112,91 @@
 		"source": "ISO 4017 M12, app image-variant key — same ISO hex head as ISO 4014 (s=18, full thread not drawn), aliases the iso4014 base.",
 		"verified": true,
 		"designations": [{ "system": "ISO", "code": "4017" }]
+	},
+	"din6914": {
+		"family": "hex_bolt",
+		"shape": {
+			"s": 22.0,
+			"k": 8.0,
+			"length": 60.0,
+			"d_shank": 12.0,
+			"head_chamfer": 22.0,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"source": "DIN 6914 high-strength hexagon head bolt for structural steel (HV connections, große Schlüsselweite), M12: heavy hex head s=22.0 across-flats — larger than the ordinary DIN 931 19 mm head — confirmed by Schrauben-Lexikon DIN 6914 (M12 row lists s=22) and the EN 14399-4 heavy-hex table (EN 14399-4 is DIN 6914's designated successor with compatible geometry) via Fasteners.eu. Head height k=8.0 (EN 14399-4 heavy-hex M12). Standard shank d_shank=12.0 (M12 nominal, clearance-hole bolt; Fasteners.eu DIN 6914 ds nominal 12). length=60.0 representative catalog length; head_chamfer=22.0=s representative (as din931/iso4014); tip_chamfer=1.0 representative. Envelope only (no drawn thread).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6914" }]
+	},
+	"din6914i": {
+		"alias_of": "din6914",
+		"hardwareType": "screw",
+		"source": "DIN 6914 M12, app image-variant key — identical DIN 6914 heavy-hex HV envelope (s=22), aliases the din6914 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6914" }]
+	},
+	"din7999": {
+		"alias_of": "din6914",
+		"hardwareType": "screw",
+		"source": "DIN 7999 high-strength hexagon fit bolt for structural steel (HV, große Schlüsselweite), M12 — heavy-hex HV head in the DIN 6914 class: TraceParts DIN 7999 M12 gives wrench size ~21 mm and Schrauben-Lexikon DIN 7999 confirms the große Schlüsselweite HV head (makers align it to the 22 mm heavy hex). The ~21-vs-22 mm head and the fit shank are within the representative heavy-hex drawing, and the head is single-sourced at 21 mm, so din7999 aliases the well-sourced din6914 heavy-hex base rather than shipping its own dimensioned drawing.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "7999" }]
+	},
+	"din609": {
+		"family": "hex_bolt",
+		"shape": {
+			"s": 19.0,
+			"k": 7.5,
+			"length": 60.0,
+			"d_shank": 13.0,
+			"head_chamfer": 19.0,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"source": "DIN 609 hexagon head fit bolt with long threaded portion (Passschraube), M12: standard hexagon head s=19.0, k=7.5 (DIN 609 has no enlarged wrench size — the ordinary DIN metric hex head; Fasteners.eu DIN 7990 M12 s=19 and the DIN 931 M12 head via ITA Fasteners) over an oversize precision fit shank d_shank=13.0 (13k6): confirmed by Normteile-Leinigen DIN 609 M12 'Ø13k6' listing and the Fasteners.eu DIN 610 ds fit-shank definition (the 13 mm fit shank is the shared DIN M12 fit-bolt convention). length=60.0 representative; head_chamfer=19.0=s representative; tip_chamfer=1.0 representative. Envelope only — the fit bolt's defining feature, the oversize shank, is drawn at 13.0.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "609" }]
+	},
+	"din609p": {
+		"alias_of": "din609",
+		"hardwareType": "screw",
+		"source": "DIN 609 M12, app image-variant key — identical DIN 609 fit-bolt envelope (standard hex head s=19, oversize 13 mm fit shank), aliases the din609 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "609" }]
+	},
+	"din610": {
+		"alias_of": "din609",
+		"hardwareType": "screw",
+		"source": "DIN 610 hexagon head fit bolt with short threaded portion, M12 — same M12 fit-bolt envelope as DIN 609 (standard hex head s=19, oversize d_shank=13 fit shank); only the threaded-portion length differs (not drawn), so it aliases din609. Confirmed vs Fasteners.eu DIN 610 + Wegertseder DIN 610 fit-bolt listings and the shared 13 mm fit shank of DIN 609 (Normteile-Leinigen 13k6).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "610" }]
+	},
+	"din610p": {
+		"alias_of": "din609",
+		"hardwareType": "screw",
+		"source": "DIN 610 M12, app image-variant key — same DIN fit-bolt envelope (s=19, d=13), aliases the din609 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "610" }]
+	},
+	"din7968": {
+		"alias_of": "din609",
+		"hardwareType": "screw",
+		"source": "DIN 7968 hexagon fit bolt for structural steel, M12 — standard hexagon head (s=19, no enlarged wrench size) with the same 13 mm oversize fit shank as DIN 609/610: ITA Fasteners DIN 7968 size table + Befestigungsfuchs DIN 7968 M12 product data, fit-shank convention shared with DIN 609 (13k6). Aliases the din609 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "7968" }]
+	},
+	"din7990": {
+		"alias_of": "din931",
+		"hardwareType": "screw",
+		"source": "DIN 7990 hexagon head bolt for structural steel (bearing-type, non-preloaded), M12 — standard hexagon head s=19, k=7.5 and standard clearance-hole shank d_shank=12, an envelope identical to the plain DIN 931 base: Fasteners.eu DIN 7990 M12 (s=19, ds nominal 12) + DIN 931 M12 head via ITA Fasteners. Pitch/thread-portion not drawn, so it aliases din931.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "7990" }]
+	},
+	"din7990d": {
+		"alias_of": "din931",
+		"hardwareType": "screw",
+		"source": "DIN 7990 M12, app image-variant key — same DIN 7990 envelope (standard hex head s=19, standard shank d=12) identical to din931, aliases the din931 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "7990" }]
 	}
 }

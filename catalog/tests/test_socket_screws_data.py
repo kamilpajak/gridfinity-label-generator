@@ -79,6 +79,16 @@ def test_din6912_and_din7984_are_lowhead_bases_differing_by_socket():
     assert entries["din7984"]["shape"]["socket_af"] == 8.0
 
 
+def test_din6912_and_din7984_produce_different_drawings():
+    # The external envelope (dk=18, k=7) is identical; the ONLY drawn difference is the hex socket
+    # size (socket_af 10 vs 8). Proving the built solids differ is what justifies two separate bases
+    # rather than an alias — a larger socket removes more head metal, so the volumes must differ.
+    entries = json.loads(DATA.read_text())
+    part_6912 = build_part(entries["din6912"]["family"], entries["din6912"]["shape"])
+    part_7984 = build_part(entries["din7984"]["family"], entries["din7984"]["shape"])
+    assert part_6912.volume != part_7984.volume
+
+
 def test_iso14580_is_a_lobular_cheese_base():
     entries = json.loads(DATA.read_text())
     assert "iso14580" in entries and "alias_of" not in entries["iso14580"]

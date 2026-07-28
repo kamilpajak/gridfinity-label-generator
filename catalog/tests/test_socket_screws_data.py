@@ -108,3 +108,47 @@ def test_socket_lowhead_aliases_resolve_to_a_real_base_without_chaining():
         assert base_id in entries and "alias_of" not in entries[base_id], \
             f"{base_id} must be a real non-alias base (no chaining)"
         assert entries[alias_id]["hardwareType"] == "screw"
+
+
+# Family 6 (countersunk + button socket). din7991 countersunk hex-socket base (DIN 7991 / ISO
+# 10642); iso7380 button hex-socket base. din7991i + iso10642 alias din7991 (same countersunk
+# envelope). The heads are the drawn difference from the cylindrical cap bases.
+_SOCKET_CSKBTN_ALIASES = {"din7991i": "din7991", "iso10642": "din7991"}
+
+
+def test_din7991_is_a_countersunk_hex_socket_base():
+    entries = json.loads(DATA.read_text())
+    assert "din7991" in entries and "alias_of" not in entries["din7991"]   # real drawing
+    assert entries["din7991"]["family"] == "socket_screw"
+    assert entries["din7991"]["hardwareType"] == "screw"
+    assert entries["din7991"]["shape"]["head"] == "countersunk"
+    assert entries["din7991"]["shape"]["drive"] == "hex"
+    build_part(entries["din7991"]["family"], entries["din7991"]["shape"])   # builds without raising
+
+
+def test_iso7380_is_a_button_hex_socket_base():
+    entries = json.loads(DATA.read_text())
+    assert "iso7380" in entries and "alias_of" not in entries["iso7380"]
+    assert entries["iso7380"]["family"] == "socket_screw"
+    assert entries["iso7380"]["hardwareType"] == "screw"
+    assert entries["iso7380"]["shape"]["head"] == "button"
+    assert entries["iso7380"]["shape"]["drive"] == "hex"
+    build_part(entries["iso7380"]["family"], entries["iso7380"]["shape"])
+
+
+def test_countersunk_and_button_produce_different_drawings():
+    # The two new heads must render as distinct solids (justifies two bases, not an alias).
+    entries = json.loads(DATA.read_text())
+    csk = build_part(entries["din7991"]["family"], entries["din7991"]["shape"])
+    btn = build_part(entries["iso7380"]["family"], entries["iso7380"]["shape"])
+    assert csk.volume != btn.volume
+
+
+def test_cskbtn_aliases_resolve_to_a_real_base_without_chaining():
+    entries = json.loads(DATA.read_text())
+    for alias_id, base_id in _SOCKET_CSKBTN_ALIASES.items():
+        assert alias_id in entries, f"{alias_id} missing from socket_screws.json"
+        assert entries[alias_id]["alias_of"] == base_id, f"{alias_id} must alias {base_id}"
+        assert base_id in entries and "alias_of" not in entries[base_id], \
+            f"{base_id} must be a real non-alias base (no chaining)"
+        assert entries[alias_id]["hardwareType"] == "screw"

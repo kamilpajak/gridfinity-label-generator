@@ -111,5 +111,55 @@
 		"source": "ISO 4762 M12, app image-variant key — the standard hexagon socket head cap screw (dk=18, k=12, hex socket 10), identical to the iso4762 base envelope; aliases the iso4762 base.",
 		"verified": true,
 		"designations": [{ "system": "ISO", "code": "4762" }]
+	},
+	"din7991": {
+		"family": "socket_screw",
+		"shape": {
+			"dk": 24.0,
+			"k": 6.5,
+			"length": 60.0,
+			"d_shank": 12.0,
+			"drive": "hex",
+			"socket_af": 8.0,
+			"socket_depth": 3.5,
+			"tip_chamfer": 1.0,
+			"head": "countersunk"
+		},
+		"hardwareType": "screw",
+		"source": "DIN 7991 / ISO 10642 hexagon socket countersunk (flat 90-degree conical) head cap screw, M12: flat-top countersunk head diameter dk=24.0 and head height k=6.5 and hex socket across-flats socket_af=8.0 confirmed by Fuller Fasteners DIN 7991 + Brighton-Best metric socket countersunk table + Intafast DIN 7991/ISO 10642 drawing (all M12 dk-max 24, k-max 6.5, key 8). d_shank=12.0 (M12 major); length=60.0 REPRESENTATIVE catalog length; socket_depth=3.5 REPRESENTATIVE blind engagement (< k); tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. The head is drawn as a straight cone frustum from the shank to dk using the tabulated dk/k; the exact 90-degree cone angle is a REPRESENTATIVE envelope simplification. Envelope only — no drawn thread, no through bore.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "7991" }]
+	},
+	"din7991i": {
+		"alias_of": "din7991",
+		"hardwareType": "screw",
+		"source": "DIN 7991 M12, app image-variant key — identical countersunk hex-socket envelope (dk=24, k=6.5, hex socket 8), aliases the din7991 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "7991" }]
+	},
+	"iso10642": {
+		"alias_of": "din7991",
+		"hardwareType": "screw",
+		"source": "ISO 10642 hexagon socket countersunk head screw (reduced loadability), M12 — the ISO twin of DIN 7991 (same countersunk hex-socket envelope: dk=24, k=6.5, hex socket 8), confirmed by the DIN 7991 = ISO 10642 equivalence (Fuller Fasteners + Intafast DIN 7991/ISO 10642 tables). Aliases the din7991 base.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "10642" }]
+	},
+	"iso7380": {
+		"family": "socket_screw",
+		"shape": {
+			"dk": 21.0,
+			"k": 6.6,
+			"length": 60.0,
+			"d_shank": 12.0,
+			"drive": "hex",
+			"socket_af": 8.0,
+			"socket_depth": 4.0,
+			"tip_chamfer": 1.0,
+			"head": "button"
+		},
+		"hardwareType": "screw",
+		"source": "ISO 7380-1 hexagon socket button (low spherical-dome) head screw, M12: domed head diameter dk=21.0 (max) and head height k=6.6 (max) and hex socket across-flats socket_af=8.0 confirmed by Fuller Fasteners ISO 7380-1 + Brighton-Best ISO 7380-1 metric socket button table + fasteners.eu ISO 7380 + Westfield Fasteners ISO 7380-1 (all M12 dk-max 21.0, k-max 6.6, key 8). d_shank=12.0 (M12 major); length=60.0 REPRESENTATIVE; socket_depth=4.0 REPRESENTATIVE blind engagement (< k; tabulated ISO 7380-1 key engagement t-min 4.16); tip_chamfer=1.0 REPRESENTATIVE. The head is a spherical cap of base dk and height k; the small cylindrical base belt of a real button head is a REPRESENTATIVE envelope simplification (omitted). Envelope only — no drawn thread, no through bore.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "7380" }]
 	}
 }

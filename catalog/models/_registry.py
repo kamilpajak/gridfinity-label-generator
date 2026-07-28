@@ -25,6 +25,7 @@ from catalog.models.socket_screw import socket_screw
 from catalog.models.set_screw import set_screw
 from catalog.models.slotted_screw import slotted_screw
 from catalog.models.stud import stud
+from catalog.models.carriage_bolt import carriage_bolt
 
 KNOWN_FAMILIES = {
     "flat_washer": flat_washer,
@@ -59,6 +60,7 @@ KNOWN_FAMILIES = {
     "set_screw": set_screw,
     "slotted_screw": slotted_screw,
     "stud": stud,
+    "carriage_bolt": carriage_bolt,
 }
 
 

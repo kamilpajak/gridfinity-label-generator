@@ -1,8 +1,9 @@
 """Socket-head cap screw family generator (ISO 4762 / DIN 912 hex socket, ISO 14579 Torx).
 
-A plain cylindrical head with a BLIND drive socket cut into its top face, over a smooth
-cylindrical shank (the shared ``_screw_shank``). The shank is envelope-only (no drawn thread)
-and there is no through bore. Two drive recesses match the two end-view silhouettes:
+The head is cylindrical (default), a countersunk cone (``head="countersunk"``), or a button
+dome (``head="button"``), each carrying the same blind drive socket cut into its top face, over
+a smooth cylindrical shank (the shared ``_screw_shank``). The shank is envelope-only (no drawn
+thread) and there is no through bore. Two drive recesses match the two end-view silhouettes:
 ``drive="hex"`` subtracts a hexagonal prism (an Allen socket); ``drive="lobular"`` subtracts a
 representative rounded 6-lobe region (a Torx socket).
 
@@ -17,13 +18,14 @@ import math
 
 from build123d import (
     BuildPart, BuildSketch, Cylinder, Circle, RegularPolygon, PolarLocations,
-    Plane, Align, Mode, add, extrude,
+    Polygon, Sphere, Box, Locations, Plane, Axis, Align, Mode, add, extrude, revolve,
 )
 
 from catalog.models.screw_common import _screw_shank
 
 _MIN_WALL_MM = 0.1                # local min wall (not imported — keep the screw_common-only dep)
 _DRIVES = ("hex", "lobular")
+_HEAD_SHAPES = ("cylindrical", "countersunk", "button")
 _RECESS_EPS = 0.05               # cutter pokes this far above the top face for a clean rim cut
 # Representative lobular proportions (fractions of socket_af): six rounded lobes whose tips reach
 # socket_af/2, distinct convex bumps (adjacent lobes do NOT touch) connected by a smaller core
@@ -40,12 +42,14 @@ assert _LOBE_OFFSET_FRAC > 2.0 * _LOBE_R_FRAC, "lobular lobes must stay distinct
 
 
 def socket_screw(dk: float, k: float, length: float, d_shank: float, drive: str,
-                 socket_af: float, socket_depth: float, tip_chamfer: float | None = None):
-    """Socket-head cap screw: cylindrical head of diameter ``dk`` and height ``k`` with a blind
-    drive socket of nominal across-size ``socket_af`` and depth ``socket_depth`` cut into its top
-    face, over a smooth shank of diameter ``d_shank`` and ``length`` (optional lead
-    ``tip_chamfer`` at the free end). ``drive`` is ``"hex"`` (hexagonal prism) or ``"lobular"``
-    (representative rounded 6-lobe Torx). No through bore, no drawn thread.
+                 socket_af: float, socket_depth: float, tip_chamfer: float | None = None,
+                 head: str = "cylindrical"):
+    """Socket-head cap screw: head of diameter ``dk`` and height ``k`` with a blind drive socket
+    of nominal across-size ``socket_af`` and depth ``socket_depth`` cut into its top face, over a
+    smooth shank of diameter ``d_shank`` and ``length`` (optional lead ``tip_chamfer`` at the free
+    end). ``drive`` is ``"hex"`` (hexagonal prism) or ``"lobular"`` (representative rounded
+    6-lobe Torx). ``head`` is ``"cylindrical"`` (default), ``"countersunk"`` (cone), or
+    ``"button"`` (spherical dome). No through bore, no drawn thread.
     """
     for name, val in (("dk", dk), ("k", k), ("length", length), ("d_shank", d_shank),
                       ("socket_af", socket_af), ("socket_depth", socket_depth)):
@@ -53,6 +57,8 @@ def socket_screw(dk: float, k: float, length: float, d_shank: float, drive: str,
             raise ValueError(f"socket_screw: need {name} > 0, got {val}")
     if drive not in _DRIVES:
         raise ValueError(f"socket_screw: drive must be one of {_DRIVES}, got {drive!r}")
+    if head not in _HEAD_SHAPES:
+        raise ValueError(f"socket_screw: head must be one of {_HEAD_SHAPES}, got {head!r}")
     if d_shank >= dk:
         raise ValueError(
             f"socket_screw: d_shank {d_shank} must be < head diameter {dk} (the shank emerges "
@@ -71,9 +77,29 @@ def socket_screw(dk: float, k: float, length: float, d_shank: float, drive: str,
     shank = _screw_shank(d_shank, length, tip_chamfer)   # z in [-length, 0], validates chamfer
     floor_z = k - socket_depth                           # socket floor plane (z > 0 by the guard)
     with BuildPart() as bp:
-        Cylinder(radius=dk / 2.0, height=k,
-                 align=(Align.CENTER, Align.CENTER, Align.MIN))    # head z in [0, k]
-        add(shank)                                                 # shares the z=0 face -> fuses
+        if head == "cylindrical":
+            Cylinder(radius=dk / 2.0, height=k,
+                     align=(Align.CENTER, Align.CENTER, Align.MIN))    # head z in [0, k]
+        elif head == "countersunk":
+            # cone frustum: bottom radius d_shank/2 at z=0, up to top radius dk/2 at z=k, flat top
+            # (carriage_bolt countersunk-cone idiom). Using tabulated dk/k directly makes the slant
+            # approximate the nominal 90-degree countersink (representative envelope simplification).
+            profile = [(d_shank / 2.0, 0.0), (dk / 2.0, k), (0.0, k), (0.0, 0.0)]
+            with BuildSketch(Plane.XZ):
+                Polygon(*profile, align=None)
+            revolve(axis=Axis.Z, revolution_arc=360)                   # head z in [0, k]
+        else:                                                          # button: spherical dome
+            # spherical cap: base circle radius dk/2 at z=0, apex at z=k (cap_nut idiom). The small
+            # cylindrical base belt of a real button head is omitted (envelope simplification).
+            r_base = dk / 2.0
+            sphere_r = (r_base ** 2 + k ** 2) / (2.0 * k)
+            z_c = k - sphere_r                                         # sphere centre on Z
+            big = 4.0 * (sphere_r + k)                                 # trim box, larger than cap
+            with Locations((0.0, 0.0, z_c)):
+                Sphere(radius=sphere_r)
+            with Locations((0.0, 0.0, -big / 2.0)):
+                Box(big, big, big, mode=Mode.SUBTRACT)                 # keep only z >= 0
+        add(shank)                                                     # shares the z=0 face -> fuses
         with BuildSketch(Plane.XY.offset(floor_z)):                # socket cross-section at floor
             if drive == "hex":
                 RegularPolygon(radius=socket_af / 2.0, side_count=6,

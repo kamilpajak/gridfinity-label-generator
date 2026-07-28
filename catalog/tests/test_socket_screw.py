@@ -116,3 +116,61 @@ def test_hex_wall_guard_accounts_for_socket_corners():
     with pytest.raises(ValueError):
         socket_screw(**{**HEX, "socket_af": 16.0})
     assert socket_screw(**{**LOB, "socket_af": 16.0}).volume > 0
+
+
+# Synthetic fixtures (NOT real standards) for the two new head shapes. Same shank/socket as HEX;
+# head dia 20 x 8 tall so the cone/dome geometry is clearly non-cylindrical.
+CSK = dict(dk=20.0, k=8.0, length=30.0, d_shank=10.0, drive="hex",
+           socket_af=8.0, socket_depth=4.0, tip_chamfer=1.5, head="countersunk")
+BTN = {**CSK, "head": "button"}
+
+
+def test_countersunk_head_widens_upward_to_a_flat_top():
+    # A countersunk cone is widest at its flat top face (z=k) and narrows downward toward the
+    # shank. Probe near the rim: solid high up, void just beyond the rim, void low down.
+    part = socket_screw(**CSK)
+    r_near_rim = CSK["dk"] / 2.0 - 0.6          # 9.4, just inside the top rim
+    top_z = CSK["k"]                            # 8
+    assert _solid_at(part, r_near_rim, 0.0, top_z - 0.3, probe=0.3)      # solid at the wide top
+    assert not _solid_at(part, CSK["dk"] / 2.0 + 0.6, 0.0, top_z - 0.3, probe=0.3)  # void past rim
+    assert not _solid_at(part, r_near_rim, 0.0, 0.3, probe=0.3)          # cone narrow near the base
+
+
+def test_button_head_domes_over_the_axis():
+    # A button head is a spherical dome: tall near the axis, sloping down to the rim. Near the rim
+    # the dome surface is low, so material does NOT reach the top; and the socket is blind (a floor
+    # of head metal remains below it on the axis).
+    part = socket_screw(**BTN)
+    r_near_rim = BTN["dk"] / 2.0 - 0.6          # 9.4
+    top_z = BTN["k"]                            # 8
+    assert not _solid_at(part, r_near_rim, 0.0, top_z - 0.5, probe=0.3)  # dome sloped down at rim
+    assert _solid_at(part, r_near_rim, 0.0, 0.3, probe=0.3)             # but solid low down there
+    floor = BTN["k"] - BTN["socket_depth"]      # 4
+    assert _solid_at(part, 0.0, 0.0, floor - 0.4, probe=0.3)            # blind socket floor on axis
+
+
+def test_new_heads_have_a_blind_hex_socket_from_the_top():
+    # Both new heads carry the hex drive socket: void on the axis just below the top face.
+    for fx in (CSK, BTN):
+        part = socket_screw(**fx)
+        assert not _solid_at(part, 0.0, 0.0, fx["k"] - 0.4, probe=0.3)   # socket void at the top
+
+
+def test_new_heads_fuse_into_one_solid():
+    assert len(socket_screw(**CSK).solids()) == 1
+    assert len(socket_screw(**BTN).solids()) == 1
+    assert socket_screw(**CSK).volume > 0
+    assert socket_screw(**BTN).volume > 0
+
+
+def test_default_head_is_cylindrical_and_unchanged():
+    # Omitting head must reproduce the existing cylindrical head exactly (regression guard for the
+    # byte-identical invariant): same volume as an explicit head="cylindrical".
+    implicit = socket_screw(**HEX)
+    explicit = socket_screw(**{**HEX, "head": "cylindrical"})
+    assert implicit.volume == explicit.volume
+
+
+def test_guard_bad_head():
+    with pytest.raises(ValueError):
+        socket_screw(**{**CSK, "head": "flat"})

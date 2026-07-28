@@ -1,0 +1,57 @@
+{
+	"din603": {
+		"family": "carriage_bolt",
+		"shape": {
+			"d": 12.0,
+			"length": 60.0,
+			"dk": 30.0,
+			"k": 7.0,
+			"head": "cup",
+			"square_w": 12.7,
+			"square_depth": 4.0,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "603" }],
+		"source": "DIN 603 / ISO 8677 cup (mushroom / round) head square-neck carriage bolt (Flachrundschraube mit Vierkantansatz), M12: domed head diameter dk=30.0 (tabulated 29.35-30.65) and head height k=7.0 (tabulated max 6.95), with a square neck across-flats square_w=12.7 (v-max) and square_depth=4.0 (P-max) under the head, confirmed by Westfield Fasteners DIN 603/ISO 8677 table + Aspen Fasteners M12 DIN 603/ISO 8677 datasheet + Bhavya Industries DIN 603/ISO 8677 (square v) + the ISO 8677/DIN 603 carriage-bolt chart (square depth P). d=12.0 (M12 major); length=60.0 REPRESENTATIVE (carriage bolts ship in many lengths); tip_chamfer=1.0 REPRESENTATIVE 45-degree end break. Envelope only — no drawn thread, no drive (the square neck is the anti-rotation feature)."
+	},
+	"din603i": {
+		"alias_of": "din603",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "603" }],
+		"source": "DIN 603 M12, app image-variant key — identical cup-head square-neck envelope (dk=30, k=7, square 12.7); aliases the din603 base."
+	},
+	"iso8677": {
+		"alias_of": "din603",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "8677" }],
+		"source": "ISO 8677 mushroom (cup) head square-neck bolt, M12 — the ISO twin of DIN 603 (same envelope: dk=30, k=7, square 12.7), confirmed by the DIN 603 = ISO 8677 equivalence (Westfield + Aspen DIN 603/ISO 8677 tables). Aliases the din603 base."
+	},
+	"iso8677p": {
+		"alias_of": "din603",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "8677" }],
+		"source": "ISO 8677 M12, app image-variant key — identical cup-head square-neck envelope; aliases the din603 base."
+	},
+	"din605": {
+		"family": "carriage_bolt",
+		"shape": {
+			"d": 10.0,
+			"length": 50.0,
+			"dk": 24.65,
+			"k": 4.1,
+			"head": "countersunk",
+			"square_w": 10.58,
+			"square_depth": 7.45,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "605" }],
+		"source": "DIN 605 countersunk (flat 120-degree conical) head square-neck carriage bolt with high square (Senkschraube mit Vierkantansatz), REPRESENTATIVE SIZE M10: DIN 605 has NO M12 row in the published tables (Fuller / Bhalla / Intafast / Jignesh all stop at M10), so this is drawn at the standard's maximum published size M10 (same precedent as the ISO 14580 M10 drop). Countersunk head diameter dk=24.65 and overall head thickness (incl. square) 11.55 and square across-flats square_w=10.58 confirmed by Fuller Fasteners DIN 605 + Bhalla Fasteners DIN 605 + Intafast DIN 605 drawing (all M10 dk-max 24.65, fn-max 11.55, v-max 10.58). The 11.55 overall is split into a countersink cone height k=4.1 and square_depth=7.45: the split is DERIVED so the cone is the standard 120-degree countersink (dk/2 to square_w/2 over k), a representative envelope join. d=10.0 (M10 major); length=50.0 REPRESENTATIVE M10 length; tip_chamfer=1.0 REPRESENTATIVE. Envelope only — no drawn thread, no drive."
+	}
+}

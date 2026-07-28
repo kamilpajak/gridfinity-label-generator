@@ -272,6 +272,25 @@
 			"source": "DIN 557 square nut, product grade C (M12): s=18 (current ISO 272 / SW18; obsolescent pre-1994 s=19 not shipped), m=10 (max/nominal), bore=10.1 (M12 minor dia). Top face chamfered (chamfer-circle diameter = s, a drawing form requirement, not tabulated -> representative), bearing face flat. Confirmed vs fasteners.eu + Fuller Fasteners + TC Fixings + Aspen Fasteners DIN 557 tables.",
 			"svg": "din557.svg"
 		},
+		"din603": {
+			"family": "carriage_bolt",
+			"sha256": "e23e58e185fb6eddaaf283d01d14fee2dc2320512831793f223508b8425f9a17",
+			"source": "DIN 603 / ISO 8677 cup (mushroom / round) head square-neck carriage bolt (Flachrundschraube mit Vierkantansatz), M12: domed head diameter dk=30.0 (tabulated 29.35-30.65) and head height k=7.0 (tabulated max 6.95), with a square neck across-flats square_w=12.7 (v-max) and square_depth=4.0 (P-max) under the head, confirmed by Westfield Fasteners DIN 603/ISO 8677 table + Aspen Fasteners M12 DIN 603/ISO 8677 datasheet + Bhavya Industries DIN 603/ISO 8677 (square v) + the ISO 8677/DIN 603 carriage-bolt chart (square depth P). d=12.0 (M12 major); length=60.0 REPRESENTATIVE (carriage bolts ship in many lengths); tip_chamfer=1.0 REPRESENTATIVE 45-degree end break. Envelope only \u2014 no drawn thread, no drive (the square neck is the anti-rotation feature).",
+			"svg": "din603.svg"
+		},
+		"din603i": {
+			"alias_of": "din603",
+			"family": "carriage_bolt",
+			"sha256": "e23e58e185fb6eddaaf283d01d14fee2dc2320512831793f223508b8425f9a17",
+			"source": "DIN 603 M12, app image-variant key \u2014 identical cup-head square-neck envelope (dk=30, k=7, square 12.7); aliases the din603 base.",
+			"svg": "din603.svg"
+		},
+		"din605": {
+			"family": "carriage_bolt",
+			"sha256": "f38205f85a97d47667bcc5b40486fc846bb10e01ae1e017cb0642d96741397e0",
+			"source": "DIN 605 countersunk (flat 120-degree conical) head square-neck carriage bolt with high square (Senkschraube mit Vierkantansatz), REPRESENTATIVE SIZE M10: DIN 605 has NO M12 row in the published tables (Fuller / Bhalla / Intafast / Jignesh all stop at M10), so this is drawn at the standard's maximum published size M10 (same precedent as the ISO 14580 M10 drop). Countersunk head diameter dk=24.65 and overall head thickness (incl. square) 11.55 and square across-flats square_w=10.58 confirmed by Fuller Fasteners DIN 605 + Bhalla Fasteners DIN 605 + Intafast DIN 605 drawing (all M10 dk-max 24.65, fn-max 11.55, v-max 10.58). The 11.55 overall is split into a countersink cone height k=4.1 and square_depth=7.45: the split is DERIVED so the cone is the standard 120-degree countersink (dk/2 to square_w/2 over k), a representative envelope join. d=10.0 (M10 major); length=50.0 REPRESENTATIVE M10 length; tip_chamfer=1.0 REPRESENTATIVE. Envelope only \u2014 no drawn thread, no drive.",
+			"svg": "din605.svg"
+		},
 		"din609": {
 			"family": "hex_bolt",
 			"sha256": "249f40cbfc5d6f07868ad707ebe7c955b664f703e3ec05e8ecba8e76467a95ce",
@@ -1109,6 +1128,20 @@
 			"sha256": "19bc7755f9e3dd6feef244673eab71c97480f4440f4703c9cb8b99565efb37f7",
 			"source": "ISO 8676 fine-pitch full-thread hex bolt, M12 \u2014 same M12 ISO hex head as ISO 4014 (s=18, k=7.5); pitch and thread length are not drawn, so it aliases iso4014.",
 			"svg": "iso4014.svg"
+		},
+		"iso8677": {
+			"alias_of": "din603",
+			"family": "carriage_bolt",
+			"sha256": "e23e58e185fb6eddaaf283d01d14fee2dc2320512831793f223508b8425f9a17",
+			"source": "ISO 8677 mushroom (cup) head square-neck bolt, M12 \u2014 the ISO twin of DIN 603 (same envelope: dk=30, k=7, square 12.7), confirmed by the DIN 603 = ISO 8677 equivalence (Westfield + Aspen DIN 603/ISO 8677 tables). Aliases the din603 base.",
+			"svg": "din603.svg"
+		},
+		"iso8677p": {
+			"alias_of": "din603",
+			"family": "carriage_bolt",
+			"sha256": "e23e58e185fb6eddaaf283d01d14fee2dc2320512831793f223508b8425f9a17",
+			"source": "ISO 8677 M12, app image-variant key \u2014 identical cup-head square-neck envelope; aliases the din603 base.",
+			"svg": "din603.svg"
 		},
 		"iso8738": {
 			"family": "flat_washer",

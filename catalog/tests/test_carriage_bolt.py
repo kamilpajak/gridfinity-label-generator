@@ -63,9 +63,13 @@ def test_guard_bad_head():
         carriage_bolt(**{**CUP, "head": "flat"})
 
 
-def test_guard_dk_not_exceeding_square():
+def test_guard_dk_must_overhang_square_corners():
+    # The head must exceed the square's ACROSS-CORNERS diagonal (square_w*sqrt2 ~ 18.4 for
+    # square_w=13), not merely its across-flats width, or the neck corners would poke past the head.
     with pytest.raises(ValueError):
-        carriage_bolt(**{**CUP, "dk": 13.0})       # dk == square_w, must strictly exceed
+        carriage_bolt(**{**CUP, "dk": 13.0})       # dk == square_w: rejected
+    with pytest.raises(ValueError):
+        carriage_bolt(**{**CUP, "dk": 16.0})       # square_w < dk < square_w*sqrt2: still rejected
 
 
 def test_guard_non_positive_dims():

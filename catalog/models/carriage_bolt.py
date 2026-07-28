@@ -39,15 +39,32 @@ def carriage_bolt(d: float, length: float, dk: float, k: float, head: str,
             raise ValueError(f"carriage_bolt: need {name} > 0, got {val}")
     if head not in _HEADS:
         raise ValueError(f"carriage_bolt: head must be one of {_HEADS}, got {head!r}")
-    if dk <= square_w:
+    across_corners = square_w * math.sqrt(2.0)        # square neck corner-to-corner diagonal
+    if dk <= across_corners:
         raise ValueError(
-            f"carriage_bolt: head dk {dk} must exceed the square neck across-flats {square_w} "
-            f"(the head must overhang the neck)")
+            f"carriage_bolt: head dk {dk} must exceed the square neck across-corners "
+            f"{across_corners:.2f} (the head must overhang the neck corners)")
 
     shank = _screw_shank(d, length, tip_chamfer)      # z in [-length, 0]; validates d/length/chamfer
     circumradius = square_w / math.sqrt(2.0)          # square across-corners / 2 (half-diagonal)
     neck_top = square_depth
     head_apex = square_depth + k
+
+    # Build the cup dome in its own closed context first (matches the cap_nut idiom — no nested
+    # BuildPart inside the still-open outer context), then union it below.
+    cup_solid = None
+    if head == "cup":
+        # spherical cap: base circle radius dk/2 at z=neck_top, apex at z=head_apex (cap_nut idiom)
+        r_base = dk / 2.0
+        sphere_r = (r_base ** 2 + k ** 2) / (2.0 * k)
+        z_c = neck_top + k - sphere_r                 # sphere centre on Z (apex at head_apex)
+        big = 4.0 * (sphere_r + head_apex)            # trim box, comfortably larger than the cap
+        with BuildPart() as cap_bp:
+            with Locations((0.0, 0.0, z_c)):
+                Sphere(radius=sphere_r)
+            with Locations((0.0, 0.0, neck_top - big / 2.0)):
+                Box(big, big, big, mode=Mode.SUBTRACT)   # keep only z >= neck_top
+        cup_solid = cap_bp.part
 
     with BuildPart() as bp:
         add(shank)
@@ -55,17 +72,7 @@ def carriage_bolt(d: float, length: float, dk: float, k: float, head: str,
             RegularPolygon(radius=circumradius, side_count=4, rotation=0)
         extrude(amount=square_depth)                  # z in [0, square_depth], fuses to shank at z=0
         if head == "cup":
-            # spherical cap: base circle radius dk/2 at z=neck_top, apex at z=head_apex (cap_nut idiom)
-            r_base = dk / 2.0
-            sphere_r = (r_base ** 2 + k ** 2) / (2.0 * k)
-            z_c = neck_top + k - sphere_r             # sphere centre on Z (apex at head_apex)
-            big = 4.0 * (sphere_r + head_apex)        # trim box, comfortably larger than the cap
-            with BuildPart() as cap_bp:
-                with Locations((0.0, 0.0, z_c)):
-                    Sphere(radius=sphere_r)
-                with Locations((0.0, 0.0, neck_top - big / 2.0)):
-                    Box(big, big, big, mode=Mode.SUBTRACT)   # keep only z >= neck_top
-            add(cap_bp.part)                          # union the dome onto the neck
+            add(cup_solid)                            # union the dome onto the neck
         else:                                         # countersunk cone frustum: wide top, narrow neck
             r_bottom = square_w / 2.0                 # cone base ~ square inscribed circle (flagged)
             # (x=radius, z=axial): neck-top base -> out to bottom radius -> up-out to top rim -> axis

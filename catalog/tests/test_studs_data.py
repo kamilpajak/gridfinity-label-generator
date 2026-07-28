@@ -44,6 +44,7 @@ def test_din938_is_a_plain_rod_base():
     shape = entries["din938"]["shape"]
     assert shape["d"] == 12.0
     assert shape["length"] == 60.0
+    assert "tip_chamfer" in shape, "din938 shape must carry tip_chamfer (both-ends lead chamfer)"
     # plain rod: carries no head / socket / drive fields
     for forbidden in ("socket_af", "socket_depth", "drive", "dk", "k", "s"):
         assert forbidden not in shape, f"din938 shape must not carry {forbidden}"

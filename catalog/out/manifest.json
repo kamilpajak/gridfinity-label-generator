@@ -545,6 +545,20 @@
 			"source": "DIN 80705 thin hexagon nut with reduced width across flats, M12x1.5: s=17.0, m=6.0. Confirmed vs Fasteners.eu + din-fasteners.com + Ferrobend DIN 80705 tables.",
 			"svg": "din80705.svg"
 		},
+		"din835": {
+			"alias_of": "din938",
+			"family": "stud",
+			"sha256": "39c465788c4517635a223133d1468c09d89afc342bde5bac33aaf1be1e35a5c3",
+			"source": "DIN 835 double-end stud (Stiftschraube), screw-in / metal end length 2d, M12: the same plain full-diameter double-end stud envelope as DIN 938 \u2014 the 2d metal-end thread length is the only difference and is not drawn (envelope only), confirmed by fasteners.eu DIN 835 double-end studs table (M12 b1=24, b2=30) + Schrauben-Lexikon DIN 835 (Einschraubende = 2d) + BelMetric DIN 835 stud. Aliases the din938 base.",
+			"svg": "din938.svg"
+		},
+		"din835d": {
+			"alias_of": "din938",
+			"family": "stud",
+			"sha256": "39c465788c4517635a223133d1468c09d89afc342bde5bac33aaf1be1e35a5c3",
+			"source": "DIN 835 M12, app image-variant key \u2014 identical plain double-end stud envelope; aliases the din938 base.",
+			"svg": "din938.svg"
+		},
 		"din84": {
 			"family": "slotted_screw",
 			"sha256": "5b3385ee4c0e831adbc1b8e1fbcecd7a8b9b02eae3ed8d81e7e5c3683ec6be93",
@@ -670,6 +684,33 @@
 			"sha256": "fab79ee3867b50f814015c6bbf77c6da2836ad6df83c6a04976ea89380fc24ab",
 			"source": "DIN 937 hexagon thin (low) slotted / castle nut (M12): s=19 (SW19, the withdrawn legacy standard's actual across-flats), m=10, m1=6.0 (w slot-floor height, not the 5.3 m' proof-load minimum), crown dk=17, 6 slots, slot width 3.5, bore=10.1. Crown modelled fully slotted. Confirmed vs fasteners.eu + Fuller Fasteners + fasenco + Aspen Fasteners DIN 937 tables.",
 			"svg": "din937.svg"
+		},
+		"din938": {
+			"family": "stud",
+			"sha256": "39c465788c4517635a223133d1468c09d89afc342bde5bac33aaf1be1e35a5c3",
+			"source": "DIN 938 double-end stud (Stiftschraube), screw-in / metal end length 1d, M12: a plain full-diameter double-end stud \u2014 headless rod with a thread at each end and a plain unthreaded middle at the nominal M12 diameter (NOT waisted), confirmed by fasteners.eu DIN 938 'studs with engagement length 1 x d' + Schrauben-Lexikon DIN 938 + BelMetric double-end stud description + din938.com dimension notes. d=12.0 (M12 major). length=60.0 REPRESENTATIVE (studs ship in many lengths; envelope-only the length does not change which standard it is). tip_chamfer=1.0 REPRESENTATIVE 45-degree end break. Envelope only \u2014 no drawn thread; the 1d metal-end engagement length is a thread feature and is not drawn.",
+			"svg": "din938.svg"
+		},
+		"din938d": {
+			"alias_of": "din938",
+			"family": "stud",
+			"sha256": "39c465788c4517635a223133d1468c09d89afc342bde5bac33aaf1be1e35a5c3",
+			"source": "DIN 938 M12, app image-variant key \u2014 identical plain double-end stud envelope (d=12, 60 long, chamfered both ends); aliases the din938 base.",
+			"svg": "din938.svg"
+		},
+		"din939": {
+			"alias_of": "din938",
+			"family": "stud",
+			"sha256": "39c465788c4517635a223133d1468c09d89afc342bde5bac33aaf1be1e35a5c3",
+			"source": "DIN 939 double-end stud (Stiftschraube), screw-in / metal end length 1.25d, M12: the same plain full-diameter double-end stud envelope as DIN 938 \u2014 the 1.25d metal-end thread length is the only difference and is not drawn (envelope only, no thread), confirmed by Schrauben-Lexikon DIN 939 (Einschraubende = 1,25 d) + Aspen Fasteners DIN 939 double-end stud datasheet + fasteners.eu stud tables. Aliases the din938 base.",
+			"svg": "din938.svg"
+		},
+		"din939d": {
+			"alias_of": "din938",
+			"family": "stud",
+			"sha256": "39c465788c4517635a223133d1468c09d89afc342bde5bac33aaf1be1e35a5c3",
+			"source": "DIN 939 M12, app image-variant key \u2014 identical plain double-end stud envelope; aliases the din938 base.",
+			"svg": "din938.svg"
 		},
 		"din93p": {
 			"alias_of": "din93",

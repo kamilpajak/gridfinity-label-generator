@@ -174,3 +174,18 @@ def test_default_head_is_cylindrical_and_unchanged():
 def test_guard_bad_head():
     with pytest.raises(ValueError):
         socket_screw(**{**CSK, "head": "flat"})
+
+
+def test_wall_guard_uses_the_tapered_head_radius_at_the_socket_floor():
+    # A socket that fits within the flat TOP circle (dk/2) but is too wide for the narrower head
+    # radius at the socket floor must be rejected for the tapered heads (it would pierce the wall).
+    # socket_af=15 -> hex outer radius 15/sqrt(3)=8.66: below dk/2-0.1=9.9 (clears the top circle) but
+    # the countersunk cone radius at floor_z=4 is 7.5 and the button dome radius there is ~8.12, so
+    # 8.66 breaches both tapered walls.
+    with pytest.raises(ValueError):
+        socket_screw(**{**CSK, "socket_af": 15.0})
+    with pytest.raises(ValueError):
+        socket_screw(**{**BTN, "socket_af": 15.0})
+    # The SAME socket on a cylindrical head of the same dk (constant radius dk/2=10) still builds —
+    # the guard must be head-shape-aware, not over-rejecting the untapered head.
+    assert socket_screw(**{**CSK, "head": "cylindrical", "socket_af": 15.0}).volume > 0

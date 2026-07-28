@@ -63,19 +63,30 @@ def socket_screw(dk: float, k: float, length: float, d_shank: float, drive: str,
         raise ValueError(
             f"socket_screw: d_shank {d_shank} must be < head diameter {dk} (the shank emerges "
             f"from the head bearing face and is narrower than the head)")
-    socket_outer_r = socket_af / math.sqrt(3.0) if drive == "hex" else _LOBE_TIP_FRAC * socket_af
-    if socket_outer_r >= dk / 2.0 - _MIN_WALL_MM:
-        raise ValueError(
-            f"socket_screw: {drive} socket of across-size {socket_af} reaches radius "
-            f"{socket_outer_r:.3f} which leaves too thin a wall vs head radius {dk / 2.0} "
-            f"(needs < dk/2 - {_MIN_WALL_MM} mm)")
     if socket_depth >= k:
         raise ValueError(
             f"socket_screw: socket_depth {socket_depth} must be < head height {k} "
             f"(the socket is blind — a floor of head metal must remain below it)")
+    floor_z = k - socket_depth                           # socket floor plane (z > 0 by the guard above)
+    # Head radius at the socket floor — the tightest wall the socket must clear. The cylindrical head
+    # has constant radius dk/2; the countersunk cone and the button dome both TAPER, so their wall is
+    # narrowest at the floor (the cone widens upward; the dome opens at its apex, which is intended for
+    # a button-head socket screw). Checking at floor_z is correct for all three shapes.
+    if head == "countersunk":
+        head_r_floor = d_shank / 2.0 + (floor_z / k) * (dk / 2.0 - d_shank / 2.0)
+    elif head == "button":
+        sphere_r = ((dk / 2.0) ** 2 + k ** 2) / (2.0 * k)
+        head_r_floor = math.sqrt(max(0.0, sphere_r ** 2 - (sphere_r - socket_depth) ** 2))
+    else:                                                # cylindrical: constant radius
+        head_r_floor = dk / 2.0
+    socket_outer_r = socket_af / math.sqrt(3.0) if drive == "hex" else _LOBE_TIP_FRAC * socket_af
+    if socket_outer_r >= head_r_floor - _MIN_WALL_MM:
+        raise ValueError(
+            f"socket_screw: {drive} socket of across-size {socket_af} reaches radius "
+            f"{socket_outer_r:.3f} which leaves too thin a wall vs head radius {head_r_floor:.3f} "
+            f"at the socket floor (needs < head_r_floor - {_MIN_WALL_MM} mm)")
 
     shank = _screw_shank(d_shank, length, tip_chamfer)   # z in [-length, 0], validates chamfer
-    floor_z = k - socket_depth                           # socket floor plane (z > 0 by the guard)
     with BuildPart() as bp:
         if head == "cylindrical":
             Cylinder(radius=dk / 2.0, height=k,

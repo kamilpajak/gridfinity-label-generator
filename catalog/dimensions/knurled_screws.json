@@ -1,0 +1,34 @@
+{
+	"din653": {
+		"family": "knurled_screw",
+		"shape": {
+			"d": 24.0,
+			"k": 5.0,
+			"d_shank": 6.0,
+			"length": 20.0,
+			"head_chamfer": 0.5,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "653"
+			}
+		],
+		"source": "DIN 653 flat/low knurled thumb screw (Raendelschraube, niedrige Form), M6: knurled head diameter dk=24.0, head height k=5.0, on the M6 threaded shank (major dia 6.0) with NO raised shoulder (the head sits directly on the bearing surface). Confirmed vs Westfield Fasteners DIN 653 + GlobalFastener DIN 653 + fasteners.eu DIN 653 (all M6 dk=24, k=5.0), with AFT Fasteners DIN 653 (d1=16/k=3.5 at M4, d1=36/k=8 at M10) confirming the head-diameter series. Drawn as a smooth knurled cylinder (the knurl is a fine feature, omitted like the thread, same as knurled_nut) with a representative 45-degree top-rim chamfer head_chamfer=0.5. length=20.0 REPRESENTATIVE (common M6 stock length); tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. Envelope only — no drawn thread, no knurl, no bore. The DIN 464 high form (same head on a raised collar) is deferred."
+	},
+	"din653p": {
+		"alias_of": "din653",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "653"
+			}
+		],
+		"source": "DIN 653 M6, app image-variant key — identical knurled-thumb-screw envelope (dk=24, k=5.0), aliases the din653 base."
+	}
+}

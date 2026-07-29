@@ -1,0 +1,37 @@
+{
+	"din316": {
+		"family": "wing_screw",
+		"shape": {
+			"d_shank": 12.0,
+			"length": 30.0,
+			"boss_d": 23.0,
+			"collar_d": 19.5,
+			"boss_h": 14.0,
+			"span": 65.0,
+			"height": 33.5,
+			"wing_t": 4.9,
+			"tip_chamfer": 1.2
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "316"
+			}
+		],
+		"source": "DIN 316 wing screw, German form 'rounded wings' (M12x30). Envelope confirmed vs fasteners.eu DIN 316-D table (M12: hub base dia d2=23 max, hub top dia d3=19.5 max, hub height m=10-14, head height incl. wings h=33.5 max, wing span e=65 max, blade thickness g1=4.9 max) + boltingspecialist.com DIN 316 (M12 nominal d2=21.5, e=63.5, g=4.5, h=32.3, m=12 -- mid-tolerance values of the same series). The head envelope equals the independently sourced DIN 315 M12 wing-nut envelope (shared German wing form; see wing_common). d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread). boss_h=14.0 taken as hub height (same 'm' reading as DIN 315) -> form, not asserted normative. length=30.0 REPRESENTATIVE (common M12 stock length, e.g. Accu M12x30); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Wing radii are not published; the rounded wing outline is representative form shared with wing_nut."
+	},
+	"din316p": {
+		"alias_of": "din316",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "316"
+			}
+		],
+		"source": "DIN 316 M12, app image-variant key -- identical wing-screw envelope, aliases the din316 base."
+	}
+}

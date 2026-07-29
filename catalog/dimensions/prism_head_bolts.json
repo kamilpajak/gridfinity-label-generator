@@ -1,0 +1,25 @@
+{
+	"din261": {
+		"family": "prism_head_bolt",
+		"shape": {
+			"d": 12.0,
+			"length": 60.0,
+			"head_len": 26.0,
+			"head_width": 12.0,
+			"head_height": 8.0,
+			"under": "none",
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "261" }],
+		"source": "DIN 261 T-head bolt (Hammerschraube / T-Kopfschraube for T-slots), M12: plain rectangular hammer head with head width (long axis) m=26.0, head height k=8.0, and short axis n=12.0 (the inscribed-circle / slot-throat width), confirmed by Fasten.it DIN 261 + TDM Neva DIN 261 + MTK-Fortuna DIN 261 + Ananka Fasteners DIN 261 (all M12 m=26, k=8, n=12). Drawn as a rectangular block head_len=26.0 x head_width=12.0 x head_height=8.0 over a round shank centered on the head, with no under-head feature (under=\"none\"); the head IS the anti-rotation feature. d=12.0 (M12 major); length=60.0 REPRESENTATIVE; tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. Envelope only — no drawn thread, the small head edge radius is omitted (envelope simplification)."
+	},
+	"din261d": {
+		"alias_of": "din261",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "261" }],
+		"source": "DIN 261 M12, app image-variant key — identical rectangular T-head envelope (26 x 12 x 8, no under-head feature), aliases the din261 base."
+	}
+}

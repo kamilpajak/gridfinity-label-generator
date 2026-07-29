@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add knurled thumb screw coverage (DIN 464 high, DIN 653 low) to the screw catalog — one new generator `knurled_screw` composed from an already-shipped idiom, plus two base drawings and their aliases. Screw gap 38 → 34.
+**Goal:** Add knurled thumb screw coverage (DIN 653 low) to the screw catalog — one new generator `knurled_screw` composed from an already-shipped idiom, plus one base drawing and its alias. Screw gap 38 → 36. (DIN 464 high was deferred at the sourcing gate — see the Task 2 note.)
 
-**Architecture:** `knurled_screw` stacks two pieces along Z (bearing face on z=0): a revolved knurled cylinder head with an optional top-rim chamfer (z ∈ [0, k]) and the shared `screw_common._screw_shank` below (z ∈ [−length, 0]). It is `knurled_nut`'s cylinder head with no bore, plus a shank. DIN 464 (high) and DIN 653 (low) are the same envelope at different `k`, so both are data rows on the one generator. Data lives in a new `knurled_screws.json`.
+**Architecture:** `knurled_screw` stacks two pieces along Z (bearing face on z=0): a revolved knurled cylinder head with an optional top-rim chamfer (z ∈ [0, k]) and the shared `screw_common._screw_shank` below (z ∈ [−length, 0]). It is `knurled_nut`'s cylinder head with no bore, plus a shank. This draws the flat DIN 653 (low) form; the DIN 464 (high) form carries the same head on a raised collar (deferred). Data lives in a new `knurled_screws.json`.
 
 **Tech Stack:** Python, build123d (container-only via `./catalog/run`), pytest. SVG render via `catalog.build_catalog`.
 
@@ -25,7 +25,7 @@
 - Create `catalog/models/knurled_screw.py` — the new generator.
 - Modify `catalog/models/_registry.py` — register `"knurled_screw"`.
 - Create `catalog/tests/test_knurled_screw.py` — geometry-probe tests (synthetic fixture).
-- Create `catalog/dimensions/knurled_screws.json` — `din464`/`din653` bases + `din464p`/`din653p` aliases (Task 2).
+- Create `catalog/dimensions/knurled_screws.json` — `din653` base + `din653p` alias (Task 2; DIN 464 deferred).
 - Create `catalog/tests/test_knurled_screws_data.py` — data tests (Task 2).
 
 ---
@@ -224,20 +224,20 @@ git commit -m "feat(catalog): add knurled_screw generator (knurled cylinder head
 
 ---
 
-### Task 2: DIN 464/653 data + data tests + SVGs
+### Task 2: DIN 653 data + data tests + SVG
 
-> **CONTROLLER — SOURCING GATE FIRST.** Before dispatching this task, run the sourcing gate: confirm the DIN 464 (high) and DIN 653 (low) representative-size dimensions (`d`, `k`, `d_shank`) against ≥2 named public tables and verify the shape against a vendor drawing. Use the SAME representative size for both types so they differ only by `k` (the defining high-vs-low distinction). Write the outcome (exact numbers, the named tables, the flagged representative fields, the final `source` strings) to `.superpowers/sdd/task-2-sourcing.md`. That file's numbers govern this task — the values below are placeholders showing structure only. If a dimension cannot be sourced, pick a size that can, or drop to a smaller shipped set; never fabricate.
+> **SOURCING GATE — DONE (controller).** `.superpowers/sdd/task-2-sourcing.md` governs this task. Outcome: **DIN 653 (low) PASSES** at M6 (`dk=24`, `k=5.0`, chamfer 0.5) confirmed by Westfield Fasteners + GlobalFastener + fasteners.eu (AFT confirms the head-diameter series). **DIN 464 (high) is DEFERRED** — the tables show the high/low difference is a raised collar (the DIN 466/467 knurled-nut relationship), not head height, and the collar height rests on one table (Fuller); the generator draws no collar. Use the exact numbers below (already filled from the gate — not placeholders).
 
 **Files:**
 
 - Create: `catalog/dimensions/knurled_screws.json`
 - Test: `catalog/tests/test_knurled_screws_data.py`
-- Generated (build output): `catalog/out/din464.svg`, `catalog/out/din653.svg`, manifest entries.
+- Generated (build output): `catalog/out/din653.svg`, manifest entry.
 
 **Interfaces:**
 
 - Consumes: `knurled_screw(...)` from Task 1 via `_registry.build_part`. `catalog.schema.validate_entry(sid, entry)`.
-- Produces: `din464`/`din653` bases + `din464p`/`din653p` aliases in `knurled_screws.json`; rendered `din464.svg` and `din653.svg`.
+- Produces: `din653` base + `din653p` alias in `knurled_screws.json`; rendered `din653.svg`.
 
 - [ ] **Step 1: Write the failing data tests**
 
@@ -253,14 +253,14 @@ from catalog.models._registry import build_part
 DATA = Path("catalog/dimensions/knurled_screws.json")
 _FORBIDDEN = ("reyher", "stalmut")
 
-_BASES = ("din464", "din653")
-_ALIASES = {"din464p": "din464", "din653p": "din653"}
-_DIN_CODE = {"din464": "464", "din464p": "464", "din653": "653", "din653p": "653"}
+_BASES = ("din653",)
+_ALIASES = {"din653p": "din653"}
+_DIN_CODE = {"din653": "653", "din653p": "653"}
 
 
 def test_every_entry_validates_and_builds():
     entries = json.loads(DATA.read_text())
-    assert len(entries) >= 2
+    assert len(entries) >= 1
     problems = []
     for sid, entry in entries.items():
         problems += validate_entry(sid, entry)
@@ -284,12 +284,6 @@ def test_bases_are_real_and_build():
     for base_id in _BASES:
         assert base_id in entries and "alias_of" not in entries[base_id], f"{base_id} must be a base"
         build_part(entries[base_id]["family"], entries[base_id]["shape"])
-
-
-def test_din464_head_is_taller_than_din653():
-    entries = json.loads(DATA.read_text())
-    assert entries["din464"]["shape"]["k"] > entries["din653"]["shape"]["k"], \
-        "DIN 464 is the high type and must have a taller head (k) than the low DIN 653"
 
 
 def test_aliases_resolve_to_a_real_base_without_chaining():
@@ -331,53 +325,31 @@ Expected: FAIL — `FileNotFoundError` / empty file for `knurled_screws.json`.
 
 - [ ] **Step 3: Write the data file (numbers from `task-2-sourcing.md`)**
 
-Create `catalog/dimensions/knurled_screws.json`. The shape keys are exactly the generator parameters. **Replace the placeholder dimensions with the sourcing-gate numbers.** DIN 464 and DIN 653 share `d` and `d_shank`; only `k` differs (464 taller).
+Create `catalog/dimensions/knurled_screws.json`. The shape keys are exactly the generator parameters. Use the sourced M6 numbers below verbatim, and the exact `source` strings from `task-2-sourcing.md` (the `<<...>>` markers below are stand-ins — copy the full source strings from the sourcing file).
 
 ```json
 {
-	"din464": {
-		"family": "knurled_screw",
-		"shape": {
-			"d": 0.0,
-			"k": 0.0,
-			"d_shank": 0.0,
-			"length": 0.0,
-			"head_chamfer": 0.0,
-			"tip_chamfer": 1.0
-		},
-		"hardwareType": "screw",
-		"verified": true,
-		"designations": [{ "system": "DIN", "code": "464" }],
-		"source": "<<from task-2-sourcing.md: name >=2 public tables for d/k/d_shank; flag the omitted knurl, and length/tip_chamfer/head_chamfer as representative>>"
-	},
-	"din464p": {
-		"alias_of": "din464",
-		"hardwareType": "screw",
-		"verified": true,
-		"designations": [{ "system": "DIN", "code": "464" }],
-		"source": "DIN 464 M<size>, app image-variant key — identical knurled-thumb-screw envelope, aliases the din464 base."
-	},
 	"din653": {
 		"family": "knurled_screw",
 		"shape": {
-			"d": 0.0,
-			"k": 0.0,
-			"d_shank": 0.0,
-			"length": 0.0,
-			"head_chamfer": 0.0,
+			"d": 24.0,
+			"k": 5.0,
+			"d_shank": 6.0,
+			"length": 20.0,
+			"head_chamfer": 0.5,
 			"tip_chamfer": 1.0
 		},
 		"hardwareType": "screw",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "653" }],
-		"source": "<<from task-2-sourcing.md: name >=2 public tables for d/k/d_shank; flag the omitted knurl, and length/tip_chamfer/head_chamfer as representative>>"
+		"source": "<<copy the din653 source string verbatim from task-2-sourcing.md>>"
 	},
 	"din653p": {
 		"alias_of": "din653",
 		"hardwareType": "screw",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "653" }],
-		"source": "DIN 653 M<size>, app image-variant key — identical knurled-thumb-screw envelope, aliases the din653 base."
+		"source": "<<copy the din653p source string verbatim from task-2-sourcing.md>>"
 	}
 }
 ```
@@ -391,7 +363,7 @@ Expected: PASS.
 
 Run: `./catalog/run python -m catalog.build_catalog`
 Then `pnpm exec prettier --write catalog/out/manifest.json` and `git status --short catalog/out/`.
-Expected: exactly two new files `catalog/out/din464.svg` and `catalog/out/din653.svg` and a manifest gaining only the `din464` and `din653` entries. `git diff -w` on any pre-existing SVG must be empty — if any existing `.svg` changed, STOP.
+Expected: exactly one new file `catalog/out/din653.svg` and a manifest gaining only the `din653` entry. `git diff -w` on any pre-existing SVG must be empty — if any existing `.svg` changed, STOP.
 
 - [ ] **Step 6: Full suite green**
 
@@ -401,16 +373,16 @@ Expected: PASS.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add catalog/dimensions/knurled_screws.json catalog/tests/test_knurled_screws_data.py catalog/out/din464.svg catalog/out/din653.svg catalog/out/manifest.json
-git commit -m "feat(catalog): add DIN 464/653 knurled thumb screw data + drawings (gap 38->34)"
+git add catalog/dimensions/knurled_screws.json catalog/tests/test_knurled_screws_data.py catalog/out/din653.svg catalog/out/manifest.json
+git commit -m "feat(catalog): add DIN 653 knurled thumb screw data + drawing (gap 38->36)"
 ```
 
 ---
 
 ## Self-Review
 
-**Spec coverage:** Task 1 delivers the `knurled_screw` generator (revolved knurled cylinder head + shank), registration, and geometry tests — covers the spec's generator design and testing sections. Task 2 delivers the `din464`/`din653` bases + `din464p`/`din653p` aliases, data tests, and the two SVGs — covers the ids, data, and success-criteria sections. The sourcing gate is the controller step gating Task 2, matching the epic invariant.
+**Spec coverage:** Task 1 delivers the `knurled_screw` generator (revolved knurled cylinder head + shank), registration, and geometry tests — covers the spec's generator design and testing sections. Task 2 delivers the `din653` base + `din653p` alias, data tests, and the SVG — covers the ids, data, and success-criteria sections. The sourcing gate (controller step) narrowed the shipped set to DIN 653 (low): the tables showed DIN 464's "high" is a raised collar, not a taller head, and its collar is not sourceable to ≥2 tables — deferred, per the sourcing-gate's own "drop to a smaller shipped set; never fabricate" rule.
 
-**Placeholder scan:** Task 1 code is complete. Task 2's JSON dimensions are intentional placeholders (`0.0`) filled by the sourcing gate — the established pattern; the data tests build both parts, so any un-replaced `0.0` fails Step 4 loudly (`_screw_shank` and the head guards reject non-positive dimensions).
+**Placeholder scan:** Task 1 code is complete. Task 2's JSON dimensions are the real M6 numbers from the sourcing gate (`d=24, k=5, d_shank=6, head_chamfer=0.5`); the `source` strings are copied verbatim from `task-2-sourcing.md`. The data tests build the part, so any bad dimension fails Step 4 loudly.
 
-**Type consistency:** generator signature `knurled_screw(d, k, d_shank, length, head_chamfer=None, tip_chamfer=None)` is identical across the spec, Task 1 code, the `Produces` block, and the JSON `shape` keys (`d, k, d_shank, length, head_chamfer, tip_chamfer`). The reused helper matches its real signature (`_screw_shank(d, length, tip_chamfer=None)`). The `din464`-taller-than-`din653` test enforces the high/low distinction the spec names.
+**Type consistency:** generator signature `knurled_screw(d, k, d_shank, length, head_chamfer=None, tip_chamfer=None)` is identical across the spec, Task 1 code, the `Produces` block, and the JSON `shape` keys (`d, k, d_shank, length, head_chamfer, tip_chamfer`). The reused helper matches its real signature (`_screw_shank(d, length, tip_chamfer=None)`).

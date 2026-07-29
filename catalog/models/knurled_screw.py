@@ -1,13 +1,15 @@
-"""Knurled thumb screw family generator (DIN 464 high, DIN 653 low).
+"""Knurled thumb screw family generator (DIN 653 low form; the DIN 464 high form is deferred).
 
 A smooth knurled cylindrical head (the knurl is a fine feature and is NOT drawn, like the
-thread) over a smooth cylindrical shank (``screw_common._screw_shank``). DIN 464 (high) and
-DIN 653 (low) are the same envelope at different head heights ``k``. The head top edge carries
-an optional small chamfer breaking the top knurl rim; the knurl on the head wall is omitted (a
-smooth cylinder) — the same envelope convention ``knurled_nut`` makes. Modelled axis-along-Z:
-the head occupies z in [0, k] (bearing face on z=0), the shank z in [-length, 0]. Head and shank
-fuse by face contact at the z=0 bearing plane (the screw_common stacking seam), guarded by net
-volume>0 + single-solid.
+thread) sitting directly on a smooth cylindrical shank (``screw_common._screw_shank``) — the
+flat DIN 653 (niedrige Form) envelope. The DIN 464 (hohe Form) high type carries the SAME
+knurled head raised on a reduced-diameter collar (the DIN 466/467 knurled-nut relationship);
+that collar is not drawn here, so DIN 464 is deferred until it is sourced and a collar feature
+is added. The head top edge carries an optional small chamfer breaking the top knurl rim; the
+knurl on the head wall is omitted (a smooth cylinder) — the same envelope convention
+``knurled_nut`` makes. Modelled axis-along-Z: the head occupies z in [0, k] (bearing face on
+z=0), the shank z in [-length, 0]. Head and shank fuse by face contact at the z=0 bearing plane
+(the screw_common stacking seam), guarded by net volume>0 + single-solid.
 """
 from build123d import BuildPart, BuildSketch, Polygon, Plane, Axis, add, revolve
 

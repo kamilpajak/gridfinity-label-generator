@@ -63,6 +63,8 @@ def wing_screw(d_shank: float, length: float, boss_d: float, collar_d: float,
             make_face()
             # Filter on boss_d/2 (the wider hub base): any vertex outside it is outside the hub
             # at every height, so the narrower top (collar_d/2) is a subset — no corner missed.
+            # For real dimension sets this selects B (valley-side top), C (ear tip) and D
+            # (lower outboard corner) — all three exposed corners are rounded deliberately.
             ear_corners = sk.vertices().filter_by(lambda v: v.X > boss_d / 2.0)
             if ear_corners:
                 fillet(ear_corners, radius=ear_r)                # soften the exposed ear corners

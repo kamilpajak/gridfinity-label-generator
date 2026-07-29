@@ -82,6 +82,13 @@ def test_shank_below_bearing_plane_with_lead_chamfer():
     assert not _solid_at(part, 0.0, 0.0, -LENGTH - 0.6)        # nothing below the tip
 
 
+def test_shank_without_chamfer_is_flat_bottomed():
+    part = _part(tip_chamfer=None)
+    r = D_SHANK / 2.0
+    assert _solid_at(part, r - 0.2, 0.0, -LENGTH + 0.2)        # corner intact (no lead chamfer)
+    assert round(part.bounding_box().min.Z, 1) == round(-LENGTH, 1)
+
+
 def test_single_fused_solid():
     part = _part()
     assert len(part.solids()) == 1

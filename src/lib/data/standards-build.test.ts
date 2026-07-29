@@ -63,6 +63,19 @@ describe('addImageToStandard hardware type precedence', () => {
 		expect(standard.hardwareType).toBe('nut');
 	});
 
+	it('applies the image-mapping hardware type even when the mapping has no image', () => {
+		const standard: BuildStandard = {
+			id: 'din315',
+			description: 'DIN 315',
+			hardwareType: 'other'
+		};
+		const imageMappings = { din315: { hardwareType: 'nut' } };
+
+		addImageToStandard(standard, 'din315', imageMappings, DIN_315_DESIGNATIONS);
+
+		expect(standard.hardwareType).toBe('nut');
+	});
+
 	it('keeps the existing hardware type for old string-format mappings', () => {
 		const standard: BuildStandard = {
 			id: 'din315',

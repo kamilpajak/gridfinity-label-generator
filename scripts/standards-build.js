@@ -184,8 +184,10 @@ function addImageToStandard(standard, standardId, imageMappings, designations) {
 		// Handle both old format (string) and new format ({image, hardwareType})
 		if (typeof mapping === 'string') {
 			standard.image = mapping;
-		} else if (mapping.image) {
-			standard.image = mapping.image;
+		} else {
+			if (mapping.image) {
+				standard.image = mapping.image;
+			}
 			// Prefer hardwareType from image mappings (more accurate than heuristics)
 			if (mapping.hardwareType) {
 				standard.hardwareType = mapping.hardwareType;

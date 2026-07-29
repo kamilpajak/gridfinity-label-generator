@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- The production Docker image no longer rebuilds the standards dataset without the maintainer data. That rebuild degraded 106 of 235 standards: wrong hardware types, plain descriptions, and a form that required a length for nuts, washers, and rings such as the DIN 315 wing nut. The image now ships the committed dataset.
+- The production Docker image no longer rebuilds the standards dataset without the maintainer data. That rebuild gave 90 of 235 standards a wrong hardware type and stripped 231 descriptions, so the form required a length for nuts, washers, and rings such as the DIN 315 wing nut. The image now ships the committed dataset.
 
 ## [3.0.0] - 2026-07-04
 

@@ -29,6 +29,7 @@ from catalog.models.carriage_bolt import carriage_bolt
 from catalog.models.prism_head_bolt import prism_head_bolt
 from catalog.models.hex_flange_bolt import hex_flange_bolt
 from catalog.models.knurled_screw import knurled_screw
+from catalog.models.wing_screw import wing_screw
 
 KNOWN_FAMILIES = {
     "flat_washer": flat_washer,
@@ -67,6 +68,7 @@ KNOWN_FAMILIES = {
     "prism_head_bolt": prism_head_bolt,
     "hex_flange_bolt": hex_flange_bolt,
     "knurled_screw": knurled_screw,
+    "wing_screw": wing_screw,
 }
 
 

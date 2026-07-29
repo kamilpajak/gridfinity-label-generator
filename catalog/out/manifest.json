@@ -127,6 +127,19 @@
 			"source": "DIN 315 wing nut, German Form D 'rounded wings' (M12), current standard (DIN 315:2016-12; no ISO equivalent). Envelope confirmed vs fasteners.eu + Fuller Fasteners + schrauben-lexikon + ITA Fasteners + globalfastener DIN 315-D tables: overall height h=33.5 (max), boss/hub base dia d2=23 (max), collar/top dia d3=19.5 (max, the tapered hub top), wing span e=65 (max, tip-to-tip), blade thickness g1=4.9 (max). bore=10.1 is the M12 thread minor (ISO 724, external to DIN 315's table). boss_h=14.0 is a representative hub height (the DIN 'm' symbol 10-14, read inconsistently across sources, taken as hub height) -> form, not asserted normative. The hub taper (d2->d3) and general form follow the DIN 315 geometry (as also implemented in the open-source FreeCAD Fasteners Workbench, LGPL); the exact wing radii are not published, so the rounded wing outline is representative form matched to the legacy DIN 315 drawing. Only the envelope is a sourced dimension.",
 			"svg": "din315.svg"
 		},
+		"din316": {
+			"family": "wing_screw",
+			"sha256": "fe0e2f66b680c6d9e97e13c8b40267254e603110b2ca22d026f48518da89a165",
+			"source": "DIN 316 wing screw, German form 'rounded wings' (M12x30). Envelope confirmed vs fasteners.eu DIN 316-D table (M12: hub base dia d2=23 max, hub top dia d3=19.5 max, hub height m=10-14, head height incl. wings h=33.5 max, wing span e=65 max, blade thickness g1=4.9 max) + boltingspecialist.com DIN 316 (M12 nominal d2=21.5, e=63.5, g=4.5, h=32.3, m=12 -- mid-tolerance values of the same series). The head envelope equals the independently sourced DIN 315 M12 wing-nut envelope (shared German wing form; see wing_common). d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread). boss_h=14.0 taken as hub height (same 'm' reading as DIN 315) -> form, not asserted normative. length=30.0 REPRESENTATIVE (common M12 stock length, e.g. Accu M12x30); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Wing radii are not published; the rounded wing outline is representative form shared with wing_nut.",
+			"svg": "din316.svg"
+		},
+		"din316p": {
+			"alias_of": "din316",
+			"family": "wing_screw",
+			"sha256": "fe0e2f66b680c6d9e97e13c8b40267254e603110b2ca22d026f48518da89a165",
+			"source": "DIN 316 M12, app image-variant key -- identical wing-screw envelope, aliases the din316 base.",
+			"svg": "din316.svg"
+		},
 		"din431": {
 			"family": "hex_nut",
 			"sha256": "7825a324c033785e32804103854e16c90aadc9ef19b5dfc8f5f86e724dca7990",

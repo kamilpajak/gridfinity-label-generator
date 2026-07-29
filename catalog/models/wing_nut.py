@@ -1,13 +1,10 @@
 """Wing nut family generator (DIN 315 German Form D): a tapered threaded boss with two rounded finger wings.
 
 The form matches the DIN 315 drawing: two flat paddle wings that rise from a tapered hub and
-spread apart, each with a rounded outer ear and a concave valley toward the hub. The
-construction follows the DIN 315 geometry as also implemented in the open-source FreeCAD
-Fasteners Workbench (LGPL, github.com/shaise/FreeCAD_FastenersWB); it is reimplemented here in
-build123d. The shape is dictated by the standard; the exact wing radii are not published, so
-the outline is representative form and only the tabulated envelope dimensions are sourced.
+spread apart, each with a rounded outer ear and a concave valley toward the hub. The wing
+outline comes from the shared ``wing_common._wing_profile`` (see that module for form provenance
+and attribution).
 """
-import math
 
 from build123d import (
     BuildPart, BuildSketch, BuildLine, Line, Polyline, ThreePointArc, Cylinder,
@@ -15,26 +12,7 @@ from build123d import (
 )
 
 from catalog.models.hex_nut import _MIN_WALL_MM   # shared minimum wall thickness (same rule as hex_nut)
-
-_INNER_EDGE_DEG = 20.0   # rise angle of the wing's inner (valley-side) edge, per the DIN 315 form
-
-
-def _wing_profile(boss_d, span, height, wing_t):
-    """Points closing one (+X) finger wing in the XZ plane (x = radial, z = axial).
-
-    A: root at the hub (low z); A->B: inner (valley-side) edge rising at ``_INNER_EDGE_DEG`` to
-    the top; B->C: rounded outer ear (arc, the large ``r1`` radius); C->D: concave outer-lower
-    edge (arc) back to the hub; D->A closes along the hub. Every coordinate is a proportion of
-    the tabulated envelope (boss_d, span, height, wing_t), so the wing is representative form.
-    """
-    xin = boss_d / 4.0                          # inner edge x (buried in the hub -> fused)
-    A = (xin, 0.75 * wing_t)
-    B = (xin + (height - 0.75 * wing_t) * math.tan(math.radians(_INNER_EDGE_DEG)), height)
-    C = (span / 2.0, 0.80 * height)             # ear outer tip (max x)
-    D = (xin, wing_t / 4.0)
-    m_BC = (0.375 * span, 0.95 * height)        # through-point of the rounded ear arc
-    m_CD = ((boss_d + span) / 4.0, 0.25 * height)   # through-point of the concave lower arc
-    return A, B, C, D, m_BC, m_CD
+from catalog.models.wing_common import _wing_profile
 
 
 def wing_nut(bore: float, boss_d: float, collar_d: float, boss_h: float,
@@ -88,6 +66,8 @@ def wing_nut(bore: float, boss_d: float, collar_d: float, boss_h: float,
             make_face()
             # Filter on boss_d/2 (the wider hub base): any vertex outside it is outside the hub
             # at every height, so the narrower top (collar_d/2) is a subset — no corner missed.
+            # For real dimension sets this selects B (valley-side top), C (ear tip) and D
+            # (lower outboard corner) — all three exposed corners are rounded deliberately.
             ear_corners = sk.vertices().filter_by(lambda v: v.X > boss_d / 2.0)
             if ear_corners:
                 fillet(ear_corners, radius=ear_r)                # soften the exposed ear corners

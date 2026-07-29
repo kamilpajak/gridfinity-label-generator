@@ -449,6 +449,19 @@
 			"source": "variant key sharing DIN 6916 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din6916.svg"
 		},
+		"din6921": {
+			"family": "hex_flange_bolt",
+			"sha256": "25c20a6c61b0ff319a28b113fc96111d20fbe3a47319b2578571272f486f5f03",
+			"source": "DIN 6921 hex flange bolt (Sechskantschraube mit Flansch; = ISO 4162 / EN 1665, DIN 6921 withdrawn and replaced by EN 1665 which keeps the flange geometry), M10: hexagon across-flats s=15.0, total head height k=9.2 (bearing face to hex top), flange diameter dc=22.3, flange rim (edge) thickness c=1.5, confirmed by AFT Fasteners DIN 6921 + Bhavya Industries DIN 6921 + Wurth EN 1665/DIN 6921 (all M10 s=15, k=9.2, dc=22.3) and c=1.5 by fasteners.eu DIN 6921 + AFT DIN 6921. Drawn as a vertex-up chamfered hex head on a smooth conical flange wider than the hex across-corners, over a round shank d_shank=10.0 (M10 major). The serrated bearing face of a real DIN 6921 is omitted (a smooth flange, envelope simplification), and the internal flange cone uses a representative 20-degree transition \u2014 the same simplifications flange_nut makes. length=30.0 REPRESENTATIVE; tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. Envelope only \u2014 no drawn thread, no bore.",
+			"svg": "din6921.svg"
+		},
+		"din6921d": {
+			"alias_of": "din6921",
+			"family": "hex_flange_bolt",
+			"sha256": "25c20a6c61b0ff319a28b113fc96111d20fbe3a47319b2578571272f486f5f03",
+			"source": "DIN 6921 M10, app image-variant key \u2014 identical hex-flange-bolt envelope (s=15, k=9.2, dc=22.3, c=1.5), aliases the din6921 base.",
+			"svg": "din6921.svg"
+		},
 		"din6923": {
 			"family": "flange_nut",
 			"sha256": "2ff27067196c1fc9c8cc99f5972a77936d24860e03159081c557e20335584664",

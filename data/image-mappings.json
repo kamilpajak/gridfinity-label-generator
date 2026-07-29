@@ -325,7 +325,7 @@
 	},
 	"din2510": {
 		"image": "/images/standards/din_2510.png",
-		"hardwareType": "nut"
+		"hardwareType": "screw"
 	},
 	"din316": {
 		"image": "/images/standards/din_316.png",

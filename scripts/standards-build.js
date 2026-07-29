@@ -187,7 +187,7 @@ function addImageToStandard(standard, standardId, imageMappings, designations) {
 		} else if (mapping.image) {
 			standard.image = mapping.image;
 			// Prefer hardwareType from image mappings (more accurate than heuristics)
-			if (mapping.hardwareType && !standard.hardwareType) {
+			if (mapping.hardwareType) {
 				standard.hardwareType = mapping.hardwareType;
 			}
 		}
@@ -476,5 +476,9 @@ export const generatedStandards: ISODINStandard[] = ${JSON.stringify(sortedStand
 	console.log(`   Output: ${outputFile}`);
 }
 
-// Run the build
-buildStandards().catch(console.error);
+// Run the build only when executed directly (not when imported by tests)
+if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {
+	buildStandards().catch(console.error);
+}
+
+export { addImageToStandard };

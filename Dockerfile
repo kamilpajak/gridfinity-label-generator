@@ -18,10 +18,11 @@ RUN pnpm install --frozen-lockfile
 # Copy source code and configuration
 COPY . .
 
-# Run pre-build scripts if needed
-RUN pnpm run build-standards
-
 # Build the application
+# Note: the committed src/lib/data/standards-generated.ts is the authoritative
+# dataset. Do not regenerate it here - the maintainer-only DIN Media cache
+# (data/dinmedia-*.json) is git-ignored, so a rebuild inside the image would
+# produce degraded descriptions and hardware types.
 RUN pnpm build
 
 # Prune dev dependencies

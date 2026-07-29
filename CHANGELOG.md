@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Nut, washer, and ring standards (for example DIN 315 wing nuts) no longer wrongly require a length, and standard descriptions display correctly again. The production build shipped a degraded copy of the standards data; it now ships the committed dataset.
+
 ## [3.0.0] - 2026-07-04
 
 This is the open-source debut of Gridfinity Label Generator, alongside a full visual redesign.

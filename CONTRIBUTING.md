@@ -72,9 +72,8 @@ pnpm build
 pnpm preview
 ```
 
-Note: `pnpm build` runs `standards:build` first (via the `prebuild` script), which
-regenerates `src/lib/data/standards-generated.ts` from the standards data. See
-[Standards Data Pipeline](#standards-data-pipeline).
+Note: `pnpm build` uses the committed `src/lib/data/standards-generated.ts` directly
+and does not regenerate it. See [Standards Data Pipeline](#standards-data-pipeline).
 
 ## Branch Naming
 
@@ -231,8 +230,9 @@ pnpm standards:add        # full pipeline for adding new standards
 ```
 
 Do not manually edit `src/lib/data/standards-generated.ts` — it is generated output and
-will be overwritten. CI runs `pnpm build-standards` (validate + build), so an
-out-of-date generated file will fail the build. See the "Standards Data" section of
+will be overwritten by the next `pnpm standards:build`. The committed file is the
+authoritative dataset: builds (including the Docker image) use it as-is, and CI runs
+`pnpm standards:validate` to check the config. See the "Standards Data" section of
 [`CLAUDE.md`](CLAUDE.md) for the full pipeline and data-file reference.
 
 ## Pull Request Process

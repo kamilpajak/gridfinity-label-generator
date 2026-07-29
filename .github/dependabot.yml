@@ -23,6 +23,17 @@ updates:
       semver-major-days: 14
       semver-minor-days: 7
       semver-patch-days: 3
+    ignore:
+      # TypeScript 7 changed the shape of the module export, which breaks
+      # svelte-check (it reads `typescript.default.sys`) and is outside the
+      # range typescript-eslint accepts. Latest versions of both, as of
+      # 2026-07-29, still declare narrower peer ranges:
+      #   svelte-check@4.7.4   -> typescript ^5.0.0 || ^6.0.0
+      #   typescript-eslint    -> typescript >=4.8.4 <6.1.0
+      # Stay on the 6.x line until both support 7.x, then drop this entry.
+      - dependency-name: 'typescript'
+        update-types:
+          - 'version-update:semver-major'
     groups:
       npm-minor-and-patch:
         applies-to: version-updates

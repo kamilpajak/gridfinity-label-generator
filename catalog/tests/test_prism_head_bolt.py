@@ -84,8 +84,20 @@ def test_guards():
     with pytest.raises(ValueError):
         prism_head_bolt(**{**RECT, "under": "hex"})                      # unknown under
     with pytest.raises(ValueError):
-        prism_head_bolt(**{**RECT, "d": RECT["head_width"]})             # shank not narrower than head
+        prism_head_bolt(**{**RECT, "d": RECT["head_width"] + 1.0})       # shank wider than the short head side
     with pytest.raises(ValueError):
         prism_head_bolt(**{**RECT, "head_height": 0.0})                  # non-positive dim
     with pytest.raises(ValueError):
         prism_head_bolt(**{**RECT, "under": "collar"})                   # under set but no under_size/height
+
+
+def test_shank_equal_to_short_head_side_builds_one_solid():
+    # DIN 261 M12: the head short side (n=12) equals the shank d (12) — the shank inscribes in the
+    # head. This must build a single fused solid, not be rejected by the guard.
+    part = prism_head_bolt(d=12.0, length=60.0, head_len=26.0, head_width=12.0,
+                           head_height=8.0, under="none", tip_chamfer=1.0)
+    assert len(part.solids()) == 1
+    assert part.volume > 0
+    bb = part.bounding_box()
+    assert round(bb.size.X, 1) == 26.0        # head length on X
+    assert round(bb.size.Y, 1) == 12.0        # head width on Y == shank dia

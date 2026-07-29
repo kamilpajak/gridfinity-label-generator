@@ -40,10 +40,11 @@ def prism_head_bolt(d: float, length: float, head_len: float, head_width: float,
         if under_height is None or under_height <= 0:
             raise ValueError(
                 f"prism_head_bolt: under={under!r} needs under_height > 0, got {under_height}")
-    if d >= min(head_len, head_width):
+    if d > min(head_len, head_width):
         raise ValueError(
-            f"prism_head_bolt: d {d} must be < the smaller head side {min(head_len, head_width)} "
-            f"(the shank emerges from the head bearing face and is narrower than the head)")
+            f"prism_head_bolt: d {d} must not exceed the smaller head side "
+            f"{min(head_len, head_width)} (the shank emerges from the head bearing face and cannot be "
+            f"wider than the head; d == the short side is allowed — the shank inscribes in the head)")
 
     shank = _screw_shank(d, length, tip_chamfer)          # z in [-length, 0], validates chamfer
     under_h = under_height if under != "none" else 0.0    # top plane of the under feature

@@ -3,14 +3,17 @@ import math
 import pytest
 from build123d import Box, Pos
 
+from catalog.models.flange_nut import _FLANGE_CONE_ANGLE_DEG
 from catalog.models.hex_flange_bolt import hex_flange_bolt
 
 # Synthetic fixture (NOT a real standard). Hex s=18 (across-corners ~20.78), flange dc=26 (wider),
-# rim c=2, total head height k=13, shank 12 x 40. flange_top = c + (dc/2 - s/sqrt3)*tan(20deg) ~= 2.95.
+# rim c=2, total head height k=13, shank 12 x 40. flange_top = c + (dc/2 - s/sqrt3)*tan(cone) ~= 2.95.
 HFB = dict(s=18.0, k=13.0, dc=26.0, c=2.0, d_shank=12.0, length=40.0, tip_chamfer=1.0)
 
 _CIRCUMRADIUS = 18.0 / math.sqrt(3.0)                       # ~10.392 (hex across-corners / 2)
-_FLANGE_TOP = 2.0 + (26.0 / 2.0 - _CIRCUMRADIUS) * math.tan(math.radians(20.0))   # ~2.95
+# Mirror the generator's flange geometry using the SAME cone-angle constant it uses, so this
+# expected value tracks the constant if it ever changes.
+_FLANGE_TOP = 2.0 + (26.0 / 2.0 - _CIRCUMRADIUS) * math.tan(math.radians(_FLANGE_CONE_ANGLE_DEG))
 
 
 def _solid_at(part, x, y, z, probe=0.4):

@@ -12,7 +12,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { addImageToStandard } from '../../../scripts/standards-build.js';
+import { addImageToStandard, assertDinMediaData } from '../../../scripts/standards-build.js';
 import type { BuildStandard } from '../../../scripts/standards-build.js';
 
 const DIN_315_DESIGNATIONS = [{ system: 'DIN', code: '315' }];
@@ -88,5 +88,19 @@ describe('addImageToStandard hardware type precedence', () => {
 
 		expect(standard.hardwareType).toBe('nut');
 		expect(standard.image).toBe('/images/standards/din_315.png');
+	});
+});
+
+describe('assertDinMediaData regeneration guard', () => {
+	it('throws when the DIN Media cache is missing and fallback is not allowed', () => {
+		expect(() => assertDinMediaData(null, false)).toThrow(/dinmedia|DIN Media/);
+	});
+
+	it('allows a degraded run when fallback is explicitly allowed', () => {
+		expect(() => assertDinMediaData(null, true)).not.toThrow();
+	});
+
+	it('passes silently when the DIN Media cache is present', () => {
+		expect(() => assertDinMediaData({ mappings: {}, cache: {} }, false)).not.toThrow();
 	});
 });

@@ -28,3 +28,10 @@ export function addImageToStandard(
 	imageMappings: Record<string, string | StandardImageMapping>,
 	designations: Designation[]
 ): void;
+
+export interface DinMediaData {
+	mappings: Record<string, unknown>;
+	cache: Record<string, unknown>;
+}
+
+export function assertDinMediaData(dinMediaData: DinMediaData | null, allowFallback: boolean): void;

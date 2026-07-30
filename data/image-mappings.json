@@ -29,35 +29,35 @@
 	},
 	"iso7046": {
 		"image": "/images/standards/din_965.png",
-		"hardwareType": "self_tapping"
+		"hardwareType": "screw"
 	},
 	"iso7045": {
 		"image": "/images/standards/din_7985.png",
-		"hardwareType": "self_tapping"
+		"hardwareType": "screw"
 	},
 	"iso7047": {
 		"image": "/images/standards/din_966.png",
-		"hardwareType": "self_tapping"
+		"hardwareType": "screw"
 	},
 	"iso2009": {
 		"image": "/images/standards/din_963.png",
-		"hardwareType": "self_tapping"
+		"hardwareType": "screw"
 	},
 	"iso1207": {
 		"image": "/images/standards/din_84.png",
-		"hardwareType": "self_tapping"
+		"hardwareType": "screw"
 	},
 	"iso1580": {
 		"image": "/images/standards/din_85.png",
-		"hardwareType": "self_tapping"
+		"hardwareType": "screw"
 	},
 	"iso2010": {
 		"image": "/images/standards/din_964.png",
-		"hardwareType": "self_tapping"
+		"hardwareType": "screw"
 	},
 	"iso14583": {
 		"image": "/images/standards/din_7985.png",
-		"hardwareType": "self_tapping"
+		"hardwareType": "screw"
 	},
 	"iso4017": {
 		"image": "/images/standards/iso_4014.png",
@@ -325,7 +325,7 @@
 	},
 	"din2510": {
 		"image": "/images/standards/din_2510.png",
-		"hardwareType": "nut"
+		"hardwareType": "screw"
 	},
 	"din316": {
 		"image": "/images/standards/din_316.png",

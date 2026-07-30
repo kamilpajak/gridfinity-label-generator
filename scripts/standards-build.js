@@ -43,10 +43,31 @@ const __dirname = path.dirname(__filename);
 
 // CLI arguments
 const STRICT_MODE = process.argv.includes('--strict');
+const ALLOW_FALLBACK = process.argv.includes('--allow-fallback');
 
 // DIN Media integration files (Single Source of Truth for both DIN and ISO)
 const DINMEDIA_MAPPINGS_FILE = path.join(__dirname, '..', 'data', 'dinmedia-id-mappings.json');
 const DINMEDIA_CACHE_FILE = path.join(__dirname, '..', 'data', 'dinmedia-metadata-cache.json');
+
+/**
+ * Guard against regenerating the dataset without the DIN Media cache.
+ * A fallback run degrades descriptions to plain "DIN <n>" and hardware types
+ * to 'other' for every standard the image mappings do not cover, which is how
+ * the DIN 315 length-field bug shipped (discussion #112).
+ *
+ * @param {Object|null} dinMediaData - { mappings, cache } or null if not available
+ * @param {boolean} allowFallback - true when --allow-fallback was passed
+ * @throws {Error} when the cache is missing and fallback was not requested
+ */
+function assertDinMediaData(dinMediaData, allowFallback) {
+	if (!dinMediaData && !allowFallback) {
+		throw new Error(
+			'DIN Media cache missing (data/dinmedia-*.json). Regenerating without it degrades ' +
+				'descriptions and hardware types. Run "pnpm standards:fetch" first, or pass ' +
+				'--allow-fallback to regenerate degraded data on purpose.'
+		);
+	}
+}
 
 /**
  * Load DIN Media data (mappings and metadata cache)
@@ -184,10 +205,12 @@ function addImageToStandard(standard, standardId, imageMappings, designations) {
 		// Handle both old format (string) and new format ({image, hardwareType})
 		if (typeof mapping === 'string') {
 			standard.image = mapping;
-		} else if (mapping.image) {
-			standard.image = mapping.image;
+		} else {
+			if (mapping.image) {
+				standard.image = mapping.image;
+			}
 			// Prefer hardwareType from image mappings (more accurate than heuristics)
-			if (mapping.hardwareType && !standard.hardwareType) {
+			if (mapping.hardwareType) {
 				standard.hardwareType = mapping.hardwareType;
 			}
 		}
@@ -239,6 +262,7 @@ async function buildStandards() {
 
 	// Load DIN Media data (Single Source of Truth for both DIN and ISO standards)
 	const dinMediaData = loadDinMediaData();
+	assertDinMediaData(dinMediaData, ALLOW_FALLBACK);
 	if (dinMediaData) {
 		const mappingCount = Object.keys(dinMediaData.mappings).length;
 		const cacheCount = Object.keys(dinMediaData.cache).length - 1; // -1 for _meta
@@ -476,5 +500,27 @@ export const generatedStandards: ISODINStandard[] = ${JSON.stringify(sortedStand
 	console.log(`   Output: ${outputFile}`);
 }
 
-// Run the build
-buildStandards().catch(console.error);
+/**
+ * True when this file is the entry point. Both sides are resolved to real
+ * paths: Node resolves symlinks for import.meta.url but not for argv[1], so a
+ * plain path comparison would silently skip the build when invoked through a
+ * symlinked path.
+ */
+function isRunDirectly() {
+	if (!process.argv[1]) return false;
+	try {
+		return fs.realpathSync(path.resolve(process.argv[1])) === fs.realpathSync(__filename);
+	} catch {
+		return false;
+	}
+}
+
+// Run the build only when executed directly (not when imported by tests)
+if (isRunDirectly()) {
+	buildStandards().catch((error) => {
+		console.error(error);
+		process.exitCode = 1;
+	});
+}
+
+export { addImageToStandard, assertDinMediaData };

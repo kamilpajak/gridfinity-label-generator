@@ -81,11 +81,12 @@ pnpm standards:build           # Regenerate standards-generated.ts
 
 #### Data Files
 
-| File                         | Committed? | Purpose                           |
-| ---------------------------- | ---------- | --------------------------------- |
-| `data/standards-config.json` | yes        | Cross-references (din/iso arrays) |
-| `data/image-mappings.json`   | yes        | Standard → image mappings         |
-| `data/dinmedia-*.json`       | no (local) | Maintainer metadata cache         |
+| File                              | Committed? | Purpose                                             |
+| --------------------------------- | ---------- | --------------------------------------------------- |
+| `data/standards-config.json`      | yes        | Cross-references (din/iso arrays)                   |
+| `data/image-mappings.json`        | yes        | Standard → image mappings                           |
+| `data/legacy-image-mappings.json` | yes        | Frozen pre-vectorization rasters (dev compare page) |
+| `data/dinmedia-*.json`            | no (local) | Maintainer metadata cache                           |
 
 #### Config Structure
 

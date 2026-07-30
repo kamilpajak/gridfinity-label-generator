@@ -1,10 +1,14 @@
 // Dev-only asset comparison lab.
 //
 // Loads every generated catalog drawing (catalog/out/manifest.json + the inlined
-// SVG source) and pairs it with the legacy raster image the app ships today
-// (data/image-mappings.json). The page renders the two side by side so a
+// SVG source) and pairs it with the raster the app shipped before vectorization
+// (data/legacy-image-mappings.json). The page renders the two side by side so a
 // maintainer can eyeball how faithful each generated vector is to the raster it
-// is meant to replace.
+// replaced.
+//
+// The legacy column deliberately reads the frozen snapshot, not the live
+// data/image-mappings.json: catalog/integrate.py repoints the live file at the
+// generated SVGs, so using it here would compare each drawing with itself.
 //
 // The route is already gated to dev by the parent src/routes/dev/+layout.server.ts,
 // but we re-assert it here so the filesystem reads below never run in production.
@@ -20,6 +24,7 @@ const ROOT = process.cwd();
 const MANIFEST = join(ROOT, 'catalog', 'out', 'manifest.json');
 const CATALOG_OUT = join(ROOT, 'catalog', 'out');
 const IMAGE_MAPPINGS = join(ROOT, 'data', 'image-mappings.json');
+const LEGACY_IMAGE_MAPPINGS = join(ROOT, 'data', 'legacy-image-mappings.json');
 
 interface ManifestEntry {
 	family: string;
@@ -43,6 +48,8 @@ export interface ComparisonItem {
 	svg: string;
 	/** Public URL of the legacy raster, served from static/. */
 	legacyImage: string | null;
+	/** Public URL the app serves for this standard today (svg once integrated). */
+	currentImage: string | null;
 	hardwareType: string | null;
 }
 
@@ -55,7 +62,11 @@ function readComparison() {
 		string,
 		ManifestEntry
 	>;
-	const legacy = JSON.parse(readFileSync(IMAGE_MAPPINGS, 'utf-8')) as Record<string, LegacyEntry>;
+	const current = JSON.parse(readFileSync(IMAGE_MAPPINGS, 'utf-8')) as Record<string, LegacyEntry>;
+	const legacy = JSON.parse(readFileSync(LEGACY_IMAGE_MAPPINGS, 'utf-8')) as Record<
+		string,
+		LegacyEntry
+	>;
 
 	// One SVG file can back several manifest keys (aliases reuse the base drawing),
 	// so cache reads by filename to avoid re-reading the same file 26 times.
@@ -76,7 +87,8 @@ function readComparison() {
 			aliasOf: entry.alias_of ?? null,
 			svg: readSvg(entry.svg),
 			legacyImage: legacy[id]?.image ?? null,
-			hardwareType: legacy[id]?.hardwareType ?? null
+			currentImage: current[id]?.image ?? null,
+			hardwareType: current[id]?.hardwareType ?? legacy[id]?.hardwareType ?? null
 		}))
 		.sort((a, b) => a.id.localeCompare(b.id));
 

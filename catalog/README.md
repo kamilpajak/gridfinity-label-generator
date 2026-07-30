@@ -56,6 +56,12 @@ are not manifest keys and still point at legacy pngs (mostly unshipped ids);
 repointing those is a per-key visual-equivalence decision for the contact
 sheet.
 
+`data/legacy-image-mappings.json` is a **frozen** snapshot of the standard →
+raster mapping as it shipped before vectorization. `/dev/asset-compare` reads
+its legacy column from that file, because `integrate.py` repoints the live
+`data/image-mappings.json` at the generated SVGs — comparing against the live
+file would show each drawing next to itself. Never regenerate the snapshot.
+
 **Line style is sized for the label printer** (`catalog/render.py`): the
 drawing lands in an ~8mm slot on a 360dpi 1-bit thermal print, so all layers
 are pure black (gray dithers away on a thermal head) and weights are

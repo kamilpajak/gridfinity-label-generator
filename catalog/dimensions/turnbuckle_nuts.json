@@ -1,0 +1,32 @@
+{
+	"din1479": {
+		"family": "turnbuckle_nut",
+		"shape": {
+			"s": 18.0,
+			"length": 55.0,
+			"bore": 10.1,
+			"sight_hole_d": 3.0
+		},
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "1479"
+			}
+		],
+		"source": "DIN 1479 hexagon turnbuckle nut (Spannschlossmutter), M12. Envelope confirmed vs fasteners.eu DIN 1479 table (M12: s=18 across flats, l=55 length, e=20.03 across corners min, m=40, steel min. 330 MPa) + wdscomponents.com 'M12 x 55 x 18 across flats hexagonal turnbuckle nut DIN 1479' (L=55, S=18, L1=40, L2=21) + maedlernorthamerica.com turnbuckle similar DIN 1479 M12 (l=55, s=18, min thread engagement t=17, adjustability 25). bore=10.1 is the M12 thread minor diameter -- the family's drawn-bore convention (same value as the iso4032 hex-nut entry); envelope-only, no drawn thread and no right/left-hand marking. sight_hole_d=3.0 REPRESENTATIVE: DIN 1479 sleeves carry cross/sight holes to check thread engagement (Maedler product note) but no public table lists their diameter for M12; drawn simplified as one through-hole across two opposite flats at mid-length. End corner chamfer uses the hex-nut default (chamfer circle = s) REPRESENTATIVE."
+	},
+	"din1479d": {
+		"alias_of": "din1479",
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "1479"
+			}
+		],
+		"source": "DIN 1479 M12, app image-variant key -- identical turnbuckle-nut envelope, aliases the din1479 base."
+	}
+}

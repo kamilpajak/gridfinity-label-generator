@@ -77,6 +77,19 @@
 			"source": "variant key sharing DIN 1440 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din1440.svg"
 		},
+		"din1479": {
+			"family": "turnbuckle_nut",
+			"sha256": "1e7cf98e03939b76354187c64b5b04b7a25c957fd74d94914127447d85f2920c",
+			"source": "DIN 1479 hexagon turnbuckle nut (Spannschlossmutter), M12. Envelope confirmed vs fasteners.eu DIN 1479 table (M12: s=18 across flats, l=55 length, e=20.03 across corners min, m=40, steel min. 330 MPa) + wdscomponents.com 'M12 x 55 x 18 across flats hexagonal turnbuckle nut DIN 1479' (L=55, S=18, L1=40, L2=21) + maedlernorthamerica.com turnbuckle similar DIN 1479 M12 (l=55, s=18, min thread engagement t=17, adjustability 25). bore=10.1 is the M12 thread minor diameter -- the family's drawn-bore convention (same value as the iso4032 hex-nut entry); envelope-only, no drawn thread and no right/left-hand marking. sight_hole_d=3.0 REPRESENTATIVE: DIN 1479 sleeves carry cross/sight holes to check thread engagement (Maedler product note) but no public table lists their diameter for M12; drawn simplified as one through-hole across two opposite flats at mid-length. End corner chamfer uses the hex-nut default (chamfer circle = s) REPRESENTATIVE.",
+			"svg": "din1479.svg"
+		},
+		"din1479d": {
+			"alias_of": "din1479",
+			"family": "turnbuckle_nut",
+			"sha256": "1e7cf98e03939b76354187c64b5b04b7a25c957fd74d94914127447d85f2920c",
+			"source": "DIN 1479 M12, app image-variant key -- identical turnbuckle-nut envelope, aliases the din1479 base.",
+			"svg": "din1479.svg"
+		},
 		"din1587": {
 			"family": "cap_nut",
 			"sha256": "7e28b5d2207a51f5d3d3151c265ce23dc49aab1a88c2484480b65f22391c2c6b",
@@ -108,6 +121,19 @@
 			"sha256": "423022b2e735acaa9544eb5e7280690a772dd9e1b602620c319f09864b8a602a",
 			"source": "DIN 1816 M12x1.5, app image-variant key -- identical cross-hole-nut envelope, aliases the din1816 base.",
 			"svg": "din1816.svg"
+		},
+		"din186": {
+			"family": "t_head_bolt",
+			"sha256": "23ff04b07bf3722a85f0334b866e50a6f7eaf977d644f348d62dc67ed32f8b70",
+			"source": "DIN 186 T-head (hammer) bolt with square neck (Hammerschraube mit Vierkant), M12: head length m=26 (tabulated 25-27), head width n=12 (11.1-12.9), head height k=8 (7.25-8.75), shank ds=12 (11.3-12.7) confirmed vs fasteners.eu DIN 186 table (m 26/27/25, n 12/12.9/11.1, k 8/8.75/7.25, ds 12/12.7/11.3, square across-corners e_min=14.17) + Aspen Fasteners Metric DIN 186 spec PDF (M12: E=26 head length, F=12 head width, K=8 head height, thread B=30 for l<=120) + Fuller Fasteners DIN 186 (same M12 min/max band: m 25-27, n 11.1-12.9, k 7.25-8.75). Square neck side neck_w=12.0 = head width n (the square is flush with the head's narrow faces; e_min=14.17 is its guaranteed across-corners engagement). neck_h=8.0 REPRESENTATIVE: the square's axial height is not tabulated in the public tables; drawn equal to head height k per the standard drawing's proportions. d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread). length=60.0 REPRESENTATIVE (tabulated stock length; Aspen lists M12 from l=40 to 160). tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. The hammer head's end rounding is an untabulated fine detail and is omitted: the head is drawn as its m x n x k rectangular envelope.",
+			"svg": "din186.svg"
+		},
+		"din186p": {
+			"alias_of": "din186",
+			"family": "t_head_bolt",
+			"sha256": "23ff04b07bf3722a85f0334b866e50a6f7eaf977d644f348d62dc67ed32f8b70",
+			"source": "DIN 186 M12, app image-variant key -- identical square-neck T-head envelope (head 26x12x8, square 12), aliases the din186 base.",
+			"svg": "din186.svg"
 		},
 		"din2093": {
 			"family": "curved_washer",
@@ -257,6 +283,19 @@
 			"source": "DIN 440 Form V (square hole) large washer for square-neck bolts, M12: d_outer=44.0, thickness=4.0, square hole side hole_side=14.0 \u2014 all tabulated, cross-checked fasteners.eu DIN 440-V + Krepcom DIN 440 Form V tables (square hole a=14 for M12; the round Form R hole is 13.5).",
 			"svg": "din440v.svg"
 		},
+		"din444": {
+			"family": "eye_bolt",
+			"sha256": "e4449e8200122999ad503fedc9f3d0f2c7db0bf5f7e6fd03b5645743bf2acd28",
+			"source": "DIN 444 eye bolt / Augenschraube, Type B (M12x70). Envelope confirmed vs fasteners.eu DIN 444 table (M12: eye bore d2=12 H9, eye outer dia d3=25 max, transition radius r approx 6, eye width s=14 max for Types B/C, stock lengths 30-300) + boltingspecialist.com DIN 444 Type B table (M12x1.75: d2=12 H9, d3=25 H14, r=6, s=14 H12, thread length b=30, stock lengths 70 and 100). eye_od=25.0 is d3, eye_hole=12.0 is d2, eye_t=14.0 is s. d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread). length=70.0 is a tabulated stock length (boltingspecialist M12x70), read as the shank length below the eye. tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. The eye-to-shank transition radius r=6 is omitted; the straight neck at shank width is representative form.",
+			"svg": "din444.svg"
+		},
+		"din444d": {
+			"alias_of": "din444",
+			"family": "eye_bolt",
+			"sha256": "e4449e8200122999ad503fedc9f3d0f2c7db0bf5f7e6fd03b5645743bf2acd28",
+			"source": "DIN 444 M12, app image-variant key -- identical eye-bolt envelope, aliases the din444 base.",
+			"svg": "din444.svg"
+		},
 		"din462": {
 			"family": "tab_washer",
 			"sha256": "20fcad16b2169cfaf61980fb34692ccafb158a5befc6544dd3c33c5031ed3e52",
@@ -282,6 +321,19 @@
 			"sha256": "8551b7e68197f0fc03a01059fe8798d7ac948e1fe5398a6b58633de58437834e",
 			"source": "plated (electro-zinc) variant of DIN 463; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din463.svg"
+		},
+		"din464": {
+			"family": "knurled_screw_high",
+			"sha256": "07653076a65a07e6dc84c93262f7383a91b7c1d0aa1bc196041cfd2885700b5f",
+			"source": "DIN 464 high knurled thumb screw (Raendelschraube, hohe Form), M6: knurled head diameter dk=24.0, knurled head height k=5.0, raised on a reduced collar/shoulder of diameter ds=12.0; total head height h=15.0, so collar_h = h - k = 10.0 (h and k are both tabulated; the difference is arithmetic, not a new number). Confirmed vs fasteners.eu DIN 464 table (M6: dk=24 nom, ds=12 nom=max, h=15 nom, k=5 nom=max) + Aspen Fasteners 'Metric DIN 464 Knurled Thumb Screws, High Type' spec PDF (identical M6 column). Both tables cover M1-M10 only -- DIN 464 has NO M12 row -- so the base is drawn at M6, matching the sibling DIN 653 base (same knurled head dk=24/k=5; DIN 464 is that head raised on the collar). d_shank=6.0 is the M6 major diameter (envelope-only, no drawn thread). length=20.0 REPRESENTATIVE (common M6 stock length; the tabulated l series includes 20). head_chamfer=0.5 REPRESENTATIVE 45-degree top-rim break, consistent with the tabulated edge-chamfer series c=0.3-0.6; tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. The knurl itself is omitted (fine feature, like the thread -- same envelope convention as knurled_nut/knurled_screw).",
+			"svg": "din464.svg"
+		},
+		"din464p": {
+			"alias_of": "din464",
+			"family": "knurled_screw_high",
+			"sha256": "07653076a65a07e6dc84c93262f7383a91b7c1d0aa1bc196041cfd2885700b5f",
+			"source": "DIN 464 M6, app image-variant key -- identical high-form knurled-thumb-screw envelope (dk=24, k=5 on the ds=12 collar), aliases the din464 base.",
+			"svg": "din464.svg"
 		},
 		"din466": {
 			"family": "knurled_nut",
@@ -320,6 +372,19 @@
 			"sha256": "23b0aead360360949b85505a1d31539ff313fcd70d6985b407522bbd075e64fa",
 			"source": "DIN 472 internal circlip for bore, normal type, d1=12mm. d_seat=d2=12.5mm (bore groove diameter, the ring's outer edge seats here; d2>d1). thickness=s=1.0mm. Radial section tapers from b=1.7mm at the back to a=3.0mm at the lug/ear ends (a>b, same taper direction as DIN 471). lug_hole_d=d5=1.5mm. Confirmed vs Westfield Fasteners DIN 472 table + fasten.it + ItaFasteners + AMESweb (s=1.0, b=1.7, a=3.0, d5=1.5); d2=12.5 from Westfield + fasten.it + engdatabase.com. gap_deg=32 and lug_project=0.5 (the ear wall around the plier hole) are representative (not tabulated in public DIN 472 sources).",
 			"svg": "din472.svg"
+		},
+		"din478": {
+			"family": "square_head_bolt",
+			"sha256": "04f812d1e362acc7e0184538565b7d5b740a1f65c3e10fe9f2961e525bd0ee25",
+			"source": "DIN 478 square head bolt with collar (Vierkantschraube mit Bund), M12: square head across-flats s=13.0 (max; min 12.73), head height k=15.0 (14.78-15.22), collar diameter dc=19.5 (max; min 18.66), collar thickness c=3.0 (2.88-3.12), shank ds=12.0, confirmed by fasteners.eu DIN 478 table + Fuller Fasteners DIN 478 specifications (identical M12 row) + Wegertseder DIN 478 technical dimensions (M12 s=13, k=15, collar d1=19.5, e=17). k=15 is the TOTAL head height INCLUDING the collar: the collarless small-square-head twin DIN 479 tabulates k=12 at M12 (fasteners.eu), and 12 + c(3) = 15 -- the drawn square band above the collar is k-c=12. The tabulated rounded-corner width e=17 (< s*sqrt(2)=18.38) is omitted: the square is drawn with sharp corners, an envelope simplification that stays inside the dc=19.5 collar. d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread, no drive -- the square head is the drive). length=40.0 REPRESENTATIVE (common M12 stock length; DIN 478 M12 thread length b=30 per Wegertseder implies longer stock); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead.",
+			"svg": "din478.svg"
+		},
+		"din478p": {
+			"alias_of": "din478",
+			"family": "square_head_bolt",
+			"sha256": "04f812d1e362acc7e0184538565b7d5b740a1f65c3e10fe9f2961e525bd0ee25",
+			"source": "DIN 478 M12, app image-variant key -- identical collared-square-head envelope (s=13, k=15, dc=19.5, c=3), aliases the din478 base.",
+			"svg": "din478.svg"
 		},
 		"din508": {
 			"family": "tslot_nut",
@@ -366,11 +431,37 @@
 			"source": "DIN 603 M12, app image-variant key \u2014 identical cup-head square-neck envelope (dk=30, k=7, square 12.7); aliases the din603 base.",
 			"svg": "din603.svg"
 		},
+		"din604": {
+			"family": "nib_bolt",
+			"sha256": "bf64632bf60c4c11f61a1f934a36f507541e4fa6156e09f252cb111bec3b96e8",
+			"source": "DIN 604 flat countersunk nib bolt (Senkschraube mit Nase), M12: head diameter dk=24.65 (tabulated 23.35-24.65) and head height k=7.0 (max), nib width nib_w=3.6 (g, tabulated 3.12-3.6), confirmed by fasteners.eu DIN 604 table + Fuller Fasteners DIN 604 specifications + boltingspecialist.com DIN 604 (all M12 dk-max 24.65, g-max 3.6, head-angle 90-95 deg). nib_d=5.7 is the tabulated M12 'i' minimum, read as the nib height per fasteners.eu ('i - height of the nose', min 5.7) and Fuller (i min 5.7); boltingspecialist reads the same 5.7/7.0 pair as the head-depth range, so the nib-depth reading is flagged as the two-of-three interpretation. nib_l=9.0 REPRESENTATIVE (the radial nib reach is not tabulated in DIN 604; drawn protruding 3 mm past the 6 mm shank radius, inside the head outline). d_shank=12.0 (M12 major, envelope-only, no drawn thread); length=50.0 REPRESENTATIVE (DIN 604 lists lengths 20-160); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Envelope only - no thread, no drive (the nib is the anti-rotation feature); the nib is drawn as a plain box below the bearing plane, representative form for the countersunk seat.",
+			"svg": "din604.svg"
+		},
+		"din604d": {
+			"alias_of": "din604",
+			"family": "nib_bolt",
+			"sha256": "bf64632bf60c4c11f61a1f934a36f507541e4fa6156e09f252cb111bec3b96e8",
+			"source": "DIN 604 M12, app image-variant key - identical flat countersunk nib-bolt envelope (dk=24.65, k=7, nib g=3.6/i=5.7); aliases the din604 base.",
+			"svg": "din604.svg"
+		},
 		"din605": {
 			"family": "carriage_bolt",
 			"sha256": "f38205f85a97d47667bcc5b40486fc846bb10e01ae1e017cb0642d96741397e0",
 			"source": "DIN 605 countersunk (flat 120-degree conical) head square-neck carriage bolt with high square (Senkschraube mit Vierkantansatz), REPRESENTATIVE SIZE M10: DIN 605 has NO M12 row in the published tables (Fuller / Bhalla / Intafast / Jignesh all stop at M10), so this is drawn at the standard's maximum published size M10 (same precedent as the ISO 14580 M10 drop). Countersunk head diameter dk=24.65 and overall head thickness (incl. square) 11.55 and square across-flats square_w=10.58 confirmed by Fuller Fasteners DIN 605 + Bhalla Fasteners DIN 605 + Intafast DIN 605 drawing (all M10 dk-max 24.65, fn-max 11.55, v-max 10.58). The 11.55 overall is split into a countersink cone height k=4.1 and square_depth=7.45: the split is DERIVED so the cone is the standard 120-degree countersink (dk/2 to square_w/2 over k), a representative envelope join. d=10.0 (M10 major); length=50.0 REPRESENTATIVE M10 length; tip_chamfer=1.0 REPRESENTATIVE. Envelope only \u2014 no drawn thread, no drive.",
 			"svg": "din605.svg"
+		},
+		"din607": {
+			"family": "nib_bolt",
+			"sha256": "56e36d2eed55a3720d3868d1ee62e8fd3d5ecc12d50a50b8536f2571443e0319",
+			"source": "DIN 607 cup (round) head nib bolt (Flachrundschraube mit Nase), M12: head diameter dk=24.65 (tabulated 23.35-24.65) and head height k=9.65 (tabulated 8.75-9.65), nib width nib_w=3.6 (g, tabulated 3.12-3.6) and nib depth nib_d=3.2 (i, min), confirmed by Fuller Fasteners DIN 607 specifications (M12: dk 23.35-24.65, k 8.75-9.65, g 3.12-3.6, i min 3.2, head radius r approx 13.3) + fasten.it DIN 607 table (M12: dk-max 24.65, k 8.75-9.65, g-max 3.6, i-min 3.2; grade C, sizes M8-M16). The dome is drawn as the spherical cap through dk/k (the tabulated r approx 13.3 matches the derived cap radius 12.7 within its 'approx' tolerance). nib_l=9.0 REPRESENTATIVE (radial nib reach is not tabulated; drawn protruding 3 mm past the 6 mm shank radius, inside the head outline). d_shank=12.0 (M12 major, envelope-only, no drawn thread); length=50.0 REPRESENTATIVE stock length; tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Envelope only - no thread, no drive (the nib is the anti-rotation feature).",
+			"svg": "din607.svg"
+		},
+		"din607d": {
+			"alias_of": "din607",
+			"family": "nib_bolt",
+			"sha256": "56e36d2eed55a3720d3868d1ee62e8fd3d5ecc12d50a50b8536f2571443e0319",
+			"source": "DIN 607 M12, app image-variant key - identical cup-head nib-bolt envelope (dk=24.65, k=9.65, nib g=3.6/i=3.2); aliases the din607 base.",
+			"svg": "din607.svg"
 		},
 		"din609": {
 			"family": "hex_bolt",
@@ -651,6 +742,19 @@
 			"sha256": "8545b027ebc9ddb8e99a012fd92845cdaff537e24811d8d0256bfc301e8e8cee",
 			"source": "DIN 7603 (12x18, sealing ring / Dichtring, copper/aluminium; d1=12, d2=18). Thickness representative (form/material dependent, commonly 1.0-1.5 mm; 1.5 chosen).",
 			"svg": "din7603d.svg"
+		},
+		"din787": {
+			"family": "t_head_bolt",
+			"sha256": "d5d55730dfc7d25d15b111f88c90cd968b29694236aace574a91d3aa637a0878",
+			"source": "DIN 787 T-slot bolt (Nutenschraube), M12 for the 14 mm T-slot (the same DIN 650 slot as this catalogue's DIN 508 T-slot nut): head length e=22 (spans the slot undercut), head width a=13.7 (nominal 14 with the tabulated -0.3/-0.5 drop-in tolerance -- the head passes down through the 14 mm slot opening, then turns 90 degrees), head height k=8, confirmed vs fasteners.eu DIN 787 table (M12 / a=14 row: e=22, k=8, a tol -0.3/-0.5) + boltingspecialist.com DIN 787 (same row) + ferrofast.com DIN 787 + JW Winco DIN 787 T-slot bolt table (M12, slot 0.55 in = 14 mm: a 0.55 -0.012/-0.02 in, e 0.87 in = 22 mm, k 0.31 in = 8 mm). No square neck -- anti-rotation comes from the rectangular head locked in the slot. DIN 787 also tabulates an M12 head for the 12 mm slot (e=18, k=7); the 14 mm row is drawn for catalogue consistency with DIN 508. d_shank=12.0 (M12 major, envelope-only, no drawn thread). length=80.0 REPRESENTATIVE (a tabulated stock length, thread b=55; e.g. Maedler DIN 787 M12x80). tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. Head corner radii are not published in these tables; the head is drawn as its e x a x k rectangular envelope.",
+			"svg": "din787.svg"
+		},
+		"din787i": {
+			"alias_of": "din787",
+			"family": "t_head_bolt",
+			"sha256": "d5d55730dfc7d25d15b111f88c90cd968b29694236aace574a91d3aa637a0878",
+			"source": "DIN 787 M12, app image-variant key -- identical T-slot-bolt envelope (head 22x13.7x8, no neck), aliases the din787 base.",
+			"svg": "din787.svg"
 		},
 		"din7968": {
 			"alias_of": "din609",
@@ -1399,6 +1503,12 @@
 			"sha256": "c8bd469fcb5d5a11da748dee93709bf7d4b2345c6a103b2b1d60b2e16f011dad",
 			"source": "plated (electro-zinc) variant of ISO 7094; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7094.svg"
+		},
+		"iso7379": {
+			"family": "shoulder_screw",
+			"sha256": "05dea5e34f46e836d77d9e164a3843c77766364d998dafb8af4227e38db2961f",
+			"source": "ISO 7379 hexagon socket head shoulder screw. ISO 7379 designates by SHOULDER diameter, so the shoulder-12 variant (which carries an M10 thread) is used: its 12 mm ground shoulder is the size-defining diameter, matching the app key's M12-ish drawing scale. Row confirmed vs fasteners.eu ISO 7379 table (M10: ds=12, dk<=18.27, k<=8.9, s=6, b=16) + boltingspecialist.com ISO 7379 (identical M10 row: ds=12, dk<=18.27, k<=8.9, s=6, b=16). Fuller Fasteners ISO 7379 spec corroborates the head/socket detail: plain head dk=18 max (18.27 max is the knurled head), k 9 max / 8.78 min, s=6, socket depth t=4.9 min, b 16.4/15.6. Used: dk=18.0 (plain-head max), k=8.9, socket_af=6.0, socket_depth=4.9, d_thread=10.0 (M10 major, envelope-only, no drawn thread), thread_len=16.0 (b). shoulder_len=30.0 REPRESENTATIVE (common stock shoulder length, e.g. Accu SSH-M10-30 'M10 (12mm) x 30mm' ISO 7379 shoulder screw); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Head knurl, thread undercut and shoulder edge chamfers are omitted (envelope-only fine-feature rule).",
+			"svg": "iso7379.svg"
 		},
 		"iso7380": {
 			"family": "socket_screw",

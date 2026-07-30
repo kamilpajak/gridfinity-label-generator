@@ -21,5 +21,26 @@
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "508" }],
 		"source": "DIN 508 M12, app image-variant key -- identical T-slot-nut envelope, aliases the din508 base."
+	},
+	"iso299": {
+		"alias_of": "din508",
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "299" }],
+		"source": "ISO 299 T-slot nut (M12, 14 mm slot): the international counterpart of DIN 508 with an identical M12 envelope -- a=14 nominal (a_max=13.7), e=22, h=16, k=8 -- so it aliases the din508 drawing. Equivalence and figures confirmed vs fasteners.eu ISO 299 table + Definite Metal ISO 299 table (both list DIN 508 as the equivalent norm) + TorqBolt ISO 299 equivalents listing + Maedler/Scholz combined DIN 508 / ISO 299 product pages."
+	},
+	"iso299p": {
+		"alias_of": "din508",
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "299" }],
+		"source": "ISO 299 M12, app image-variant key -- identical T-slot-nut envelope; iso299 is itself an alias of din508, so this key points at the din508 base directly."
+	},
+	"iso299d": {
+		"alias_of": "din508",
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "299" }],
+		"source": "ISO 299 M12, app image-variant key -- identical T-slot-nut envelope; iso299 is itself an alias of din508, so this key points at the din508 base directly."
 	}
 }

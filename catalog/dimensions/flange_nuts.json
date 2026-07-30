@@ -50,5 +50,19 @@
 		"source": "DIN 6926 M12, app image-variant key -- identical flange-nut envelope; points at the din6923 base directly because din6926 is itself an alias of din6923.",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "6926" }]
+	},
+	"iso4161": {
+		"alias_of": "din6923",
+		"hardwareType": "nut",
+		"source": "ISO 4161 hex nut with flange (M12): s=18, m=12, dc=26, c=1.8 -- envelope identical to DIN 6923 (equivalent/successor standard, same body), so it aliases the din6923 base. Confirmed vs Torqbolt ISO 4161 table (s=18, dc=26, m=12, c=1.8) + RC Fastener ISO 4161 metric hex flange nut spec sheet (s max 18.00, e min 20.03, m max 12, flange dia max 26).",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4161" }]
+	},
+	"iso4161p": {
+		"alias_of": "din6923",
+		"hardwareType": "nut",
+		"source": "ISO 4161 M12, app image-variant key -- identical flange-nut envelope; points at the din6923 base directly because iso4161 is itself an alias of din6923.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4161" }]
 	}
 }

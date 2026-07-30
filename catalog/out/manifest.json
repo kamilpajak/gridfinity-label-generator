@@ -90,6 +90,12 @@
 			"source": "DIN 1587 M12, app image-variant key -- identical cap-nut envelope, aliases the din1587 base.",
 			"svg": "din1587.svg"
 		},
+		"din1804d": {
+			"family": "slotted_round_nut",
+			"sha256": "5b73fae307176d786769e71d2e8bb5691fb61beca7b03af2b7bacb063a468735",
+			"source": "DIN 1804 slotted round nut for hook spanners (M12x1.5 fine thread): OD d2=28, height h=6, bore=10.4 (M12x1.5 minor dia, same as din70852), n_slots=4, slot width b=slot_w=5, slot radial depth t=slot_depth=2 (slot-floor dia 24), slot_h=6=h (DIN 1804 spanner slots run the full nut height, unlike the partial DIN 981/70852 grooves). Confirmed vs fasteners.eu + Fuller Fasteners + Woodstock Industrial + fixawell tables and the David Dorfmueller M12x1.5 product sheet. The shallow face recess d3=23 x z=0.5 listed by Fuller is not modelled.",
+			"svg": "din1804d.svg"
+		},
 		"din1816": {
 			"family": "cross_hole_nut",
 			"sha256": "423022b2e735acaa9544eb5e7280690a772dd9e1b602620c319f09864b8a602a",
@@ -518,6 +524,19 @@
 			"source": "DIN 6914 M12, app image-variant key \u2014 identical DIN 6914 heavy-hex HV envelope (s=22), aliases the din6914 base.",
 			"svg": "din6914.svg"
 		},
+		"din6915": {
+			"family": "hex_nut",
+			"sha256": "9090ff38ab876eb267ba9a1146414d77ecf20e92734d1d5d424a6a8552db946f",
+			"source": "DIN 6915 hexagon nut with large width across flats for HV high-strength structural steel bolting, M12: s=22.0 (nom, min 21.16), m=10.0 (nom, min 9.64), e min 23.91, dw min 20. One spanner size up from the regular series (SW22 vs SW19/18 at M12). Confirmed vs Fasteners.eu DIN 6915 table + BigBoltNut DIN 6915 dimension table (both list M12: s min 21.16, m min 9.64, e min 23.91).",
+			"svg": "din6915.svg"
+		},
+		"din6915i": {
+			"alias_of": "din6915",
+			"family": "hex_nut",
+			"sha256": "9090ff38ab876eb267ba9a1146414d77ecf20e92734d1d5d424a6a8552db946f",
+			"source": "DIN 6915 M12, app image-variant key -- identical hex-nut envelope, aliases the din6915 base.",
+			"svg": "din6915.svg"
+		},
 		"din6916": {
 			"family": "flat_washer",
 			"sha256": "9808145a2e993320c1964617143725a148a02437b0091ce2bc459def96ad48ba",
@@ -842,6 +861,19 @@
 			"source": "DIN 933 M12, app image-variant key \u2014 same M12 DIN hex envelope (s=19) as din931 (full thread not drawn), aliases the din931 base.",
 			"svg": "din931.svg"
 		},
+		"din934": {
+			"family": "hex_nut",
+			"sha256": "dc50d4485e635b383d1217a04796436da23b83db3a94db7ad9332aa48306860d",
+			"source": "DIN 934 hexagon full nut (the classic standard nut, old DIN series), M12: s=19.0 (nom=max), m=10.0 (nom=max), e min 21.1. Old DIN series keeps s=19 vs the 18mm of successor ISO 4032, and m=10 vs 10.8, so it stays a distinct base drawing. Confirmed vs Westfield Fasteners DIN 934 specification table + boltingspecialist.com DIN 934 table (both list M12: s=19, m=10, e min 21.1).",
+			"svg": "din934.svg"
+		},
+		"din934i": {
+			"alias_of": "din934",
+			"family": "hex_nut",
+			"sha256": "dc50d4485e635b383d1217a04796436da23b83db3a94db7ad9332aa48306860d",
+			"source": "DIN 934 M12, app image-variant key -- identical hex-nut envelope, aliases the din934 base.",
+			"svg": "din934.svg"
+		},
 		"din935": {
 			"family": "castle_nut",
 			"sha256": "00c8cb575c2a0acdca0a2f506b75539767f380c297ce50f5cada829bf5fc8f21",
@@ -968,11 +1000,50 @@
 			"source": "DIN 979 M12, app image-variant key -- identical castle-nut envelope, aliases the din979 base.",
 			"svg": "din979.svg"
 		},
+		"din980": {
+			"family": "lock_nut",
+			"sha256": "dda24d40d13801181607f98ff226fa3321338985d109fb4084fde5167b1b17bc",
+			"source": "DIN 980 all-metal prevailing-torque hexagon nut, form V (single-piece, distorted-thread crown) (M12): s=19 (max 19.00 / min 18.67, DIN series -- wider than the SW18 of the ISO 7042 counterpart, hence a separate base) and total height m=12.0 confirmed by the RC Fastener DIN 980V spec PDF (M12 row: flats 19.00/18.67, corners min 21.10, thickness 12 nom / 11 min) and the Aspen Fasteners DIN 980 table (S=19, H=12, E=21.1); globalfastener's DIN 980(V)-1987 page agrees on s=19 / e min 21.1. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 REPRESENTATIVE form -- the crimp profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
+			"svg": "din980.svg"
+		},
+		"din980i": {
+			"alias_of": "din980",
+			"family": "lock_nut",
+			"sha256": "dda24d40d13801181607f98ff226fa3321338985d109fb4084fde5167b1b17bc",
+			"source": "DIN 980 M12, app image-variant key -- identical lock-nut envelope, aliases the din980 base.",
+			"svg": "din980.svg"
+		},
 		"din981": {
 			"family": "slotted_round_nut",
 			"sha256": "6cbc7825a08291ab72e8b495cd9cc81a7ef76dd13ac8d32acb48fba037ab9efa",
 			"source": "DIN 981 rolling-bearing locknut (KM1, M12x1 fine thread): OD d=22, height h=4, bore=10.9 (M12x1 minor dia), n_slots=4, slot width slot_w=3, slot radial depth slot_depth=2 (slot-floor dia 18), slot axial depth slot_h=t=2 (the grooves open from one face, partial depth, not full height). Confirmed vs SKF + MISUMI/FAG + HC-Maschinentechnik + Wegertseder tables. The internal keyway (for the MB tab washer) is not modelled.",
 			"svg": "din981.svg"
+		},
+		"din982": {
+			"family": "lock_nut",
+			"sha256": "891593efa8643570f84ed682e2b93faad6a50f13e6a89fe083344e77b60ae5c4",
+			"source": "DIN 982 prevailing-torque high (type P) hexagon nut with non-metallic (nylon) insert (M12): s=19 (max 19.00 / min 18.67, DIN series -- wider than the SW18 of the ISO 7040 successor, hence a separate base) and total height m=14.0 (h max/nom 14 / min 13.64) tabulated identically by fasteners.eu and the Westfield Fasteners DIN 982 PDF (Table 1: s=19, e min 21.1, h 14/13.64), cross-checked against Aspen Fasteners product data. Metal envelope only (nylon ring not drawn). top_h/top_d REPRESENTATIVE form. bore=10.1 (M12 minor, ISO 724).",
+			"svg": "din982.svg"
+		},
+		"din982i": {
+			"alias_of": "din982",
+			"family": "lock_nut",
+			"sha256": "891593efa8643570f84ed682e2b93faad6a50f13e6a89fe083344e77b60ae5c4",
+			"source": "DIN 982 M12, app image-variant key -- identical lock-nut envelope, aliases the din982 base.",
+			"svg": "din982.svg"
+		},
+		"din985": {
+			"family": "lock_nut",
+			"sha256": "1a8a0ce788cdc8287b01805462254dfe268956c34c76322e7275fa9d3630189b",
+			"source": "DIN 985 prevailing-torque thin (type T) hexagon nut with non-metallic (nylon) insert (M12): s=19 (SW19, DIN series -- wider than the SW18 of the ISO 10511 successor, hence a separate base) and total height m=12.0 (h max 12 / min 11.57) confirmed by the Aspen Fasteners DIN 985 spec table, andrewsfasteners.uk basic-dimensions table and the itpbolt DIN 985 PDF. Metal envelope only (nylon ring not drawn). top_h/top_d are REPRESENTATIVE form (the metal skirt profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
+			"svg": "din985.svg"
+		},
+		"din985i": {
+			"alias_of": "din985",
+			"family": "lock_nut",
+			"sha256": "1a8a0ce788cdc8287b01805462254dfe268956c34c76322e7275fa9d3630189b",
+			"source": "DIN 985 M12, app image-variant key -- identical lock-nut envelope, aliases the din985 base.",
+			"svg": "din985.svg"
 		},
 		"din986": {
 			"family": "cap_nut",
@@ -1072,6 +1143,27 @@
 			"source": "ISO 21670 hex weld nut with flange (M12): s=18, m=15, d_flange=30.5, flange_thickness(c)=1.2 (rim 1.1-1.3 range), bore=10.1. Distinct from DIN 6923 (wider flange, thinner rim, taller). Weld projections on the bearing face are sub-visible and not modelled. Confirmed vs fasenco.com + globalfastener.com (ISO 21670:2003/2014) + Wurth.",
 			"svg": "iso21670.svg"
 		},
+		"iso299": {
+			"alias_of": "din508",
+			"family": "tslot_nut",
+			"sha256": "714101991fc7387b8d6e85b51199ecef94032d0d22b9d0bf58e04d681ef60a74",
+			"source": "ISO 299 T-slot nut (M12, 14 mm slot): the international counterpart of DIN 508 with an identical M12 envelope -- a=14 nominal (a_max=13.7), e=22, h=16, k=8 -- so it aliases the din508 drawing. Equivalence and figures confirmed vs fasteners.eu ISO 299 table + Definite Metal ISO 299 table (both list DIN 508 as the equivalent norm) + TorqBolt ISO 299 equivalents listing + Maedler/Scholz combined DIN 508 / ISO 299 product pages.",
+			"svg": "din508.svg"
+		},
+		"iso299d": {
+			"alias_of": "din508",
+			"family": "tslot_nut",
+			"sha256": "714101991fc7387b8d6e85b51199ecef94032d0d22b9d0bf58e04d681ef60a74",
+			"source": "ISO 299 M12, app image-variant key -- identical T-slot-nut envelope; iso299 is itself an alias of din508, so this key points at the din508 base directly.",
+			"svg": "din508.svg"
+		},
+		"iso299p": {
+			"alias_of": "din508",
+			"family": "tslot_nut",
+			"sha256": "714101991fc7387b8d6e85b51199ecef94032d0d22b9d0bf58e04d681ef60a74",
+			"source": "ISO 299 M12, app image-variant key -- identical T-slot-nut envelope; iso299 is itself an alias of din508, so this key points at the din508 base directly.",
+			"svg": "din508.svg"
+		},
 		"iso4014": {
 			"family": "hex_bolt",
 			"sha256": "19bc7755f9e3dd6feef244673eab71c97480f4440f4703c9cb8b99565efb37f7",
@@ -1158,6 +1250,20 @@
 			"sha256": "4d07bfb2f1ca91e4a0af726f8b19cb4e5a94c2d0e6eb779349524f666370c48a",
 			"source": "ISO 4035 M12, app image-variant key -- identical thin hex-nut envelope, aliases the iso4035 base.",
 			"svg": "iso4035.svg"
+		},
+		"iso4161": {
+			"alias_of": "din6923",
+			"family": "flange_nut",
+			"sha256": "2ff27067196c1fc9c8cc99f5972a77936d24860e03159081c557e20335584664",
+			"source": "ISO 4161 hex nut with flange (M12): s=18, m=12, dc=26, c=1.8 -- envelope identical to DIN 6923 (equivalent/successor standard, same body), so it aliases the din6923 base. Confirmed vs Torqbolt ISO 4161 table (s=18, dc=26, m=12, c=1.8) + RC Fastener ISO 4161 metric hex flange nut spec sheet (s max 18.00, e min 20.03, m max 12, flange dia max 26).",
+			"svg": "din6923.svg"
+		},
+		"iso4161p": {
+			"alias_of": "din6923",
+			"family": "flange_nut",
+			"sha256": "2ff27067196c1fc9c8cc99f5972a77936d24860e03159081c557e20335584664",
+			"source": "ISO 4161 M12, app image-variant key -- identical flange-nut envelope; points at the din6923 base directly because iso4161 is itself an alias of din6923.",
+			"svg": "din6923.svg"
 		},
 		"iso4762": {
 			"family": "socket_screw",

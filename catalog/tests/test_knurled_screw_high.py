@@ -119,6 +119,8 @@ def test_guards():
     with pytest.raises(ValueError):
         _part(d_shank=COLLAR_D)              # shank not narrower than the collar
     with pytest.raises(ValueError):
+        _part(head_chamfer=0.0)              # head_chamfer must be > 0 (None disables it)
+    with pytest.raises(ValueError):
         _part(head_chamfer=D / 2.0)          # head_chamfer >= head radius
     with pytest.raises(ValueError):
         _part(head_chamfer=K)                # head_chamfer >= knurled head height

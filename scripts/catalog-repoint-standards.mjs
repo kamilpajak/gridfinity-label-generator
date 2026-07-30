@@ -58,6 +58,18 @@ for (const [id, meta] of Object.entries(manifest)) {
 	source = source.slice(0, start) + next + source.slice(end);
 }
 
+// Pass 2: entries whose id has no manifest key but whose legacy png already
+// shows another standard's drawing (image inherited via designation
+// cross-reference, e.g. iso8678 -> din_603.png). Swapping that png for the
+// SAME standard's svg is a like-for-like upgrade, not a new equivalence claim.
+let bridged = 0;
+source = source.replace(/image: '\/images\/standards\/([a-z0-9_.]+)\.png'/g, (full, base) => {
+	const meta = manifest[base.replaceAll('_', '')];
+	if (!meta) return full;
+	bridged++;
+	return `image: '/images/standards/${meta.svg}'`;
+});
+
 const withImages = (source.match(/image: '/g) ?? []).length;
 source = source.replace(
 	/^ \* Standards with images: \d+$/m,
@@ -65,4 +77,6 @@ source = source.replace(
 );
 
 writeFileSync(generatedPath, source);
-console.log(`repointed ${repointed}, inserted ${inserted}, total with images ${withImages}`);
+console.log(
+	`repointed ${repointed}, inserted ${inserted}, bridged ${bridged}, total with images ${withImages}`
+);

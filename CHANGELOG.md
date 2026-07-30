@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Sharper hardware drawings: 109 standards now use generated vector (SVG) technical drawings instead of the legacy raster images, so labels and thumbnails stay crisp at any print resolution. Five of them — the hexagon socket set screws ISO 4026–4029 (DIN 913–916) and the hexalobular cheese head screw ISO 14579 — get an illustration for the first time.
+- Sharper hardware drawings: 117 standards now use generated vector (SVG) technical drawings instead of the legacy raster images, so labels and thumbnails stay crisp at any print resolution. Five of them — the hexagon socket set screws ISO 4026–4029 (DIN 913–916) and the hexalobular cheese head screw ISO 14579 — get an illustration for the first time.
+- Print-friendly line style: the drawings use pure black lines sized for a 1-bit thermal print head (no gray, thicker strokes), so hidden edges and centerlines survive printing instead of fading or dithering.
 
 ### Fixed
 

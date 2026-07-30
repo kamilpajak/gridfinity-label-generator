@@ -43,16 +43,25 @@ reviewed operation — never silent CI.
 **App integration is live.** Every manifest key is integrated: the SVGs are
 copied into `static/images/standards/`, `data/image-mappings.json` points at
 them, and `scripts/catalog-repoint-standards.mjs` keeps the shipped
-`standards-generated.ts` in sync (109 shipped standards render an SVG). The
+`standards-generated.ts` in sync (117 shipped standards render an SVG). The
 label renderer loads `.svg` standard images directly — the old png→svg
 "priority" upgrade path (`AVAILABLE_SVGS`) is no longer load-bearing.
 
-Still deferred: **PNG-basename bridging** — 18 mapping keys whose id is not a
-manifest key but whose legacy PNG basename matches one (e.g. `iso7038` →
-`din_979.png` → `din979.svg`). Only `din562` (→ `din557.svg`) is a shipped
-standard. Each of these is a visual-equivalence claim, so verify per key on the
-contact sheet before repointing. Likewise `iso7090` (shipped, no mapping entry)
-would need a proper manifest alias (chamfered DIN 125 B form) first.
+The repoint script has a second pass for shipped entries with no manifest key
+of their own whose legacy png already showed another standard's drawing via a
+designation cross-reference (e.g. `iso8678` → `din_603.png`): it swaps that png
+for the same standard's svg — a like-for-like upgrade, no new equivalence
+claim. Still deferred at the data level: the 18 `image-mappings.json` keys that
+are not manifest keys and still point at legacy pngs (mostly unshipped ids);
+repointing those is a per-key visual-equivalence decision for the contact
+sheet.
+
+**Line style is sized for the label printer** (`catalog/render.py`): the
+drawing lands in an ~8mm slot on a 360dpi 1-bit thermal print, so all layers
+are pure black (gray dithers away on a thermal head) and weights are
+0.8/0.6/0.4mm (visible/hidden/center) so the outline keeps ~3 dots after
+thresholding. Hidden and center layers stay distinguishable by dash pattern
+and weight alone.
 
 **Toothed lock washers — all real DIN forms generated.** Three generators cover
 the family: `toothed_lock_washer` (external teeth on the outer edge — DIN 6797 A

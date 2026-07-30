@@ -30,5 +30,21 @@
 		"source": "DIN 70852 groove nut (M12x1.5 fine thread): OD d=22, height h=6, bore=10.4 (M12x1.5 minor dia), n_slots=4, slot width slot_w=4.5, slot radial depth slot_depth=2 (slot-floor dia D3=18), slot axial groove depth slot_h=c=1.8 (partial depth, opens from one face, not full height). Confirmed vs Kipp + Norelem + Maedler + ferrofast + Wegertseder tables.",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "70852" }]
+	},
+	"din1804d": {
+		"family": "slotted_round_nut",
+		"shape": {
+			"d": 28.0,
+			"h": 6.0,
+			"bore": 10.4,
+			"n_slots": 4,
+			"slot_w": 5.0,
+			"slot_depth": 2.0,
+			"slot_h": 6.0
+		},
+		"hardwareType": "nut",
+		"source": "DIN 1804 slotted round nut for hook spanners (M12x1.5 fine thread): OD d2=28, height h=6, bore=10.4 (M12x1.5 minor dia, same as din70852), n_slots=4, slot width b=slot_w=5, slot radial depth t=slot_depth=2 (slot-floor dia 24), slot_h=6=h (DIN 1804 spanner slots run the full nut height, unlike the partial DIN 981/70852 grooves). Confirmed vs fasteners.eu + Fuller Fasteners + Woodstock Industrial + fixawell tables and the David Dorfmueller M12x1.5 product sheet. The shallow face recess d3=23 x z=0.5 listed by Fuller is not modelled.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "1804" }]
 	}
 }

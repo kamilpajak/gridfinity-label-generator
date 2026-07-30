@@ -133,5 +133,72 @@
 		"source": "DIN 6925 M12, app image-variant key -- identical lock-nut envelope, aliases the din6925 base.",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "6925" }]
+	},
+	"din985": {
+		"family": "lock_nut",
+		"shape": {
+			"s": 19.0,
+			"m": 12.0,
+			"bore": 10.1,
+			"top_style": "cylinder",
+			"top_h": 4.5,
+			"top_d": 15.3
+		},
+		"hardwareType": "nut",
+		"source": "DIN 985 prevailing-torque thin (type T) hexagon nut with non-metallic (nylon) insert (M12): s=19 (SW19, DIN series -- wider than the SW18 of the ISO 10511 successor, hence a separate base) and total height m=12.0 (h max 12 / min 11.57) confirmed by the Aspen Fasteners DIN 985 spec table, andrewsfasteners.uk basic-dimensions table and the itpbolt DIN 985 PDF. Metal envelope only (nylon ring not drawn). top_h/top_d are REPRESENTATIVE form (the metal skirt profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "985" }]
+	},
+	"din985i": {
+		"alias_of": "din985",
+		"hardwareType": "nut",
+		"source": "DIN 985 M12, app image-variant key -- identical lock-nut envelope, aliases the din985 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "985" }]
+	},
+	"din982": {
+		"family": "lock_nut",
+		"shape": {
+			"s": 19.0,
+			"m": 14.0,
+			"bore": 10.1,
+			"top_style": "cylinder",
+			"top_h": 4.5,
+			"top_d": 15.3
+		},
+		"hardwareType": "nut",
+		"source": "DIN 982 prevailing-torque high (type P) hexagon nut with non-metallic (nylon) insert (M12): s=19 (max 19.00 / min 18.67, DIN series -- wider than the SW18 of the ISO 7040 successor, hence a separate base) and total height m=14.0 (h max/nom 14 / min 13.64) tabulated identically by fasteners.eu and the Westfield Fasteners DIN 982 PDF (Table 1: s=19, e min 21.1, h 14/13.64), cross-checked against Aspen Fasteners product data. Metal envelope only (nylon ring not drawn). top_h/top_d REPRESENTATIVE form. bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "982" }]
+	},
+	"din982i": {
+		"alias_of": "din982",
+		"hardwareType": "nut",
+		"source": "DIN 982 M12, app image-variant key -- identical lock-nut envelope, aliases the din982 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "982" }]
+	},
+	"din980": {
+		"family": "lock_nut",
+		"shape": {
+			"s": 19.0,
+			"m": 12.0,
+			"bore": 10.1,
+			"top_style": "cone",
+			"top_h": 4.0,
+			"top_d": 15.3,
+			"top_d2": 11.0
+		},
+		"hardwareType": "nut",
+		"source": "DIN 980 all-metal prevailing-torque hexagon nut, form V (single-piece, distorted-thread crown) (M12): s=19 (max 19.00 / min 18.67, DIN series -- wider than the SW18 of the ISO 7042 counterpart, hence a separate base) and total height m=12.0 confirmed by the RC Fastener DIN 980V spec PDF (M12 row: flats 19.00/18.67, corners min 21.10, thickness 12 nom / 11 min) and the Aspen Fasteners DIN 980 table (S=19, H=12, E=21.1); globalfastener's DIN 980(V)-1987 page agrees on s=19 / e min 21.1. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 REPRESENTATIVE form -- the crimp profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "980" }]
+	},
+	"din980i": {
+		"alias_of": "din980",
+		"hardwareType": "nut",
+		"source": "DIN 980 M12, app image-variant key -- identical lock-nut envelope, aliases the din980 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "980" }]
 	}
 }

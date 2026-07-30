@@ -1,0 +1,36 @@
+{
+	"din464": {
+		"family": "knurled_screw_high",
+		"shape": {
+			"d": 24.0,
+			"k": 5.0,
+			"collar_d": 12.0,
+			"collar_h": 10.0,
+			"d_shank": 6.0,
+			"length": 20.0,
+			"head_chamfer": 0.5,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "464"
+			}
+		],
+		"source": "DIN 464 high knurled thumb screw (Raendelschraube, hohe Form), M6: knurled head diameter dk=24.0, knurled head height k=5.0, raised on a reduced collar/shoulder of diameter ds=12.0; total head height h=15.0, so collar_h = h - k = 10.0 (h and k are both tabulated; the difference is arithmetic, not a new number). Confirmed vs fasteners.eu DIN 464 table (M6: dk=24 nom, ds=12 nom=max, h=15 nom, k=5 nom=max) + Aspen Fasteners 'Metric DIN 464 Knurled Thumb Screws, High Type' spec PDF (identical M6 column). Both tables cover M1-M10 only -- DIN 464 has NO M12 row -- so the base is drawn at M6, matching the sibling DIN 653 base (same knurled head dk=24/k=5; DIN 464 is that head raised on the collar). d_shank=6.0 is the M6 major diameter (envelope-only, no drawn thread). length=20.0 REPRESENTATIVE (common M6 stock length; the tabulated l series includes 20). head_chamfer=0.5 REPRESENTATIVE 45-degree top-rim break, consistent with the tabulated edge-chamfer series c=0.3-0.6; tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. The knurl itself is omitted (fine feature, like the thread -- same envelope convention as knurled_nut/knurled_screw)."
+	},
+	"din464p": {
+		"alias_of": "din464",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "464"
+			}
+		],
+		"source": "DIN 464 M6, app image-variant key -- identical high-form knurled-thumb-screw envelope (dk=24, k=5 on the ds=12 collar), aliases the din464 base."
+	}
+}

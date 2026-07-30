@@ -1,0 +1,48 @@
+{
+	"din186": {
+		"family": "t_head_bolt",
+		"shape": {
+			"d_shank": 12.0,
+			"length": 60.0,
+			"head_l": 26.0,
+			"head_w": 12.0,
+			"head_h": 8.0,
+			"neck_w": 12.0,
+			"neck_h": 8.0,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "186" }],
+		"source": "DIN 186 T-head (hammer) bolt with square neck (Hammerschraube mit Vierkant), M12: head length m=26 (tabulated 25-27), head width n=12 (11.1-12.9), head height k=8 (7.25-8.75), shank ds=12 (11.3-12.7) confirmed vs fasteners.eu DIN 186 table (m 26/27/25, n 12/12.9/11.1, k 8/8.75/7.25, ds 12/12.7/11.3, square across-corners e_min=14.17) + Aspen Fasteners Metric DIN 186 spec PDF (M12: E=26 head length, F=12 head width, K=8 head height, thread B=30 for l<=120) + Fuller Fasteners DIN 186 (same M12 min/max band: m 25-27, n 11.1-12.9, k 7.25-8.75). Square neck side neck_w=12.0 = head width n (the square is flush with the head's narrow faces; e_min=14.17 is its guaranteed across-corners engagement). neck_h=8.0 REPRESENTATIVE: the square's axial height is not tabulated in the public tables; drawn equal to head height k per the standard drawing's proportions. d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread). length=60.0 REPRESENTATIVE (tabulated stock length; Aspen lists M12 from l=40 to 160). tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. The hammer head's end rounding is an untabulated fine detail and is omitted: the head is drawn as its m x n x k rectangular envelope."
+	},
+	"din186p": {
+		"alias_of": "din186",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "186" }],
+		"source": "DIN 186 M12, app image-variant key -- identical square-neck T-head envelope (head 26x12x8, square 12), aliases the din186 base."
+	},
+	"din787": {
+		"family": "t_head_bolt",
+		"shape": {
+			"d_shank": 12.0,
+			"length": 80.0,
+			"head_l": 22.0,
+			"head_w": 13.7,
+			"head_h": 8.0,
+			"tip_chamfer": 1.0
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "787" }],
+		"source": "DIN 787 T-slot bolt (Nutenschraube), M12 for the 14 mm T-slot (the same DIN 650 slot as this catalogue's DIN 508 T-slot nut): head length e=22 (spans the slot undercut), head width a=13.7 (nominal 14 with the tabulated -0.3/-0.5 drop-in tolerance -- the head passes down through the 14 mm slot opening, then turns 90 degrees), head height k=8, confirmed vs fasteners.eu DIN 787 table (M12 / a=14 row: e=22, k=8, a tol -0.3/-0.5) + boltingspecialist.com DIN 787 (same row) + ferrofast.com DIN 787 + JW Winco DIN 787 T-slot bolt table (M12, slot 0.55 in = 14 mm: a 0.55 -0.012/-0.02 in, e 0.87 in = 22 mm, k 0.31 in = 8 mm). No square neck -- anti-rotation comes from the rectangular head locked in the slot. DIN 787 also tabulates an M12 head for the 12 mm slot (e=18, k=7); the 14 mm row is drawn for catalogue consistency with DIN 508. d_shank=12.0 (M12 major, envelope-only, no drawn thread). length=80.0 REPRESENTATIVE (a tabulated stock length, thread b=55; e.g. Maedler DIN 787 M12x80). tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. Head corner radii are not published in these tables; the head is drawn as its e x a x k rectangular envelope."
+	},
+	"din787i": {
+		"alias_of": "din787",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "787" }],
+		"source": "DIN 787 M12, app image-variant key -- identical T-slot-bolt envelope (head 22x13.7x8, no neck), aliases the din787 base."
+	}
+}

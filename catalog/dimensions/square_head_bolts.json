@@ -1,0 +1,25 @@
+{
+	"din478": {
+		"family": "square_head_bolt",
+		"shape": {
+			"s": 13.0,
+			"k": 15.0,
+			"dc": 19.5,
+			"c": 3.0,
+			"d_shank": 12.0,
+			"length": 40.0,
+			"tip_chamfer": 1.2
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "478" }],
+		"source": "DIN 478 square head bolt with collar (Vierkantschraube mit Bund), M12: square head across-flats s=13.0 (max; min 12.73), head height k=15.0 (14.78-15.22), collar diameter dc=19.5 (max; min 18.66), collar thickness c=3.0 (2.88-3.12), shank ds=12.0, confirmed by fasteners.eu DIN 478 table + Fuller Fasteners DIN 478 specifications (identical M12 row) + Wegertseder DIN 478 technical dimensions (M12 s=13, k=15, collar d1=19.5, e=17). k=15 is the TOTAL head height INCLUDING the collar: the collarless small-square-head twin DIN 479 tabulates k=12 at M12 (fasteners.eu), and 12 + c(3) = 15 -- the drawn square band above the collar is k-c=12. The tabulated rounded-corner width e=17 (< s*sqrt(2)=18.38) is omitted: the square is drawn with sharp corners, an envelope simplification that stays inside the dc=19.5 collar. d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread, no drive -- the square head is the drive). length=40.0 REPRESENTATIVE (common M12 stock length; DIN 478 M12 thread length b=30 per Wegertseder implies longer stock); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead."
+	},
+	"din478p": {
+		"alias_of": "din478",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "478" }],
+		"source": "DIN 478 M12, app image-variant key -- identical collared-square-head envelope (s=13, k=15, dc=19.5, c=3), aliases the din478 base."
+	}
+}

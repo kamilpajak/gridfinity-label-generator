@@ -33,14 +33,14 @@
 			"k": 9.65,
 			"head_style": "cup",
 			"nib_w": 3.6,
-			"nib_l": 7.8,
-			"nib_d": 3.2,
+			"nib_l": 9.2,
+			"nib_d": 5.5,
 			"tip_chamfer": 1.2
 		},
 		"hardwareType": "screw",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "607" }],
-		"source": "DIN 607 cup (round) head nib bolt (Flachrundschraube mit Nase), M12: head diameter dk=24.65 (tabulated 23.35-24.65) and head height k=9.65 (tabulated 8.75-9.65), nib width nib_w=3.6 (g, tabulated 3.12-3.6) and nib depth nib_d=3.2 (i, min), confirmed by Fuller Fasteners DIN 607 specifications (M12: dk 23.35-24.65, k 8.75-9.65, g 3.12-3.6, i min 3.2, head radius r approx 13.3) + fasten.it DIN 607 table (M12: dk-max 24.65, k 8.75-9.65, g-max 3.6, i-min 3.2; grade C, sizes M8-M16). The dome is drawn as the spherical cap through dk/k (the tabulated r approx 13.3 matches the derived cap radius 12.7 within its 'approx' tolerance). nib_l=7.8 REPRESENTATIVE (radial reach not tabulated; derived from the figure's 30-degree underside slope and the tabulated i: d_shank/2 + i*tan(30deg) = 6 + 1.85; the nib is drawn as a triangular wedge hugging the bearing face, per the DIN 607 figure). drawn protruding 3 mm past the 6 mm shank radius, inside the head outline). d_shank=12.0 (M12 major, envelope-only, no drawn thread); length=50.0 REPRESENTATIVE stock length; tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Envelope only - no thread, no drive (the nib is the anti-rotation feature)."
+		"source": "DIN 607 cup (round) head nib bolt (Flachrundschraube mit Nase), M12: head diameter dk=24.65 (tabulated 23.35-24.65) and head height k=9.65 (tabulated 8.75-9.65), nib width nib_w=3.6 (g, tabulated 3.12-3.6), confirmed by Fuller Fasteners DIN 607 specifications (M12: dk 23.35-24.65, k 8.75-9.65, g 3.12-3.6, i min 3.2, head radius r approx 13.3) + fasten.it DIN 607 table (M12: dk-max 24.65, k 8.75-9.65, g-max 3.6, i-min 3.2; grade C, sizes M8-M16). The dome is drawn as the spherical cap through dk/k (the tabulated r approx 13.3 matches the derived cap radius 12.7 within its 'approx' tolerance). The nib is a triangular wedge on the shank hugging the bearing face, per the DIN 607 figure: the tabulated i=3.2 is read as the RADIAL nose height above the shank (the figure's i arrow is radial, and the legacy raster shows ~3 mm protrusion with the figure's 30-degree underside slope), so nib_l=9.2 = d_shank/2 + i; nib_d=5.5 REPRESENTATIVE is the wedge's axial extent from that slope (i/tan(30deg) = 5.54). d_shank=12.0 (M12 major, envelope-only, no drawn thread); length=50.0 REPRESENTATIVE stock length; tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Envelope only - no thread, no drive (the nib is the anti-rotation feature)."
 	},
 	"din607d": {
 		"alias_of": "din607",

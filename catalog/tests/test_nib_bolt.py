@@ -15,9 +15,9 @@ K_CSK = 7.0          # DIN 604 head height (max)
 K_CUP = 9.65         # DIN 607 head height (max)
 NIB_W = 3.6          # nib width g (max), both standards
 NIB_L_CSK = 12.3     # DIN 604 radial nib reach, REPRESENTATIVE (flush with the head rim)
-NIB_L_CUP = 7.8      # DIN 607 radial nib reach, REPRESENTATIVE (30-deg slope + tabulated i)
-NIB_D_CSK = 5.7      # DIN 604 nib height i (min)
-NIB_D_CUP = 3.2      # DIN 607 nib height i (min)
+NIB_L_CUP = 9.2      # DIN 607 nib reach: d_shank/2 + i (i=3.2 read as the radial nose height)
+NIB_D_CSK = 5.7      # DIN 604 nib height i (min), axial
+NIB_D_CUP = 5.5      # DIN 607 wedge axial extent, REPRESENTATIVE (i/tan(30deg) per the figure)
 TIP_CHAMFER = 1.2
 
 
@@ -87,12 +87,13 @@ def test_countersunk_nib_rib_on_the_cone_on_plus_x_only():
 
 def test_cup_nib_wedge_below_bearing_plane_on_plus_x_only():
     # the wedge hypotenuse runs from (nib_l, 0) to (d_shank/2, -nib_d): at x=6.9 it sits at
-    # z = -nib_d*(nib_l-x)/(nib_l-6) = -1.6, so (6.9, -0.3) is inside and (6.9, -2.5) below it.
+    # z = -nib_d*(nib_l-x)/(nib_l-6) = -3.95, so (6.9, -0.3) is inside and (6.9, -4.6) below it.
     part = _cup()
     assert _solid_at(part, 6.9, 0.0, -0.3)                  # wedge material beyond the shank wall
+    assert _solid_at(part, 8.5, 0.0, -0.3)                  # still material near the full reach
     assert not _solid_at(part, -6.9, 0.0, -0.3)             # one-sided: nothing on -X
     assert not _solid_at(part, NIB_L_CUP + 0.6, 0.0, -0.3)  # nib ends at nib_l
-    assert not _solid_at(part, 6.9, 0.0, -2.5)              # void under the sloped underside
+    assert not _solid_at(part, 6.9, 0.0, -4.6)              # void under the sloped underside
 
 
 def test_nib_width_reads_nib_w():

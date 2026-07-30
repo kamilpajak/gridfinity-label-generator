@@ -3,12 +3,16 @@ from dataclasses import dataclass
 
 from build123d import ExportSVG, Unit, LineType, Location, Polyline
 
-VISIBLE_WEIGHT_MM = 0.4
-HIDDEN_WEIGHT_MM = 0.3
-HIDDEN_COLOR = (110, 110, 110)
+# Weights sized for the label printer: the drawing lands in an ~8mm slot on a
+# 360dpi 1-bit thermal print, so the visible outline needs ~3 dots to survive.
+# All layers print pure black — gray would dither away on a thermal head; the
+# hidden/center layers stay distinguishable by dash pattern and weight alone.
+VISIBLE_WEIGHT_MM = 0.8
+HIDDEN_WEIGHT_MM = 0.6
+HIDDEN_COLOR = (0, 0, 0)
 
 # Engineering centerlines (thin chain lines marking the axes of symmetry).
-CENTERLINE_WEIGHT_MM = 0.2
+CENTERLINE_WEIGHT_MM = 0.4
 CENTERLINE_COLOR = (0, 0, 0)
 _CENTER_EXT_FRAC = 0.08  # overhang past the outline, as a fraction of view size
 _CENTER_MIN_EXT_MM = 1.5  # floor so small drawings still get a visible overhang

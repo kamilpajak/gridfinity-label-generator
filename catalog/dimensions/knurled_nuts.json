@@ -18,6 +18,18 @@
 			}
 		]
 	},
+	"din467p": {
+		"alias_of": "din467",
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "467"
+			}
+		],
+		"source": "DIN 467 M12, app image-variant key -- identical knurled-nut envelope, aliases the din467 base."
+	},
 	"din466": {
 		"family": "knurled_nut",
 		"shape": {
@@ -36,5 +48,17 @@
 				"code": "466"
 			}
 		]
+	},
+	"din466p": {
+		"alias_of": "din466",
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "466"
+			}
+		],
+		"source": "DIN 466 M12, app image-variant key -- identical knurled-nut envelope, aliases the din466 base."
 	}
 }

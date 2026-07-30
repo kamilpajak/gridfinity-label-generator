@@ -83,10 +83,24 @@
 			"source": "DIN 1587 hexagon domed cap (acorn) nut (M12): s=18 (current ISO 272-aligned width; legacy pre-1992 s=19 not shipped), total height m=22, hex body 10 -> dome_height=12 (derived, not directly tabulated). Confirmed vs Westfield Fasteners + Andrews Fasteners + fasteners.eu DIN 1587 tables.",
 			"svg": "din1587.svg"
 		},
+		"din1587d": {
+			"alias_of": "din1587",
+			"family": "cap_nut",
+			"sha256": "7e28b5d2207a51f5d3d3151c265ce23dc49aab1a88c2484480b65f22391c2c6b",
+			"source": "DIN 1587 M12, app image-variant key -- identical cap-nut envelope, aliases the din1587 base.",
+			"svg": "din1587.svg"
+		},
 		"din1816": {
 			"family": "cross_hole_nut",
 			"sha256": "423022b2e735acaa9544eb5e7280690a772dd9e1b602620c319f09864b8a602a",
 			"source": "DIN 1816 cross-hole round nut (Kreuzlochmutter), M12x1.5 fine thread. d=28.0 and h=6.0 tabulated by theo-schrauben.de + seefelder.net + online-schrauben.de + mcmaster.com. n_holes=4 tabulated by theo-schrauben.de + seefelder.net. hole_d=3.0 (d4) tabulated by theo-schrauben.de; online-schrauben.de confirms M3. d3=23.0 (pitch circle) tabulated by theo-schrauben.de + online-schrauben.de + seefelder.net. hole_depth=4.0 derived: OD_radius(14)\u2212(d3/2\u2212hole_d/2)=14\u221210=4 mm; hole floor at r=10 mm, bore wall at r\u22485.2 mm, no intersection. bore=10.4 from ISO 724 D1=12\u22121.082532\u00d71.5=10.376 mm. Holes are 4 radial bores perpendicular to the nut axis drilled into the OD wall (tommy-bar spanner), NOT axial holes in the top face. Holes placed at mid-height (no axial offset dimensioned in any public table). The bold concentric ring in the DIN 1816 face-view drawing is the standard internal-thread representation (the same ring appears on the DIN 546 drawing, which has no step); it is not modelled (threads are envelope-only). Any 0.5 mm top-face Planfl\u00e4che (z=0.5 mm at d3=23 mm) is a sub-visible chamfer-scale detail below the family's fine-feature threshold and is not modelled.",
+			"svg": "din1816.svg"
+		},
+		"din1816d": {
+			"alias_of": "din1816",
+			"family": "cross_hole_nut",
+			"sha256": "423022b2e735acaa9544eb5e7280690a772dd9e1b602620c319f09864b8a602a",
+			"source": "DIN 1816 M12x1.5, app image-variant key -- identical cross-hole-nut envelope, aliases the din1816 base.",
 			"svg": "din1816.svg"
 		},
 		"din2093": {
@@ -125,6 +139,13 @@
 			"family": "wing_nut",
 			"sha256": "22578fcbebbb3e18496cc3d98ed561db7146484d28e718a99c6f35d82298b387",
 			"source": "DIN 315 wing nut, German Form D 'rounded wings' (M12), current standard (DIN 315:2016-12; no ISO equivalent). Envelope confirmed vs fasteners.eu + Fuller Fasteners + schrauben-lexikon + ITA Fasteners + globalfastener DIN 315-D tables: overall height h=33.5 (max), boss/hub base dia d2=23 (max), collar/top dia d3=19.5 (max, the tapered hub top), wing span e=65 (max, tip-to-tip), blade thickness g1=4.9 (max). bore=10.1 is the M12 thread minor (ISO 724, external to DIN 315's table). boss_h=14.0 is a representative hub height (the DIN 'm' symbol 10-14, read inconsistently across sources, taken as hub height) -> form, not asserted normative. The hub taper (d2->d3) and general form follow the DIN 315 geometry (as also implemented in the open-source FreeCAD Fasteners Workbench, LGPL); the exact wing radii are not published, so the rounded wing outline is representative form matched to the legacy DIN 315 drawing. Only the envelope is a sourced dimension.",
+			"svg": "din315.svg"
+		},
+		"din315p": {
+			"alias_of": "din315",
+			"family": "wing_nut",
+			"sha256": "22578fcbebbb3e18496cc3d98ed561db7146484d28e718a99c6f35d82298b387",
+			"source": "DIN 315 M12, app image-variant key -- identical wing-nut envelope, aliases the din315 base.",
 			"svg": "din315.svg"
 		},
 		"din316": {
@@ -262,10 +283,24 @@
 			"source": "DIN 466 high knurled nut (M12): knurled head OD d=40, total height 25 = head h=15 + plain boss (collar_d=22, collar_h=10), tabulated and confirmed vs Boutet Technics DIN 466 table + Fastenright + JW Winco (Aspen/Fuller M10 row dk=36/ds=20 extrapolates cleanly). Smooth cylindrical envelope drawn (the knurl is a fine feature, not modelled, like the thread). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "din466.svg"
 		},
+		"din466p": {
+			"alias_of": "din466",
+			"family": "knurled_nut",
+			"sha256": "00bf7a36e3d6a495ac3bbddd353c3de7103db97153c7cccce7860c14de9823b8",
+			"source": "DIN 466 M12, app image-variant key -- identical knurled-nut envelope, aliases the din466 base.",
+			"svg": "din466.svg"
+		},
 		"din467": {
 			"family": "knurled_nut",
 			"sha256": "6f8435ce7927ed8646e366afae320b9b133f6dfb77209319c2cd9898cea03870",
 			"source": "DIN 467 flat/low knurled nut (M12): knurled head OD d=40 (d1) with a reduced-diameter plain boss collar_d=22 (d2) on the bearing face; total height 12 = knurled head h=10 (k) + boss collar_h=2. Tabulated and confirmed vs Aspen Fasteners DIN 467 spec (d1=40,d2=22,h=12,k=10) + Scribd DIN 467 table + Fastenright + JW Winco. Smooth cylindrical envelope drawn (the knurl is a fine feature, not modelled, like the thread). bore=10.1 (M12 minor, ISO 724).",
+			"svg": "din467.svg"
+		},
+		"din467p": {
+			"alias_of": "din467",
+			"family": "knurled_nut",
+			"sha256": "6f8435ce7927ed8646e366afae320b9b133f6dfb77209319c2cd9898cea03870",
+			"source": "DIN 467 M12, app image-variant key -- identical knurled-nut envelope, aliases the din467 base.",
 			"svg": "din467.svg"
 		},
 		"din471": {
@@ -286,10 +321,24 @@
 			"source": "DIN 508 T-slot nut (Nutenstein), M12x1.75 coarse thread, 14 mm T-slot nominal (DIN 650). foot_w=22.0 (DIN symbol e, foot base across-slot width, sits in DIN 650 ~23.5 mm undercut) confirmed by Hoffmann Group + McMaster-Carr + D\u00f6nges/AMF + SFS tables. neck_w=13.7 (DIN symbol a, narrow neck that passes through the 14 mm slot opening) confirmed by Hoffmann Group + Fuller Fasteners + Halder USA + JW Winco + fasten.it + D\u00f6nges/AMF \u2014 nominal is 14 mm (slot designation), DIN tolerance gives a_max=13.7 mm; any appearance of '16' as a width in online tables is total height h, not neck width. length=22.0 (DIN symbol s, block length along slot direction) confirmed by Fasten.it + Fuller + Hoffmann/AMF + D\u00f6nges/AMF + SFS + McMaster + JW Winco. height=16.0 (h) confirmed by same sources. foot_h=8.0 derived as h\u2212k (k=8 tabulated). bore=10.1 = M12x1.75 coarse minor diameter per ISO 724 (D1=12\u22121.082532x1.75=10.106 mm). chamfer=1.0 mm representative: DIN 508 does not tabulate a chamfer; 0.5\u20131.0 mm x45 deg is standard shop practice for M12 (per Fuller and Hoffmann references); not a standardized DIN feature.",
 			"svg": "din508.svg"
 		},
+		"din508i": {
+			"alias_of": "din508",
+			"family": "tslot_nut",
+			"sha256": "714101991fc7387b8d6e85b51199ecef94032d0d22b9d0bf58e04d681ef60a74",
+			"source": "DIN 508 M12, app image-variant key -- identical T-slot-nut envelope, aliases the din508 base.",
+			"svg": "din508.svg"
+		},
 		"din546": {
 			"family": "slotted_face_nut",
 			"sha256": "24c0e4313de8d828e10e96bc083b77751754540b0f8980220b76462b60ca8a4a",
 			"source": "DIN 546 slotted round nut (Schlitzmutter), M12x1.75 coarse thread. d=21.0 and h=10.0 tabulated by fasteners.eu + definitemetal.com + torqbolt.com + westfieldfasteners.co.uk. slot_w=4.0 (n nominal) tabulated by definitemetal.com. slot_depth=3.8 is t_min per definitemetal.com (DIN 546 table); vital-parts.co.uk manufactured example gives 4.3 mm (within tolerance). bore=10.1 from ISO 724 D1=12\u22121.082532\u00d71.75=10.106 mm. Single diametral face slot (partial depth, one slot across the top face, not full-height). All fields tabulated \u22652 independent sources except slot_w and slot_depth (single table; representative values).",
+			"svg": "din546.svg"
+		},
+		"din546p": {
+			"alias_of": "din546",
+			"family": "slotted_face_nut",
+			"sha256": "24c0e4313de8d828e10e96bc083b77751754540b0f8980220b76462b60ca8a4a",
+			"source": "DIN 546 M12, app image-variant key -- identical slotted-face-nut envelope, aliases the din546 base.",
 			"svg": "din546.svg"
 		},
 		"din557": {
@@ -360,6 +409,13 @@
 			"family": "hex_nut",
 			"sha256": "1a9f156f8237b1b5e21a04584c1d4a671ba3fc72e75a0094e884af1c50aacc31",
 			"source": "DIN 6330 hexagon nut height 1.5d (version B), M12: s=18.0, m=18.0 (=1.5x12). Confirmed vs Fasteners.eu DIN 6330 table + Norelem/Kipp DIN 6330 datasheets.",
+			"svg": "din6330.svg"
+		},
+		"din6330p": {
+			"alias_of": "din6330",
+			"family": "hex_nut",
+			"sha256": "1a9f156f8237b1b5e21a04584c1d4a671ba3fc72e75a0094e884af1c50aacc31",
+			"source": "DIN 6330 M12, app image-variant key -- identical hex-nut envelope, aliases the din6330 base.",
 			"svg": "din6330.svg"
 		},
 		"din6331": {
@@ -494,10 +550,24 @@
 			"source": "DIN 6923 hex flange nut (M12): s=18, m=12, d_flange=26, flange_thickness(c)=1.8, bore=10.1 (M12 minor dia). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 6923 tables.",
 			"svg": "din6923.svg"
 		},
+		"din6923i": {
+			"alias_of": "din6923",
+			"family": "flange_nut",
+			"sha256": "2ff27067196c1fc9c8cc99f5972a77936d24860e03159081c557e20335584664",
+			"source": "DIN 6923 M12, app image-variant key -- identical flange-nut envelope, aliases the din6923 base.",
+			"svg": "din6923.svg"
+		},
 		"din6925": {
 			"family": "lock_nut",
 			"sha256": "944036a6e9ee5c132c4146f663e44586703261770061f9aff57e91332a8eeb6a",
 			"source": "DIN 6925 all-metal high prevailing-torque hexagon nut (M12, ISO 7042 counterpart): s=18 (SW18, ISO 4033 base, not DIN 934) and total height m=12.0 confirmed by three independent vendor tables (nan-long, fastenersco, zhenkunmach) and fasteners.eu. Kept distinct from ISO 7042 (h_max 13.3, 2012 edition) because the confirmed DIN 6925 envelope differs. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form). bore=10.1 (M12 minor, ISO 724).",
+			"svg": "din6925.svg"
+		},
+		"din6925i": {
+			"alias_of": "din6925",
+			"family": "lock_nut",
+			"sha256": "944036a6e9ee5c132c4146f663e44586703261770061f9aff57e91332a8eeb6a",
+			"source": "DIN 6925 M12, app image-variant key -- identical lock-nut envelope, aliases the din6925 base.",
 			"svg": "din6925.svg"
 		},
 		"din6926": {
@@ -507,10 +577,24 @@
 			"source": "DIN 6926 prevailing-torque nylon-insert hex flange nut (M12): metal envelope (s=18, m=12, d_flange=26, c=1.8) identical to DIN 6923; the nylon crown (total height 16.1) sits above the metal body and is not modelled, so this aliases the DIN 6923 drawing. Confirmed vs Fasteners.eu + Fuller Fasteners DIN 6926.",
 			"svg": "din6923.svg"
 		},
+		"din6926i": {
+			"alias_of": "din6923",
+			"family": "flange_nut",
+			"sha256": "2ff27067196c1fc9c8cc99f5972a77936d24860e03159081c557e20335584664",
+			"source": "DIN 6926 M12, app image-variant key -- identical flange-nut envelope; points at the din6923 base directly because din6926 is itself an alias of din6923.",
+			"svg": "din6923.svg"
+		},
 		"din6927": {
 			"family": "flange_nut",
 			"sha256": "b14bc6723194d45d230dec5c52e1dafc1c900501199a0fb32e596b0b056c6b5d",
 			"source": "DIN 6927 prevailing-torque all-metal hex flange nut (M12): s/d_flange/c identical to DIN 6923; total metal envelope height m=13.8 (all-metal locking crown adds ~1.8mm). The locking deformation is not modelled (drawn as a smooth flange nut of the true envelope height). Confirmed vs Fasteners.eu + bwindustrialsales DIN 6927.",
+			"svg": "din6927.svg"
+		},
+		"din6927i": {
+			"alias_of": "din6927",
+			"family": "flange_nut",
+			"sha256": "b14bc6723194d45d230dec5c52e1dafc1c900501199a0fb32e596b0b056c6b5d",
+			"source": "DIN 6927 M12, app image-variant key -- identical flange-nut envelope, aliases the din6927 base.",
 			"svg": "din6927.svg"
 		},
 		"din70852": {
@@ -712,6 +796,13 @@
 			"source": "DIN 917 hexagon cap nut, low type (M12): s=18, total height m=16, hex body 8 (m' minimum) -> dome_height=8 (derived). Confirmed vs fasteners.eu + Fuller Fasteners + TorqBolt DIN 917 tables.",
 			"svg": "din917.svg"
 		},
+		"din917d": {
+			"alias_of": "din917",
+			"family": "cap_nut",
+			"sha256": "6f81752d90b4af47bcfcd7165c5a1f4ffbf31e364f661abb976b3e898b4a57c6",
+			"source": "DIN 917 M12, app image-variant key -- identical cap-nut envelope, aliases the din917 base.",
+			"svg": "din917.svg"
+		},
 		"din928": {
 			"family": "square_nut",
 			"sha256": "fa7bd9d489715c167805394ee5c5e6a59de62fa9a94e2e32ae44969b3319dffc",
@@ -757,6 +848,13 @@
 			"source": "DIN 935 hexagon slotted / castle nut (M12): s=18 (current ISO 272 / SW18; legacy SW19 not shipped), m=15, un-slotted height w/m1=10, crown dk=16, 6 slots, slot width n/e=3.5 (min; max 3.8), bore=10.1 (M12 minor dia). Crown modelled fully slotted (no solid crown band below the slots; hex/crown transition not tabulated). Confirmed vs Fuller Fasteners + Aspen Fasteners + Trojan SF + Fabory DIN 935 tables.",
 			"svg": "din935.svg"
 		},
+		"din935i": {
+			"alias_of": "din935",
+			"family": "castle_nut",
+			"sha256": "00c8cb575c2a0acdca0a2f506b75539767f380c297ce50f5cada829bf5fc8f21",
+			"source": "DIN 935 M12, app image-variant key -- identical castle-nut envelope, aliases the din935 base.",
+			"svg": "din935.svg"
+		},
 		"din936": {
 			"family": "hex_nut",
 			"sha256": "8a176e5987ef264558804673df48ce378d3fdcedf5e55e90ca79e55cda8450b5",
@@ -767,6 +865,13 @@
 			"family": "castle_nut",
 			"sha256": "fab79ee3867b50f814015c6bbf77c6da2836ad6df83c6a04976ea89380fc24ab",
 			"source": "DIN 937 hexagon thin (low) slotted / castle nut (M12): s=19 (SW19, the withdrawn legacy standard's actual across-flats), m=10, m1=6.0 (w slot-floor height, not the 5.3 m' proof-load minimum), crown dk=17, 6 slots, slot width 3.5, bore=10.1. Crown modelled fully slotted. Confirmed vs fasteners.eu + Fuller Fasteners + fasenco + Aspen Fasteners DIN 937 tables.",
+			"svg": "din937.svg"
+		},
+		"din937p": {
+			"alias_of": "din937",
+			"family": "castle_nut",
+			"sha256": "fab79ee3867b50f814015c6bbf77c6da2836ad6df83c6a04976ea89380fc24ab",
+			"source": "DIN 937 M12, app image-variant key -- identical castle-nut envelope, aliases the din937 base.",
 			"svg": "din937.svg"
 		},
 		"din938": {
@@ -856,6 +961,13 @@
 			"source": "DIN 979 hexagon thin slotted / castle nut (M12, current successor to DIN 937): s=18 (ISO 272 / SW18), m=10, m1=5, crown dk=16 (Aspen's 17 is a mixed-edition outlier), 6 slots, slot width 3.5, bore=10.1. Crown modelled fully slotted. Confirmed vs Fuller Fasteners + Trojan SF DIN 979 tables.",
 			"svg": "din979.svg"
 		},
+		"din979i": {
+			"alias_of": "din979",
+			"family": "castle_nut",
+			"sha256": "c77d35c0016fa053134c2f1166432bcd6647b1cf2f4011531cd72682a1bae572",
+			"source": "DIN 979 M12, app image-variant key -- identical castle-nut envelope, aliases the din979 base.",
+			"svg": "din979.svg"
+		},
 		"din981": {
 			"family": "slotted_round_nut",
 			"sha256": "6cbc7825a08291ab72e8b495cd9cc81a7ef76dd13ac8d32acb48fba037ab9efa",
@@ -884,6 +996,13 @@
 			"family": "lock_nut",
 			"sha256": "5f3cc3cf2e5e72d021c4f6d0bd3fb5bd8d6deae404f0187aaa3ed017d60ca2f4",
 			"source": "ISO 10511 prevailing-torque thin hexagon nut with non-metallic (nylon) insert (M12): s=18 (SW18, ISO 4035 base) and total height m=10.2 (h_max 10.23) tabulated from the ISO 10511:2012 Table 1 PDF, cross-checked against fasteners.eu. Metal envelope only (nylon ring not drawn). top_h/top_d are representative form (the metal skirt profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
+			"svg": "iso10511.svg"
+		},
+		"iso10511p": {
+			"alias_of": "iso10511",
+			"family": "lock_nut",
+			"sha256": "5f3cc3cf2e5e72d021c4f6d0bd3fb5bd8d6deae404f0187aaa3ed017d60ca2f4",
+			"source": "ISO 10511 M12, app image-variant key -- identical lock-nut envelope, aliases the iso10511 base.",
 			"svg": "iso10511.svg"
 		},
 		"iso10512": {
@@ -1014,6 +1133,13 @@
 			"source": "ISO 4032 hexagon regular nut (style 1), M12: s=18.0, m=10.8. Confirmed vs Fasteners.eu + wermac.org ISO 4032 dimension tables.",
 			"svg": "iso4032.svg"
 		},
+		"iso4032p": {
+			"alias_of": "iso4032",
+			"family": "hex_nut",
+			"sha256": "2296102d5c64c073506331c0c4e1c6723431984769a234dba10d96f8977842ac",
+			"source": "ISO 4032 M12, app image-variant key -- identical hex-nut envelope, aliases the iso4032 base.",
+			"svg": "iso4032.svg"
+		},
 		"iso4033": {
 			"family": "hex_nut",
 			"sha256": "61c17fdc29646cbeac1ca41826b9f5d13972e867f62a6853e2895d45d8b72c08",
@@ -1024,6 +1150,13 @@
 			"family": "hex_nut",
 			"sha256": "4d07bfb2f1ca91e4a0af726f8b19cb4e5a94c2d0e6eb779349524f666370c48a",
 			"source": "ISO 4035 hexagon thin nut (style 0), M12: s=18.0 (ISO value; the 19mm seen in some catalogues is the DIN 439B deviation), m=6.0. Confirmed vs Fuller Fasteners ISO 4035 spec + BS EN ISO 4035 table (Engineers Edge).",
+			"svg": "iso4035.svg"
+		},
+		"iso4035p": {
+			"alias_of": "iso4035",
+			"family": "hex_nut",
+			"sha256": "4d07bfb2f1ca91e4a0af726f8b19cb4e5a94c2d0e6eb779349524f666370c48a",
+			"source": "ISO 4035 M12, app image-variant key -- identical thin hex-nut envelope, aliases the iso4035 base.",
 			"svg": "iso4035.svg"
 		},
 		"iso4762": {
@@ -1046,6 +1179,13 @@
 			"source": "ISO 7035 hexagon slotted nut, style 1 (M12): the ISO counterpart of DIN 935 with an identical M12 envelope (s=18, m=15, w=10, dk=16, 6 slots, 3.5), so it aliases the DIN 935 drawing. Confirmed vs fasteners.eu ISO 7035 + TorqBolt ISO 7035 + Bolting Specialist + combined DIN 935/ISO 7035 product listings.",
 			"svg": "din935.svg"
 		},
+		"iso7035p": {
+			"alias_of": "din935",
+			"family": "castle_nut",
+			"sha256": "00c8cb575c2a0acdca0a2f506b75539767f380c297ce50f5cada829bf5fc8f21",
+			"source": "ISO 7035 M12, app image-variant key -- identical castle-nut envelope; iso7035 is itself an alias of din935, so this key points at the din935 base directly.",
+			"svg": "din935.svg"
+		},
 		"iso7040": {
 			"family": "lock_nut",
 			"sha256": "811d8a370cc9616a8ee08d8047173d28be3e43b9fade5a3850dc827611cfeff0",
@@ -1062,6 +1202,13 @@
 			"family": "lock_nut",
 			"sha256": "3d100bcb32a593f02b44e233a5cc171b43cdfccb81cf4b244c75736e728d57fa",
 			"source": "ISO 7042 prevailing-torque all-metal high hexagon nut (M12): s=18 (SW18, ISO 4033 base) and total height m=13.3 (h_max) tabulated from the ISO 7042:2012 Table 1 PDF, cross-checked against globalfastener. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form). bore=10.1 (M12 minor, ISO 724).",
+			"svg": "iso7042.svg"
+		},
+		"iso7042p": {
+			"alias_of": "iso7042",
+			"family": "lock_nut",
+			"sha256": "3d100bcb32a593f02b44e233a5cc171b43cdfccb81cf4b244c75736e728d57fa",
+			"source": "ISO 7042 M12, app image-variant key -- identical lock-nut envelope, aliases the iso7042 base.",
 			"svg": "iso7042.svg"
 		},
 		"iso7045": {

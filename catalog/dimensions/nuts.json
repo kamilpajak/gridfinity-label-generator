@@ -7,6 +7,13 @@
 		"verified": true,
 		"designations": [{ "system": "ISO", "code": "4032" }]
 	},
+	"iso4032p": {
+		"alias_of": "iso4032",
+		"hardwareType": "nut",
+		"source": "ISO 4032 M12, app image-variant key -- identical hex-nut envelope, aliases the iso4032 base.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4032" }]
+	},
 	"iso4033": {
 		"family": "hex_nut",
 		"shape": { "s": 18.0, "m": 12.0, "bore": 10.1 },
@@ -23,11 +30,25 @@
 		"verified": true,
 		"designations": [{ "system": "ISO", "code": "4035" }]
 	},
+	"iso4035p": {
+		"alias_of": "iso4035",
+		"hardwareType": "nut",
+		"source": "ISO 4035 M12, app image-variant key -- identical thin hex-nut envelope, aliases the iso4035 base.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "4035" }]
+	},
 	"din6330": {
 		"family": "hex_nut",
 		"shape": { "s": 18.0, "m": 18.0, "bore": 10.1 },
 		"hardwareType": "nut",
 		"source": "DIN 6330 hexagon nut height 1.5d (version B), M12: s=18.0, m=18.0 (=1.5x12). Confirmed vs Fasteners.eu DIN 6330 table + Norelem/Kipp DIN 6330 datasheets.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6330" }]
+	},
+	"din6330p": {
+		"alias_of": "din6330",
+		"hardwareType": "nut",
+		"source": "DIN 6330 M12, app image-variant key -- identical hex-nut envelope, aliases the din6330 base.",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "6330" }]
 	},

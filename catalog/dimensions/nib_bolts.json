@@ -8,14 +8,13 @@
 			"k": 7.0,
 			"head_style": "countersunk",
 			"nib_w": 3.6,
-			"nib_l": 12.3,
 			"nib_d": 5.7,
 			"tip_chamfer": 1.2
 		},
 		"hardwareType": "screw",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "604" }],
-		"source": "DIN 604 flat countersunk nib bolt (Senkschraube mit Nase), M12: head diameter dk=24.65 (tabulated 23.35-24.65) and head height k=7.0 (max), nib width nib_w=3.6 (g, tabulated 3.12-3.6), confirmed by fasteners.eu DIN 604 table + Fuller Fasteners DIN 604 specifications + boltingspecialist.com DIN 604 (all M12 dk-max 24.65, g-max 3.6, head-angle 90-95 deg). nib_d=5.7 is the tabulated M12 'i' minimum, read as the RADIAL nose height above the shank (the figure's i arrow is radial, same reading as DIN 607; the legacy raster confirms: back face starts ~5.3 mm above the shank). The nib is drawn as a wedge alongside the head cone per the DIN 604 figure: top edge on the flat face out to nib_l=12.3 (REPRESENTATIVE, ~the head rim dk/2=12.325), outer edge tapering to the nose corner (d_shank/2 + i = 11.7) at the bearing plane -- the figure's ~5-deg taper emerges from these tabulated numbers -- and a back face dropping to the shank at 15 deg from the radial (the figure's angle). d_shank=12.0 (M12 major, envelope-only, no drawn thread); length=50.0 REPRESENTATIVE (DIN 604 lists lengths 20-160); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Envelope only - no thread, no drive (the nib is the anti-rotation feature)."
+		"source": "DIN 604 flat countersunk nib bolt (Senkschraube mit Nase), M12: head diameter dk=24.65 (tabulated 23.35-24.65) and head height k=7.0 (max), nib width nib_w=3.6 (g, tabulated 3.12-3.6), confirmed by fasteners.eu DIN 604 table + Fuller Fasteners DIN 604 specifications + boltingspecialist.com DIN 604 (all M12 dk-max 24.65, g-max 3.6, head-angle 90-95 deg). nib_d=5.7 is the tabulated M12 'i' minimum, read as the RADIAL nose height above the shank (the figure's i arrow is radial, same reading as DIN 607; the legacy raster confirms: back face starts ~5.3 mm above the shank). The nib is drawn as a wedge alongside the head cone per the DIN 604 figure, with two corners on existing silhouette vertices (matching the legacy raster): the top corner is the head-rim corner (dk/2, k) and the back face lands exactly on the cone-shank junction; the nose corner sits at (d_shank/2 + i, i*tan(15deg)) -- back face 15 deg from the radial per the figure, and the outer edge's ~5-deg taper emerges from the tabulated numbers. d_shank=12.0 (M12 major, envelope-only, no drawn thread); length=50.0 REPRESENTATIVE (DIN 604 lists lengths 20-160); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Envelope only - no thread, no drive (the nib is the anti-rotation feature)."
 	},
 	"din604d": {
 		"alias_of": "din604",

@@ -35,23 +35,23 @@ _NIB_BACK_DEG = 15.0   # DIN 604 nib back-face angle from the radial, per the st
 
 
 def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str,
-             nib_w: float, nib_l: float, nib_d: float, tip_chamfer: float | None = None):
+             nib_w: float, nib_d: float, nib_l: float | None = None,
+             tip_chamfer: float | None = None):
     """Nib bolt: a smooth shank of diameter ``d_shank`` and ``length`` (z in [-length, 0],
     optional 45-degree lead ``tip_chamfer``), a head of diameter ``dk`` and height ``k`` above
     the z=0 bearing plane, and one rectangular nib along +X — width ``nib_w`` (tangential,
     along Y), radial reach ``nib_l`` from the axis, axial height ``nib_d``.
     ``head_style="countersunk"`` draws the DIN 604 cone frustum (``d_shank/2`` at z=0 widening
-    to ``dk/2`` at z=k) with the nib as a wedge alongside the cone: top edge on the flat face
-    out to ``nib_l`` (the rim), outer edge tapering to the nose corner
-    (``d_shank/2 + nib_d``, z=0), back face dropping to the shank at ``_NIB_BACK_DEG`` from
-    the radial. ``head_style="cup"`` draws the DIN 607 spherical-cap dome with the nib as a
-    triangular wedge on the shank — reach ``nib_l`` at the z=0 bearing face, underside
-    sloping to the shank at z=-nib_d (the figure's 30-degree slope). ``nib_d`` is the radial
-    nose height ``i`` for the countersunk form and the wedge's axial extent for the cup form.
-    No thread, no drive.
+    to ``dk/2`` at z=k) with the nib as a wedge alongside the cone whose top corner IS the
+    head-rim corner and whose back face lands ON the cone-shank junction (``nib_l`` must be
+    omitted — the wedge is fully determined by dk/k/``nib_d``); ``nib_d`` is the tabulated
+    radial nose height ``i``. ``head_style="cup"`` draws the DIN 607 spherical-cap dome with
+    the nib as a triangular wedge on the shank — reach ``nib_l`` (required) at the z=0
+    bearing face, underside sloping to the shank at z=-``nib_d`` (the figure's 30-degree
+    slope; here ``nib_d`` is the wedge's axial extent). No thread, no drive.
     """
     for name, val in (("d_shank", d_shank), ("length", length), ("dk", dk), ("k", k),
-                      ("nib_w", nib_w), ("nib_l", nib_l), ("nib_d", nib_d)):
+                      ("nib_w", nib_w), ("nib_d", nib_d)):
         if val <= 0:
             raise ValueError(f"nib_bolt: need {name} > 0, got {val}")
     if head_style not in _HEAD_STYLES:
@@ -60,25 +60,33 @@ def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str
         raise ValueError(
             f"nib_bolt: d_shank {d_shank} must be < head diameter dk {dk} "
             f"(the head must overhang the shank)")
-    if nib_l <= d_shank / 2.0:
-        raise ValueError(
-            f"nib_bolt: nib_l {nib_l} must exceed the shank radius {d_shank / 2.0} "
-            f"(the nib must protrude past the shank)")
-    if nib_l > dk / 2.0:
-        raise ValueError(
-            f"nib_bolt: nib_l {nib_l} must not exceed the head radius {dk / 2.0} "
-            f"(the nib stays within the head outline)")
     if nib_w >= d_shank:
         raise ValueError(
             f"nib_bolt: nib_w {nib_w} must be < d_shank {d_shank} (a nib is a narrow lug)")
-    if head_style == "countersunk" and d_shank / 2.0 + nib_d >= nib_l:
-        raise ValueError(
-            f"nib_bolt: shank radius + nib_d {d_shank / 2.0 + nib_d} must be < nib_l {nib_l} "
-            f"(the DIN 604 nib's outer edge tapers inward from the rim to the nose corner)")
-    if head_style == "cup" and nib_d >= length:
-        raise ValueError(
-            f"nib_bolt: nib_d {nib_d} must be < length {length} "
-            f"(the nib may not reach past the shank tip)")
+    if head_style == "countersunk":
+        if nib_l is not None:
+            raise ValueError(
+                "nib_bolt: nib_l is not a free parameter for the countersunk form — the DIN "
+                "604 nib tops out exactly at the head rim (dk/2) per the standard's figure")
+        if d_shank / 2.0 + nib_d >= dk / 2.0:
+            raise ValueError(
+                f"nib_bolt: shank radius + nib_d {d_shank / 2.0 + nib_d} must be < head "
+                f"radius {dk / 2.0} (the nose corner stays inside the rim)")
+    else:
+        if nib_l is None:
+            raise ValueError("nib_bolt: the cup form needs nib_l (radial nib reach)")
+        if nib_l <= d_shank / 2.0:
+            raise ValueError(
+                f"nib_bolt: nib_l {nib_l} must exceed the shank radius {d_shank / 2.0} "
+                f"(the nib must protrude past the shank)")
+        if nib_l > dk / 2.0:
+            raise ValueError(
+                f"nib_bolt: nib_l {nib_l} must not exceed the head radius {dk / 2.0} "
+                f"(the nib stays within the head outline)")
+        if nib_d >= length:
+            raise ValueError(
+                f"nib_bolt: nib_d {nib_d} must be < length {length} "
+                f"(the nib may not reach past the shank tip)")
 
     shank = _screw_shank(d_shank, length, tip_chamfer)   # z in [-length, 0]; validates chamfer
 
@@ -110,16 +118,17 @@ def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str
         # Nib along +X, width nib_w centred on Y=0; both variants overlap the head/shank
         # volumetrically near the axis, so the union is robust.
         if head_style == "countersunk":
-            # DIN 604: a wedge alongside the head cone, per the figure and the legacy raster —
-            # top edge on the flat face out to nib_l (the rim), outer edge tapering to the
-            # nose corner (d_shank/2 + nib_d, 0) at the bearing plane (the figure's ~5-deg
-            # taper emerges from the tabulated numbers), back face dropping to the shank at
-            # _NIB_BACK_DEG from the radial. The sketch extends to the axis for a robust union.
-            nose_r = d_shank / 2.0 + nib_d
-            z_back = -nib_d * math.tan(math.radians(_NIB_BACK_DEG))
+            # DIN 604: a wedge alongside the head cone, per the figure and the legacy raster.
+            # Two of its corners COINCIDE with existing silhouette vertices: the top corner is
+            # the head-rim corner (dk/2, k) and the back face lands exactly on the cone-shank
+            # junction (d_shank/2, 0). Between them the nose corner sits at
+            # (d_shank/2 + nib_d, nib_d*tan(_NIB_BACK_DEG)) — i radial, back face 15 deg from
+            # the radial; the outer edge's slight taper emerges from the tabulated numbers.
+            # The sketch extends to the axis for a robust union.
+            nose = (d_shank / 2.0 + nib_d, nib_d * math.tan(math.radians(_NIB_BACK_DEG)))
             with BuildSketch(Plane.XZ):
-                Polygon((0.0, k), (nib_l, k), (nose_r, 0.0),
-                        (d_shank / 2.0, z_back), (0.0, z_back), align=None)
+                Polygon((0.0, k), (dk / 2.0, k), nose,
+                        (d_shank / 2.0, 0.0), (0.0, 0.0), align=None)
             extrude(amount=nib_w / 2.0, both=True)
         else:
             # DIN 607: a triangular wedge on the shank hugging the bearing face — full reach

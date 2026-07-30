@@ -433,14 +433,14 @@
 		},
 		"din604": {
 			"family": "nib_bolt",
-			"sha256": "bf64632bf60c4c11f61a1f934a36f507541e4fa6156e09f252cb111bec3b96e8",
-			"source": "DIN 604 flat countersunk nib bolt (Senkschraube mit Nase), M12: head diameter dk=24.65 (tabulated 23.35-24.65) and head height k=7.0 (max), nib width nib_w=3.6 (g, tabulated 3.12-3.6), confirmed by fasteners.eu DIN 604 table + Fuller Fasteners DIN 604 specifications + boltingspecialist.com DIN 604 (all M12 dk-max 24.65, g-max 3.6, head-angle 90-95 deg). nib_d=5.7 is the tabulated M12 'i' minimum, read as the nib height per fasteners.eu ('i - height of the nose', min 5.7) and Fuller (i min 5.7); boltingspecialist reads the same 5.7/7.0 pair as the head-depth range, so the nib-depth reading is flagged as the two-of-three interpretation. nib_l=9.0 REPRESENTATIVE (the radial nib reach is not tabulated in DIN 604; drawn protruding 3 mm past the 6 mm shank radius, inside the head outline). d_shank=12.0 (M12 major, envelope-only, no drawn thread); length=50.0 REPRESENTATIVE (DIN 604 lists lengths 20-160); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Envelope only - no thread, no drive (the nib is the anti-rotation feature); the nib is drawn as a plain box below the bearing plane, representative form for the countersunk seat.",
+			"sha256": "eb744090d25fb3944cdbf81d626823f67505fe859cb7169b15129eb33a7558b0",
+			"source": "DIN 604 flat countersunk nib bolt (Senkschraube mit Nase), M12: head diameter dk=24.65 (tabulated 23.35-24.65) and head height k=7.0 (max), nib width nib_w=3.6 (g, tabulated 3.12-3.6), confirmed by fasteners.eu DIN 604 table + Fuller Fasteners DIN 604 specifications + boltingspecialist.com DIN 604 (all M12 dk-max 24.65, g-max 3.6, head-angle 90-95 deg). nib_d=5.7 is the tabulated M12 'i' minimum, read as the nib height per fasteners.eu ('i - height of the nose', min 5.7) and Fuller (i min 5.7); boltingspecialist reads the same 5.7/7.0 pair as the head-depth range, so the nib-depth reading is flagged as the two-of-three interpretation. Per the DIN 604 figure (fasteners.eu drawing) the nib is a rib ON the conical bearing surface, hanging from the flat top face down by i -- NOT a lug on the shank (that is the DIN 607 form); the generator places it at z in [k-nib_d, k]. nib_l=12.3 REPRESENTATIVE (the radial reach is not tabulated; drawn flush with the head rim, just under dk/2=12.325, per the figure where the nib's outer face meets the rim; the 15-deg underside slope is omitted -- envelope box). d_shank=12.0 (M12 major, envelope-only, no drawn thread); length=50.0 REPRESENTATIVE (DIN 604 lists lengths 20-160); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Envelope only - no thread, no drive (the nib is the anti-rotation feature).",
 			"svg": "din604.svg"
 		},
 		"din604d": {
 			"alias_of": "din604",
 			"family": "nib_bolt",
-			"sha256": "bf64632bf60c4c11f61a1f934a36f507541e4fa6156e09f252cb111bec3b96e8",
+			"sha256": "eb744090d25fb3944cdbf81d626823f67505fe859cb7169b15129eb33a7558b0",
 			"source": "DIN 604 M12, app image-variant key - identical flat countersunk nib-bolt envelope (dk=24.65, k=7, nib g=3.6/i=5.7); aliases the din604 base.",
 			"svg": "din604.svg"
 		},

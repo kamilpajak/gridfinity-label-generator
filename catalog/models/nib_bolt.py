@@ -1,13 +1,15 @@
 """Nib bolt family generator (Nasenschraube: DIN 604 flat countersunk, DIN 607 cup head).
 
-A round shank with a small rectangular anti-rotation NIB (Nase) under the head — the nib is a
-lug that digs into the mating part and stops the bolt from turning while the nut is tightened
-(the nib-bolt sibling of the carriage bolt's square neck). ``head_style`` selects the head, the
-same two-silhouette switch as ``lock_nut.top_style``: ``"countersunk"`` is the flat conical
-DIN 604 head, ``"cup"`` the shallow domed DIN 607 head. Envelope-only: no drawn thread, no
-drive (the nib is the anti-rotation feature); the nib is drawn as a simple extruded box — its
-tabulated width (g) and depth (i) are honoured, its radial extent is representative form (DIN
-604/607 do not tabulate it).
+A round shank with a small rectangular anti-rotation NIB (Nase) that digs into the mating
+part and stops the bolt from turning while the nut is tightened (the nib-bolt sibling of the
+carriage bolt's square neck). ``head_style`` selects the head, the same two-silhouette switch
+as ``lock_nut.top_style`` — and, per the standards' figures (fasteners.eu drawings), also
+WHERE the nib sits: on the DIN 604 ``"countersunk"`` head the nib is a rib ON the conical
+bearing surface, hanging from the flat top face down by its height ``i`` and reaching out to
+the head rim; on the DIN 607 ``"cup"`` head it is a lug on the SHANK, hanging ``i`` below the
+z=0 bearing face. Envelope-only: no drawn thread, no drive; the nib is a simple box — its
+tabulated width (g) and height (i) are honoured, its radial reach and the standards' small
+underside slopes (15 deg DIN 604 / 30 deg DIN 607) are representative form.
 
 Composes established idioms — the shank is ``screw_common._screw_shank`` (top face on the z=0
 under-head bearing plane, body down -Z), the countersunk cone is the ``slotted_screw`` /
@@ -30,11 +32,12 @@ def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str
              nib_w: float, nib_l: float, nib_d: float, tip_chamfer: float | None = None):
     """Nib bolt: a smooth shank of diameter ``d_shank`` and ``length`` (z in [-length, 0],
     optional 45-degree lead ``tip_chamfer``), a head of diameter ``dk`` and height ``k`` above
-    the z=0 bearing plane, and one rectangular nib under the head along +X — width ``nib_w``
-    (tangential, along Y), radial reach ``nib_l`` from the axis, hanging ``nib_d`` below z=0.
+    the z=0 bearing plane, and one rectangular nib along +X — width ``nib_w`` (tangential,
+    along Y), radial reach ``nib_l`` from the axis, axial height ``nib_d``.
     ``head_style="countersunk"`` draws the DIN 604 cone frustum (``d_shank/2`` at z=0 widening
-    to ``dk/2`` at z=k); ``head_style="cup"`` draws the DIN 607 spherical-cap dome. No thread,
-    no drive.
+    to ``dk/2`` at z=k) with the nib ON the cone, z in [k-nib_d, k] (a rib hanging from the
+    flat face, per the DIN 604 figure); ``head_style="cup"`` draws the DIN 607 spherical-cap
+    dome with the nib on the shank, z in [-nib_d, 0]. No thread, no drive.
     """
     for name, val in (("d_shank", d_shank), ("length", length), ("dk", dk), ("k", k),
                       ("nib_w", nib_w), ("nib_l", nib_l), ("nib_d", nib_d)):
@@ -57,7 +60,11 @@ def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str
     if nib_w >= d_shank:
         raise ValueError(
             f"nib_bolt: nib_w {nib_w} must be < d_shank {d_shank} (a nib is a narrow lug)")
-    if nib_d >= length:
+    if head_style == "countersunk" and nib_d >= k:
+        raise ValueError(
+            f"nib_bolt: nib_d {nib_d} must be < head height k {k} "
+            f"(the DIN 604 nib is a rib on the head cone and stays within it)")
+    if head_style == "cup" and nib_d >= length:
         raise ValueError(
             f"nib_bolt: nib_d {nib_d} must be < length {length} "
             f"(the nib may not reach past the shank tip)")
@@ -89,10 +96,13 @@ def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str
             with BuildSketch(Plane.XZ):
                 Polygon(*profile, align=None)
             revolve(axis=Axis.Z, revolution_arc=360)     # unions the cone (default Mode.ADD)
-        # Nib: one box along +X from the axis to nib_l, width nib_w centred on Y=0, hanging
-        # nib_d below the bearing plane. It volumetrically overlaps the shank (x < d_shank/2),
-        # so the union is robust for both head styles.
-        Box(nib_l, nib_w, nib_d, align=(Align.MIN, Align.CENTER, Align.MAX))
+        # Nib: one box along +X from the axis to nib_l, width nib_w centred on Y=0.
+        # Countersunk (DIN 604): on the head cone, z in [k-nib_d, k] — the box overlaps the
+        # cone volumetrically near the axis, so it fuses into the head. Cup (DIN 607): on the
+        # shank, z in [-nib_d, 0] — overlaps the shank (x < d_shank/2). Robust either way.
+        nib_top = k if head_style == "countersunk" else 0.0
+        with Locations((0.0, 0.0, nib_top)):
+            Box(nib_l, nib_w, nib_d, align=(Align.MIN, Align.CENTER, Align.MAX))
     part = bp.part
     if part.volume <= 0:                                 # net guard (not is_valid — sewn-shell gotcha)
         raise ValueError("nib_bolt: produced an empty solid")

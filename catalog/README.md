@@ -15,10 +15,12 @@ The app and `pnpm build` do NOT run this — outputs are committed files.
    - `./catalog/run python catalog/qa/coverage.py`
    - `./catalog/run python catalog/qa/contact_sheet.py` (review the HTML)
 4. Integrate the SVGs into the app:
-   - `./catalog/run python catalog/integrate.py` — copies the SVGs into
-     `static/images/standards/` and repoints `data/image-mappings.json`.
-   - Update `src/lib/data/standards-generated.ts` **surgically**: change the `image`
-     path only for the migrated **top-level** entries to the new `.svg`.
+   - `./catalog/run python -m catalog.integrate` — copies the SVGs into
+     `static/images/standards/` and repoints `data/image-mappings.json`
+     (new mapping entries get their `hardwareType` from `FAMILY_TO_HARDWARE_TYPE`).
+   - `node scripts/catalog-repoint-standards.mjs` — the **surgical**
+     `standards-generated.ts` update: repoints (or inserts) the `image` field for
+     every shipped standard whose id is a manifest key. Touches nothing else.
 5. Commit the new SVG(s), `image-mappings.json`, the surgical
    `standards-generated.ts` image edits, and `manifest.json`.
 
@@ -36,15 +38,19 @@ reviewed operation — never silent CI.
 
 ## Known scope / follow-ups
 
-**Flat-washer ISO wiring is deferred (option A).** DIN 125, 126, 433, and 9021
-are served in the app through their ISO-equivalent entries (iso7089, iso7090,
-iso7091, iso7093). Those ISO entries still point at the old PNGs in
-`data/image-mappings.json`, so repointing them in that file is currently a UI
-no-op — the SVG files exist but are not reached by those ISO keys. Repointing
-the ISO rendering-entries to the generated SVGs is deferred to the supervised
-data/mapping pass: each ISO→SVG assignment must be verified on the contact sheet
-before committing. DIN 127 and DIN 128 are top-level entries with no ISO alias
-and already render the new SVG live.
+**App integration is live.** Every manifest key is integrated: the SVGs are
+copied into `static/images/standards/`, `data/image-mappings.json` points at
+them, and `scripts/catalog-repoint-standards.mjs` keeps the shipped
+`standards-generated.ts` in sync (109 shipped standards render an SVG). The
+label renderer loads `.svg` standard images directly — the old png→svg
+"priority" upgrade path (`AVAILABLE_SVGS`) is no longer load-bearing.
+
+Still deferred: **PNG-basename bridging** — 18 mapping keys whose id is not a
+manifest key but whose legacy PNG basename matches one (e.g. `iso7038` →
+`din_979.png` → `din979.svg`). Only `din562` (→ `din557.svg`) is a shipped
+standard. Each of these is a visual-equivalence claim, so verify per key on the
+contact sheet before repointing. Likewise `iso7090` (shipped, no mapping entry)
+would need a proper manifest alias (chamfered DIN 125 B form) first.
 
 **Toothed lock washers — all real DIN forms generated.** Three generators cover
 the family: `toothed_lock_washer` (external teeth on the outer edge — DIN 6797 A

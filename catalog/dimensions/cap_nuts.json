@@ -7,6 +7,13 @@
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "1587" }]
 	},
+	"din1587d": {
+		"alias_of": "din1587",
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "1587" }],
+		"source": "DIN 1587 M12, app image-variant key -- identical cap-nut envelope, aliases the din1587 base."
+	},
 	"din917": {
 		"family": "cap_nut",
 		"shape": { "s": 18.0, "m": 16.0, "dome_height": 8.0 },
@@ -14,6 +21,13 @@
 		"source": "DIN 917 hexagon cap nut, low type (M12): s=18, total height m=16, hex body 8 (m' minimum) -> dome_height=8 (derived). Confirmed vs fasteners.eu + Fuller Fasteners + TorqBolt DIN 917 tables.",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "917" }]
+	},
+	"din917d": {
+		"alias_of": "din917",
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "917" }],
+		"source": "DIN 917 M12, app image-variant key -- identical cap-nut envelope, aliases the din917 base."
 	},
 	"din986": {
 		"family": "cap_nut",

@@ -14,6 +14,13 @@
 		"verified": true,
 		"designations": [{ "system": "ISO", "code": "10511" }]
 	},
+	"iso10511p": {
+		"alias_of": "iso10511",
+		"hardwareType": "nut",
+		"source": "ISO 10511 M12, app image-variant key -- identical lock-nut envelope, aliases the iso10511 base.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "10511" }]
+	},
 	"iso7040": {
 		"family": "lock_nut",
 		"shape": {
@@ -83,6 +90,13 @@
 		"verified": true,
 		"designations": [{ "system": "ISO", "code": "7042" }]
 	},
+	"iso7042p": {
+		"alias_of": "iso7042",
+		"hardwareType": "nut",
+		"source": "ISO 7042 M12, app image-variant key -- identical lock-nut envelope, aliases the iso7042 base.",
+		"verified": true,
+		"designations": [{ "system": "ISO", "code": "7042" }]
+	},
 	"iso7720": {
 		"alias_of": "iso7042",
 		"hardwareType": "nut",
@@ -110,6 +124,13 @@
 		},
 		"hardwareType": "nut",
 		"source": "DIN 6925 all-metal high prevailing-torque hexagon nut (M12, ISO 7042 counterpart): s=18 (SW18, ISO 4033 base, not DIN 934) and total height m=12.0 confirmed by three independent vendor tables (nan-long, fastenersco, zhenkunmach) and fasteners.eu. Kept distinct from ISO 7042 (h_max 13.3, 2012 edition) because the confirmed DIN 6925 envelope differs. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form). bore=10.1 (M12 minor, ISO 724).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6925" }]
+	},
+	"din6925i": {
+		"alias_of": "din6925",
+		"hardwareType": "nut",
+		"source": "DIN 6925 M12, app image-variant key -- identical lock-nut envelope, aliases the din6925 base.",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "6925" }]
 	}

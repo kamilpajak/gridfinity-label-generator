@@ -13,6 +13,13 @@
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "546" }]
 	},
+	"din546p": {
+		"alias_of": "din546",
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "546" }],
+		"source": "DIN 546 M12, app image-variant key -- identical slotted-face-nut envelope, aliases the din546 base."
+	},
 	"din1816": {
 		"family": "cross_hole_nut",
 		"shape": {
@@ -27,5 +34,12 @@
 		"source": "DIN 1816 cross-hole round nut (Kreuzlochmutter), M12x1.5 fine thread. d=28.0 and h=6.0 tabulated by theo-schrauben.de + seefelder.net + online-schrauben.de + mcmaster.com. n_holes=4 tabulated by theo-schrauben.de + seefelder.net. hole_d=3.0 (d4) tabulated by theo-schrauben.de; online-schrauben.de confirms M3. d3=23.0 (pitch circle) tabulated by theo-schrauben.de + online-schrauben.de + seefelder.net. hole_depth=4.0 derived: OD_radius(14)−(d3/2−hole_d/2)=14−10=4 mm; hole floor at r=10 mm, bore wall at r≈5.2 mm, no intersection. bore=10.4 from ISO 724 D1=12−1.082532×1.5=10.376 mm. Holes are 4 radial bores perpendicular to the nut axis drilled into the OD wall (tommy-bar spanner), NOT axial holes in the top face. Holes placed at mid-height (no axial offset dimensioned in any public table). The bold concentric ring in the DIN 1816 face-view drawing is the standard internal-thread representation (the same ring appears on the DIN 546 drawing, which has no step); it is not modelled (threads are envelope-only). Any 0.5 mm top-face Planfläche (z=0.5 mm at d3=23 mm) is a sub-visible chamfer-scale detail below the family's fine-feature threshold and is not modelled.",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "1816" }]
+	},
+	"din1816d": {
+		"alias_of": "din1816",
+		"hardwareType": "nut",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "1816" }],
+		"source": "DIN 1816 M12x1.5, app image-variant key -- identical cross-hole-nut envelope, aliases the din1816 base."
 	}
 }

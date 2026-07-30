@@ -5,9 +5,11 @@ from catalog.models.nib_bolt import nib_bolt
 
 # M12 fixtures: DIN 604 flat countersunk (dk/k/g/i from fasteners.eu + Fuller + boltingspecialist)
 # and DIN 607 cup head (dk/k/g/i from Fuller + fasten.it). nib_l / length / tip_chamfer are the
-# REPRESENTATIVE values of the data file. Per the standards' figures the DIN 604 nib is a box rib
-# on the head cone (z in [k-i, k], reaching the head rim); the DIN 607 nib is a triangular wedge
-# on the shank — full reach at the z=0 bearing face, underside sloping to the shank at -i.
+# REPRESENTATIVE values of the data file. Both standards read i as the RADIAL nose height. The
+# DIN 604 nib is a wedge alongside the cone: top edge on the flat face to the rim, outer edge
+# tapering to the nose corner (6 + 5.7 = 11.7) at z=0, back face at 15 deg from the radial down
+# to the shank (z_back = -5.7*tan15 = -1.53). The DIN 607 nib is a wedge on the shank — full
+# reach at z=0, underside sloping to the shank at -nib_d (30-deg slope).
 D_SHANK = 12.0
 LENGTH = 50.0
 DK = 24.65
@@ -16,7 +18,7 @@ K_CUP = 9.65         # DIN 607 head height (max)
 NIB_W = 3.6          # nib width g (max), both standards
 NIB_L_CSK = 12.3     # DIN 604 radial nib reach, REPRESENTATIVE (flush with the head rim)
 NIB_L_CUP = 9.2      # DIN 607 nib reach: d_shank/2 + i (i=3.2 read as the radial nose height)
-NIB_D_CSK = 5.7      # DIN 604 nib height i (min), axial
+NIB_D_CSK = 5.7      # DIN 604 nose height i (min), radial (nose corner at 6 + 5.7 = 11.7)
 NIB_D_CUP = 5.5      # DIN 607 wedge axial extent, REPRESENTATIVE (i/tan(30deg) per the figure)
 TIP_CHAMFER = 1.2
 
@@ -58,11 +60,12 @@ def test_envelope_cup():
 
 
 def test_countersunk_cone_narrow_at_bearing_plane_wide_at_top():
-    # probe at radius 10 (between d_shank/2=6 and dk/2=12.325): the cone radius is
-    # 6 + 0.9036*z, so x=10 is void near z=0 and material near the top rim.
+    # probe on the -Y side (clear of the +X nib, |y| > nib_w/2) at point radius ~11.2
+    # (between d_shank/2=6 and dk/2=12.325): the cone radius is 6 + 0.9036*z, so the
+    # point is void near z=0 and material near the top rim.
     part = _csk()
-    assert not _solid_at(part, 10.0, 0.0, 0.5)
-    assert _solid_at(part, 10.0, 0.0, K_CSK - 0.5)
+    assert not _solid_at(part, 10.0, -5.0, 0.5)
+    assert _solid_at(part, 10.0, -5.0, K_CSK - 0.5)
 
 
 def test_cup_dome_wide_at_base_curving_off_above():
@@ -74,15 +77,17 @@ def test_cup_dome_wide_at_base_curving_off_above():
     assert _solid_at(part, 0.0, 0.0, K_CUP - 0.5)       # solid up to the apex on the axis
 
 
-def test_countersunk_nib_rib_on_the_cone_on_plus_x_only():
-    # probe at (10, 0, 1.8): inside the nib box (z in [1.3, 7], x <= 12.3) but outside the
-    # cone (its radius at z=1.8 is 6 + 0.9036*1.8 = 7.63) — material only on the +X side.
+def test_countersunk_nib_wedge_alongside_the_cone_on_plus_x_only():
+    # outer edge runs (12.3, 7) -> (11.7, 0), back face (11.7, 0) -> (6, -1.53): probes at
+    # (10, 0, z>=0) sit inside the wedge but outside the cone (cone radius 6 + 0.9036*z).
     part = _csk()
-    assert _solid_at(part, 10.0, 0.0, 1.8)                  # nib rib beyond the cone surface
+    assert _solid_at(part, 10.0, 0.0, 1.8)                  # wedge material beyond the cone
+    assert _solid_at(part, 10.0, 0.0, 0.5)                  # down at the bearing plane too
+    assert _solid_at(part, 8.0, 0.0, -0.5)                  # back-face wedge just below z=0
     assert not _solid_at(part, -10.0, 0.0, 1.8)             # one-sided: nothing on -X
     assert not _solid_at(part, NIB_L_CSK + 0.6, 0.0, K_CSK - 0.5)   # nib ends at nib_l
-    assert not _solid_at(part, 10.0, 0.0, 0.5)              # nothing below the nib floor (z=1.3)
-    assert not _solid_at(part, 8.0, 0.0, -2.0)              # and nothing on the shank below z=0
+    assert not _solid_at(part, 10.0, 0.0, -1.0)             # void under the 15-deg back face
+    assert not _solid_at(part, 8.0, 0.0, -2.0)              # nothing on the shank below z_back
 
 
 def test_cup_nib_wedge_below_bearing_plane_on_plus_x_only():
@@ -145,7 +150,7 @@ def test_guards():
     with pytest.raises(ValueError):
         _csk(nib_w=D_SHANK)                  # nib as wide as the shank (not a lug)
     with pytest.raises(ValueError):
-        _csk(nib_d=K_CSK)                    # DIN 604 nib must stay within the head cone
+        _csk(nib_d=K_CSK)                    # nose corner (6+7) would reach past nib_l=12.3
     with pytest.raises(ValueError):
         _cup(nib_d=LENGTH)                   # DIN 607 nib as deep as the whole shank
     with pytest.raises(ValueError):

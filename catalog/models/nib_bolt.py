@@ -4,13 +4,15 @@ A round shank with a small rectangular anti-rotation NIB (Nase) that digs into t
 part and stops the bolt from turning while the nut is tightened (the nib-bolt sibling of the
 carriage bolt's square neck). ``head_style`` selects the head, the same two-silhouette switch
 as ``lock_nut.top_style`` — and, per the standards' figures (fasteners.eu drawings), also
-WHERE the nib sits: on the DIN 604 ``"countersunk"`` head the nib is a rib ON the conical
-bearing surface, hanging from the flat top face down by its height ``i`` and reaching out to
-the head rim (a simple box; the figure's 15-degree underside slope is representative form);
-on the DIN 607 ``"cup"`` head it is a triangular WEDGE on the shank hugging the z=0 bearing
-face — full reach at the head, underside sloping down to meet the shank at ``-i``, the
-figure's 30-degree slope. Envelope-only: no drawn thread, no drive; the tabulated width (g)
-and height (i) are honoured, the radial reach is representative form.
+WHERE the nib sits. Both standards tabulate ``i`` as the RADIAL nose height above the shank
+(the figures' i arrows are radial; the legacy rasters agree). On the DIN 604
+``"countersunk"`` head the nib is a wedge alongside the cone: top edge on the flat face out
+to the rim, outer edge tapering to the nose corner (shank radius + i) at the bearing plane,
+back face dropping to the shank at 15 degrees from the radial (the figure's angles). On the
+DIN 607 ``"cup"`` head it is a triangular wedge on the shank hugging the z=0 bearing face —
+full reach at the head, underside sloping to the shank per the figure's 30-degree slope.
+Envelope-only: no drawn thread, no drive; the tabulated width (g) and nose height (i) are
+honoured, the remaining wedge proportions are representative form.
 
 Composes established idioms — the shank is ``screw_common._screw_shank`` (top face on the z=0
 under-head bearing plane, body down -Z), the countersunk cone is the ``slotted_screw`` /
@@ -19,6 +21,8 @@ under-head bearing plane, body down -Z), the countersunk cone is the ``slotted_s
 overlaps the shank, so head, shank and nib fuse into one solid (net volume>0 + single-solid
 guards backstop the Booleans).
 """
+import math
+
 from build123d import (
     BuildPart, BuildSketch, Polygon, Sphere, Box, Locations,
     Plane, Axis, Align, Mode, extrude, revolve, add,
@@ -27,6 +31,7 @@ from build123d import (
 from catalog.models.screw_common import _screw_shank
 
 _HEAD_STYLES = ("countersunk", "cup")
+_NIB_BACK_DEG = 15.0   # DIN 604 nib back-face angle from the radial, per the standard's figure
 
 
 def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str,
@@ -36,11 +41,14 @@ def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str
     the z=0 bearing plane, and one rectangular nib along +X — width ``nib_w`` (tangential,
     along Y), radial reach ``nib_l`` from the axis, axial height ``nib_d``.
     ``head_style="countersunk"`` draws the DIN 604 cone frustum (``d_shank/2`` at z=0 widening
-    to ``dk/2`` at z=k) with the nib ON the cone, z in [k-nib_d, k] (a box rib hanging from
-    the flat face, per the DIN 604 figure); ``head_style="cup"`` draws the DIN 607
-    spherical-cap dome with the nib as a triangular wedge on the shank — reach ``nib_l`` at
-    the z=0 bearing face, underside sloping to the shank at z=-nib_d (the DIN 607 figure's
-    30-degree slope). No thread, no drive.
+    to ``dk/2`` at z=k) with the nib as a wedge alongside the cone: top edge on the flat face
+    out to ``nib_l`` (the rim), outer edge tapering to the nose corner
+    (``d_shank/2 + nib_d``, z=0), back face dropping to the shank at ``_NIB_BACK_DEG`` from
+    the radial. ``head_style="cup"`` draws the DIN 607 spherical-cap dome with the nib as a
+    triangular wedge on the shank — reach ``nib_l`` at the z=0 bearing face, underside
+    sloping to the shank at z=-nib_d (the figure's 30-degree slope). ``nib_d`` is the radial
+    nose height ``i`` for the countersunk form and the wedge's axial extent for the cup form.
+    No thread, no drive.
     """
     for name, val in (("d_shank", d_shank), ("length", length), ("dk", dk), ("k", k),
                       ("nib_w", nib_w), ("nib_l", nib_l), ("nib_d", nib_d)):
@@ -63,10 +71,10 @@ def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str
     if nib_w >= d_shank:
         raise ValueError(
             f"nib_bolt: nib_w {nib_w} must be < d_shank {d_shank} (a nib is a narrow lug)")
-    if head_style == "countersunk" and nib_d >= k:
+    if head_style == "countersunk" and d_shank / 2.0 + nib_d >= nib_l:
         raise ValueError(
-            f"nib_bolt: nib_d {nib_d} must be < head height k {k} "
-            f"(the DIN 604 nib is a rib on the head cone and stays within it)")
+            f"nib_bolt: shank radius + nib_d {d_shank / 2.0 + nib_d} must be < nib_l {nib_l} "
+            f"(the DIN 604 nib's outer edge tapers inward from the rim to the nose corner)")
     if head_style == "cup" and nib_d >= length:
         raise ValueError(
             f"nib_bolt: nib_d {nib_d} must be < length {length} "
@@ -102,9 +110,17 @@ def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str
         # Nib along +X, width nib_w centred on Y=0; both variants overlap the head/shank
         # volumetrically near the axis, so the union is robust.
         if head_style == "countersunk":
-            # DIN 604: a box ON the head cone, z in [k-nib_d, k] (a rib hanging from the rim).
-            with Locations((0.0, 0.0, k)):
-                Box(nib_l, nib_w, nib_d, align=(Align.MIN, Align.CENTER, Align.MAX))
+            # DIN 604: a wedge alongside the head cone, per the figure and the legacy raster —
+            # top edge on the flat face out to nib_l (the rim), outer edge tapering to the
+            # nose corner (d_shank/2 + nib_d, 0) at the bearing plane (the figure's ~5-deg
+            # taper emerges from the tabulated numbers), back face dropping to the shank at
+            # _NIB_BACK_DEG from the radial. The sketch extends to the axis for a robust union.
+            nose_r = d_shank / 2.0 + nib_d
+            z_back = -nib_d * math.tan(math.radians(_NIB_BACK_DEG))
+            with BuildSketch(Plane.XZ):
+                Polygon((0.0, k), (nib_l, k), (nose_r, 0.0),
+                        (d_shank / 2.0, z_back), (0.0, z_back), align=None)
+            extrude(amount=nib_w / 2.0, both=True)
         else:
             # DIN 607: a triangular wedge on the shank hugging the bearing face — full reach
             # nib_l at z=0, underside sloping down to meet the shank at z=-nib_d (the figure's

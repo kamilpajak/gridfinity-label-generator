@@ -17,7 +17,9 @@ The app and `pnpm build` do NOT run this — outputs are committed files.
 4. Integrate the SVGs into the app:
    - `./catalog/run python -m catalog.integrate` — copies the SVGs into
      `static/images/standards/` and repoints `data/image-mappings.json`
-     (new mapping entries get their `hardwareType` from `FAMILY_TO_HARDWARE_TYPE`).
+     (new mapping entries get their `hardwareType` from `FAMILY_TO_HARDWARE_TYPE`;
+     the dict is a deliberate whitelist — it raises for an unlisted family, so
+     extend it explicitly when a new family first produces a brand-new mapping key).
    - `node scripts/catalog-repoint-standards.mjs` — the **surgical**
      `standards-generated.ts` update: repoints (or inserts) the `image` field for
      every shipped standard whose id is a manifest key. Touches nothing else.

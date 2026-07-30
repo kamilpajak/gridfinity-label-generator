@@ -20,6 +20,16 @@ const generatedPath = resolve(root, 'src/lib/data/standards-generated.ts');
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')).standards;
 let source = readFileSync(generatedPath, 'utf8');
 
+// The edits below rely on the generator's exact formatting (tab indentation,
+// single quotes, entries closed by "\n\t}"). Bail out loudly if it changed.
+if (
+	!source.includes('GENERATED FILE - DO NOT EDIT') ||
+	!/\n\t\{\n\t\tid: '/.test(source) ||
+	!/ as HardwareType[,\n]/.test(source)
+) {
+	throw new Error('standards-generated.ts format changed — update this script before rerunning');
+}
+
 let repointed = 0;
 let inserted = 0;
 

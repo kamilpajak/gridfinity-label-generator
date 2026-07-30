@@ -327,8 +327,31 @@ export interface ResolvedImage {
  * Results are cached for performance.
  */
 export async function resolveImageWithSvgPriority(originalSrc: string): Promise<ResolvedImage> {
-	// Only apply SVG priority for standard images (not custom/base64)
-	if (!originalSrc.startsWith('/images/standards/') || !originalSrc.endsWith('.png')) {
+	// Only handle standard images (not custom/base64)
+	if (!originalSrc.startsWith('/images/standards/')) {
+		return { src: originalSrc, image: null };
+	}
+
+	// Already an SVG — no resolution needed, but callers rely on the loaded
+	// image for aspect-ratio measurement, so load (and cache) it here
+	if (originalSrc.endsWith('.svg')) {
+		const cached = svgResolutionCache.get(originalSrc);
+		if (cached?.image) {
+			return cached;
+		}
+		try {
+			const image = await loadImage(originalSrc);
+			const result = { src: originalSrc, image };
+			svgResolutionCache.set(originalSrc, result);
+			return result;
+		} catch {
+			const result = { src: originalSrc, image: null };
+			svgResolutionCache.set(originalSrc, result);
+			return result;
+		}
+	}
+
+	if (!originalSrc.endsWith('.png')) {
 		return { src: originalSrc, image: null };
 	}
 

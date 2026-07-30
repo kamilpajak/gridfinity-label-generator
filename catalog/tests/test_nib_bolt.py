@@ -5,9 +5,9 @@ from catalog.models.nib_bolt import nib_bolt
 
 # M12 fixtures: DIN 604 flat countersunk (dk/k/g/i from fasteners.eu + Fuller + boltingspecialist)
 # and DIN 607 cup head (dk/k/g/i from Fuller + fasten.it). nib_l / length / tip_chamfer are the
-# REPRESENTATIVE values of the data file. Per the standards' figures the DIN 604 nib is a rib on
-# the head cone (z in [k-i, k], reaching the head rim); the DIN 607 nib is a lug on the shank
-# (z in [-i, 0]).
+# REPRESENTATIVE values of the data file. Per the standards' figures the DIN 604 nib is a box rib
+# on the head cone (z in [k-i, k], reaching the head rim); the DIN 607 nib is a triangular wedge
+# on the shank — full reach at the z=0 bearing face, underside sloping to the shank at -i.
 D_SHANK = 12.0
 LENGTH = 50.0
 DK = 24.65
@@ -15,7 +15,7 @@ K_CSK = 7.0          # DIN 604 head height (max)
 K_CUP = 9.65         # DIN 607 head height (max)
 NIB_W = 3.6          # nib width g (max), both standards
 NIB_L_CSK = 12.3     # DIN 604 radial nib reach, REPRESENTATIVE (flush with the head rim)
-NIB_L_CUP = 9.0      # DIN 607 radial nib reach, REPRESENTATIVE (not tabulated)
+NIB_L_CUP = 7.8      # DIN 607 radial nib reach, REPRESENTATIVE (30-deg slope + tabulated i)
 NIB_D_CSK = 5.7      # DIN 604 nib height i (min)
 NIB_D_CUP = 3.2      # DIN 607 nib height i (min)
 TIP_CHAMFER = 1.2
@@ -85,21 +85,24 @@ def test_countersunk_nib_rib_on_the_cone_on_plus_x_only():
     assert not _solid_at(part, 8.0, 0.0, -2.0)              # and nothing on the shank below z=0
 
 
-def test_cup_nib_lug_below_bearing_plane_on_plus_x_only():
+def test_cup_nib_wedge_below_bearing_plane_on_plus_x_only():
+    # the wedge hypotenuse runs from (nib_l, 0) to (d_shank/2, -nib_d): at x=6.9 it sits at
+    # z = -nib_d*(nib_l-x)/(nib_l-6) = -1.6, so (6.9, -0.3) is inside and (6.9, -2.5) below it.
     part = _cup()
-    x_mid = (D_SHANK / 2.0 + NIB_L_CUP) / 2.0           # 7.5: past the shank, inside the nib
-    assert _solid_at(part, x_mid, 0.0, -NIB_D_CUP / 2.0)    # nib material beyond the shank wall
-    assert not _solid_at(part, -x_mid, 0.0, -NIB_D_CUP / 2.0)   # one-sided: nothing on -X
-    assert not _solid_at(part, NIB_L_CUP + 0.5, 0.0, -NIB_D_CUP / 2.0)  # nib ends at nib_l
-    assert not _solid_at(part, x_mid, 0.0, -NIB_D_CUP - 0.5)            # nothing below the nib
+    assert _solid_at(part, 6.9, 0.0, -0.3)                  # wedge material beyond the shank wall
+    assert not _solid_at(part, -6.9, 0.0, -0.3)             # one-sided: nothing on -X
+    assert not _solid_at(part, NIB_L_CUP + 0.6, 0.0, -0.3)  # nib ends at nib_l
+    assert not _solid_at(part, 6.9, 0.0, -2.5)              # void under the sloped underside
 
 
 def test_nib_width_reads_nib_w():
-    # a thin column through the countersunk nib, outside the cone (see rib test), spans nib_w in Y
-    part = _csk()
-    col = part.intersect(Pos(10.0, 0.0, 1.8) * Box(0.4, 50.0, 0.4))
-    assert col is not None
-    assert round(Compound(col).bounding_box().size.Y, 2) == round(NIB_W, 2)
+    # thin columns through each nib (outside cone / shank) span exactly nib_w in Y
+    csk_col = _csk().intersect(Pos(10.0, 0.0, 1.8) * Box(0.4, 50.0, 0.4))
+    assert csk_col is not None
+    assert round(Compound(csk_col).bounding_box().size.Y, 2) == round(NIB_W, 2)
+    cup_col = _cup().intersect(Pos(6.9, 0.0, -0.3) * Box(0.4, 50.0, 0.4))
+    assert cup_col is not None
+    assert round(Compound(cup_col).bounding_box().size.Y, 2) == round(NIB_W, 2)
 
 
 def test_shank_below_bearing_plane_with_lead_chamfer():

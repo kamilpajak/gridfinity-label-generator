@@ -6,10 +6,11 @@ carriage bolt's square neck). ``head_style`` selects the head, the same two-silh
 as ``lock_nut.top_style`` — and, per the standards' figures (fasteners.eu drawings), also
 WHERE the nib sits: on the DIN 604 ``"countersunk"`` head the nib is a rib ON the conical
 bearing surface, hanging from the flat top face down by its height ``i`` and reaching out to
-the head rim; on the DIN 607 ``"cup"`` head it is a lug on the SHANK, hanging ``i`` below the
-z=0 bearing face. Envelope-only: no drawn thread, no drive; the nib is a simple box — its
-tabulated width (g) and height (i) are honoured, its radial reach and the standards' small
-underside slopes (15 deg DIN 604 / 30 deg DIN 607) are representative form.
+the head rim (a simple box; the figure's 15-degree underside slope is representative form);
+on the DIN 607 ``"cup"`` head it is a triangular WEDGE on the shank hugging the z=0 bearing
+face — full reach at the head, underside sloping down to meet the shank at ``-i``, the
+figure's 30-degree slope. Envelope-only: no drawn thread, no drive; the tabulated width (g)
+and height (i) are honoured, the radial reach is representative form.
 
 Composes established idioms — the shank is ``screw_common._screw_shank`` (top face on the z=0
 under-head bearing plane, body down -Z), the countersunk cone is the ``slotted_screw`` /
@@ -20,7 +21,7 @@ guards backstop the Booleans).
 """
 from build123d import (
     BuildPart, BuildSketch, Polygon, Sphere, Box, Locations,
-    Plane, Axis, Align, Mode, revolve, add,
+    Plane, Axis, Align, Mode, extrude, revolve, add,
 )
 
 from catalog.models.screw_common import _screw_shank
@@ -35,9 +36,11 @@ def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str
     the z=0 bearing plane, and one rectangular nib along +X — width ``nib_w`` (tangential,
     along Y), radial reach ``nib_l`` from the axis, axial height ``nib_d``.
     ``head_style="countersunk"`` draws the DIN 604 cone frustum (``d_shank/2`` at z=0 widening
-    to ``dk/2`` at z=k) with the nib ON the cone, z in [k-nib_d, k] (a rib hanging from the
-    flat face, per the DIN 604 figure); ``head_style="cup"`` draws the DIN 607 spherical-cap
-    dome with the nib on the shank, z in [-nib_d, 0]. No thread, no drive.
+    to ``dk/2`` at z=k) with the nib ON the cone, z in [k-nib_d, k] (a box rib hanging from
+    the flat face, per the DIN 604 figure); ``head_style="cup"`` draws the DIN 607
+    spherical-cap dome with the nib as a triangular wedge on the shank — reach ``nib_l`` at
+    the z=0 bearing face, underside sloping to the shank at z=-nib_d (the DIN 607 figure's
+    30-degree slope). No thread, no drive.
     """
     for name, val in (("d_shank", d_shank), ("length", length), ("dk", dk), ("k", k),
                       ("nib_w", nib_w), ("nib_l", nib_l), ("nib_d", nib_d)):
@@ -96,13 +99,21 @@ def nib_bolt(d_shank: float, length: float, dk: float, k: float, head_style: str
             with BuildSketch(Plane.XZ):
                 Polygon(*profile, align=None)
             revolve(axis=Axis.Z, revolution_arc=360)     # unions the cone (default Mode.ADD)
-        # Nib: one box along +X from the axis to nib_l, width nib_w centred on Y=0.
-        # Countersunk (DIN 604): on the head cone, z in [k-nib_d, k] — the box overlaps the
-        # cone volumetrically near the axis, so it fuses into the head. Cup (DIN 607): on the
-        # shank, z in [-nib_d, 0] — overlaps the shank (x < d_shank/2). Robust either way.
-        nib_top = k if head_style == "countersunk" else 0.0
-        with Locations((0.0, 0.0, nib_top)):
-            Box(nib_l, nib_w, nib_d, align=(Align.MIN, Align.CENTER, Align.MAX))
+        # Nib along +X, width nib_w centred on Y=0; both variants overlap the head/shank
+        # volumetrically near the axis, so the union is robust.
+        if head_style == "countersunk":
+            # DIN 604: a box ON the head cone, z in [k-nib_d, k] (a rib hanging from the rim).
+            with Locations((0.0, 0.0, k)):
+                Box(nib_l, nib_w, nib_d, align=(Align.MIN, Align.CENTER, Align.MAX))
+        else:
+            # DIN 607: a triangular wedge on the shank hugging the bearing face — full reach
+            # nib_l at z=0, underside sloping down to meet the shank at z=-nib_d (the figure's
+            # 30-degree slope, honoured via the tabulated i and the data's nib_l). The sketch
+            # triangle extends the slope to the axis so the prism overlaps the shank.
+            z0 = nib_d * nib_l / (nib_l - d_shank / 2.0)
+            with BuildSketch(Plane.XZ):
+                Polygon((0.0, 0.0), (nib_l, 0.0), (0.0, -z0), align=None)
+            extrude(amount=nib_w / 2.0, both=True)
     part = bp.part
     if part.volume <= 0:                                 # net guard (not is_valid — sewn-shell gotcha)
         raise ValueError("nib_bolt: produced an empty solid")

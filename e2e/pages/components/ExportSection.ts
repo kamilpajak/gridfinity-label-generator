@@ -42,14 +42,6 @@ export class ExportSection {
 	}
 
 	/**
-	 * Wait for the batch export button label to reflect a given label count,
-	 * e.g. "Export Batch (2) as a Single Strip" when `count` is 2.
-	 */
-	async waitForExportButtonCount(count: number): Promise<void> {
-		await expect(this.exportButton).toContainText(`(${count})`);
-	}
-
-	/**
 	 * Install a one-shot spy on `HTMLCanvasElement.prototype.toBlob` and resolve
 	 * with the dimensions of the next canvas that is exported. Call this BEFORE
 	 * triggering the export, then await the returned promise afterwards.

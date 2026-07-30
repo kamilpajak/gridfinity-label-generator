@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import { batchStore } from '$lib/stores/batch-store';
 	import { exportBatchTapeAsPNG } from '$lib/utils/batch-exporter';
+	import { exportBatchTapeAsLbx } from '$lib/utils/batch-lbx-exporter';
 	import BatchLabelList from './batch-label-list.svelte';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 	import ListIcon from '@lucide/svelte/icons/list';
@@ -12,18 +13,16 @@
 	let isExporting = $state(false);
 	let exportStatus = $state('');
 
-	async function handleExport() {
-		if (!canExport) return;
+	/** Run an export, showing a transient success/failure status. */
+	async function runExport(label: string, exporter: () => Promise<void>) {
+		if (!canExport || isExporting) return;
 
 		isExporting = true;
 		exportStatus = '';
 
 		try {
-			await exportBatchTapeAsPNG({
-				batch: batchState
-				// DPI defaults to 360 from batch-exporter.ts
-			});
-			exportStatus = `✓ Exported ${batchState.labels.length} labels successfully`;
+			await exporter();
+			exportStatus = `✓ Exported ${batchState.labels.length} labels as ${label}`;
 			setTimeout(() => {
 				exportStatus = '';
 			}, 3000);
@@ -37,6 +36,10 @@
 			isExporting = false;
 		}
 	}
+
+	const handleExportPng = () => runExport('PNG', () => exportBatchTapeAsPNG({ batch: batchState }));
+	const handleExportLbx = () =>
+		runExport('.lbx', () => exportBatchTapeAsLbx({ batch: batchState }));
 </script>
 
 <div class="w-full">
@@ -64,24 +67,36 @@
 		</div>
 
 		<div class="mt-10 flex flex-col items-center gap-3 pb-8">
-			<Button
-				onclick={handleExport}
-				disabled={!canExport || isExporting}
-				variant="default"
-				size="lg"
-				class="h-auto gap-2 rounded-xl px-8 py-4 text-sm font-bold shadow-lg shadow-cyan-500/25 transition-shadow hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]"
-				data-testid="export-button"
-			>
-				<DownloadIcon class="h-5 w-5" />
-				{#if isExporting}
-					Exporting...
-				{:else}
-					Export Batch ({batchState.labels.length}) as a Single Strip
-				{/if}
-			</Button>
+			<div class="flex flex-col gap-3 sm:flex-row">
+				<Button
+					onclick={handleExportPng}
+					disabled={!canExport || isExporting}
+					size="lg"
+					class="h-auto gap-2 rounded-xl bg-cyan-500 px-6 py-4 text-sm font-bold text-slate-900 shadow-lg shadow-cyan-500/25 transition-shadow hover:bg-cyan-400 hover:shadow-[0_0_30px_rgba(6,182,212,0.45)]"
+					data-testid="export-button"
+				>
+					<DownloadIcon class="h-5 w-5" />
+					{#if isExporting}
+						Exporting...
+					{:else}
+						Export PNG Strip
+					{/if}
+				</Button>
+				<Button
+					onclick={handleExportLbx}
+					disabled={!canExport || isExporting}
+					size="lg"
+					class="h-auto gap-2 rounded-xl bg-violet-600 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-violet-500/25 transition-shadow hover:bg-violet-500 hover:shadow-[0_0_30px_rgba(139,92,246,0.45)]"
+					data-testid="export-lbx-button"
+				>
+					<DownloadIcon class="h-5 w-5" />
+					Export .lbx
+				</Button>
+			</div>
 
 			<p class="max-w-md text-center text-sm text-slate-500">
-				Exports a single continuous PNG file containing all labels side-by-side.
+				PNG export creates a single continuous image containing all labels side-by-side. LBX export
+				creates a Brother native label file.
 			</p>
 
 			{#if exportStatus}

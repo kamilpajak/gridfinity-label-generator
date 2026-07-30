@@ -40,12 +40,21 @@ export interface CanvasExportOptions {
 const DEFAULT_DPI = 360;
 const DEFAULT_MARGINS = { left: 2, right: 2, top: 1, bottom: 1 };
 
-/**
- * Exports a label to PNG format using canvas, cropping to printable area
- */
-export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Promise<void> {
-	console.log('exportCanvasLabelAsPNG called with options:', options);
+export interface RenderedExportCanvas {
+	canvas: HTMLCanvasElement;
+	/** Printable width in mm (label width minus horizontal margins). */
+	printableWidth: number;
+	/** Printable height in mm (label height minus vertical margins). */
+	printableHeight: number;
+}
 
+/**
+ * Renders a label to a high-resolution export canvas, cropped to the printable
+ * area. Shared by the PNG exporter and the `.lbx` (image-wrapped) exporter.
+ */
+export async function renderLabelToExportCanvas(
+	options: CanvasExportOptions
+): Promise<RenderedExportCanvas> {
 	const {
 		labelWidth,
 		labelHeight,
@@ -59,8 +68,6 @@ export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Prom
 		dpi = DEFAULT_DPI,
 		margins = DEFAULT_MARGINS,
 		labelMode,
-		threadSize,
-		length,
 		customImageSrc,
 		customImageAspectRatio
 	} = options;
@@ -147,22 +154,27 @@ export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Prom
 		throw error;
 	}
 
-	// Generate descriptive filename
+	return { canvas: exportCanvas, printableWidth, printableHeight };
+}
+
+/**
+ * Exports a label to PNG format using canvas, cropping to printable area.
+ */
+export async function exportCanvasLabelAsPNG(options: CanvasExportOptions): Promise<void> {
+	const { canvas, printableWidth, printableHeight } = await renderLabelToExportCanvas(options);
+
 	const filename = generateLabelFilename({
-		labelMode,
-		standard,
-		threadSize,
-		length,
-		primaryText,
-		secondaryText,
+		labelMode: options.labelMode,
+		standard: options.standard,
+		threadSize: options.threadSize,
+		length: options.length,
+		primaryText: options.primaryText,
+		secondaryText: options.secondaryText,
 		printableWidth,
 		printableHeight
 	});
 
-	// Download the canvas
-	console.log('About to download canvas with filename:', filename);
-	await downloadCanvasAsPng(exportCanvas, filename);
-	console.log('Download initiated');
+	await downloadCanvasAsPng(canvas, filename);
 }
 
 /**

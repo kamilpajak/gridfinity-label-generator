@@ -87,6 +87,7 @@
 		"@fontsource/noto-sans": "^5.2.7",
 		"@fontsource/oswald": "^5.2.6",
 		"@lume/kiwi": "^0.4.4",
+		"fflate": "^0.8.3",
 		"ipaddr.js": "^2.2.0",
 		"js-levenshtein": "^1.1.6",
 		"qrcode": "^1.5.4",

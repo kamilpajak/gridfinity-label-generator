@@ -88,6 +88,15 @@ is built for a full-size sheet and leaves one or two marks per edge at ~130
 dots across, so `_rewrite_dash_patterns()` replaces it in the written file
 (ExportSVG has no hook for a custom pattern).
 
+**The view box hugs the drawing — no margin.** The whole box is scaled into a
+fixed slot on the label, so any padding baked into the SVG comes straight out of
+the drawing's own size. Spacing around the image belongs to whoever places it
+(the label's constraint solver already keeps the image clear of the text). With
+the former 2mm margin the geometry filled only 72-88% of the box (measured
+against legacy rasters, which are cropped to the ink and fill 99-100%); it now
+fills 86-93%, the rest being the centerline overhang. The exporter still pads by
+half a line width so the outermost stroke is not clipped.
+
 Not done, and why: dropping the hidden layer on dense drawings was considered,
 but a 1-bit print simulation over all 125 drawings (erode twice, count surviving
 ink) showed hidden lines cause only 23% of the fill-in, and 34 of the 89

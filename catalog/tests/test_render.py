@@ -120,6 +120,33 @@ def test_line_weights_print_the_same_width_whatever_the_drawing_size(tmp_path: P
         assert _printed_dots(svg, "Center") == pytest.approx(CENTER_DOTS, abs=0.02)
 
 
+def test_view_box_hugs_the_drawing_with_no_margin(tmp_path: Path):
+    # Whitespace around the image belongs to whoever places it: the label layout
+    # already spaces the image from the text, and padding baked in here would only
+    # shrink the drawing inside the fixed slot.
+    import re
+
+    svg = _ring_svg(10.0, tmp_path)
+    box_x, box_w = (
+        float(v)
+        for v in re.search(
+            r'viewBox="([-\d.]+) [-\d.]+ ([\d.]+) [\d.]+"', svg
+        ).groups()
+    )
+    xs = [
+        float(m.group(1))
+        for m in re.finditer(r"[ML] ([-\d.]+),[-\d.]+", svg)
+    ] + [float(m.group(1)) for m in re.finditer(r'x[12]="([-\d.]+)"', svg)]
+
+    # The only padding is the half line width ExportSVG adds at each side so the
+    # outermost stroke is not clipped.
+    stroke = float(
+        re.search(r'stroke-width="([\d.]+)"', re.search(r'<g[^>]*id="Visible"[^>]*>', svg).group(0)).group(1)
+    )
+    assert min(xs) - box_x == pytest.approx(stroke / 2, abs=0.01)
+    assert (box_x + box_w) - max(xs) == pytest.approx(stroke / 2, abs=0.01)
+
+
 def test_centerlines_are_drawn_thinner_than_the_outline(tmp_path: Path):
     # A chain line crossing the whole drawing is the densest layer at label size,
     # so it stays below the outline rather than competing with it.

@@ -48,7 +48,13 @@ CENTERLINE_COLOR = (0, 0, 0)
 _CENTER_EXT_FRAC = 0.08  # overhang past the outline, as a fraction of view size
 _CENTER_MIN_EXT_MM = 1.5  # floor so small drawings still get a visible overhang
 
-_MARGIN_MM = 2.0
+# No margin: the view box hugs the drawing, so the whole image slot on the label
+# is drawing. Whitespace around it belongs to whoever places the image — the label
+# layout already spaces the image from the text — and a margin baked in here would
+# also shrink the drawing, since the app scales the whole box into a fixed slot.
+# The exporter still pads by half a line width (fit_to_stroke) so the outermost
+# stroke is not clipped in half.
+_MARGIN_MM = 0.0
 
 _SEGMENTS = 72  # per-edge discretization; smooth enough for label-size icons
 
@@ -61,11 +67,10 @@ def dots_to_drawing_mm(dots: float, extent_mm: float) -> float:
 def _weights_for_extent(geometry_extent_mm: float) -> tuple[float, float, float]:
     """Visible, hidden and centerline weights for a drawing of the given extent.
 
-    The exported viewBox is the geometry plus the fixed margins plus (because
-    ExportSVG fits the view box to the strokes) about one visible line width, and
-    it is that whole box the app scales into the slot. Solving for the width that
-    is a fixed share `k` of the final box keeps the printed result on target
-    instead of a few percent thin.
+    The exported viewBox is the geometry plus (because ExportSVG fits the view box
+    to the strokes) about one visible line width, and it is that whole box the app
+    scales into the slot. Solving for the width that is a fixed share `k` of the
+    final box keeps the printed result on target instead of a few percent thin.
     """
     box_without_stroke = geometry_extent_mm + 2 * _MARGIN_MM
     k = VISIBLE_DOTS * _DOT_MM / LABEL_SLOT_MM

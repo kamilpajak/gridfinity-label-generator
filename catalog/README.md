@@ -62,12 +62,34 @@ its legacy column from that file, because `integrate.py` repoints the live
 `data/image-mappings.json` at the generated SVGs — comparing against the live
 file would show each drawing next to itself. Never regenerate the snapshot.
 
-**Line style is sized for the label printer** (`catalog/render.py`): the
-drawing lands in an ~8mm slot on a 360dpi 1-bit thermal print, so all layers
-are pure black (gray dithers away on a thermal head) and weights are
-0.8/0.6/0.4mm (visible/hidden/center) so the outline keeps ~3 dots after
-thresholding. Hidden and center layers stay distinguishable by dash pattern
-and weight alone.
+**Line style is expressed in printed dots, not drawing millimetres**
+(`catalog/render.py`). Every drawing is scaled into the same ~9.15mm image slot
+on the label, but drawings span 20mm to 133mm in their own coordinates, so a
+constant width in drawing units reached the paper anywhere between 0.8 and 4.1
+dots at 360dpi — 59 of 125 below the 2-dot floor where a thermal head starts
+dropping lines. This follows drawing-standard practice (ISO 128-2, ASME Y14.2),
+where line width is an absolute width on the finished output chosen for the
+format, the way CAD plots lineweights in paper space regardless of viewport
+scale.
+
+`_weights_for_extent()` therefore picks the printed width first
+(`VISIBLE_DOTS` = 3, `THIN_DOTS` = 2) and converts back through the drawing's own
+extent, so all 125 drawings now measure exactly 3.00 and 2.00 dots. All layers
+are pure black — gray dithers away on a 1-bit head — and hidden/center stay
+apart by dash pattern and weight. The dash patterns are likewise in dots
+(`HIDDEN_DASH_DOTS`, `CENTER_DASH_DOTS`): the exporter's ISO pattern (dash 12d)
+is built for a full-size sheet and leaves one or two marks per edge at ~130
+dots across, so `_rewrite_dash_patterns()` replaces it in the written file
+(ExportSVG has no hook for a custom pattern).
+
+Not done, and why: dropping the hidden layer on dense drawings was considered,
+but a 1-bit print simulation over all 125 drawings (erode twice, count surviving
+ink) showed hidden lines cause only 23% of the fill-in, and 34 of the 89
+affected drawings do not change at all without them. The fill-in that remains
+comes from genuinely thin geometry — a washer or retaining ring seen edge-on is
+a few dots thick, so it prints solid. Reducing the outline to 2.5 dots would
+halve the merged ink but sits closer to the dropout floor; the reliability of
+the outline was preferred.
 
 **Toothed lock washers — all real DIN forms generated.** Three generators cover
 the family: `toothed_lock_washer` (external teeth on the outer edge — DIN 6797 A

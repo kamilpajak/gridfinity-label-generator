@@ -1,23 +1,106 @@
 """Project a 3D Part to a two-view (front + side) monochrome SVG technical drawing."""
+import re
 from dataclasses import dataclass
+from pathlib import Path
 
 from build123d import ExportSVG, Unit, LineType, Location, Polyline
 
-# Weights sized for the label printer: the drawing lands in an ~8mm slot on a
-# 360dpi 1-bit thermal print, so the visible outline needs ~3 dots to survive.
-# All layers print pure black — gray would dither away on a thermal head; the
-# hidden/center layers stay distinguishable by dash pattern and weight alone.
-VISIBLE_WEIGHT_MM = 0.8
-HIDDEN_WEIGHT_MM = 0.6
-HIDDEN_COLOR = (0, 0, 0)
+# --- Line style, expressed in PRINTED dots rather than drawing millimetres ---
+#
+# Drawing standards treat line width as an absolute width on the finished output
+# chosen for the format (ISO 128-2; ASME Y14.2 thin/thick 0.3/0.6mm), not as a
+# fraction of the object drawn — the same way CAD plots lineweights in paper
+# space regardless of viewport scale. Our drawings are the opposite case: they
+# span 20mm to 133mm in their own coordinates but every one of them is scaled to
+# fit the same small image slot on a label, so a constant width in drawing
+# millimetres reaches the paper at wildly different widths (measured: 0.8 to 4.1
+# dots, with 59 of 125 drawings under the 2-dot floor where a thermal head starts
+# dropping lines).
+#
+# So the weights below are derived per drawing: pick the printed width first,
+# then convert it back into drawing units through the drawing's own extent.
+# All layers print pure black — a gray would dither away on a 1-bit head; the
+# hidden and center layers stay distinguishable by dash pattern and weight alone.
+PRINT_DPI = 360
+_DOT_MM = 25.4 / PRINT_DPI
+# The image slot the app scales a drawing into, measured off the rendered label
+# canvas (12mm tape): ~8.9 x 9.4mm, so a drawing's longest side lands on ~9.15mm.
+LABEL_SLOT_MM = 9.15
+VISIBLE_DOTS = 3.0  # production floor for a solid outline; 2 dots is the minimum
+THIN_DOTS = 2.0  # hidden edges and centerlines
 
-# Engineering centerlines (thin chain lines marking the axes of symmetry).
-CENTERLINE_WEIGHT_MM = 0.4
+# Dash patterns, also in printed dots. The ISO 128-2 pattern (dash 12d, gap 3d)
+# is built for a full-size sheet; at ~130 dots across it leaves one or two marks
+# per edge, so these are the shortened patterns used for miniature reproduction.
+HIDDEN_DASH_DOTS = (6.0, 3.0)
+CENTER_DASH_DOTS = (11.0, 3.0, 3.0, 3.0)
+
+HIDDEN_COLOR = (0, 0, 0)
 CENTERLINE_COLOR = (0, 0, 0)
 _CENTER_EXT_FRAC = 0.08  # overhang past the outline, as a fraction of view size
 _CENTER_MIN_EXT_MM = 1.5  # floor so small drawings still get a visible overhang
 
+_MARGIN_MM = 2.0
+
 _SEGMENTS = 72  # per-edge discretization; smooth enough for label-size icons
+
+
+def dots_to_drawing_mm(dots: float, extent_mm: float) -> float:
+    """Width in drawing units that prints as `dots` once fitted to the label slot."""
+    return dots * _DOT_MM * extent_mm / LABEL_SLOT_MM
+
+
+def _weights_for_extent(geometry_extent_mm: float) -> tuple[float, float]:
+    """Visible and thin line weights for a drawing of the given geometry extent.
+
+    The exported viewBox is the geometry plus the fixed margins plus (because
+    ExportSVG fits the view box to the strokes) about one visible line width, and
+    it is that whole box the app scales into the slot. Solving for the width that
+    is a fixed share `k` of the final box keeps the printed result on target
+    instead of a few percent thin.
+    """
+    box_without_stroke = geometry_extent_mm + 2 * _MARGIN_MM
+    k = VISIBLE_DOTS * _DOT_MM / LABEL_SLOT_MM
+    visible = round(k * box_without_stroke / (1 - k), 4)
+    thin = round(visible * THIN_DOTS / VISIBLE_DOTS, 4)
+    return visible, thin
+
+
+def _rewrite_dash_patterns(path: str, extent_mm: float) -> None:
+    """Replace the exporter's sheet-scale dash patterns with the miniature ones.
+
+    ExportSVG derives its dash array from the layer's line weight and a full-size
+    ISO/AutoCAD pattern, which is far too long here, and it exposes no hook for a
+    custom pattern — so the two dashed layers are rewritten in the written file.
+    """
+    text = Path(path).read_text()
+    patterns = {
+        "Hidden": HIDDEN_DASH_DOTS,
+        "Center": CENTER_DASH_DOTS,
+    }
+    rewritten = set()
+
+    def fix_group(match: re.Match) -> str:
+        tag = match.group(0)
+        for layer, dots in patterns.items():
+            if f'id="{layer}"' not in tag:
+                continue
+            values = " ".join(
+                f"{dots_to_drawing_mm(d, extent_mm):.4f}".rstrip("0").rstrip(".")
+                for d in dots
+            )
+            tag, count = re.subn(
+                r'stroke-dasharray="[^"]*"', f'stroke-dasharray="{values}"', tag
+            )
+            if count:
+                rewritten.add(layer)
+        return tag
+
+    text = re.sub(r"<g\b[^>]*>", fix_group, text)
+    missing = set(patterns) - rewritten
+    if missing:
+        raise RuntimeError(f"no dash pattern rewritten for layer(s): {sorted(missing)}")
+    Path(path).write_text(text)
 
 
 def _to_polylines(edges, n=_SEGMENTS):
@@ -136,16 +219,25 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
     center_coords += _centerline_coords(side_bbox, ext, cross=False)
     centerlines = [Polyline((a[0], a[1], 0), (b[0], b[1], 0)) for a, b in center_coords]
 
-    exporter = ExportSVG(unit=Unit.MM, precision=4, margin=2.0)
-    exporter.add_layer("Visible", line_weight=VISIBLE_WEIGHT_MM, line_type=LineType.CONTINUOUS)
+    # Everything the drawing occupies: both views plus the centerline overhang.
+    geometry_extent = max(
+        (side_bbox[2] + ext) - (front_bbox[0] - ext),
+        max(front_bbox[3] + ext, side_bbox[3]) - min(front_bbox[1] - ext, side_bbox[1]),
+    )
+    visible_weight, thin_weight = _weights_for_extent(geometry_extent)
+    dash_extent = geometry_extent + 2 * _MARGIN_MM + visible_weight
+
+    exporter = ExportSVG(unit=Unit.MM, precision=4, margin=_MARGIN_MM)
+    exporter.add_layer("Visible", line_weight=visible_weight, line_type=LineType.CONTINUOUS)
     exporter.add_layer(
-        "Hidden", line_color=HIDDEN_COLOR, line_weight=HIDDEN_WEIGHT_MM, line_type=LineType.ISO_DASH
+        "Hidden", line_color=HIDDEN_COLOR, line_weight=thin_weight, line_type=LineType.ISO_DASH
     )
     exporter.add_layer(
-        "Center", line_color=CENTERLINE_COLOR, line_weight=CENTERLINE_WEIGHT_MM,
+        "Center", line_color=CENTERLINE_COLOR, line_weight=thin_weight,
         line_type=LineType.CENTER,
     )
     exporter.add_shape(_to_polylines(v_front + v_side), layer="Visible")
     exporter.add_shape(_to_polylines(h_front + h_side), layer="Hidden")
     exporter.add_shape(centerlines, layer="Center")
     exporter.write(out_path)
+    _rewrite_dash_patterns(out_path, dash_extent)

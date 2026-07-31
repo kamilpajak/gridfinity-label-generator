@@ -62,31 +62,27 @@ its legacy column from that file, because `integrate.py` repoints the live
 `data/image-mappings.json` at the generated SVGs — comparing against the live
 file would show each drawing next to itself. Never regenerate the snapshot.
 
-**Line style is expressed in printed dots, not drawing millimetres**
-(`catalog/render.py`). Every drawing is scaled into the same ~9.15mm image slot
-on the label, but drawings span 20mm to 133mm in their own coordinates, so a
-constant width in drawing units reached the paper anywhere between 0.8 and 4.1
-dots at 360dpi — 59 of 125 below the 2-dot floor where a thermal head starts
-dropping lines. This follows drawing-standard practice (ISO 128-2, ASME Y14.2),
-where line width is an absolute width on the finished output chosen for the
-format, the way CAD plots lineweights in paper space regardless of viewport
-scale.
+**Line style** (`catalog/render.py`): widths are absolute in drawing units —
+`VISIBLE_WEIGHT_MM` 0.4, `HIDDEN_WEIGHT_MM` 0.3, `CENTERLINE_WEIGHT_MM` 0.2 — the
+values the families were drawn and reviewed with, and the baseline for print
+testing on the label printer. Tune them from measured print results rather than
+from theory. All layers are pure black: the printer is monochrome, so the former
+gray hidden line could only dither.
 
-`_weights_for_extent()` therefore picks the printed width first
-(`VISIBLE_DOTS`, `THIN_DOTS`) and converts back through the drawing's own extent,
-so every drawing measures the same on paper. The outline and hidden edges are 2
-dots — the practical minimum for a solid line on a maintained thermal head — and
-the safer 3-dot outline was tried and rejected because at the ~128 dots a drawing
-gets on the label it swallows the detail (a socket head or a washer chamfer merges
-into a blob). Centerlines run at 1.5 dots (`CENTER_DOTS`): they carry no geometry,
-only the symmetry reading, and a chain line crossing the whole drawing is the
-densest layer at this size. All layers
-are pure black — gray dithers away on a 1-bit head — and hidden/center stay
-apart by dash pattern and weight. The dash patterns are likewise in dots
-(`HIDDEN_DASH_DOTS`, `CENTER_DASH_DOTS`): the exporter's ISO pattern (dash 12d)
-is built for a full-size sheet and leaves one or two marks per edge at ~130
-dots across, so `_rewrite_dash_patterns()` replaces it in the written file
-(ExportSVG has no hook for a custom pattern).
+Known property of absolute widths, worth understanding before changing them: the
+app scales every drawing into the same ~9.15mm image slot, and drawings span 20mm
+to 133mm in their own coordinates, so the same width reaches the paper at
+different widths — currently 0.40 to 2.48 dots at 360dpi, median 1.17. (For
+scale: the legacy rasters this catalog replaces measured a median of 1.14 dots,
+with 72 of 181 under a single dot.) Deriving the weights from a target printed
+width instead was implemented and reverted — see the commits
+"set line widths in printed dots instead of drawing millimetres" and
+"draw at the 2-dot print floor" — it gave a uniform 2 dots on every drawing but
+cost visible detail at the ~128 dots a drawing gets on the label. The research
+behind it: drawing standards (ISO 128-2, ASME Y14.2) treat line width as an
+absolute width on the finished output chosen for the format, the way CAD plots
+lineweights in paper space; 2 dots is the practical minimum for a solid line on a
+maintained thermal head and 3 the production recommendation.
 
 **The view box hugs the drawing — no margin.** The whole box is scaled into a
 fixed slot on the label, so any padding baked into the SVG comes straight out of
@@ -103,8 +99,8 @@ ink) showed hidden lines cause only 23% of the fill-in, and 34 of the 89
 affected drawings do not change at all without them. The fill-in that remains
 comes from genuinely thin geometry — a washer or retaining ring seen edge-on is
 a few dots thick, so it prints solid. Dropping the centerlines was also tried
-(they are the densest layer at this size) and rejected: they are what makes the
-drawing read as an engineering drawing rather than an icon.
+and rejected: they are what makes the drawing read as an engineering drawing
+rather than an icon.
 
 **Toothed lock washers — all real DIN forms generated.** Three generators cover
 the family: `toothed_lock_washer` (external teeth on the outer edge — DIN 6797 A

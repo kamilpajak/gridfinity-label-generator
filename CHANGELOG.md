@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Sharper hardware drawings: 117 standards now use generated vector (SVG) technical drawings instead of the legacy raster images, so labels and thumbnails stay crisp at any print resolution. Five of them — the hexagon socket set screws ISO 4026–4029 (DIN 913–916) and the hexalobular cheese head screw ISO 14579 — get an illustration for the first time.
-- Print-friendly line style: the drawings use pure black lines whose thickness is set for the printed result rather than for the drawing, so every fastener prints with the same weight instead of large parts coming out hairline-thin. Hidden edges and centerlines also use shorter dashes, so they still read as dashed at label size.
+- Print-friendly drawings: all lines are pure black, since a label printer cannot reproduce the gray that hidden edges used to be drawn in, and the image is cropped to the drawing so it is not shrunk by a built-in margin.
 
 ### Fixed
 

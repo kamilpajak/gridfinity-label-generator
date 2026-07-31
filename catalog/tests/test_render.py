@@ -79,7 +79,7 @@ def test_chain_dashes_start_and_end_the_arm_on_a_dash():
     # ISO 128: a chain line begins and ends with a long dash, never in a gap.
     from catalog.render import _chain_dashes
 
-    segments = _chain_dashes((0.0, 0.0), (45.0, 0.0))
+    segments = _chain_dashes((0.0, 0.0), (45.0, 0.0), box_extent_mm=100.0)
 
     assert segments[0][0] == pytest.approx((0.0, 0.0))
     assert segments[-1][1] == pytest.approx((45.0, 0.0))
@@ -98,7 +98,7 @@ def test_chain_dashes_collapse_to_one_stroke_on_a_short_arm():
     # Too short for a full long dash: a solid stroke reads better than a fragment.
     from catalog.render import _chain_dashes
 
-    segments = _chain_dashes((0.0, 0.0), (3.0, 0.0))
+    segments = _chain_dashes((0.0, 0.0), (3.0, 0.0), box_extent_mm=100.0)
 
     assert segments == [((0.0, 0.0), (3.0, 0.0))]
 
@@ -108,6 +108,26 @@ def _stroke_width(svg_text: str, layer: str) -> float:
 
     group = re.search(r'<g[^>]*id="%s"[^>]*>' % layer, svg_text).group(0)
     return float(re.search(r'stroke-width="([\d.]+)"', group).group(1))
+
+
+def _box_extent(svg_text: str) -> float:
+    import re
+
+    w, h = (
+        float(v)
+        for v in re.search(
+            r'viewBox="[-\d.]+ [-\d.]+ ([\d.]+) ([\d.]+)"', svg_text
+        ).groups()
+    )
+    return max(w, h)
+
+
+def _printed_dots(svg_text: str, layer: str) -> float:
+    """Width in printer dots that `layer` reaches once the drawing fits the slot."""
+    from catalog.render import LABEL_SLOT_MM, PRINT_DPI
+
+    scale = LABEL_SLOT_MM / _box_extent(svg_text)
+    return _stroke_width(svg_text, layer) * scale / (25.4 / PRINT_DPI)
 
 
 def _ring_svg(radius: float, tmp_path: Path) -> str:
@@ -123,16 +143,48 @@ def _ring_svg(radius: float, tmp_path: Path) -> str:
     return out.read_text()
 
 
-def test_layers_carry_the_configured_line_weights(tmp_path: Path):
-    # The weights are absolute in drawing units and identical for every drawing —
-    # the baseline the families were reviewed with, and the starting point for
-    # print testing.
-    from catalog.render import CENTERLINE_WEIGHT_MM, HIDDEN_WEIGHT_MM, VISIBLE_WEIGHT_MM
+def test_every_drawing_prints_the_same_line_widths(tmp_path: Path):
+    # A drawing five times larger is scaled down five times harder to fit the same
+    # slot, so its lines must be five times thicker in drawing units to land on the
+    # paper at the same width. A width fixed in drawing units cannot do that.
+    from catalog.render import CENTER_DOTS, HIDDEN_DOTS, VISIBLE_DOTS
 
+    small = _ring_svg(6.0, tmp_path)
+    large = _ring_svg(30.0, tmp_path)
+    assert _stroke_width(large, "Visible") > 3 * _stroke_width(small, "Visible")
+
+    for svg in (small, large):
+        assert _printed_dots(svg, "Visible") == pytest.approx(VISIBLE_DOTS, abs=0.02)
+        assert _printed_dots(svg, "Hidden") == pytest.approx(HIDDEN_DOTS, abs=0.02)
+        assert _printed_dots(svg, "Center") == pytest.approx(CENTER_DOTS, abs=0.02)
+
+
+def test_dash_patterns_print_the_same_whatever_the_drawing_size(tmp_path: Path):
+    # Uniform weights are only half of a uniform look: an axis whose dashes scaled
+    # with the drawing would read as a chain line on one and as dots on another.
+    import re
+
+    from catalog.render import (
+        HIDDEN_DOTS,
+        LABEL_SLOT_MM,
+        PRINT_DPI,
+        _CENTER_LONG_DOTS,
+    )
+
+    dot_mm = 25.4 / PRINT_DPI
     for svg in (_ring_svg(6.0, tmp_path), _ring_svg(30.0, tmp_path)):
-        assert _stroke_width(svg, "Visible") == pytest.approx(VISIBLE_WEIGHT_MM)
-        assert _stroke_width(svg, "Hidden") == pytest.approx(HIDDEN_WEIGHT_MM)
-        assert _stroke_width(svg, "Center") == pytest.approx(CENTERLINE_WEIGHT_MM)
+        to_dots = (LABEL_SLOT_MM / _box_extent(svg)) / dot_mm
+        hidden = re.search(r'<g[^>]*id="Hidden"[^>]*>', svg).group(0)
+        dash = float(re.search(r'stroke-dasharray="([\d.]+)', hidden).group(1))
+        assert dash * to_dots == pytest.approx(12 * HIDDEN_DOTS, abs=0.05)
+
+        longest = max(
+            abs(float(m.group(3)) - float(m.group(1)))
+            for m in re.finditer(
+                r'x1="([-\d.]+)" y1="([-\d.]+)" x2="([-\d.]+)"', svg
+            )
+        )
+        assert longest * to_dots == pytest.approx(_CENTER_LONG_DOTS, rel=0.35)
 
 
 def test_view_box_hugs_the_drawing_with_no_margin(tmp_path: Path):
@@ -165,9 +217,9 @@ def test_view_box_hugs_the_drawing_with_no_margin(tmp_path: Path):
 def test_centerlines_are_drawn_thinner_than_the_outline(tmp_path: Path):
     # A chain line crossing the whole drawing would compete with the outline if it
     # carried the same weight.
-    from catalog.render import CENTERLINE_WEIGHT_MM, VISIBLE_WEIGHT_MM
+    from catalog.render import CENTER_DOTS, VISIBLE_DOTS
 
-    assert CENTERLINE_WEIGHT_MM < VISIBLE_WEIGHT_MM
+    assert CENTER_DOTS < VISIBLE_DOTS
     svg = _ring_svg(10.0, tmp_path)
     assert _stroke_width(svg, "Center") < _stroke_width(svg, "Visible")
 

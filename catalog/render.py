@@ -4,44 +4,50 @@ from dataclasses import dataclass
 
 from build123d import ExportSVG, Unit, LineType, Location, Polyline
 
-# --- Line style ---
+# --- Line style, in printed dots ---
 #
-# Widths are absolute in drawing units. They started from the 0.4/0.3/0.2 the
-# catalog families were drawn and reviewed with and are being tuned from printed
-# results, one step at a time — adjust them from what comes off the tape rather
-# than from theory.
+# The app scales every drawing into the same small image slot on the label, but
+# the drawings span 21mm to 129mm in their own coordinates, so a width fixed in
+# drawing units reaches the paper at wildly different widths: the 0.5mm this
+# catalog used landed anywhere between 0.5 and 3.1 dots at 360dpi. The widths
+# below are therefore a target on the PAPER, converted back into drawing units
+# per drawing through its own extent, so every drawing prints the same.
 #
-# Known property of this scheme: the app scales every drawing into the same small
-# image slot, and the drawings span 20mm to 133mm in their own coordinates, so the
-# same width reaches the paper at different widths — the 0.5mm below lands between
-# 0.5 and 3.1 dots at 360dpi, median 1.5. Deriving the weights from a target
-# printed width instead was tried (git history: "set line widths in printed dots")
-# and gave a uniform 2 dots everywhere, but at the ~128 dots a drawing gets on the
-# label it cost visible detail.
+# The values keep the 5:4:3 ratio of the 0.5/0.4/0.3mm they replace and sit on
+# what that scheme printed at the median drawing, so the average weight is
+# unchanged — only the spread is gone. Tune them from printed results.
 #
 # All layers are pure black: the label printer is monochrome, so a gray would only
 # dither. Hidden and center lines stay apart by dash pattern and weight.
-VISIBLE_WEIGHT_MM = 0.5
-HIDDEN_WEIGHT_MM = 0.4
-CENTERLINE_WEIGHT_MM = 0.3
+PRINT_DPI = 360
+_DOT_MM = 25.4 / PRINT_DPI
+# The image slot the app scales a drawing into, measured off the rendered label
+# canvas (12mm tape): ~8.9 x 9.4mm, so a drawing's longest side lands on ~9.15mm.
+LABEL_SLOT_MM = 9.15
+
+VISIBLE_DOTS = 1.5
+HIDDEN_DOTS = 1.2
+CENTER_DOTS = 0.9
 
 HIDDEN_COLOR = (0, 0, 0)
 CENTERLINE_COLOR = (0, 0, 0)
 _CENTER_EXT_FRAC = 0.08  # overhang past the outline, as a fraction of view size
 _CENTER_MIN_EXT_MM = 1.5  # floor so small drawings still get a visible overhang
 
-# Chain-line pattern for the symmetry axes, in millimetres of drawing. The
-# exporter (and ISO 128) express dash lengths as multiples of the line width,
-# which is right for a full-size sheet where the width is picked once per drawing
-# group. Here the width is a printer setting being tuned, and tying the rhythm to
-# it means every adjustment reshapes the axes: raising the pen from 0.2 to 0.3mm
-# made the long dash 9.5mm, longer than a small drawing's whole arm, and 69 of 125
-# axes collapsed into a solid line — which reads as an edge, not an axis. So the
-# pattern is fixed at what those 0.2mm drawings had, and only the pen changes.
+# Chain-line pattern for the symmetry axes, in printed dots like the weights, so
+# the axes read the same on every drawing. These are what the previous absolute
+# 6.35/1.27/1.27mm pattern printed at the median drawing.
+#
+# Not tied to the line width, the way the exporter and ISO 128 express dash
+# lengths: that is right for a full-size sheet where the width is chosen once per
+# drawing group, but here the width is a printer setting being tuned, and a
+# thicker pen would stretch the dashes until a small drawing's whole arm was
+# shorter than one long dash (measured: raising the pen from 0.2 to 0.3mm
+# collapsed 69 of 125 axes into a solid line, which reads as an edge, not an axis).
 # The dashes are emitted as geometry (see _chain_dashes), not a stroke-dasharray.
-_CENTER_LONG_MM = 6.35
-_CENTER_SHORT_MM = 1.27
-_CENTER_DASH_GAP_MM = 1.27
+_CENTER_LONG_DOTS = 18.5
+_CENTER_SHORT_DOTS = 3.7
+_CENTER_DASH_GAP_DOTS = 3.7
 
 # No margin: the view box hugs the drawing, so the whole image slot on the label
 # is drawing. Whitespace around it belongs to whoever places the image — the label
@@ -52,6 +58,26 @@ _CENTER_DASH_GAP_MM = 1.27
 _MARGIN_MM = 0.0
 
 _SEGMENTS = 72  # per-edge discretization; smooth enough for label-size icons
+
+
+def dots_to_drawing_mm(dots: float, box_extent_mm: float) -> float:
+    """Width in drawing units that prints as `dots` once fitted to the label slot."""
+    return dots * _DOT_MM * box_extent_mm / LABEL_SLOT_MM
+
+
+def _weights_for_extent(geometry_extent_mm: float) -> tuple[float, float, float]:
+    """Visible, hidden and centerline weights for a drawing of the given extent.
+
+    The exported view box is the geometry plus (because ExportSVG fits the box to
+    the strokes) one visible line width, and it is that whole box the app scales
+    into the slot. Solving for the width that is a fixed share `k` of the final
+    box keeps the printed result on target instead of a few percent thin.
+    """
+    k = VISIBLE_DOTS * _DOT_MM / LABEL_SLOT_MM
+    visible = round(k * geometry_extent_mm / (1 - k), 4)
+    hidden = round(visible * HIDDEN_DOTS / VISIBLE_DOTS, 4)
+    center = round(visible * CENTER_DOTS / VISIBLE_DOTS, 4)
+    return visible, hidden, center
 
 
 def _to_polylines(edges, n=_SEGMENTS):
@@ -125,7 +151,7 @@ def _centerline_coords(bbox, ext, cross):
     return coords
 
 
-def _chain_dashes(start, end):
+def _chain_dashes(start, end, box_extent_mm):
     """Dash segments of one centerline arm, beginning and ending on a long dash.
 
     ISO 128 wants a chain line to start and finish with a long dash, never in a
@@ -145,7 +171,9 @@ def _chain_dashes(start, end):
     if length <= 0:
         return []
 
-    long_dash, short_dash, gap = _CENTER_LONG_MM, _CENTER_SHORT_MM, _CENTER_DASH_GAP_MM
+    long_dash = dots_to_drawing_mm(_CENTER_LONG_DOTS, box_extent_mm)
+    short_dash = dots_to_drawing_mm(_CENTER_SHORT_DOTS, box_extent_mm)
+    gap = dots_to_drawing_mm(_CENTER_DASH_GAP_DOTS, box_extent_mm)
     period = long_dash + gap + short_dash + gap
 
     repeats = max(0, round((length - long_dash) / period))
@@ -209,20 +237,29 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
     ext = round(max(_CENTER_MIN_EXT_MM, _CENTER_EXT_FRAC * max(fw, fh, sw, sh)), 2)
     center_coords = _centerline_coords(front_bbox, ext, cross=True)
     center_coords += _centerline_coords(side_bbox, ext, cross=False)
+
+    # Everything the drawing occupies: both views plus the centerline overhang.
+    geometry_extent = max(
+        (side_bbox[2] + ext) - (front_bbox[0] - ext),
+        max(front_bbox[3] + ext, side_bbox[3]) - min(front_bbox[1] - ext, side_bbox[1]),
+    )
+    visible_weight, hidden_weight, center_weight = _weights_for_extent(geometry_extent)
+    box_extent = geometry_extent + visible_weight
+
     centerlines = [
         Polyline((a[0], a[1], 0), (b[0], b[1], 0))
         for start, end in center_coords
-        for a, b in _chain_dashes(start, end)
+        for a, b in _chain_dashes(start, end, box_extent)
     ]
 
     exporter = ExportSVG(unit=Unit.MM, precision=4, margin=_MARGIN_MM)
-    exporter.add_layer("Visible", line_weight=VISIBLE_WEIGHT_MM, line_type=LineType.CONTINUOUS)
+    exporter.add_layer("Visible", line_weight=visible_weight, line_type=LineType.CONTINUOUS)
     exporter.add_layer(
-        "Hidden", line_color=HIDDEN_COLOR, line_weight=HIDDEN_WEIGHT_MM,
-        line_type=LineType.ISO_DASH,
+        "Hidden", line_color=HIDDEN_COLOR, line_weight=hidden_weight,
+        line_type=LineType.ISO_DASH,  # dash scales with the weight, so it is uniform too
     )
     exporter.add_layer(
-        "Center", line_color=CENTERLINE_COLOR, line_weight=CENTERLINE_WEIGHT_MM,
+        "Center", line_color=CENTERLINE_COLOR, line_weight=center_weight,
         line_type=LineType.CONTINUOUS,  # the chain pattern is geometry, not a dasharray
     )
     exporter.add_shape(_to_polylines(v_front + v_side), layer="Visible")

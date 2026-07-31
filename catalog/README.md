@@ -62,30 +62,32 @@ its legacy column from that file, because `integrate.py` repoints the live
 `data/image-mappings.json` at the generated SVGs — comparing against the live
 file would show each drawing next to itself. Never regenerate the snapshot.
 
-**Line style** (`catalog/render.py`): widths are absolute in drawing units —
-`VISIBLE_WEIGHT_MM`, `HIDDEN_WEIGHT_MM`, `CENTERLINE_WEIGHT_MM`. They started at
-0.4/0.3/0.2, the values the families were drawn and reviewed with, and are being
-raised in steps from printed results; tune them from what comes off the tape
-rather than from theory. The chain-line rhythm deliberately does **not** follow
-the pen (see `_CENTER_LONG_MM`): tying it to the width, as ISO 128 and the
-exporter do for a full-size sheet, meant every tuning step reshaped the axes —
-going from 0.2 to 0.3mm alone collapsed 69 of 125 axes into a solid line. All layers are pure black: the printer is monochrome, so the former
-gray hidden line could only dither.
+**Line style is a target on the paper, not a width in drawing units**
+(`catalog/render.py`). The app scales every drawing into the same ~9.15mm image
+slot, but drawings span 21mm to 129mm in their own coordinates, so a width fixed
+in drawing units reaches the paper at wildly different widths — the 0.5mm this
+catalog used landed between 0.5 and 3.1 dots at 360dpi. `VISIBLE_DOTS` (1.5),
+`HIDDEN_DOTS` (1.2) and `CENTER_DOTS` (0.9) are printed widths;
+`_weights_for_extent()` converts each back into drawing units through that
+drawing's own extent, so every drawing measures the same on paper. The values
+keep the 5:4:3 ratio of the 0.5/0.4/0.3mm they replace and sit on what that
+scheme printed at the median drawing, so the average weight is unchanged and only
+the spread is gone. Tune them from printed results. All layers are pure black:
+the printer is monochrome, so the former gray hidden line could only dither.
 
-Known property of absolute widths, worth understanding before changing them: the
-app scales every drawing into the same ~9.15mm image slot, and drawings span 20mm
-to 133mm in their own coordinates, so the same width reaches the paper at
-different widths — currently 0.40 to 2.48 dots at 360dpi, median 1.17. (For
-scale: the legacy rasters this catalog replaces measured a median of 1.14 dots,
-with 72 of 181 under a single dot.) Deriving the weights from a target printed
-width instead was implemented and reverted — see the commits
-"set line widths in printed dots instead of drawing millimetres" and
-"draw at the 2-dot print floor" — it gave a uniform 2 dots on every drawing but
-cost visible detail at the ~128 dots a drawing gets on the label. The research
-behind it: drawing standards (ISO 128-2, ASME Y14.2) treat line width as an
-absolute width on the finished output chosen for the format, the way CAD plots
-lineweights in paper space; 2 dots is the practical minimum for a solid line on a
-maintained thermal head and 3 the production recommendation.
+The dash patterns are uniform too, by two different mechanisms. Hidden lines get
+it for free: the exporter derives the dash from the line weight, and the weight
+is now proportional to the drawing, so the dash lands on a constant 14.4 dots.
+Centerlines are drawn as geometry with the pattern in dots (`_CENTER_LONG_DOTS`),
+deliberately _not_ following the pen the way ISO 128 and the exporter do for a
+full-size sheet: the width here is a printer setting being tuned, and tying the
+rhythm to it collapsed 69 of 125 axes into a solid line when the pen went from
+0.2 to 0.3mm.
+
+For scale: the legacy rasters this catalog replaces measured a median of 1.14
+printed dots, with 72 of 181 under a single dot. A uniform 2 dots was tried and
+rejected as too heavy for the detail — see the commits "set line widths in
+printed dots instead of drawing millimetres" and "draw at the 2-dot print floor".
 
 **Centerlines are drawn as geometry, not as a `stroke-dasharray`**
 (`_chain_dashes`). ISO 128 wants a chain line to begin and end with a long dash;

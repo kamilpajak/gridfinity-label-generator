@@ -26,7 +26,12 @@ _DOT_MM = 25.4 / PRINT_DPI
 # The image slot the app scales a drawing into, measured off the rendered label
 # canvas (12mm tape): ~8.9 x 9.4mm, so a drawing's longest side lands on ~9.15mm.
 LABEL_SLOT_MM = 9.15
-VISIBLE_DOTS = 3.0  # production floor for a solid outline; 2 dots is the minimum
+# 2 dots is the practical minimum for a solid line on a maintained thermal head.
+# 3 dots is the safer print recommendation, but at the ~128 dots a drawing gets on
+# the label it swallows the detail: a socket head or a washer's chamfer merges into
+# a blob. Both layers therefore sit on the floor, and the weight hierarchy between
+# them is carried by the dash patterns instead.
+VISIBLE_DOTS = 2.0
 THIN_DOTS = 2.0  # hidden edges and centerlines
 
 # Dash patterns, also in printed dots. The ISO 128-2 pattern (dash 12d, gap 3d)

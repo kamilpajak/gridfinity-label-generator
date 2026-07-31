@@ -73,8 +73,12 @@ format, the way CAD plots lineweights in paper space regardless of viewport
 scale.
 
 `_weights_for_extent()` therefore picks the printed width first
-(`VISIBLE_DOTS` = 3, `THIN_DOTS` = 2) and converts back through the drawing's own
-extent, so all 125 drawings now measure exactly 3.00 and 2.00 dots. All layers
+(`VISIBLE_DOTS`, `THIN_DOTS`) and converts back through the drawing's own extent,
+so every drawing measures the same on paper. Both are set to 2 dots: that is the
+practical minimum for a solid line on a maintained thermal head, and the safer
+3-dot outline was tried and rejected because at the ~128 dots a drawing gets on
+the label it swallows the detail (a socket head or a washer chamfer merges into a
+blob). The hierarchy between the layers is carried by the dash patterns. All layers
 are pure black — gray dithers away on a 1-bit head — and hidden/center stay
 apart by dash pattern and weight. The dash patterns are likewise in dots
 (`HIDDEN_DASH_DOTS`, `CENTER_DASH_DOTS`): the exporter's ISO pattern (dash 12d)
@@ -87,9 +91,9 @@ but a 1-bit print simulation over all 125 drawings (erode twice, count surviving
 ink) showed hidden lines cause only 23% of the fill-in, and 34 of the 89
 affected drawings do not change at all without them. The fill-in that remains
 comes from genuinely thin geometry — a washer or retaining ring seen edge-on is
-a few dots thick, so it prints solid. Reducing the outline to 2.5 dots would
-halve the merged ink but sits closer to the dropout floor; the reliability of
-the outline was preferred.
+a few dots thick, so it prints solid. Dropping the centerlines was also tried
+(they are the densest layer at this size) and rejected: they are what makes the
+drawing read as an engineering drawing rather than an icon.
 
 **Toothed lock washers — all real DIN forms generated.** Three generators cover
 the family: `toothed_lock_washer` (external teeth on the outer edge — DIN 6797 A

@@ -2,1605 +2,1605 @@
 	"standards": {
 		"din125": {
 			"family": "flat_washer",
-			"sha256": "b2c5497f9867eae7af4c1ad460fe73c3ad2f57ff8045351322c4008ed03d7611",
+			"sha256": "df1bb392cab2aee3246a4cea8c0de9a83741abe691bcd04fda551b52df52d839",
 			"source": "DIN 125-1:2011 (M12)",
 			"svg": "din125.svg"
 		},
 		"din125i": {
 			"alias_of": "din125",
 			"family": "flat_washer",
-			"sha256": "b2c5497f9867eae7af4c1ad460fe73c3ad2f57ff8045351322c4008ed03d7611",
+			"sha256": "df1bb392cab2aee3246a4cea8c0de9a83741abe691bcd04fda551b52df52d839",
 			"source": "variant key sharing DIN 125 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din125.svg"
 		},
 		"din126": {
 			"family": "flat_washer",
-			"sha256": "db79cf955385d1007b513bd44f0b1276f905353f284c1bd8ef2c151031f1f881",
+			"sha256": "e89eac35555518ebf8fb9c31b0ab462c0d017cf4b8876b63e2202440c66340fe",
 			"source": "DIN 126:2020 (M12, coarse)",
 			"svg": "din126.svg"
 		},
 		"din126i": {
 			"alias_of": "din126",
 			"family": "flat_washer",
-			"sha256": "db79cf955385d1007b513bd44f0b1276f905353f284c1bd8ef2c151031f1f881",
+			"sha256": "e89eac35555518ebf8fb9c31b0ab462c0d017cf4b8876b63e2202440c66340fe",
 			"source": "variant key sharing DIN 126 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din126.svg"
 		},
 		"din127": {
 			"family": "helical_spring_washer",
-			"sha256": "4dfd23575325324b97b5e5ca8d7153c6ffa990f1d55492d3c384be46f2a1c06c",
+			"sha256": "c9b139a605272d7c84e5baf3bf77ec243a00daf9e131bbd964d532638ff58b00",
 			"source": "DIN 127-B:1997 (M12; d1 12.2, d2 21.1, cross-section width b 4.0 x thickness s 2.5). Was wrongly d2 20.2 / section 3.5. section is the axial thickness (2.5); the radial width follows from d2-d1. Aspen/Fasteners.eu.",
 			"svg": "din127.svg"
 		},
 		"din127p": {
 			"alias_of": "din127",
 			"family": "helical_spring_washer",
-			"sha256": "4dfd23575325324b97b5e5ca8d7153c6ffa990f1d55492d3c384be46f2a1c06c",
+			"sha256": "c9b139a605272d7c84e5baf3bf77ec243a00daf9e131bbd964d532638ff58b00",
 			"source": "plated (electro-zinc) variant of DIN 127; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din127.svg"
 		},
 		"din128": {
 			"family": "curved_washer",
-			"sha256": "3757e203cad8e0b064db7326b010bf888be41324f23ed4db1cca8c9ad712223d",
+			"sha256": "2deee0519e2b35dea6b2118c6c920234ebc3ca78b1f89dd05189256ae88dc634",
 			"source": "DIN 128-A:2011 (M12, curved; d1 12.2, d2 21.1, material thickness s 2.1, free height ~3.35). Was wrongly d2 21.0 / s 1.5 (1.5 is not a DIN 128 M12 value). Aspen/Fasteners.eu.",
 			"svg": "din128.svg"
 		},
 		"din128a": {
 			"alias_of": "din128",
 			"family": "curved_washer",
-			"sha256": "3757e203cad8e0b064db7326b010bf888be41324f23ed4db1cca8c9ad712223d",
+			"sha256": "2deee0519e2b35dea6b2118c6c920234ebc3ca78b1f89dd05189256ae88dc634",
 			"source": "DIN 128 Form A is the base curved spring washer; this key aliases it.",
 			"svg": "din128.svg"
 		},
 		"din137a": {
 			"family": "curved_washer",
-			"sha256": "754e9b926d544952c78a78f192faafcebb73fc4c4d58fdbfd473b50482e77361",
+			"sha256": "1ce1fa065eb29c117998b476994558ba60fdaea12903bc31f1eb674c4d0ff837",
 			"source": "DIN 137 A (M12, curved/domed spring washer, gew\u00f6lbt; d1=13, d2=24, s=1.2, continuous ring with no split). Reuses curved_washer with gap_deg=0. Dome height representative (free height ~3 mm; DIN envelope 2.5-5 mm) \u2014 the cone tilt is chosen to sit in that range, not a published value.",
 			"svg": "din137a.svg"
 		},
 		"din137b": {
 			"family": "wave_washer",
-			"sha256": "576a674da4422bd6a5752f6a8dd52c9773fc0b745808afe207560e7df8bf8887",
+			"sha256": "2c4dcf6c9bca123332e86c59f463944e95c81f834f60d89d713dc2660d112fd3",
 			"source": "DIN 137 B waved spring washer, M12: d_inner=13.0, d_outer=24.0, thickness=1.2 tabulated, cross-checked fasteners.eu DIN 137-B + Ferrofast DIN 137-B tables. waves=3 and wave_height=0.9 are representative (DIN 137 does not fix the wave count; wave_height chosen for a legible undulation).",
 			"svg": "din137b.svg"
 		},
 		"din1440": {
 			"family": "flat_washer",
-			"sha256": "0c06e99c490bccf074b5065c4b3b1f125673f28483248fe8d99b90079ba029ff",
+			"sha256": "9ee689b0720883895200f8aa62d8bcf2b6f1e6720d67ea7d936f03f29d472417",
 			"source": "DIN 1440 (pin \u00d812 / M12, medium washer for bolts and pins; d1=12, d2=25, s=3). Dimensions from Fasteners.eu.",
 			"svg": "din1440.svg"
 		},
 		"din1440i": {
 			"alias_of": "din1440",
 			"family": "flat_washer",
-			"sha256": "0c06e99c490bccf074b5065c4b3b1f125673f28483248fe8d99b90079ba029ff",
+			"sha256": "9ee689b0720883895200f8aa62d8bcf2b6f1e6720d67ea7d936f03f29d472417",
 			"source": "variant key sharing DIN 1440 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din1440.svg"
 		},
 		"din1479": {
 			"family": "turnbuckle_nut",
-			"sha256": "807d06e17844a6e7b5dfcb2d9f4f7f8a6a5e37fa7300faa1990eaa51c72a56d5",
+			"sha256": "cc079bfa8ee38f68979d590375391e87ca039c3b5401659902ac31b3cf584a69",
 			"source": "DIN 1479 hexagon turnbuckle nut (Spannschlossmutter), M12. Envelope confirmed vs fasteners.eu DIN 1479 table (M12: s=18 across flats, l=55 length, e=20.03 across corners min, m=40, steel min. 330 MPa) + wdscomponents.com 'M12 x 55 x 18 across flats hexagonal turnbuckle nut DIN 1479' (L=55, S=18, L1=40, L2=21) + maedlernorthamerica.com turnbuckle similar DIN 1479 M12 (l=55, s=18, min thread engagement t=17, adjustability 25). bore=10.1 is the M12 thread minor diameter -- the family's drawn-bore convention (same value as the iso4032 hex-nut entry); envelope-only, no drawn thread and no right/left-hand marking. sight_hole_d=3.0 REPRESENTATIVE: DIN 1479 sleeves carry cross/sight holes to check thread engagement (Maedler product note) but no public table lists their diameter for M12; drawn simplified as one through-hole across two opposite flats at mid-length. End corner chamfer uses the hex-nut default (chamfer circle = s) REPRESENTATIVE.",
 			"svg": "din1479.svg"
 		},
 		"din1479d": {
 			"alias_of": "din1479",
 			"family": "turnbuckle_nut",
-			"sha256": "807d06e17844a6e7b5dfcb2d9f4f7f8a6a5e37fa7300faa1990eaa51c72a56d5",
+			"sha256": "cc079bfa8ee38f68979d590375391e87ca039c3b5401659902ac31b3cf584a69",
 			"source": "DIN 1479 M12, app image-variant key -- identical turnbuckle-nut envelope, aliases the din1479 base.",
 			"svg": "din1479.svg"
 		},
 		"din1587": {
 			"family": "cap_nut",
-			"sha256": "448e136fa09a4300100764070301a8f3c248c167c857c103685f125ae4127dd6",
+			"sha256": "2ec26647ef6ce48f0b25c576c4d46a39597fb1ca5b3fc443c23539fe73b41197",
 			"source": "DIN 1587 hexagon domed cap (acorn) nut (M12): s=18 (current ISO 272-aligned width; legacy pre-1992 s=19 not shipped), total height m=22, hex body 10 -> dome_height=12 (derived, not directly tabulated). Confirmed vs Westfield Fasteners + Andrews Fasteners + fasteners.eu DIN 1587 tables.",
 			"svg": "din1587.svg"
 		},
 		"din1587d": {
 			"alias_of": "din1587",
 			"family": "cap_nut",
-			"sha256": "448e136fa09a4300100764070301a8f3c248c167c857c103685f125ae4127dd6",
+			"sha256": "2ec26647ef6ce48f0b25c576c4d46a39597fb1ca5b3fc443c23539fe73b41197",
 			"source": "DIN 1587 M12, app image-variant key -- identical cap-nut envelope, aliases the din1587 base.",
 			"svg": "din1587.svg"
 		},
 		"din1804d": {
 			"family": "slotted_round_nut",
-			"sha256": "f4cbf0eba476b72d1a35890f6d4ebfb0808f25dda650484dd7ee5b1c1a907248",
+			"sha256": "1ae33b339157d6ca60d77206f9b1660d7f8f73f714e6453e1e1851d3f8398db6",
 			"source": "DIN 1804 slotted round nut for hook spanners (M12x1.5 fine thread): OD d2=28, height h=6, bore=10.4 (M12x1.5 minor dia, same as din70852), n_slots=4, slot width b=slot_w=5, slot radial depth t=slot_depth=2 (slot-floor dia 24), slot_h=6=h (DIN 1804 spanner slots run the full nut height, unlike the partial DIN 981/70852 grooves). Confirmed vs fasteners.eu + Fuller Fasteners + Woodstock Industrial + fixawell tables and the David Dorfmueller M12x1.5 product sheet. The shallow face recess d3=23 x z=0.5 listed by Fuller is not modelled.",
 			"svg": "din1804d.svg"
 		},
 		"din1816": {
 			"family": "cross_hole_nut",
-			"sha256": "341d1632c44f0bb3d3698e6770cc43e74f02abcc413dd03dd678e18148fb214c",
+			"sha256": "6aebe0edb5ef6c5314233217795b6d5b1f18c31004aa6cd80137d69f98332556",
 			"source": "DIN 1816 cross-hole round nut (Kreuzlochmutter), M12x1.5 fine thread. d=28.0 and h=6.0 tabulated by theo-schrauben.de + seefelder.net + online-schrauben.de + mcmaster.com. n_holes=4 tabulated by theo-schrauben.de + seefelder.net. hole_d=3.0 (d4) tabulated by theo-schrauben.de; online-schrauben.de confirms M3. d3=23.0 (pitch circle) tabulated by theo-schrauben.de + online-schrauben.de + seefelder.net. hole_depth=4.0 derived: OD_radius(14)\u2212(d3/2\u2212hole_d/2)=14\u221210=4 mm; hole floor at r=10 mm, bore wall at r\u22485.2 mm, no intersection. bore=10.4 from ISO 724 D1=12\u22121.082532\u00d71.5=10.376 mm. Holes are 4 radial bores perpendicular to the nut axis drilled into the OD wall (tommy-bar spanner), NOT axial holes in the top face. Holes placed at mid-height (no axial offset dimensioned in any public table). The bold concentric ring in the DIN 1816 face-view drawing is the standard internal-thread representation (the same ring appears on the DIN 546 drawing, which has no step); it is not modelled (threads are envelope-only). Any 0.5 mm top-face Planfl\u00e4che (z=0.5 mm at d3=23 mm) is a sub-visible chamfer-scale detail below the family's fine-feature threshold and is not modelled.",
 			"svg": "din1816.svg"
 		},
 		"din1816d": {
 			"alias_of": "din1816",
 			"family": "cross_hole_nut",
-			"sha256": "341d1632c44f0bb3d3698e6770cc43e74f02abcc413dd03dd678e18148fb214c",
+			"sha256": "6aebe0edb5ef6c5314233217795b6d5b1f18c31004aa6cd80137d69f98332556",
 			"source": "DIN 1816 M12x1.5, app image-variant key -- identical cross-hole-nut envelope, aliases the din1816 base.",
 			"svg": "din1816.svg"
 		},
 		"din186": {
 			"family": "t_head_bolt",
-			"sha256": "1fd31b6238427342017433ce057716ab9e2bdeb0f3fe4ed3601990a1a8d653a8",
+			"sha256": "0be1e8a777317b070d7318efcfffd9a2371e6e035fbcdf95857c7c82c1a65cb9",
 			"source": "DIN 186 T-head (hammer) bolt with square neck (Hammerschraube mit Vierkant), M12: head length m=26 (tabulated 25-27), head width n=12 (11.1-12.9), head height k=8 (7.25-8.75), shank ds=12 (11.3-12.7) confirmed vs fasteners.eu DIN 186 table (m 26/27/25, n 12/12.9/11.1, k 8/8.75/7.25, ds 12/12.7/11.3, square across-corners e_min=14.17) + Aspen Fasteners Metric DIN 186 spec PDF (M12: E=26 head length, F=12 head width, K=8 head height, thread B=30 for l<=120) + Fuller Fasteners DIN 186 (same M12 min/max band: m 25-27, n 11.1-12.9, k 7.25-8.75). Square neck side neck_w=12.0 = head width n (the square is flush with the head's narrow faces; e_min=14.17 is its guaranteed across-corners engagement). neck_h=8.0 REPRESENTATIVE: the square's axial height is not tabulated in the public tables; drawn equal to head height k per the standard drawing's proportions. d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread). length=60.0 REPRESENTATIVE (tabulated stock length; Aspen lists M12 from l=40 to 160). tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. The hammer head's end rounding is an untabulated fine detail and is omitted: the head is drawn as its m x n x k rectangular envelope.",
 			"svg": "din186.svg"
 		},
 		"din186p": {
 			"alias_of": "din186",
 			"family": "t_head_bolt",
-			"sha256": "1fd31b6238427342017433ce057716ab9e2bdeb0f3fe4ed3601990a1a8d653a8",
+			"sha256": "0be1e8a777317b070d7318efcfffd9a2371e6e035fbcdf95857c7c82c1a65cb9",
 			"source": "DIN 186 M12, app image-variant key -- identical square-neck T-head envelope (head 26x12x8, square 12), aliases the din186 base.",
 			"svg": "din186.svg"
 		},
 		"din2093": {
 			"family": "curved_washer",
-			"sha256": "73800cee0c1c2b641f3acf1d01fcd3bb4e5bfca8a3849a86a86ce05a66888e6d",
+			"sha256": "c9f36536e36aee48ba636547cea7bb1fdec615e41c23abd106038ff57446a5bf",
 			"source": "DIN 2093 (disc spring / Belleville, representative; nominal, unverified)",
 			"svg": "din2093.svg"
 		},
 		"din2093d": {
 			"alias_of": "din2093",
 			"family": "curved_washer",
-			"sha256": "73800cee0c1c2b641f3acf1d01fcd3bb4e5bfca8a3849a86a86ce05a66888e6d",
+			"sha256": "c9f36536e36aee48ba636547cea7bb1fdec615e41c23abd106038ff57446a5bf",
 			"source": "variant key for the DIN 2093 disc spring; identical geometry, aliased to the base.",
 			"svg": "din2093.svg"
 		},
 		"din25201": {
 			"family": "wedge_lock_washer",
-			"sha256": "bb63bb305d21d909b93a6127234f28b671cc9d07420ca18b18e5b09803857f0a",
+			"sha256": "908204a80c43805318c807f0b0cc3e8fd97f70873613932d905ea49433a56f41",
 			"source": "DIN 25201 wedge-lock washer, M12 (single washer of the pair): d_inner=13.0, d_outer=24.0 confirmed vs ITA Fasteners DIN 25201 data and the ISO 7089 M12 washer series (13/24). thickness=2.0, teeth=20, cam_count=12, cam_height=0.6, tooth_depth=0.4 are a REPRESENTATIVE legible icon \u2014 the DIN 25201 cam curve, serration pitch and single-washer height are paywalled/sub-mm, not the dimensioned form.",
 			"svg": "din25201.svg"
 		},
 		"din261": {
 			"family": "prism_head_bolt",
-			"sha256": "4fca389c1f31b10dbe48f522e0f76d2a7bdb76f7f7dbcda5a46730291411791a",
+			"sha256": "b33f87b0c7dba4931a9b00f7adda7cb1ed188f930cb79ddffa21e033ea15934e",
 			"source": "DIN 261 T-head bolt (Hammerschraube / T-Kopfschraube for T-slots), M12: plain rectangular hammer head with head width (long axis) m=26.0, head height k=8.0, and short axis n=12.0 (the inscribed-circle / slot-throat width), confirmed by Fasten.it DIN 261 + TDM Neva DIN 261 + MTK-Fortuna DIN 261 + Ananka Fasteners DIN 261 (all M12 m=26, k=8, n=12). Drawn as a rectangular block head_len=26.0 x head_width=12.0 x head_height=8.0 over a round shank centered on the head, with no under-head feature (under=\"none\"); the head IS the anti-rotation feature. d=12.0 (M12 major); length=60.0 REPRESENTATIVE; tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. Envelope only \u2014 no drawn thread, the small head edge radius is omitted (envelope simplification).",
 			"svg": "din261.svg"
 		},
 		"din261d": {
 			"alias_of": "din261",
 			"family": "prism_head_bolt",
-			"sha256": "4fca389c1f31b10dbe48f522e0f76d2a7bdb76f7f7dbcda5a46730291411791a",
+			"sha256": "b33f87b0c7dba4931a9b00f7adda7cb1ed188f930cb79ddffa21e033ea15934e",
 			"source": "DIN 261 M12, app image-variant key \u2014 identical rectangular T-head envelope (26 x 12 x 8, no under-head feature), aliases the din261 base.",
 			"svg": "din261.svg"
 		},
 		"din315": {
 			"family": "wing_nut",
-			"sha256": "e701cb425235d519e4c51bda9f5b3e2672bbf921d10490557732d638685d1b69",
+			"sha256": "4106e4875c913f7eb901a325026fa6485d9939ddd6a814b574ad560e9db3fc31",
 			"source": "DIN 315 wing nut, German Form D 'rounded wings' (M12), current standard (DIN 315:2016-12; no ISO equivalent). Envelope confirmed vs fasteners.eu + Fuller Fasteners + schrauben-lexikon + ITA Fasteners + globalfastener DIN 315-D tables: overall height h=33.5 (max), boss/hub base dia d2=23 (max), collar/top dia d3=19.5 (max, the tapered hub top), wing span e=65 (max, tip-to-tip), blade thickness g1=4.9 (max). bore=10.1 is the M12 thread minor (ISO 724, external to DIN 315's table). boss_h=14.0 is a representative hub height (the DIN 'm' symbol 10-14, read inconsistently across sources, taken as hub height) -> form, not asserted normative. The hub taper (d2->d3) and general form follow the DIN 315 geometry (as also implemented in the open-source FreeCAD Fasteners Workbench, LGPL); the exact wing radii are not published, so the rounded wing outline is representative form matched to the legacy DIN 315 drawing. Only the envelope is a sourced dimension.",
 			"svg": "din315.svg"
 		},
 		"din315p": {
 			"alias_of": "din315",
 			"family": "wing_nut",
-			"sha256": "e701cb425235d519e4c51bda9f5b3e2672bbf921d10490557732d638685d1b69",
+			"sha256": "4106e4875c913f7eb901a325026fa6485d9939ddd6a814b574ad560e9db3fc31",
 			"source": "DIN 315 M12, app image-variant key -- identical wing-nut envelope, aliases the din315 base.",
 			"svg": "din315.svg"
 		},
 		"din316": {
 			"family": "wing_screw",
-			"sha256": "53a8e49eeeae6a778ab65b2f446672e06c03351e86b27c9d5b88361eb2c123d3",
+			"sha256": "dc720b0e69ae5afb1c7d4c15aed0007ceeccdd412dc86414ce60e6fbea8fc7d7",
 			"source": "DIN 316 wing screw, German form 'rounded wings' (M12x30). Envelope confirmed vs fasteners.eu DIN 316-D table (M12: hub base dia d2=23 max, hub top dia d3=19.5 max, hub height m=10-14, head height incl. wings h=33.5 max, wing span e=65 max, blade thickness g1=4.9 max) + boltingspecialist.com DIN 316 (M12 nominal d2=21.5, e=63.5, g=4.5, h=32.3, m=12 -- mid-tolerance values of the same series). The head envelope equals the independently sourced DIN 315 M12 wing-nut envelope (shared German wing form; see wing_common). d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread). boss_h=14.0 taken as hub height (same 'm' reading as DIN 315) -> form, not asserted normative. length=30.0 REPRESENTATIVE (common M12 stock length, e.g. Accu M12x30); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Wing radii are not published; the rounded wing outline is representative form shared with wing_nut.",
 			"svg": "din316.svg"
 		},
 		"din316p": {
 			"alias_of": "din316",
 			"family": "wing_screw",
-			"sha256": "53a8e49eeeae6a778ab65b2f446672e06c03351e86b27c9d5b88361eb2c123d3",
+			"sha256": "dc720b0e69ae5afb1c7d4c15aed0007ceeccdd412dc86414ce60e6fbea8fc7d7",
 			"source": "DIN 316 M12, app image-variant key -- identical wing-screw envelope, aliases the din316 base.",
 			"svg": "din316.svg"
 		},
 		"din431": {
 			"family": "hex_nut",
-			"sha256": "84894ae3a9ccc50267504def17f34168923cf57ffa6fb76eccb139f8e0f3a9ac",
+			"sha256": "6c4e19656f7f58493197e1656d850f122c0daf4230d0539b9edc83b2380fec53",
 			"source": "DIN 431 hexagon pipe nut, representative size G 3/8: s=27.0, m=8.0, bore=16.66 (G3/8 major dia per ISO 228-1). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 431 tables.",
 			"svg": "din431.svg"
 		},
 		"din432": {
 			"family": "tab_washer",
-			"sha256": "2c0bfa768efa15754efef37f0e804f333f3c520441256d57aa88c0a16b27b50b",
+			"sha256": "5626d8f70b684f9ff7c860ea3366463622134fb9f3e3d9d0148df57a5a8c24ef",
 			"source": "DIN 432 (M12, external nose lock washer; d2=30, s=1.2, nose width 4.5; nose length representative)",
 			"svg": "din432.svg"
 		},
 		"din432p": {
 			"alias_of": "din432",
 			"family": "tab_washer",
-			"sha256": "2c0bfa768efa15754efef37f0e804f333f3c520441256d57aa88c0a16b27b50b",
+			"sha256": "5626d8f70b684f9ff7c860ea3366463622134fb9f3e3d9d0148df57a5a8c24ef",
 			"source": "plated (electro-zinc) variant of DIN 432; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din432.svg"
 		},
 		"din433": {
 			"family": "flat_washer",
-			"sha256": "891f5d0e5d02f09afa53e90dd1a33de08833699e6b147e7167a53156008149eb",
+			"sha256": "74da406505ba7a34e81da841cb6dfe1f2bb54edc6288de31b93c225e7ee83cdd",
 			"source": "DIN 433-1:2020 (M12, small OD; d1 13, d2 20, s 2.0). Thickness matches ISO 7092 (same washer); was wrongly 2.5 (the DIN 125 thickness). Fasteners.eu / Accu.",
 			"svg": "din433.svg"
 		},
 		"din433i": {
 			"alias_of": "din433",
 			"family": "flat_washer",
-			"sha256": "891f5d0e5d02f09afa53e90dd1a33de08833699e6b147e7167a53156008149eb",
+			"sha256": "74da406505ba7a34e81da841cb6dfe1f2bb54edc6288de31b93c225e7ee83cdd",
 			"source": "variant key sharing DIN 433 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din433.svg"
 		},
 		"din434": {
 			"family": "square_washer",
-			"sha256": "431cdc1d3bba0df3332d7367a268f124d7796b4436e211cee745a681a2faea30",
+			"sha256": "5e76825373515ffe92923800b4f16746f89922884e9bff79463b5b056f331a30",
 			"source": "DIN 434 (M12, square taper washer for U-channel, 8% slope, 26x30, hole 13.5; thin edge e 3.7, mean h 4.9, thick edge 6.1). Dimensions from Fasteners.eu / Fuller Fasteners / Wegertseder tables.",
 			"svg": "din434.svg"
 		},
 		"din434p": {
 			"alias_of": "din434",
 			"family": "square_washer",
-			"sha256": "431cdc1d3bba0df3332d7367a268f124d7796b4436e211cee745a681a2faea30",
+			"sha256": "5e76825373515ffe92923800b4f16746f89922884e9bff79463b5b056f331a30",
 			"source": "plated (electro-zinc) variant of DIN 434; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din434.svg"
 		},
 		"din435": {
 			"family": "square_washer",
-			"sha256": "0cf60a9ef18da0f89b09738eda20c6de7f74263649e76885a3b4ca01f03c7d5f",
+			"sha256": "cafdae5ee61a7967ba891e94f231aa9044f6131bc2493559173f5784fec42848",
 			"source": "DIN 435 (M12, taper washer for I-beam flanges, 14% slope, 26x30, hole 13.5; thin edge 5.0, mean h 6.2, thick edge 7.4). Rectangular like DIN 434, not square. Dimensions from Fasteners.eu / Fuller Fasteners / Intafast tables.",
 			"svg": "din435.svg"
 		},
 		"din435p": {
 			"alias_of": "din435",
 			"family": "square_washer",
-			"sha256": "0cf60a9ef18da0f89b09738eda20c6de7f74263649e76885a3b4ca01f03c7d5f",
+			"sha256": "cafdae5ee61a7967ba891e94f231aa9044f6131bc2493559173f5784fec42848",
 			"source": "plated (electro-zinc) variant of DIN 435; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din435.svg"
 		},
 		"din436": {
 			"family": "square_washer",
-			"sha256": "a62ee051f5ad7aa7feb1815ef76380d60dea869d4c0e5419066ddb8762c5730f",
+			"sha256": "6f920011989cf3a74662ae4a4dee638f68969871692b6f627f12ab8ac6feed9c",
 			"source": "DIN 436 (M12, flat square washer, 40x40x4)",
 			"svg": "din436.svg"
 		},
 		"din436p": {
 			"alias_of": "din436",
 			"family": "square_washer",
-			"sha256": "a62ee051f5ad7aa7feb1815ef76380d60dea869d4c0e5419066ddb8762c5730f",
+			"sha256": "6f920011989cf3a74662ae4a4dee638f68969871692b6f627f12ab8ac6feed9c",
 			"source": "plated (electro-zinc) variant of DIN 436; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din436.svg"
 		},
 		"din440": {
 			"family": "flat_washer",
-			"sha256": "37bf4c2a322648c5a9535b9e71bcd45988587e74368534bd5d37be07363aaafd",
+			"sha256": "9a256e3da899fd0035b01f1facedcc134f61ef795ea476a4f14c306d9345b81c",
 			"source": "DIN 440-R (M12, large flat washer)",
 			"svg": "din440.svg"
 		},
 		"din440r": {
 			"alias_of": "din440",
 			"family": "flat_washer",
-			"sha256": "37bf4c2a322648c5a9535b9e71bcd45988587e74368534bd5d37be07363aaafd",
+			"sha256": "9a256e3da899fd0035b01f1facedcc134f61ef795ea476a4f14c306d9345b81c",
 			"source": "DIN 440 Form R (round hole) large washer, M12 \u2014 identical envelope to din440 (d_inner=13.5, d_outer=44, thickness=4), so it aliases the din440 base. Confirmed vs Westfield DIN 440 R + PTS DIN 440-R tables.",
 			"svg": "din440.svg"
 		},
 		"din440v": {
 			"family": "square_hole_washer",
-			"sha256": "13ed6591740fc0fc15d56855e2c5ecb7a8f38e555a2c083866fa14590c69f011",
+			"sha256": "5a57b3814a6a1f35fcdb324a254764e30a848ddfaf89eafa01c899cb906c5391",
 			"source": "DIN 440 Form V (square hole) large washer for square-neck bolts, M12: d_outer=44.0, thickness=4.0, square hole side hole_side=14.0 \u2014 all tabulated, cross-checked fasteners.eu DIN 440-V + Krepcom DIN 440 Form V tables (square hole a=14 for M12; the round Form R hole is 13.5).",
 			"svg": "din440v.svg"
 		},
 		"din444": {
 			"family": "eye_bolt",
-			"sha256": "58c14b53996a2c8546141fb54544863d832e915a31cd864664cc3c4117ca2748",
+			"sha256": "bde6d9907bd4345eac41c3e6d705f14514d9468ab24459ff096d7abca1205785",
 			"source": "DIN 444 eye bolt / Augenschraube, Type B (M12x70). Envelope confirmed vs fasteners.eu DIN 444 table (M12: eye bore d2=12 H9, eye outer dia d3=25 max, transition radius r approx 6, eye width s=14 max for Types B/C, stock lengths 30-300) + boltingspecialist.com DIN 444 Type B table (M12x1.75: d2=12 H9, d3=25 H14, r=6, s=14 H12, thread length b=30, stock lengths 70 and 100). eye_od=25.0 is d3, eye_hole=12.0 is d2, eye_t=14.0 is s. d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread). length=70.0 is a tabulated stock length (boltingspecialist M12x70), read as the shank length below the eye. tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. The eye-to-shank transition radius r=6 is omitted; the straight neck at shank width is representative form.",
 			"svg": "din444.svg"
 		},
 		"din444d": {
 			"alias_of": "din444",
 			"family": "eye_bolt",
-			"sha256": "58c14b53996a2c8546141fb54544863d832e915a31cd864664cc3c4117ca2748",
+			"sha256": "bde6d9907bd4345eac41c3e6d705f14514d9468ab24459ff096d7abca1205785",
 			"source": "DIN 444 M12, app image-variant key -- identical eye-bolt envelope, aliases the din444 base.",
 			"svg": "din444.svg"
 		},
 		"din462": {
 			"family": "tab_washer",
-			"sha256": "c3c2d8f56903951b95c1c28570b0a6e2bb98066eb5e7a6bc2283731a71f27788",
+			"sha256": "0a9135d5a4dabf086bfaceeab9176831d7855b3ebedca95010fc77fac1799a0d",
 			"source": "DIN 462 (M12, internal tab lock washer; d1=12, d2=28, s=0.8, tab 5x9.3, bent up at the bore)",
 			"svg": "din462.svg"
 		},
 		"din462p": {
 			"alias_of": "din462",
 			"family": "tab_washer",
-			"sha256": "c3c2d8f56903951b95c1c28570b0a6e2bb98066eb5e7a6bc2283731a71f27788",
+			"sha256": "0a9135d5a4dabf086bfaceeab9176831d7855b3ebedca95010fc77fac1799a0d",
 			"source": "plated (electro-zinc) variant of DIN 462; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din462.svg"
 		},
 		"din463": {
 			"family": "tab_washer",
-			"sha256": "27c8f508b4831a8d932a7b07dbfcdd57f9b874cfe960e089787453209c0202b2",
+			"sha256": "a897dd137cea66ffbd97c1419310d94131b4ea54d33b375ad0a678e7b0993a95",
 			"source": "DIN 463 (M12, two-tab lock washer, long+short; d1 13, d2 24, s 1, tab width b 12, l1 28 / l2 15 from centre). Was d2 30 (the DIN 93/432 value) with tab width 10 (the M10 value). Tab lengths here are the projections beyond the OD (l1/l2 minus radius). Standard withdrawn. Westfield/Ferrobolt DIN 463.",
 			"svg": "din463.svg"
 		},
 		"din463p": {
 			"alias_of": "din463",
 			"family": "tab_washer",
-			"sha256": "27c8f508b4831a8d932a7b07dbfcdd57f9b874cfe960e089787453209c0202b2",
+			"sha256": "a897dd137cea66ffbd97c1419310d94131b4ea54d33b375ad0a678e7b0993a95",
 			"source": "plated (electro-zinc) variant of DIN 463; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din463.svg"
 		},
 		"din464": {
 			"family": "knurled_screw_high",
-			"sha256": "e27e96a0d1b13529c5fc8043b0eae552b9ca5e5c90a499bb8dd29fd4e628031e",
+			"sha256": "b405028a4daeda84e44a91a41244e7b4019d97f6399a961a790bc9945436ab77",
 			"source": "DIN 464 high knurled thumb screw (Raendelschraube, hohe Form), M6: knurled head diameter dk=24.0, knurled head height k=5.0, raised on a reduced collar/shoulder of diameter ds=12.0; total head height h=15.0, so collar_h = h - k = 10.0 (h and k are both tabulated; the difference is arithmetic, not a new number). Confirmed vs fasteners.eu DIN 464 table (M6: dk=24 nom, ds=12 nom=max, h=15 nom, k=5 nom=max) + Aspen Fasteners 'Metric DIN 464 Knurled Thumb Screws, High Type' spec PDF (identical M6 column). Both tables cover M1-M10 only -- DIN 464 has NO M12 row -- so the base is drawn at M6, matching the sibling DIN 653 base (same knurled head dk=24/k=5; DIN 464 is that head raised on the collar). d_shank=6.0 is the M6 major diameter (envelope-only, no drawn thread). length=20.0 REPRESENTATIVE (common M6 stock length; the tabulated l series includes 20). head_chamfer=0.5 REPRESENTATIVE 45-degree top-rim break, consistent with the tabulated edge-chamfer series c=0.3-0.6; tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. The knurl itself is omitted (fine feature, like the thread -- same envelope convention as knurled_nut/knurled_screw).",
 			"svg": "din464.svg"
 		},
 		"din464p": {
 			"alias_of": "din464",
 			"family": "knurled_screw_high",
-			"sha256": "e27e96a0d1b13529c5fc8043b0eae552b9ca5e5c90a499bb8dd29fd4e628031e",
+			"sha256": "b405028a4daeda84e44a91a41244e7b4019d97f6399a961a790bc9945436ab77",
 			"source": "DIN 464 M6, app image-variant key -- identical high-form knurled-thumb-screw envelope (dk=24, k=5 on the ds=12 collar), aliases the din464 base.",
 			"svg": "din464.svg"
 		},
 		"din466": {
 			"family": "knurled_nut",
-			"sha256": "682571caa28449056dfb7fd15edd83cd2a40ef5672ad84c2c18c99f58f75f960",
+			"sha256": "47270192b26307a593abf53b6059d90322817db78eae06eaf957927d335dea47",
 			"source": "DIN 466 high knurled nut (M12): knurled head OD d=40, total height 25 = head h=15 + plain boss (collar_d=22, collar_h=10), tabulated and confirmed vs Boutet Technics DIN 466 table + Fastenright + JW Winco (Aspen/Fuller M10 row dk=36/ds=20 extrapolates cleanly). Smooth cylindrical envelope drawn (the knurl is a fine feature, not modelled, like the thread). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "din466.svg"
 		},
 		"din466p": {
 			"alias_of": "din466",
 			"family": "knurled_nut",
-			"sha256": "682571caa28449056dfb7fd15edd83cd2a40ef5672ad84c2c18c99f58f75f960",
+			"sha256": "47270192b26307a593abf53b6059d90322817db78eae06eaf957927d335dea47",
 			"source": "DIN 466 M12, app image-variant key -- identical knurled-nut envelope, aliases the din466 base.",
 			"svg": "din466.svg"
 		},
 		"din467": {
 			"family": "knurled_nut",
-			"sha256": "132fea7c22106a2a8aace226717460a10486fd18385da57e0553f1569c853c6a",
+			"sha256": "a1e53188cc1ab7e9c9c03dce86721a6c3a847d38450767422e55ef8899e075c2",
 			"source": "DIN 467 flat/low knurled nut (M12): knurled head OD d=40 (d1) with a reduced-diameter plain boss collar_d=22 (d2) on the bearing face; total height 12 = knurled head h=10 (k) + boss collar_h=2. Tabulated and confirmed vs Aspen Fasteners DIN 467 spec (d1=40,d2=22,h=12,k=10) + Scribd DIN 467 table + Fastenright + JW Winco. Smooth cylindrical envelope drawn (the knurl is a fine feature, not modelled, like the thread). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "din467.svg"
 		},
 		"din467p": {
 			"alias_of": "din467",
 			"family": "knurled_nut",
-			"sha256": "132fea7c22106a2a8aace226717460a10486fd18385da57e0553f1569c853c6a",
+			"sha256": "a1e53188cc1ab7e9c9c03dce86721a6c3a847d38450767422e55ef8899e075c2",
 			"source": "DIN 467 M12, app image-variant key -- identical knurled-nut envelope, aliases the din467 base.",
 			"svg": "din467.svg"
 		},
 		"din471": {
 			"family": "retaining_ring",
-			"sha256": "9665a9cca95e090aab6400f5049d7c7f7deae0bdb0d2b54c8f45eaf4d599dc03",
+			"sha256": "1e77afba1ec2fa2d8f40d36f2ac4a120eec5796a4d38e738011cc40a67a9d37f",
 			"source": "DIN 471 external circlip for shaft, normal type, d1=12mm. d_seat=d2=11.0mm (groove diameter, the ring's inner edge seats here; d2<d1). thickness=s=1.0mm. Radial section tapers from b=1.8mm at the back to a=2.4mm at the lug/ear ends (a>b: the pierced ears project outward past the body by a-b, the internal-thread-free stamped circlip form). lug_hole_d=d5=1.5mm. Confirmed vs DIN 471:2011 official text + RoyMech + fasten.it + Danish DIN 471 table (s=1.0, b=1.8, d2=11.0); a=2.4 from Beneri + ItaFasteners + ArconRing DIN 471 tables; d5=1.5 from Aspen Fasteners + fasten.it. gap_deg=24 and lug_project=0.5 (the ear wall around the plier hole) are representative (not tabulated in public DIN 471 sources).",
 			"svg": "din471.svg"
 		},
 		"din472": {
 			"family": "retaining_ring",
-			"sha256": "af4b795c54762051f9217a4a68b40268d089fda91d9447cb7157dd9ebcef7702",
+			"sha256": "f4b6f3f05a2ab153be3f107467266d245bd09320dc5c46a55e523c86e51628e2",
 			"source": "DIN 472 internal circlip for bore, normal type, d1=12mm. d_seat=d2=12.5mm (bore groove diameter, the ring's outer edge seats here; d2>d1). thickness=s=1.0mm. Radial section tapers from b=1.7mm at the back to a=3.0mm at the lug/ear ends (a>b, same taper direction as DIN 471). lug_hole_d=d5=1.5mm. Confirmed vs Westfield Fasteners DIN 472 table + fasten.it + ItaFasteners + AMESweb (s=1.0, b=1.7, a=3.0, d5=1.5); d2=12.5 from Westfield + fasten.it + engdatabase.com. gap_deg=32 and lug_project=0.5 (the ear wall around the plier hole) are representative (not tabulated in public DIN 472 sources).",
 			"svg": "din472.svg"
 		},
 		"din478": {
 			"family": "square_head_bolt",
-			"sha256": "2009ce2ad4c0fdcc5279ac416faef12d405cc588b7806460bfb5add1c28bbb85",
+			"sha256": "9a416051a4b2235df5d69f943a2e6f5829eafcc293f25eada47225bac5545e10",
 			"source": "DIN 478 square head bolt with collar (Vierkantschraube mit Bund), M12: square head across-flats s=13.0 (max; min 12.73), head height k=15.0 (14.78-15.22), collar diameter dc=19.5 (max; min 18.66), collar thickness c=3.0 (2.88-3.12), shank ds=12.0, confirmed by fasteners.eu DIN 478 table + Fuller Fasteners DIN 478 specifications (identical M12 row) + Wegertseder DIN 478 technical dimensions (M12 s=13, k=15, collar d1=19.5, e=17). k=15 is the TOTAL head height INCLUDING the collar: the collarless small-square-head twin DIN 479 tabulates k=12 at M12 (fasteners.eu), and 12 + c(3) = 15 -- the drawn square band above the collar is k-c=12. The tabulated rounded-corner width e=17 (< s*sqrt(2)=18.38) is omitted: the square is drawn with sharp corners, an envelope simplification that stays inside the dc=19.5 collar. d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread, no drive -- the square head is the drive). length=40.0 REPRESENTATIVE (common M12 stock length; DIN 478 M12 thread length b=30 per Wegertseder implies longer stock); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead.",
 			"svg": "din478.svg"
 		},
 		"din478p": {
 			"alias_of": "din478",
 			"family": "square_head_bolt",
-			"sha256": "2009ce2ad4c0fdcc5279ac416faef12d405cc588b7806460bfb5add1c28bbb85",
+			"sha256": "9a416051a4b2235df5d69f943a2e6f5829eafcc293f25eada47225bac5545e10",
 			"source": "DIN 478 M12, app image-variant key -- identical collared-square-head envelope (s=13, k=15, dc=19.5, c=3), aliases the din478 base.",
 			"svg": "din478.svg"
 		},
 		"din508": {
 			"family": "tslot_nut",
-			"sha256": "3892cdaf857743e58bf71c9e667e44be2f5e6f8ce38781a6bf7376cc7f39eea7",
+			"sha256": "641d23842079454626c683a64f40e24334828f57f69678123d6b3c191056a806",
 			"source": "DIN 508 T-slot nut (Nutenstein), M12x1.75 coarse thread, 14 mm T-slot nominal (DIN 650). foot_w=22.0 (DIN symbol e, foot base across-slot width, sits in DIN 650 ~23.5 mm undercut) confirmed by Hoffmann Group + McMaster-Carr + D\u00f6nges/AMF + SFS tables. neck_w=13.7 (DIN symbol a, narrow neck that passes through the 14 mm slot opening) confirmed by Hoffmann Group + Fuller Fasteners + Halder USA + JW Winco + fasten.it + D\u00f6nges/AMF \u2014 nominal is 14 mm (slot designation), DIN tolerance gives a_max=13.7 mm; any appearance of '16' as a width in online tables is total height h, not neck width. length=22.0 (DIN symbol s, block length along slot direction) confirmed by Fasten.it + Fuller + Hoffmann/AMF + D\u00f6nges/AMF + SFS + McMaster + JW Winco. height=16.0 (h) confirmed by same sources. foot_h=8.0 derived as h\u2212k (k=8 tabulated). bore=10.1 = M12x1.75 coarse minor diameter per ISO 724 (D1=12\u22121.082532x1.75=10.106 mm). chamfer=1.0 mm representative: DIN 508 does not tabulate a chamfer; 0.5\u20131.0 mm x45 deg is standard shop practice for M12 (per Fuller and Hoffmann references); not a standardized DIN feature.",
 			"svg": "din508.svg"
 		},
 		"din508i": {
 			"alias_of": "din508",
 			"family": "tslot_nut",
-			"sha256": "3892cdaf857743e58bf71c9e667e44be2f5e6f8ce38781a6bf7376cc7f39eea7",
+			"sha256": "641d23842079454626c683a64f40e24334828f57f69678123d6b3c191056a806",
 			"source": "DIN 508 M12, app image-variant key -- identical T-slot-nut envelope, aliases the din508 base.",
 			"svg": "din508.svg"
 		},
 		"din546": {
 			"family": "slotted_face_nut",
-			"sha256": "f7bab9dc9a4943d7d338b54443c001630b82a1200514602c1a9eeb390876f6a8",
+			"sha256": "479b31cce9bbf8c5b30c25b94b1846e09ff9e6aea257cf5b5d1934722178f829",
 			"source": "DIN 546 slotted round nut (Schlitzmutter), M12x1.75 coarse thread. d=21.0 and h=10.0 tabulated by fasteners.eu + definitemetal.com + torqbolt.com + westfieldfasteners.co.uk. slot_w=4.0 (n nominal) tabulated by definitemetal.com. slot_depth=3.8 is t_min per definitemetal.com (DIN 546 table); vital-parts.co.uk manufactured example gives 4.3 mm (within tolerance). bore=10.1 from ISO 724 D1=12\u22121.082532\u00d71.75=10.106 mm. Single diametral face slot (partial depth, one slot across the top face, not full-height). All fields tabulated \u22652 independent sources except slot_w and slot_depth (single table; representative values).",
 			"svg": "din546.svg"
 		},
 		"din546p": {
 			"alias_of": "din546",
 			"family": "slotted_face_nut",
-			"sha256": "f7bab9dc9a4943d7d338b54443c001630b82a1200514602c1a9eeb390876f6a8",
+			"sha256": "479b31cce9bbf8c5b30c25b94b1846e09ff9e6aea257cf5b5d1934722178f829",
 			"source": "DIN 546 M12, app image-variant key -- identical slotted-face-nut envelope, aliases the din546 base.",
 			"svg": "din546.svg"
 		},
 		"din557": {
 			"family": "square_nut",
-			"sha256": "dcd2e3ccfa24cab333df11fce568df6dd932b8023036cf2eeacb57d2264d882e",
+			"sha256": "3aacc9132cc6f6d91cf78e85f420ea8b4b6945805fc754f0d31eeb33ee2bc8f5",
 			"source": "DIN 557 square nut, product grade C (M12): s=18 (current ISO 272 / SW18; obsolescent pre-1994 s=19 not shipped), m=10 (max/nominal), bore=10.1 (M12 minor dia). Top face chamfered (chamfer-circle diameter = s, a drawing form requirement, not tabulated -> representative), bearing face flat. Confirmed vs fasteners.eu + Fuller Fasteners + TC Fixings + Aspen Fasteners DIN 557 tables.",
 			"svg": "din557.svg"
 		},
 		"din603": {
 			"family": "carriage_bolt",
-			"sha256": "6e36ccf324deafe8657b5f4eb36d39f2a67231987e08391a90c80f33a5b09b25",
+			"sha256": "3d8406688a6f655536c3660304699502d5ec7e795572ec95dd6796f377759034",
 			"source": "DIN 603 / ISO 8677 cup (mushroom / round) head square-neck carriage bolt (Flachrundschraube mit Vierkantansatz), M12: domed head diameter dk=30.0 (tabulated 29.35-30.65) and head height k=7.0 (tabulated max 6.95), with a square neck across-flats square_w=12.7 (v-max) and square_depth=4.0 (P-max) under the head, confirmed by Westfield Fasteners DIN 603/ISO 8677 table + Aspen Fasteners M12 DIN 603/ISO 8677 datasheet + Bhavya Industries DIN 603/ISO 8677 (square v) + the ISO 8677/DIN 603 carriage-bolt chart (square depth P). d=12.0 (M12 major); length=60.0 REPRESENTATIVE (carriage bolts ship in many lengths); tip_chamfer=1.0 REPRESENTATIVE 45-degree end break. Envelope only \u2014 no drawn thread, no drive (the square neck is the anti-rotation feature).",
 			"svg": "din603.svg"
 		},
 		"din603i": {
 			"alias_of": "din603",
 			"family": "carriage_bolt",
-			"sha256": "6e36ccf324deafe8657b5f4eb36d39f2a67231987e08391a90c80f33a5b09b25",
+			"sha256": "3d8406688a6f655536c3660304699502d5ec7e795572ec95dd6796f377759034",
 			"source": "DIN 603 M12, app image-variant key \u2014 identical cup-head square-neck envelope (dk=30, k=7, square 12.7); aliases the din603 base.",
 			"svg": "din603.svg"
 		},
 		"din604": {
 			"family": "nib_bolt",
-			"sha256": "ebd5a3ebc46890988d7feb9ab2265dedbeb19eb1820e01f8aa5e7d10f94d23e8",
+			"sha256": "03a0aad2f24eb3ce5386a53fef1be0939df454d7a219e99bf9ddef0557db67ef",
 			"source": "DIN 604 flat countersunk nib bolt (Senkschraube mit Nase), M12: head diameter dk=24.65 (tabulated 23.35-24.65) and head height k=7.0 (max), nib width nib_w=3.6 (g, tabulated 3.12-3.6), confirmed by fasteners.eu DIN 604 table + Fuller Fasteners DIN 604 specifications + boltingspecialist.com DIN 604 (all M12 dk-max 24.65, g-max 3.6, head-angle 90-95 deg). nib_d=5.7 is the tabulated M12 'i' minimum, read as the RADIAL nose height above the shank (the figure's i arrow is radial, same reading as DIN 607; the legacy raster confirms: back face starts ~5.3 mm above the shank). The nib is drawn as a wedge alongside the head cone per the DIN 604 figure, with two corners on existing silhouette vertices (matching the legacy raster): the top corner is the head-rim corner (dk/2, k) and the back face lands exactly on the cone-shank junction; the nose corner sits at (d_shank/2 + i, i*tan(15deg)) -- back face 15 deg from the radial per the figure, and the outer edge's ~5-deg taper emerges from the tabulated numbers. d_shank=12.0 (M12 major, envelope-only, no drawn thread); length=50.0 REPRESENTATIVE (DIN 604 lists lengths 20-160); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Envelope only - no thread, no drive (the nib is the anti-rotation feature).",
 			"svg": "din604.svg"
 		},
 		"din604d": {
 			"alias_of": "din604",
 			"family": "nib_bolt",
-			"sha256": "ebd5a3ebc46890988d7feb9ab2265dedbeb19eb1820e01f8aa5e7d10f94d23e8",
+			"sha256": "03a0aad2f24eb3ce5386a53fef1be0939df454d7a219e99bf9ddef0557db67ef",
 			"source": "DIN 604 M12, app image-variant key - identical flat countersunk nib-bolt envelope (dk=24.65, k=7, nib g=3.6/i=5.7); aliases the din604 base.",
 			"svg": "din604.svg"
 		},
 		"din605": {
 			"family": "carriage_bolt",
-			"sha256": "0bc70f511ae5d58c2b92d8b6b73707882389c998f1cbd8a0a416ddbdff0266ea",
+			"sha256": "207959707731c8cd6be7b409f792f2d2ede6c729d1754355d8936a3bd83448de",
 			"source": "DIN 605 countersunk (flat 120-degree conical) head square-neck carriage bolt with high square (Senkschraube mit Vierkantansatz), REPRESENTATIVE SIZE M10: DIN 605 has NO M12 row in the published tables (Fuller / Bhalla / Intafast / Jignesh all stop at M10), so this is drawn at the standard's maximum published size M10 (same precedent as the ISO 14580 M10 drop). Countersunk head diameter dk=24.65 and overall head thickness (incl. square) 11.55 and square across-flats square_w=10.58 confirmed by Fuller Fasteners DIN 605 + Bhalla Fasteners DIN 605 + Intafast DIN 605 drawing (all M10 dk-max 24.65, fn-max 11.55, v-max 10.58). The 11.55 overall is split into a countersink cone height k=4.1 and square_depth=7.45: the split is DERIVED so the cone is the standard 120-degree countersink (dk/2 to square_w/2 over k), a representative envelope join. d=10.0 (M10 major); length=50.0 REPRESENTATIVE M10 length; tip_chamfer=1.0 REPRESENTATIVE. Envelope only \u2014 no drawn thread, no drive.",
 			"svg": "din605.svg"
 		},
 		"din607": {
 			"family": "nib_bolt",
-			"sha256": "49d499e851decc6fbfef835ab7a92cb6b1f3a4a42b67808d7d55467fe18bf6ad",
+			"sha256": "2fb6fa3b2c3f4ea3204a827ea3e2caecc7d72770f65a9162fb32ba9c7b7af81a",
 			"source": "DIN 607 cup (round) head nib bolt (Flachrundschraube mit Nase), M12: head diameter dk=24.65 (tabulated 23.35-24.65) and head height k=9.65 (tabulated 8.75-9.65), nib width nib_w=3.6 (g, tabulated 3.12-3.6), confirmed by Fuller Fasteners DIN 607 specifications (M12: dk 23.35-24.65, k 8.75-9.65, g 3.12-3.6, i min 3.2, head radius r approx 13.3) + fasten.it DIN 607 table (M12: dk-max 24.65, k 8.75-9.65, g-max 3.6, i-min 3.2; grade C, sizes M8-M16). The dome is drawn as the spherical cap through dk/k (the tabulated r approx 13.3 matches the derived cap radius 12.7 within its 'approx' tolerance). The nib is a triangular wedge on the shank hugging the bearing face, per the DIN 607 figure: the tabulated i=3.2 is read as the RADIAL nose height above the shank (the figure's i arrow is radial, and the legacy raster shows ~3 mm protrusion with the figure's 30-degree underside slope), so nib_l=9.2 = d_shank/2 + i; nib_d=5.5 REPRESENTATIVE is the wedge's axial extent from that slope (i/tan(30deg) = 5.54). d_shank=12.0 (M12 major, envelope-only, no drawn thread); length=50.0 REPRESENTATIVE stock length; tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Envelope only - no thread, no drive (the nib is the anti-rotation feature).",
 			"svg": "din607.svg"
 		},
 		"din607d": {
 			"alias_of": "din607",
 			"family": "nib_bolt",
-			"sha256": "49d499e851decc6fbfef835ab7a92cb6b1f3a4a42b67808d7d55467fe18bf6ad",
+			"sha256": "2fb6fa3b2c3f4ea3204a827ea3e2caecc7d72770f65a9162fb32ba9c7b7af81a",
 			"source": "DIN 607 M12, app image-variant key - identical cup-head nib-bolt envelope (dk=24.65, k=9.65, nib g=3.6/i=3.2); aliases the din607 base.",
 			"svg": "din607.svg"
 		},
 		"din609": {
 			"family": "hex_bolt",
-			"sha256": "85827f8a4ec8253571496e9b4ccb99394de9ed55bdad4e2e6118fc77d508ce0e",
+			"sha256": "c1f5256d1623f5fff619d7b03ea9416b46861ed85ac80ca848185f78a6c2e5af",
 			"source": "DIN 609 hexagon head fit bolt with long threaded portion (Passschraube), M12: standard hexagon head s=19.0, k=7.5 (DIN 609 has no enlarged wrench size \u2014 the ordinary DIN metric hex head; Fasteners.eu DIN 7990 M12 s=19 and the DIN 931 M12 head via ITA Fasteners) over an oversize precision fit shank d_shank=13.0 (13k6): confirmed by Normteile-Leinigen DIN 609 M12 '\u00d813k6' listing and the Fasteners.eu DIN 610 ds fit-shank definition (the 13 mm fit shank is the shared DIN M12 fit-bolt convention). length=60.0 representative; head_chamfer=19.0=s representative; tip_chamfer=1.0 representative. Envelope only \u2014 the fit bolt's defining feature, the oversize shank, is drawn at 13.0.",
 			"svg": "din609.svg"
 		},
 		"din609p": {
 			"alias_of": "din609",
 			"family": "hex_bolt",
-			"sha256": "85827f8a4ec8253571496e9b4ccb99394de9ed55bdad4e2e6118fc77d508ce0e",
+			"sha256": "c1f5256d1623f5fff619d7b03ea9416b46861ed85ac80ca848185f78a6c2e5af",
 			"source": "DIN 609 M12, app image-variant key \u2014 identical DIN 609 fit-bolt envelope (standard hex head s=19, oversize 13 mm fit shank), aliases the din609 base.",
 			"svg": "din609.svg"
 		},
 		"din610": {
 			"alias_of": "din609",
 			"family": "hex_bolt",
-			"sha256": "85827f8a4ec8253571496e9b4ccb99394de9ed55bdad4e2e6118fc77d508ce0e",
+			"sha256": "c1f5256d1623f5fff619d7b03ea9416b46861ed85ac80ca848185f78a6c2e5af",
 			"source": "DIN 610 hexagon head fit bolt with short threaded portion, M12 \u2014 same M12 fit-bolt envelope as DIN 609 (standard hex head s=19, oversize d_shank=13 fit shank); only the threaded-portion length differs (not drawn), so it aliases din609. Confirmed vs Fasteners.eu DIN 610 + Wegertseder DIN 610 fit-bolt listings and the shared 13 mm fit shank of DIN 609 (Normteile-Leinigen 13k6).",
 			"svg": "din609.svg"
 		},
 		"din610p": {
 			"alias_of": "din609",
 			"family": "hex_bolt",
-			"sha256": "85827f8a4ec8253571496e9b4ccb99394de9ed55bdad4e2e6118fc77d508ce0e",
+			"sha256": "c1f5256d1623f5fff619d7b03ea9416b46861ed85ac80ca848185f78a6c2e5af",
 			"source": "DIN 610 M12, app image-variant key \u2014 same DIN fit-bolt envelope (s=19, d=13), aliases the din609 base.",
 			"svg": "din609.svg"
 		},
 		"din6319c": {
 			"family": "spherical_seating_washer",
-			"sha256": "bddc14afde315012f8a388680450b0c4d233451cffa2990c218bba52fae4fe26",
+			"sha256": "afd12750ec306f0de87d8ac964d72a0d9f8bb701887c65c75a3328fb3eed68ad",
 			"source": "DIN 6319 Form C (M12, Kugelscheibe / spherical washer; d1=13, d3=24, h2=4.6, flat top with convex spherical underside). Was h2=4.0 (the M10 value). Mating sphere radius representative (~26 mm): DIN tables publish it inconsistently, chosen to seat in the Form D/G cup. Aspen/Halder DIN 6319.",
 			"svg": "din6319c.svg"
 		},
 		"din6319d": {
 			"family": "spherical_seating_washer",
-			"sha256": "ef862101c2426d1d3a9ab1a699c7dcdf53ee74dcf688a8f79589671bf2af3919",
+			"sha256": "1006caab5fcbc2ad6bca8687785e43a15c7baed5f12f526f55c6a61742e6c815",
 			"source": "DIN 6319 Form D (M12, Kegelpfanne / conical seat; d2=14.2, d4=24, h3=5.0, flat bottom with concave spherical recess receiving the Form C washer). Was d2=13 / h3=3: the seat bore (14.2) is larger than the Form C washer bore (13.0), and h3 is 5.0 not 3.0. Mating sphere radius representative (~26 mm), same as Form C. Aspen/Halder/Growermetal DIN 6319.",
 			"svg": "din6319d.svg"
 		},
 		"din6330": {
 			"family": "hex_nut",
-			"sha256": "4822af76825c11517d434be4e5ed185fab4d50f87cbe8adb29e204e17d740853",
+			"sha256": "ae5640c2464491fed850827ae06849379e832d75278bd04a71d3891409f4f7fa",
 			"source": "DIN 6330 hexagon nut height 1.5d (version B), M12: s=18.0, m=18.0 (=1.5x12). Confirmed vs Fasteners.eu DIN 6330 table + Norelem/Kipp DIN 6330 datasheets.",
 			"svg": "din6330.svg"
 		},
 		"din6330p": {
 			"alias_of": "din6330",
 			"family": "hex_nut",
-			"sha256": "4822af76825c11517d434be4e5ed185fab4d50f87cbe8adb29e204e17d740853",
+			"sha256": "ae5640c2464491fed850827ae06849379e832d75278bd04a71d3891409f4f7fa",
 			"source": "DIN 6330 M12, app image-variant key -- identical hex-nut envelope, aliases the din6330 base.",
 			"svg": "din6330.svg"
 		},
 		"din6331": {
 			"family": "collar_nut",
-			"sha256": "0c145f059191ab780b88ecf772fb5013c6a377281d8738c6fd87591d069ea94c",
+			"sha256": "dfbe62b0e31c019918d9a7b05598419312f27de26d8a7d9663beec356c3eff42",
 			"source": "DIN 6331 hexagon nut with collar, height 1.5d (M12): s=18 (current ISO 272 / SW18), m=18 (=1.5x12, total height incl. collar), collar diameter d1/dc=25, collar height a=4, bore=10.1 (M12 minor dia). Collar dc=25 exceeds the hex across-corners (20.78), a visible bearing ring; plain cylindrical (no edge chamfer). Confirmed vs fasteners.eu + Aspen Fasteners + Hommel-Hercules + NF GAB + Wurth DIN 6331 tables.",
 			"svg": "din6331.svg"
 		},
 		"din6334": {
 			"family": "hex_nut",
-			"sha256": "a56e4c987cfbe7dceaa1bebd4994ac0adaa78e188ce0c90f7bdd822ee093c631",
+			"sha256": "9aa89acd01ac1edf62acade14c021a2b2b68f0e58a55ee8a628185f386c8de6b",
 			"source": "DIN 6334 hexagon coupling nut (Verbindungsmutter / connector nut), M12x1.75 coarse: across-flats s=19.0 (SW19 is the confirmed current value for DIN 6334, not 18), length m=l=36.0 (=3x12), bore=10.1 (M12 coarse minor). Plain hexagonal prism with double-chamfered ends, through-threaded (joins two threaded rods) - same shape as a hex nut, just tall. Confirmed vs Fasteners.eu + Fuller Fasteners + Andrews Fasteners + Bolt Depot DIN 6334 tables.",
 			"svg": "din6334.svg"
 		},
 		"din6340": {
 			"family": "flat_washer",
-			"sha256": "df4ef476518634071ad6dd6bcdc77ce5039ef56a954b254c79acf50b11a7bd89",
+			"sha256": "848aae085cc288d8111d425ec8a85c61d4b3468056a6265d6d85c0563a12daea",
 			"source": "DIN 6340 (M12, washer for clamping fixtures / Scheiben f\u00fcr Spannzeuge, heavy; d1=13, d2=35, s=5). Dimensions from Fasteners.eu / Ganter tables.",
 			"svg": "din6340.svg"
 		},
 		"din6340d": {
 			"alias_of": "din6340",
 			"family": "flat_washer",
-			"sha256": "df4ef476518634071ad6dd6bcdc77ce5039ef56a954b254c79acf50b11a7bd89",
+			"sha256": "848aae085cc288d8111d425ec8a85c61d4b3468056a6265d6d85c0563a12daea",
 			"source": "variant key for DIN 6340; identical geometry, aliased to the base.",
 			"svg": "din6340.svg"
 		},
 		"din653": {
 			"family": "knurled_screw",
-			"sha256": "546e29302378202cc2093d4ccb33ee7647ff3272be7e1ecf59f843dd95b4cf88",
+			"sha256": "559d0db330eb9d8d046b530ede879150eac86a0591fa8e2a8abde21e1ab5bc64",
 			"source": "DIN 653 flat/low knurled thumb screw (Raendelschraube, niedrige Form), M6: knurled head diameter dk=24.0, head height k=5.0, on the M6 threaded shank (major dia 6.0) with NO raised shoulder (the head sits directly on the bearing surface). Confirmed vs Westfield Fasteners DIN 653 + GlobalFastener DIN 653 + fasteners.eu DIN 653 (all M6 dk=24, k=5.0), with AFT Fasteners DIN 653 (d1=16/k=3.5 at M4, d1=36/k=8 at M10) confirming the head-diameter series. Drawn as a smooth knurled cylinder (the knurl is a fine feature, omitted like the thread, same as knurled_nut) with a representative 45-degree top-rim chamfer head_chamfer=0.5. length=20.0 REPRESENTATIVE (common M6 stock length); tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. Envelope only \u2014 no drawn thread, no knurl, no bore. The DIN 464 high form (same head on a raised collar) is deferred.",
 			"svg": "din653.svg"
 		},
 		"din653p": {
 			"alias_of": "din653",
 			"family": "knurled_screw",
-			"sha256": "546e29302378202cc2093d4ccb33ee7647ff3272be7e1ecf59f843dd95b4cf88",
+			"sha256": "559d0db330eb9d8d046b530ede879150eac86a0591fa8e2a8abde21e1ab5bc64",
 			"source": "DIN 653 M6, app image-variant key \u2014 identical knurled-thumb-screw envelope (dk=24, k=5.0), aliases the din653 base.",
 			"svg": "din653.svg"
 		},
 		"din6796": {
 			"family": "curved_washer",
-			"sha256": "f3205c39b8ac7def912cfb6a78f0ffd7d90aa7c29452627cc8c800fa4f0bffb2",
+			"sha256": "e487048b0923d9a9f787abf5024f11636b81ccc3d122088cfdac6a8c0daed6a0",
 			"source": "DIN 6796 (M12 conical spring lock washer; d1 13, d2 29, material thickness s 3.0, free height ~3.95). Was s 3.2. cone_angle representative. Fuller/Monroe/DIN 6796.",
 			"svg": "din6796.svg"
 		},
 		"din6797a": {
 			"family": "toothed_lock_washer",
-			"sha256": "61643f0b9a6717155b7675eceee51258742487d20b4eee8c99c95806889d916f",
+			"sha256": "193655825957d1392c662ed4c91bff13aaa572e41d282914691dbfb100f127f3",
 			"source": "DIN 6797 A (M12, external tooth / Zahnscheibe, 10 teeth)",
 			"svg": "din6797a.svg"
 		},
 		"din6797j": {
 			"family": "toothed_lock_washer_internal",
-			"sha256": "56c04bf941ea1670d8cc94b7784450b02a6f9b91c33dcaa6f6ec5fde2273cc17",
+			"sha256": "8a5dfee54e5f59d33960f838df01293c85847760b064c32a7a0382825ba6567f",
 			"source": "DIN 6797 J (M12, internal tooth / Innenzahn, 10 teeth)",
 			"svg": "din6797j.svg"
 		},
 		"din6798a": {
 			"family": "toothed_lock_washer",
-			"sha256": "70e11da95935eafb895e87377bf68031d3558c7d9b4b557cf15f5bf50fbf8e2a",
+			"sha256": "7992a002a62dd4ceea23d8e2fe676713399282495336ca442be16014787e8f3e",
 			"source": "DIN 6798 A (M12, external serrated / F\u00e4cherscheibe; d1 13, d2 20.5, s 1.0, min 16 teeth). Was d2 20.0. Fasteners.eu / Aspen.",
 			"svg": "din6798a.svg"
 		},
 		"din6798d": {
 			"alias_of": "din6798v",
 			"family": "countersunk_toothed_washer",
-			"sha256": "24a443e52019e9a19953bd9757a1a786378732529f6759d65c9780bafd7b7ccf",
+			"sha256": "e17c554934b5f694fc4b148db9c19b3286350d673fce89e945a017271ea3c821",
 			"source": "catalog 'Form D' label is not a real DIN 6798 form; its geometry is Form V, so this aliases din6798v.",
 			"svg": "din6798v.svg"
 		},
 		"din6798j": {
 			"family": "toothed_lock_washer_internal",
-			"sha256": "9c73c386a65db74921a8d587755e8dd8450cf50a0d922a84d38de93a88b68198",
+			"sha256": "f6bb355b9023a7fb980f29d47fd7124ca41f5712815200286117c4fcb996db5b",
 			"source": "DIN 6798 J (M12, internal serrated / F\u00e4cherscheibe; d1 13, d2 20.5, s 1.0, min 16 teeth). Shares the A-form d1/d2/s series. Was d2 21.0 / s 1.3. Fasteners.eu / Aspen.",
 			"svg": "din6798j.svg"
 		},
 		"din6798v": {
 			"family": "countersunk_toothed_washer",
-			"sha256": "24a443e52019e9a19953bd9757a1a786378732529f6759d65c9780bafd7b7ccf",
+			"sha256": "e17c554934b5f694fc4b148db9c19b3286350d673fce89e945a017271ea3c821",
 			"source": "DIN 6798 V (M12, countersunk external serrated / Senkzahn; d1 13, d3 23.0, s2 0.5, min 26 teeth, countersunk head). Was d3 22 / s 0.8 / 18 teeth (the M8 row). cone_angle representative. Fasteners.eu / Ferrobolt.",
 			"svg": "din6798v.svg"
 		},
 		"din6912": {
 			"family": "socket_screw",
-			"sha256": "2f54d0e75f70733629680eea4aee6e38db58c0e1ac31a811b6e0691ce92712e1",
+			"sha256": "a170e261691fabb3a418781363637e603abe738596d368543cf71ac8ce1684cf",
 			"source": "DIN 6912 hexagon socket head cap screw with LOW HEAD and key guide (Zylinderschraube mit Innensechskant, niedriger Kopf mit Schl\u00fcsself\u00fchrung), M12: low cylindrical head dk=18.0, k=7.0 (vs the full DIN 912/ISO 4762 cap's k=12) confirmed by Schrauben-Lexikon DIN 6912 low-head progression (M8 dk13/k5, M10 dk16/k6 -> M12 dk18/k7) + Accu DIN 6912 M12 listing (head D=18) + Aspen Fasteners M12 DIN 6912 datasheet. Hex socket across-flats socket_af=10.0 \u2014 retains the full DIN 912 hex (the key guide lets a standard 10 mm key seat deeper), Schrauben-Lexikon + Aspen. d_shank=12.0 (M12 major); length=60.0 representative; socket_depth=4.0 representative (blind, < k); tip_chamfer=1.0 representative. Envelope only \u2014 the key-guide pilot is internal, not drawn.",
 			"svg": "din6912.svg"
 		},
 		"din6914": {
 			"family": "hex_bolt",
-			"sha256": "322626181c44a1a2f3b3df62aea3f603e1a922e97c1af408f560328138f1fbd1",
+			"sha256": "fa2da395df0b5c32c56c33e82cdefacee9b133352ee7a250ec60038b4c0ea7f2",
 			"source": "DIN 6914 high-strength hexagon head bolt for structural steel (HV connections, gro\u00dfe Schl\u00fcsselweite), M12: heavy hex head s=22.0 across-flats \u2014 larger than the ordinary DIN 931 19 mm head \u2014 confirmed by Schrauben-Lexikon DIN 6914 (M12 row lists s=22) and the EN 14399-4 heavy-hex table (EN 14399-4 is DIN 6914's designated successor with compatible geometry) via Fasteners.eu. Head height k=8.0 (EN 14399-4 heavy-hex M12). Standard shank d_shank=12.0 (M12 nominal, clearance-hole bolt; Fasteners.eu DIN 6914 ds nominal 12). length=60.0 representative catalog length; head_chamfer=22.0=s representative (as din931/iso4014); tip_chamfer=1.0 representative. Envelope only (no drawn thread).",
 			"svg": "din6914.svg"
 		},
 		"din6914i": {
 			"alias_of": "din6914",
 			"family": "hex_bolt",
-			"sha256": "322626181c44a1a2f3b3df62aea3f603e1a922e97c1af408f560328138f1fbd1",
+			"sha256": "fa2da395df0b5c32c56c33e82cdefacee9b133352ee7a250ec60038b4c0ea7f2",
 			"source": "DIN 6914 M12, app image-variant key \u2014 identical DIN 6914 heavy-hex HV envelope (s=22), aliases the din6914 base.",
 			"svg": "din6914.svg"
 		},
 		"din6915": {
 			"family": "hex_nut",
-			"sha256": "30cbf0ee130cfd398f2e5322e7750a89faf2b11636f283eb03dc97835a04ea1a",
+			"sha256": "83fc84644216670a58fd3342e2f4577722b8a7fed6f0c903cd1819612a6b1f85",
 			"source": "DIN 6915 hexagon nut with large width across flats for HV high-strength structural steel bolting, M12: s=22.0 (nom, min 21.16), m=10.0 (nom, min 9.64), e min 23.91, dw min 20. One spanner size up from the regular series (SW22 vs SW19/18 at M12). Confirmed vs Fasteners.eu DIN 6915 table + BigBoltNut DIN 6915 dimension table (both list M12: s min 21.16, m min 9.64, e min 23.91).",
 			"svg": "din6915.svg"
 		},
 		"din6915i": {
 			"alias_of": "din6915",
 			"family": "hex_nut",
-			"sha256": "30cbf0ee130cfd398f2e5322e7750a89faf2b11636f283eb03dc97835a04ea1a",
+			"sha256": "83fc84644216670a58fd3342e2f4577722b8a7fed6f0c903cd1819612a6b1f85",
 			"source": "DIN 6915 M12, app image-variant key -- identical hex-nut envelope, aliases the din6915 base.",
 			"svg": "din6915.svg"
 		},
 		"din6916": {
 			"family": "flat_washer",
-			"sha256": "eb5ffb09c240e67a07ec2487aa4fbe3e2f9f6de5fbd59713b54d16ca0e55816f",
+			"sha256": "ac9336707b9dc4201bf2d47d2c53ea09549b8dc2f7b4cbf469fb9d4004eae0bd",
 			"source": "DIN 6916 (M12, HV structural washer)",
 			"svg": "din6916.svg"
 		},
 		"din6916i": {
 			"alias_of": "din6916",
 			"family": "flat_washer",
-			"sha256": "eb5ffb09c240e67a07ec2487aa4fbe3e2f9f6de5fbd59713b54d16ca0e55816f",
+			"sha256": "ac9336707b9dc4201bf2d47d2c53ea09549b8dc2f7b4cbf469fb9d4004eae0bd",
 			"source": "variant key sharing DIN 6916 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din6916.svg"
 		},
 		"din6921": {
 			"family": "hex_flange_bolt",
-			"sha256": "11200025b385df1fdba82a48146caa428637f89c552c6ceae549e532ac9448ae",
+			"sha256": "4dcdc1b188eb6d4f7fd40b6499da0493b3b60345655e4de98759cf358224cb94",
 			"source": "DIN 6921 hex flange bolt (Sechskantschraube mit Flansch; = ISO 4162 / EN 1665, DIN 6921 withdrawn and replaced by EN 1665 which keeps the flange geometry), M10: hexagon across-flats s=15.0, total head height k=9.2 (bearing face to hex top), flange diameter dc=22.3, flange rim (edge) thickness c=1.5, confirmed by AFT Fasteners DIN 6921 + Bhavya Industries DIN 6921 + Wurth EN 1665/DIN 6921 (all M10 s=15, k=9.2, dc=22.3) and c=1.5 by fasteners.eu DIN 6921 + AFT DIN 6921. Drawn as a vertex-up chamfered hex head on a smooth conical flange wider than the hex across-corners, over a round shank d_shank=10.0 (M10 major). The serrated bearing face of a real DIN 6921 is omitted (a smooth flange, envelope simplification), and the internal flange cone uses a representative 20-degree transition \u2014 the same simplifications flange_nut makes. length=30.0 REPRESENTATIVE; tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. Envelope only \u2014 no drawn thread, no bore.",
 			"svg": "din6921.svg"
 		},
 		"din6921d": {
 			"alias_of": "din6921",
 			"family": "hex_flange_bolt",
-			"sha256": "11200025b385df1fdba82a48146caa428637f89c552c6ceae549e532ac9448ae",
+			"sha256": "4dcdc1b188eb6d4f7fd40b6499da0493b3b60345655e4de98759cf358224cb94",
 			"source": "DIN 6921 M10, app image-variant key \u2014 identical hex-flange-bolt envelope (s=15, k=9.2, dc=22.3, c=1.5), aliases the din6921 base.",
 			"svg": "din6921.svg"
 		},
 		"din6923": {
 			"family": "flange_nut",
-			"sha256": "392f7940a1032c061b30d804ea6a5fdcd2db209562a5478b07669a0077ca3397",
+			"sha256": "7e11b470973adad9ad1bb2a698ac7b3e4eeaa1d53adc0823e4c737104fe43cc1",
 			"source": "DIN 6923 hex flange nut (M12): s=18, m=12, d_flange=26, flange_thickness(c)=1.8, bore=10.1 (M12 minor dia). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 6923 tables.",
 			"svg": "din6923.svg"
 		},
 		"din6923i": {
 			"alias_of": "din6923",
 			"family": "flange_nut",
-			"sha256": "392f7940a1032c061b30d804ea6a5fdcd2db209562a5478b07669a0077ca3397",
+			"sha256": "7e11b470973adad9ad1bb2a698ac7b3e4eeaa1d53adc0823e4c737104fe43cc1",
 			"source": "DIN 6923 M12, app image-variant key -- identical flange-nut envelope, aliases the din6923 base.",
 			"svg": "din6923.svg"
 		},
 		"din6925": {
 			"family": "lock_nut",
-			"sha256": "28ac80b3d24c4cd9c7141c5c311d7bd1b525be57d3f04a8fc892ed87e50c2030",
+			"sha256": "c7eab25a544cc5c10b934fa35247d7257c41169e0feac9094102876df902b55f",
 			"source": "DIN 6925 all-metal high prevailing-torque hexagon nut (M12, ISO 7042 counterpart): s=18 (SW18, ISO 4033 base, not DIN 934) and total height m=12.0 confirmed by three independent vendor tables (nan-long, fastenersco, zhenkunmach) and fasteners.eu. Kept distinct from ISO 7042 (h_max 13.3, 2012 edition) because the confirmed DIN 6925 envelope differs. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "din6925.svg"
 		},
 		"din6925i": {
 			"alias_of": "din6925",
 			"family": "lock_nut",
-			"sha256": "28ac80b3d24c4cd9c7141c5c311d7bd1b525be57d3f04a8fc892ed87e50c2030",
+			"sha256": "c7eab25a544cc5c10b934fa35247d7257c41169e0feac9094102876df902b55f",
 			"source": "DIN 6925 M12, app image-variant key -- identical lock-nut envelope, aliases the din6925 base.",
 			"svg": "din6925.svg"
 		},
 		"din6926": {
 			"alias_of": "din6923",
 			"family": "flange_nut",
-			"sha256": "392f7940a1032c061b30d804ea6a5fdcd2db209562a5478b07669a0077ca3397",
+			"sha256": "7e11b470973adad9ad1bb2a698ac7b3e4eeaa1d53adc0823e4c737104fe43cc1",
 			"source": "DIN 6926 prevailing-torque nylon-insert hex flange nut (M12): metal envelope (s=18, m=12, d_flange=26, c=1.8) identical to DIN 6923; the nylon crown (total height 16.1) sits above the metal body and is not modelled, so this aliases the DIN 6923 drawing. Confirmed vs Fasteners.eu + Fuller Fasteners DIN 6926.",
 			"svg": "din6923.svg"
 		},
 		"din6926i": {
 			"alias_of": "din6923",
 			"family": "flange_nut",
-			"sha256": "392f7940a1032c061b30d804ea6a5fdcd2db209562a5478b07669a0077ca3397",
+			"sha256": "7e11b470973adad9ad1bb2a698ac7b3e4eeaa1d53adc0823e4c737104fe43cc1",
 			"source": "DIN 6926 M12, app image-variant key -- identical flange-nut envelope; points at the din6923 base directly because din6926 is itself an alias of din6923.",
 			"svg": "din6923.svg"
 		},
 		"din6927": {
 			"family": "flange_nut",
-			"sha256": "188dc7d7f6ddeb2e4d581791ff76ced50661ba826ef604da2573b4c5cf533787",
+			"sha256": "3652814190fc85e21023e227b9c797be8d08b1aad2dda6e9091195fca4c59667",
 			"source": "DIN 6927 prevailing-torque all-metal hex flange nut (M12): s/d_flange/c identical to DIN 6923; total metal envelope height m=13.8 (all-metal locking crown adds ~1.8mm). The locking deformation is not modelled (drawn as a smooth flange nut of the true envelope height). Confirmed vs Fasteners.eu + bwindustrialsales DIN 6927.",
 			"svg": "din6927.svg"
 		},
 		"din6927i": {
 			"alias_of": "din6927",
 			"family": "flange_nut",
-			"sha256": "188dc7d7f6ddeb2e4d581791ff76ced50661ba826ef604da2573b4c5cf533787",
+			"sha256": "3652814190fc85e21023e227b9c797be8d08b1aad2dda6e9091195fca4c59667",
 			"source": "DIN 6927 M12, app image-variant key -- identical flange-nut envelope, aliases the din6927 base.",
 			"svg": "din6927.svg"
 		},
 		"din70852": {
 			"family": "slotted_round_nut",
-			"sha256": "21daf3d0eaf5b9f6f29f41ad7bb9525e1480e3a3a8bbc39845748eba4ac055fb",
+			"sha256": "d388bf1fa138ce0b6f6227f172729064137f3bb1ddb777089f933e7a7885cce8",
 			"source": "DIN 70852 groove nut (M12x1.5 fine thread): OD d=22, height h=6, bore=10.4 (M12x1.5 minor dia), n_slots=4, slot width slot_w=4.5, slot radial depth slot_depth=2 (slot-floor dia D3=18), slot axial groove depth slot_h=c=1.8 (partial depth, opens from one face, not full height). Confirmed vs Kipp + Norelem + Maedler + ferrofast + Wegertseder tables.",
 			"svg": "din70852.svg"
 		},
 		"din7349": {
 			"family": "flat_washer",
-			"sha256": "89a0409ba89fcb31c4bb8c796df6f68734d2d37ad51788182c1a8f0cd3a4a11c",
+			"sha256": "a71188382ecf4061527b4ea5d46c8bf3e47da2dd78ed58c4bfd685d9a36835b2",
 			"source": "DIN 7349 (M12, thick washer for clamping sleeves)",
 			"svg": "din7349.svg"
 		},
 		"din7349d": {
 			"family": "flat_washer",
-			"sha256": "89a0409ba89fcb31c4bb8c796df6f68734d2d37ad51788182c1a8f0cd3a4a11c",
+			"sha256": "a71188382ecf4061527b4ea5d46c8bf3e47da2dd78ed58c4bfd685d9a36835b2",
 			"source": "DIN 7349 (M12, heavy thick washer for bolts with heavy clamping sleeves; d1=13, d2=30, s=6). Dimensions from Fasteners.eu.",
 			"svg": "din7349d.svg"
 		},
 		"din74361c": {
 			"family": "curved_washer",
-			"sha256": "ef461a43afeaa47f8e7fbf913a7d9431234038f60edfefa4b30eac880d15ade5",
+			"sha256": "e260caffc13e80289347fb4bea4ec71deaf1142649044045621e0c528d81cca0",
 			"source": "DIN 74361 Form C conical (Belleville) spring washer for wheel bolts, representative wheel-bolt size (inner 16.5, outer ~27, commonly listed for M14 wheel bolts): d_inner=16.5 confirmed vs two named vendor tables (Reidl DIN 74361 Form C 16.5x27x7 + Krepcom DIN 74361 type C, which tabulates inner 16.5 / outer 26.5); d_outer=27.0 per Reidl (Krepcom lists 26.5 \u2014 a minor vendor difference). thickness=2.5 (material) and cone_angle=25 are representative \u2014 the vendor h (~6.5-7) is the overall free height, not the material thickness, and the DIN cone/material figures are paywalled; a closed dished cone (gap_deg=0) reuses curved_washer like din2093/din137a.",
 			"svg": "din74361c.svg"
 		},
 		"din7603": {
 			"family": "flat_washer",
-			"sha256": "697e87333122f33e2244464f97104093d423292f88f684ee4ac10dbccfa259ce",
+			"sha256": "44b385770241ea224a67b942c630f6cd724fd4798daa9ebc7f6b80e64998f59d",
 			"source": "DIN 7603-A (12x18 sealing ring; thickness ~1.5 unverified)",
 			"svg": "din7603.svg"
 		},
 		"din7603d": {
 			"family": "flat_washer",
-			"sha256": "697e87333122f33e2244464f97104093d423292f88f684ee4ac10dbccfa259ce",
+			"sha256": "44b385770241ea224a67b942c630f6cd724fd4798daa9ebc7f6b80e64998f59d",
 			"source": "DIN 7603 (12x18, sealing ring / Dichtring, copper/aluminium; d1=12, d2=18). Thickness representative (form/material dependent, commonly 1.0-1.5 mm; 1.5 chosen).",
 			"svg": "din7603d.svg"
 		},
 		"din787": {
 			"family": "t_head_bolt",
-			"sha256": "1ea41c35c6f48149d90abeae31f60fab7084247269068f1e869e40590f42d19b",
+			"sha256": "5f1e00aa803f956c72261d7c64b2d0d901fbf1b69b87b93e6b10ff9770fb9e52",
 			"source": "DIN 787 T-slot bolt (Nutenschraube), M12 for the 14 mm T-slot (the same DIN 650 slot as this catalogue's DIN 508 T-slot nut): head length e=22 (spans the slot undercut), head width a=13.7 (nominal 14 with the tabulated -0.3/-0.5 drop-in tolerance -- the head passes down through the 14 mm slot opening, then turns 90 degrees), head height k=8, confirmed vs fasteners.eu DIN 787 table (M12 / a=14 row: e=22, k=8, a tol -0.3/-0.5) + boltingspecialist.com DIN 787 (same row) + ferrofast.com DIN 787 + JW Winco DIN 787 T-slot bolt table (M12, slot 0.55 in = 14 mm: a 0.55 -0.012/-0.02 in, e 0.87 in = 22 mm, k 0.31 in = 8 mm). No square neck -- anti-rotation comes from the rectangular head locked in the slot. DIN 787 also tabulates an M12 head for the 12 mm slot (e=18, k=7); the 14 mm row is drawn for catalogue consistency with DIN 508. d_shank=12.0 (M12 major, envelope-only, no drawn thread). length=80.0 REPRESENTATIVE (a tabulated stock length, thread b=55; e.g. Maedler DIN 787 M12x80). tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. Head corner radii are not published in these tables; the head is drawn as its e x a x k rectangular envelope.",
 			"svg": "din787.svg"
 		},
 		"din787i": {
 			"alias_of": "din787",
 			"family": "t_head_bolt",
-			"sha256": "1ea41c35c6f48149d90abeae31f60fab7084247269068f1e869e40590f42d19b",
+			"sha256": "5f1e00aa803f956c72261d7c64b2d0d901fbf1b69b87b93e6b10ff9770fb9e52",
 			"source": "DIN 787 M12, app image-variant key -- identical T-slot-bolt envelope (head 22x13.7x8, no neck), aliases the din787 base.",
 			"svg": "din787.svg"
 		},
 		"din7968": {
 			"alias_of": "din609",
 			"family": "hex_bolt",
-			"sha256": "85827f8a4ec8253571496e9b4ccb99394de9ed55bdad4e2e6118fc77d508ce0e",
+			"sha256": "c1f5256d1623f5fff619d7b03ea9416b46861ed85ac80ca848185f78a6c2e5af",
 			"source": "DIN 7968 hexagon fit bolt for structural steel, M12 \u2014 standard hexagon head (s=19, no enlarged wrench size) with the same 13 mm oversize fit shank as DIN 609/610: ITA Fasteners DIN 7968 size table + Befestigungsfuchs DIN 7968 M12 product data, fit-shank convention shared with DIN 609 (13k6). Aliases the din609 base.",
 			"svg": "din609.svg"
 		},
 		"din7980": {
 			"family": "helical_spring_washer",
-			"sha256": "773ee561fc7ceb6367565d70c5cc5f05759a9e67c217409c58ddf576387a4bb6",
+			"sha256": "9f1286cf1fdb266265b85e01b22175182d002f2305f23db2e80efd600f097629",
 			"source": "DIN 7980 (M12, spring lock washer for cylinder-head screws; d1=12.2, d2=18, section 2.5, split ring)",
 			"svg": "din7980.svg"
 		},
 		"din7980p": {
 			"alias_of": "din7980",
 			"family": "helical_spring_washer",
-			"sha256": "773ee561fc7ceb6367565d70c5cc5f05759a9e67c217409c58ddf576387a4bb6",
+			"sha256": "9f1286cf1fdb266265b85e01b22175182d002f2305f23db2e80efd600f097629",
 			"source": "plated (electro-zinc) variant of DIN 7980; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din7980.svg"
 		},
 		"din7984": {
 			"family": "socket_screw",
-			"sha256": "e585493ca1f488341886835cdbc313cb2c79898c00ad77217d626277745a7121",
+			"sha256": "67d5cf8c7cd8f5c8c4560d67a4b5b4d8e3f1638457c8d5b9761a2ec67a455dc0",
 			"source": "DIN 7984 hexagon socket head cap screw with LOW (thin) HEAD, M12: low cylindrical head dk=18.0, k=7.0 confirmed by Westfield Fasteners DIN 7984 dimension table (M12 dk=18, k=7) + Spaenaur DIN 7984 M12 listing (head height 7, key 8) + fasteners.eu DIN 7984 table. Hex socket across-flats socket_af=8.0 \u2014 reduced from the DIN 912 10 mm to fit the thin head (Spaenaur M12 key=8 + Westfield). Same external head as DIN 6912; the socket size is the drawn difference. d_shank=12.0 (M12 major); length=60.0 representative; socket_depth=4.0 representative (blind, < k); tip_chamfer=1.0 representative. Envelope only (no thread).",
 			"svg": "din7984.svg"
 		},
 		"din7984i": {
 			"alias_of": "din7984",
 			"family": "socket_screw",
-			"sha256": "e585493ca1f488341886835cdbc313cb2c79898c00ad77217d626277745a7121",
+			"sha256": "67d5cf8c7cd8f5c8c4560d67a4b5b4d8e3f1638457c8d5b9761a2ec67a455dc0",
 			"source": "DIN 7984 M12, app image-variant key \u2014 identical DIN 7984 low-head envelope (dk=18, k=7, hex socket 8), aliases the din7984 base.",
 			"svg": "din7984.svg"
 		},
 		"din7985": {
 			"alias_of": "iso7045",
 			"family": "slotted_screw",
-			"sha256": "47f17e90e13670932fa7d8ca914ffe85be9a5886673304df394b789665138346",
+			"sha256": "9e2286c6b8cafc5f0a4b5d3b02dfb93a47a3765dc3dfbbc0dbf5a7dcab84aad0",
 			"source": "DIN 7985 cross-recess pan head, M10 \u2014 same envelope as ISO 7045 (dk=20.0, k=7.5, cross recess No. 4), aliases the ISO base. Confirmed vs Vipa ISO 7045/DIN 7985 + Fuller ISO 7045 tables.",
 			"svg": "iso7045.svg"
 		},
 		"din7990": {
 			"alias_of": "din931",
 			"family": "hex_bolt",
-			"sha256": "48562eb012107ab716bc4d0457fc8136ad0b49f58cf636f35ca33cf669427e90",
+			"sha256": "fb9c99007604f0887722ee25778a830fdc2e089f630fceabd887403ef062889d",
 			"source": "DIN 7990 hexagon head bolt for structural steel (bearing-type, non-preloaded), M12 \u2014 standard hexagon head s=19, k=7.5 and standard clearance-hole shank d_shank=12, an envelope identical to the plain DIN 931 base: Fasteners.eu DIN 7990 M12 (s=19, ds nominal 12) + DIN 931 M12 head via ITA Fasteners. Pitch/thread-portion not drawn, so it aliases din931.",
 			"svg": "din931.svg"
 		},
 		"din7990d": {
 			"alias_of": "din931",
 			"family": "hex_bolt",
-			"sha256": "48562eb012107ab716bc4d0457fc8136ad0b49f58cf636f35ca33cf669427e90",
+			"sha256": "fb9c99007604f0887722ee25778a830fdc2e089f630fceabd887403ef062889d",
 			"source": "DIN 7990 M12, app image-variant key \u2014 same DIN 7990 envelope (standard hex head s=19, standard shank d=12) identical to din931, aliases the din931 base.",
 			"svg": "din931.svg"
 		},
 		"din7991": {
 			"family": "socket_screw",
-			"sha256": "d21ff79587bb4d8b78e9efe592363238adccc0cdf2a169a5ab13c92a551fe0e4",
+			"sha256": "29aaa02919ecbdfa356e171f0026e644575ac7c0a5d20a3336cc441f637019e5",
 			"source": "DIN 7991 / ISO 10642 hexagon socket countersunk (flat 90-degree conical) head cap screw, M12: flat-top countersunk head diameter dk=24.0 and head height k=6.5 and hex socket across-flats socket_af=8.0 confirmed by Fuller Fasteners DIN 7991 + Brighton-Best metric socket countersunk table + Intafast DIN 7991/ISO 10642 drawing (all M12 dk-max 24, k-max 6.5, key 8). d_shank=12.0 (M12 major); length=60.0 REPRESENTATIVE catalog length; socket_depth=3.5 REPRESENTATIVE blind engagement (< k); tip_chamfer=1.0 REPRESENTATIVE 45-degree lead. The head is drawn as a straight cone frustum from the shank to dk using the tabulated dk/k; the exact 90-degree cone angle is a REPRESENTATIVE envelope simplification. Envelope only \u2014 no drawn thread, no through bore.",
 			"svg": "din7991.svg"
 		},
 		"din7991i": {
 			"alias_of": "din7991",
 			"family": "socket_screw",
-			"sha256": "d21ff79587bb4d8b78e9efe592363238adccc0cdf2a169a5ab13c92a551fe0e4",
+			"sha256": "29aaa02919ecbdfa356e171f0026e644575ac7c0a5d20a3336cc441f637019e5",
 			"source": "DIN 7991 M12, app image-variant key \u2014 identical countersunk hex-socket envelope (dk=24, k=6.5, hex socket 8), aliases the din7991 base.",
 			"svg": "din7991.svg"
 		},
 		"din7999": {
 			"alias_of": "din6914",
 			"family": "hex_bolt",
-			"sha256": "322626181c44a1a2f3b3df62aea3f603e1a922e97c1af408f560328138f1fbd1",
+			"sha256": "fa2da395df0b5c32c56c33e82cdefacee9b133352ee7a250ec60038b4c0ea7f2",
 			"source": "DIN 7999 high-strength hexagon fit bolt for structural steel (HV, gro\u00dfe Schl\u00fcsselweite), M12 \u2014 heavy-hex HV head in the DIN 6914 class: TraceParts DIN 7999 M12 gives wrench size ~21 mm and Schrauben-Lexikon DIN 7999 confirms the gro\u00dfe Schl\u00fcsselweite HV head (makers align it to the 22 mm heavy hex). The ~21-vs-22 mm head and the fit shank are within the representative heavy-hex drawing, and the head is single-sourced at 21 mm, so din7999 aliases the well-sourced din6914 heavy-hex base rather than shipping its own dimensioned drawing. KNOWN FIDELITY TRADEOFF: because it aliases din6914, din7999 is drawn with the standard 12 mm shank \u2014 its oversize fit shank (~13 mm, like DIN 609/610/7968) is NOT separately drawn (that head width and shank are too weakly sourced to dimension a distinct base); the standard-head fit bolts still get their 13 mm shank via the din609 base.",
 			"svg": "din6914.svg"
 		},
 		"din80705": {
 			"family": "hex_nut",
-			"sha256": "956b45522f126f3a5c7e251079dec9bf5a0f2cd2f7289c409e13a770e0142a4b",
+			"sha256": "8ea984121408297140c33932afd23fb599ccb34f0b2c30046ed25fd386e5e84d",
 			"source": "DIN 80705 thin hexagon nut with reduced width across flats, M12x1.5: s=17.0, m=6.0. Confirmed vs Fasteners.eu + din-fasteners.com + Ferrobend DIN 80705 tables.",
 			"svg": "din80705.svg"
 		},
 		"din835": {
 			"alias_of": "din938",
 			"family": "stud",
-			"sha256": "08cf2591c761fa1b8aa7d43cbee32ceb13a871513ce948905136abc4b9cbbc4a",
+			"sha256": "0b3840bf32d12222716773f15337172941b617b96d3d0502d8b930a926d8df09",
 			"source": "DIN 835 double-end stud (Stiftschraube), screw-in / metal end length 2d, M12: the same plain full-diameter double-end stud envelope as DIN 938 \u2014 the 2d metal-end thread length is the only difference and is not drawn (envelope only), confirmed by fasteners.eu DIN 835 double-end studs table (M12 b1=24, b2=30) + Schrauben-Lexikon DIN 835 (Einschraubende = 2d) + BelMetric DIN 835 stud. Aliases the din938 base.",
 			"svg": "din938.svg"
 		},
 		"din835d": {
 			"alias_of": "din938",
 			"family": "stud",
-			"sha256": "08cf2591c761fa1b8aa7d43cbee32ceb13a871513ce948905136abc4b9cbbc4a",
+			"sha256": "0b3840bf32d12222716773f15337172941b617b96d3d0502d8b930a926d8df09",
 			"source": "DIN 835 M12, app image-variant key \u2014 identical plain double-end stud envelope; aliases the din938 base.",
 			"svg": "din938.svg"
 		},
 		"din84": {
 			"family": "slotted_screw",
-			"sha256": "8cec7a67c95136e77eff5f1387a34ea26ba9cb14abb6f06d85f98e459914cc96",
+			"sha256": "44fb7f02b77fd96e8580410e4935294b0d99e625a6a05fdc899ac5ec098c7175",
 			"source": "DIN 84 / ISO 1207 slotted cheese head machine screw, M10 x 30 (representative length; M10 is the largest size common to every standard in this family \u2014 M12 exceeds the ISO 1207 / DIN 84 range). dk=16.0 and k=6.0 tabulated, cross-checked against the Aramfix DIN 84 datasheet and a generic DIN slotted-head dimension chart. Slot width n=drive_w=2.5 and slot depth t=drive_t=2.4 tabulated (generic DIN slotted-head chart). crown_r=0.5 is a representative top-edge break (not tabulated). d_shank=10.0 (M10 nominal major); shank drawn as a smooth envelope cylinder (no thread).",
 			"svg": "din84.svg"
 		},
 		"din85": {
 			"family": "slotted_screw",
-			"sha256": "239dd9a5e61c4d8360573a11ff7ca48ad95d02f1a9cb452ada86932feedd2c79",
+			"sha256": "777bf5994d7a2e65e5f199928f75613b3edb683c22196366630704f702dbaaa7",
 			"source": "DIN 85 / ISO 1580 slotted pan head machine screw, M10 x 30 (representative length; M10, not M12 \u2014 M12 exceeds the DIN 85 / ISO 1580 range). dk=20.0 and k=6.0 tabulated, cross-checked across four public tables (fasteners.eu DIN 85, Vidasan DIN 85/ISO 1580, Torqbolt ISO 1580, Fuller Fasteners DIN 85 \u2014 all give dk max 20.0, k max 6.0 for M10; the 16 mm dk is the M8 row). Slot width n=drive_w=2.5 and slot depth t=drive_t=2.6 tabulated (Ferrobolt DIN 85, t range 2.56-2.81). The pan head is drawn as a shallow spherical-cap dome of height k (a representative envelope of the tabulated dk/k). d_shank=10.0 (M10 major).",
 			"svg": "din85.svg"
 		},
 		"din9021": {
 			"family": "flat_washer",
-			"sha256": "f4aa915c76ee40b25d728603aced35f38aff6d14898761bae540d3b6b2666a85",
+			"sha256": "df15d89f17b2b9c37851a4b4b7a031b095fc3c300a1277c3098381cdbc41c25d",
 			"source": "DIN 9021:1990 (M12, large OD)",
 			"svg": "din9021.svg"
 		},
 		"din9021i": {
 			"alias_of": "din9021",
 			"family": "flat_washer",
-			"sha256": "f4aa915c76ee40b25d728603aced35f38aff6d14898761bae540d3b6b2666a85",
+			"sha256": "df15d89f17b2b9c37851a4b4b7a031b095fc3c300a1277c3098381cdbc41c25d",
 			"source": "variant key sharing DIN 9021 geometry; the app already serves it the base drawing, so this aliases the base.",
 			"svg": "din9021.svg"
 		},
 		"din912": {
 			"alias_of": "iso4762",
 			"family": "socket_screw",
-			"sha256": "770c024d69e130b438262f0276f984e798caff33a005d49d721b1306ae8c388e",
+			"sha256": "259ba9ef4401e65ffcd5c19257284e4876693a5460444845214766e65a965a0e",
 			"source": "DIN 912 hexagon socket head cap screw, M12. Same screw as ISO 4762 \u2014 identical M12 head (dk=18.0, k=12.0) and hex socket (across-flats 10.0): confirmed against >=2 public tables (engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762). Outer envelope + hex socket identical to iso4762 -> alias.",
 			"svg": "iso4762.svg"
 		},
 		"din912i": {
 			"alias_of": "iso4762",
 			"family": "socket_screw",
-			"sha256": "770c024d69e130b438262f0276f984e798caff33a005d49d721b1306ae8c388e",
+			"sha256": "259ba9ef4401e65ffcd5c19257284e4876693a5460444845214766e65a965a0e",
 			"source": "DIN 912 M12, app image-variant key \u2014 the standard hexagon socket head cap screw (dk=18, k=12, hex socket 10), identical to the iso4762 base envelope; aliases iso4762 (the real base, not the din912 alias).",
 			"svg": "iso4762.svg"
 		},
 		"din913": {
 			"family": "set_screw",
-			"sha256": "fab48015934058d4afa3d38a473290b5fc2024a56a82c8f528dafe79ad8e456f",
+			"sha256": "114658765a015d01cd26de1d0c0de92be96a2cc4b964cc9552ae7b14f4b6b623",
 			"source": "DIN 913 hexagon socket set screw with flat point, M12 x 30 (representative length). socket_af=6.0 and socket_depth=4.5 tabulated (fasteners.eu DIN 913/914/915/916 + ISO 4029 tables, cross-checked against Aspen Fasteners DIN 916); d=12.0 (M12 major). Cylinder drawn as a smooth envelope (no thread). tip_chamfer=1.0 is a representative flat-point edge break (the DIN 913 chamfered edge), not tabulated.",
 			"svg": "din913.svg"
 		},
 		"din914": {
 			"family": "set_screw",
-			"sha256": "8b91f9f3f5bc2937918740a809419d2a81a64a7faa59e9e1ef49c280b901f064",
+			"sha256": "89e2f8b85651f46de2286f25a8dc90fe60f0df63f21ba6fb551aa707b523f79d",
 			"source": "DIN 914 hexagon socket set screw with cone point, M12 x 30. socket_af=6.0/socket_depth=4.5 tabulated (fasteners.eu DIN 914/916 + ISO 4029, cross-checked against Aspen Fasteners DIN 916). Cone point is 90 degrees for M12 (tabulated angle, fasteners.eu DIN 914) with tip flat diameter dt=point_d=2.5 (tabulated, fasteners.eu DIN 914 range 2.4-3, cross-checked against a second public reference); point_h=(d-point_d)/2=4.75 is derived (representative) from the tabulated 90-degree cone geometry, not itself tabulated.",
 			"svg": "din914.svg"
 		},
 		"din915": {
 			"family": "set_screw",
-			"sha256": "72681febcd8b6a60df4d4038208ed03202861ebcf51c5bf7c2e3948aa4b7fe30",
+			"sha256": "019a34d4878102b8da3fcc1ccac767f3acd30eb1c34b839107acf149292b6788",
 			"source": "DIN 915 hexagon socket set screw with dog point, M12 x 30. socket_af=6.0/socket_depth=4.5 tabulated (fasteners.eu DIN 915/916 + ISO 4029, cross-checked against Aspen Fasteners DIN 916); dog diameter dp=point_d=8.14 and dog length z=point_h=6.0 both tabulated for M12, cross-checked between fasteners.eu DIN 915 and a second public reference (Westfield Fasteners / Perplexity-sourced dog-point table).",
 			"svg": "din915.svg"
 		},
 		"din916": {
 			"family": "set_screw",
-			"sha256": "9204e961d8bf8228db5fef8d749f9e11ce60660a2b6735967dd34485e12679af",
+			"sha256": "245644ff495de4ee76eed4942fe85c83135d978504c6331487e8d74374adc1c4",
 			"source": "DIN 916 hexagon socket set screw with cup point, M12 x 30. socket_af=6.0/socket_depth=4.5 and cup mouth diameter dv=point_d=7.6 (from a 7.64 min / 8 max tabulated range) both tabulated, cross-checked between fasteners.eu DIN 916 and Aspen Fasteners DIN 916 (two dimensioned tables); cup depth point_h=2.0 is representative (not tabulated). d=12.0 (M12 major).",
 			"svg": "din916.svg"
 		},
 		"din917": {
 			"family": "cap_nut",
-			"sha256": "582877daf128ac90d5bc174cac5d5dd0ec40921b68e6876b2c73c8402c593f68",
+			"sha256": "1c7086b8ffce07e81cb7ba80274209bace939271f6eb333b83df82d9da469754",
 			"source": "DIN 917 hexagon cap nut, low type (M12): s=18, total height m=16, hex body 8 (m' minimum) -> dome_height=8 (derived). Confirmed vs fasteners.eu + Fuller Fasteners + TorqBolt DIN 917 tables.",
 			"svg": "din917.svg"
 		},
 		"din917d": {
 			"alias_of": "din917",
 			"family": "cap_nut",
-			"sha256": "582877daf128ac90d5bc174cac5d5dd0ec40921b68e6876b2c73c8402c593f68",
+			"sha256": "1c7086b8ffce07e81cb7ba80274209bace939271f6eb333b83df82d9da469754",
 			"source": "DIN 917 M12, app image-variant key -- identical cap-nut envelope, aliases the din917 base.",
 			"svg": "din917.svg"
 		},
 		"din928": {
 			"family": "square_nut",
-			"sha256": "4e72353727d1e2b801fd5ce1022211abca2bcd47e45bccb007afe293f78d088f",
+			"sha256": "cbe9a0b3ec78b5c5a6179bad847b3e0fdb6929f608863bde693913ca76622801",
 			"source": "DIN 928 square weld nut, product grade A (M12): s=19, m=9.5 (nut body height), bore=10.1 (M12 minor dia). Plain flat square prism, no top chamfer; the three resistance-weld projections on the bearing face are consumed during welding and are not modelled (don't-fabricate). Confirmed vs fasteners.eu + Fuller Fasteners + fasten.it + McMaster-Carr DIN 928 tables.",
 			"svg": "din928.svg"
 		},
 		"din93": {
 			"family": "tab_washer",
-			"sha256": "049f1e93dd702371535bdde624a07aa393efc579f19203fff5eff59823d1a200",
+			"sha256": "e6277389d72fc7449a7501913be986e5aaaa83999836d4536c0beecc51f2c7f3",
 			"source": "DIN 93 (M12, one-tab lock washer; d2=30, s=1, tab width 12; tab length representative)",
 			"svg": "din93.svg"
 		},
 		"din931": {
 			"family": "hex_bolt",
-			"sha256": "48562eb012107ab716bc4d0457fc8136ad0b49f58cf636f35ca33cf669427e90",
+			"sha256": "fb9c99007604f0887722ee25778a830fdc2e089f630fceabd887403ef062889d",
 			"source": "DIN 931 hexagon head bolt (partial thread), M12: s=19.0 (across-flats, the DIN head width \u2014 ISO 4014 reduced it to 18.0) and k=7.5, cross-checked ITA Fasteners DIN 931 table + Aspen Fasteners M12 DIN 931/ISO 4014 listing (both s=19, k=7.5). d_shank=12.0 (M12 nominal major); shank drawn as a smooth envelope cylinder (no thread). length=60.0 representative catalog length; head_chamfer=19.0=s (representative, as iso4014); tip_chamfer=1.0 representative.",
 			"svg": "din931.svg"
 		},
 		"din931i": {
 			"alias_of": "din931",
 			"family": "hex_bolt",
-			"sha256": "48562eb012107ab716bc4d0457fc8136ad0b49f58cf636f35ca33cf669427e90",
+			"sha256": "fb9c99007604f0887722ee25778a830fdc2e089f630fceabd887403ef062889d",
 			"source": "DIN 931 M12, app image-variant key \u2014 identical DIN 931 hex envelope (s=19), aliases the din931 base.",
 			"svg": "din931.svg"
 		},
 		"din933": {
 			"alias_of": "din931",
 			"family": "hex_bolt",
-			"sha256": "48562eb012107ab716bc4d0457fc8136ad0b49f58cf636f35ca33cf669427e90",
+			"sha256": "fb9c99007604f0887722ee25778a830fdc2e089f630fceabd887403ef062889d",
 			"source": "DIN 933 fully threaded hex bolt, M12 \u2014 same M12 hex envelope as DIN 931 (s=19, k=7.5); only thread coverage differs (full vs partial, not drawn), so it aliases the DIN base. Confirmed vs ITA Fasteners + Aspen Fasteners DIN 931 tables.",
 			"svg": "din931.svg"
 		},
 		"din933i": {
 			"alias_of": "din931",
 			"family": "hex_bolt",
-			"sha256": "48562eb012107ab716bc4d0457fc8136ad0b49f58cf636f35ca33cf669427e90",
+			"sha256": "fb9c99007604f0887722ee25778a830fdc2e089f630fceabd887403ef062889d",
 			"source": "DIN 933 M12, app image-variant key \u2014 same M12 DIN hex envelope (s=19) as din931 (full thread not drawn), aliases the din931 base.",
 			"svg": "din931.svg"
 		},
 		"din934": {
 			"family": "hex_nut",
-			"sha256": "1dc6838914b1143618c3cfcfc06858cd43ebf8685670a7e508291c473bb15a0b",
+			"sha256": "e6e8b482810b64358ce575bd1701ded898bfb95d8167e5116f456816bf8b6aa7",
 			"source": "DIN 934 hexagon full nut (the classic standard nut, old DIN series), M12: s=19.0 (nom=max), m=10.0 (nom=max), e min 21.1. Old DIN series keeps s=19 vs the 18mm of successor ISO 4032, and m=10 vs 10.8, so it stays a distinct base drawing. Confirmed vs Westfield Fasteners DIN 934 specification table + boltingspecialist.com DIN 934 table (both list M12: s=19, m=10, e min 21.1).",
 			"svg": "din934.svg"
 		},
 		"din934i": {
 			"alias_of": "din934",
 			"family": "hex_nut",
-			"sha256": "1dc6838914b1143618c3cfcfc06858cd43ebf8685670a7e508291c473bb15a0b",
+			"sha256": "e6e8b482810b64358ce575bd1701ded898bfb95d8167e5116f456816bf8b6aa7",
 			"source": "DIN 934 M12, app image-variant key -- identical hex-nut envelope, aliases the din934 base.",
 			"svg": "din934.svg"
 		},
 		"din935": {
 			"family": "castle_nut",
-			"sha256": "70bc60f41d12a2ce5618b9f779f64b22af4b9da56d8f9b5484111e4670fd3aae",
+			"sha256": "3347fdd379c6edfd7f7e7d89442492f0aacadf8ed573315b6bfbf62cae91de53",
 			"source": "DIN 935 hexagon slotted / castle nut (M12): s=18 (current ISO 272 / SW18; legacy SW19 not shipped), m=15, un-slotted height w/m1=10, crown dk=16, 6 slots, slot width n/e=3.5 (min; max 3.8), bore=10.1 (M12 minor dia). Crown modelled fully slotted (no solid crown band below the slots; hex/crown transition not tabulated). Confirmed vs Fuller Fasteners + Aspen Fasteners + Trojan SF + Fabory DIN 935 tables.",
 			"svg": "din935.svg"
 		},
 		"din935i": {
 			"alias_of": "din935",
 			"family": "castle_nut",
-			"sha256": "70bc60f41d12a2ce5618b9f779f64b22af4b9da56d8f9b5484111e4670fd3aae",
+			"sha256": "3347fdd379c6edfd7f7e7d89442492f0aacadf8ed573315b6bfbf62cae91de53",
 			"source": "DIN 935 M12, app image-variant key -- identical castle-nut envelope, aliases the din935 base.",
 			"svg": "din935.svg"
 		},
 		"din936": {
 			"family": "hex_nut",
-			"sha256": "f7da6ea89c581697750d855e3c3a85e0cf83e89cc8eb4545a2186a4f475ddbbb",
+			"sha256": "33843b56d00608b5f72449f37208bb010dfcb4ffc6ca460eb35cc922e20d4c68",
 			"source": "DIN 936 hexagon thin/jam nut, M12: s=19.0, m=7.0. Distinct from ISO 4035 (wider flats, 1mm taller). Confirmed vs Fasteners.eu + Fuller Fasteners DIN 936 tables.",
 			"svg": "din936.svg"
 		},
 		"din937": {
 			"family": "castle_nut",
-			"sha256": "d3f30461ba3cd193e455e9cde24641928f847d09aabb1a17e4ea7d4197c28b47",
+			"sha256": "15cecf0c5cda3652f739a29e815f75c0fe1fb8b8635b757e2607608372658ecb",
 			"source": "DIN 937 hexagon thin (low) slotted / castle nut (M12): s=19 (SW19, the withdrawn legacy standard's actual across-flats), m=10, m1=6.0 (w slot-floor height, not the 5.3 m' proof-load minimum), crown dk=17, 6 slots, slot width 3.5, bore=10.1. Crown modelled fully slotted. Confirmed vs fasteners.eu + Fuller Fasteners + fasenco + Aspen Fasteners DIN 937 tables.",
 			"svg": "din937.svg"
 		},
 		"din937p": {
 			"alias_of": "din937",
 			"family": "castle_nut",
-			"sha256": "d3f30461ba3cd193e455e9cde24641928f847d09aabb1a17e4ea7d4197c28b47",
+			"sha256": "15cecf0c5cda3652f739a29e815f75c0fe1fb8b8635b757e2607608372658ecb",
 			"source": "DIN 937 M12, app image-variant key -- identical castle-nut envelope, aliases the din937 base.",
 			"svg": "din937.svg"
 		},
 		"din938": {
 			"family": "stud",
-			"sha256": "08cf2591c761fa1b8aa7d43cbee32ceb13a871513ce948905136abc4b9cbbc4a",
+			"sha256": "0b3840bf32d12222716773f15337172941b617b96d3d0502d8b930a926d8df09",
 			"source": "DIN 938 double-end stud (Stiftschraube), screw-in / metal end length 1d, M12: a plain full-diameter double-end stud \u2014 headless rod with a thread at each end and a plain unthreaded middle at the nominal M12 diameter (NOT waisted), confirmed by fasteners.eu DIN 938 'studs with engagement length 1 x d' + Schrauben-Lexikon DIN 938 + BelMetric double-end stud description + din938.com dimension notes. d=12.0 (M12 major). length=60.0 REPRESENTATIVE (studs ship in many lengths; envelope-only the length does not change which standard it is). tip_chamfer=1.0 REPRESENTATIVE 45-degree end break. Envelope only \u2014 no drawn thread; the 1d metal-end engagement length is a thread feature and is not drawn.",
 			"svg": "din938.svg"
 		},
 		"din938d": {
 			"alias_of": "din938",
 			"family": "stud",
-			"sha256": "08cf2591c761fa1b8aa7d43cbee32ceb13a871513ce948905136abc4b9cbbc4a",
+			"sha256": "0b3840bf32d12222716773f15337172941b617b96d3d0502d8b930a926d8df09",
 			"source": "DIN 938 M12, app image-variant key \u2014 identical plain double-end stud envelope (d=12, 60 long, chamfered both ends); aliases the din938 base.",
 			"svg": "din938.svg"
 		},
 		"din939": {
 			"alias_of": "din938",
 			"family": "stud",
-			"sha256": "08cf2591c761fa1b8aa7d43cbee32ceb13a871513ce948905136abc4b9cbbc4a",
+			"sha256": "0b3840bf32d12222716773f15337172941b617b96d3d0502d8b930a926d8df09",
 			"source": "DIN 939 double-end stud (Stiftschraube), screw-in / metal end length 1.25d, M12: the same plain full-diameter double-end stud envelope as DIN 938 \u2014 the 1.25d metal-end thread length is the only difference and is not drawn (envelope only, no thread), confirmed by Schrauben-Lexikon DIN 939 (Einschraubende = 1,25 d) + Aspen Fasteners DIN 939 double-end stud datasheet + fasteners.eu stud tables. Aliases the din938 base.",
 			"svg": "din938.svg"
 		},
 		"din939d": {
 			"alias_of": "din938",
 			"family": "stud",
-			"sha256": "08cf2591c761fa1b8aa7d43cbee32ceb13a871513ce948905136abc4b9cbbc4a",
+			"sha256": "0b3840bf32d12222716773f15337172941b617b96d3d0502d8b930a926d8df09",
 			"source": "DIN 939 M12, app image-variant key \u2014 identical plain double-end stud envelope; aliases the din938 base.",
 			"svg": "din938.svg"
 		},
 		"din93p": {
 			"alias_of": "din93",
 			"family": "tab_washer",
-			"sha256": "049f1e93dd702371535bdde624a07aa393efc579f19203fff5eff59823d1a200",
+			"sha256": "e6277389d72fc7449a7501913be986e5aaaa83999836d4536c0beecc51f2c7f3",
 			"source": "plated (electro-zinc) variant of DIN 93; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "din93.svg"
 		},
 		"din960": {
 			"alias_of": "din931",
 			"family": "hex_bolt",
-			"sha256": "48562eb012107ab716bc4d0457fc8136ad0b49f58cf636f35ca33cf669427e90",
+			"sha256": "fb9c99007604f0887722ee25778a830fdc2e089f630fceabd887403ef062889d",
 			"source": "DIN 960 fine-pitch (M12x1.5) partial-thread hex bolt \u2014 same 19 mm hex head as DIN 931 (confirmed Wuerth DIN 960 M12x1.5 WS19 + Bolt King DIN 960 table, s=19, k=7.5); pitch is not drawn, so it aliases din931.",
 			"svg": "din931.svg"
 		},
 		"din960i": {
 			"alias_of": "din931",
 			"family": "hex_bolt",
-			"sha256": "48562eb012107ab716bc4d0457fc8136ad0b49f58cf636f35ca33cf669427e90",
+			"sha256": "fb9c99007604f0887722ee25778a830fdc2e089f630fceabd887403ef062889d",
 			"source": "DIN 960 M12 fine, app image-variant key \u2014 same 19 mm DIN hex head, aliases the din931 base.",
 			"svg": "din931.svg"
 		},
 		"din961": {
 			"alias_of": "din931",
 			"family": "hex_bolt",
-			"sha256": "48562eb012107ab716bc4d0457fc8136ad0b49f58cf636f35ca33cf669427e90",
+			"sha256": "fb9c99007604f0887722ee25778a830fdc2e089f630fceabd887403ef062889d",
 			"source": "DIN 961 fine-pitch full-thread hex bolt, M12 \u2014 same 19 mm hex head as DIN 931 (confirmed StandardBolts DIN 961 + Khainguyen DIN 961 table, s=19); pitch and thread length are not drawn, so it aliases din931.",
 			"svg": "din931.svg"
 		},
 		"din961i": {
 			"alias_of": "din931",
 			"family": "hex_bolt",
-			"sha256": "48562eb012107ab716bc4d0457fc8136ad0b49f58cf636f35ca33cf669427e90",
+			"sha256": "fb9c99007604f0887722ee25778a830fdc2e089f630fceabd887403ef062889d",
 			"source": "DIN 961 M12 fine full, app image-variant key \u2014 same 19 mm DIN hex head, aliases the din931 base.",
 			"svg": "din931.svg"
 		},
 		"din963": {
 			"family": "slotted_screw",
-			"sha256": "877729800c933fadc0d4640ec01a612201604db578348aa158340cd17179dea7",
+			"sha256": "06b44e1c611a98e7f3e2fed5a73a41875cdc8b15d44ca386589430126c49c2b5",
 			"source": "DIN 963 / ISO 2009 slotted countersunk (flat) head machine screw, M10 x 30 (representative length; M10, not M12). dk=18.0 (max top diameter) and k=5.0 (head height) tabulated, cross-checked against the Westfield Fasteners DIN 963 table and the Ratnamani DIN 963 table. Slot width n=drive_w=2.5 (tabulated range 2.0-2.6) and slot depth t=drive_t=2.3 (tabulated range 2.0-2.6, mid). The head is drawn as a straight cone frustum from the M10 major (d_shank=10.0) at the bearing plane to the tabulated dk=18.0 over the tabulated k=5.0; the true countersink is 90 degrees, so the envelope cone angle is representative (it preserves the tabulated dk and k rather than the exact angle). d_shank=10.0 (M10 major).",
 			"svg": "din963.svg"
 		},
 		"din965": {
 			"alias_of": "iso7046",
 			"family": "slotted_screw",
-			"sha256": "1b6197eee9fdd6251b6cce956557fde5f465e95afdb8b1cfeea151da1a18dc08",
+			"sha256": "1ac8df17a754badef84f86d7a2b914e85185d526f78287d1ec2c0c5a09e82bc9",
 			"source": "DIN 965 cross-recess countersunk head, M10 \u2014 same envelope as ISO 7046 (dk=18.3, k=5.0, cross recess No. 4), aliases the ISO base. Confirmed vs BSN + Lubker ISO 7046-1 tables.",
 			"svg": "iso7046.svg"
 		},
 		"din966": {
 			"family": "slotted_screw",
-			"sha256": "53db22ba1a8c637cc64dacfc68ee2d80edf154310fe95f940bc6c97572ccd8b5",
+			"sha256": "7321470eba3fbd5427ca2ab46c72861666fab651755d2141c87b9ca1ef5e071b",
 			"source": "DIN 966 / ISO 2010 slotted raised countersunk (oval) head machine screw, M10 x 30 (representative length; M10, not M12). dk=18.0 and countersunk head height k=5.0 tabulated (Vidasan DIN 966/ISO 7047 table for dk; Westfield / Ratnamani DIN 963 tables for k, shared with DIN 963 at M10). Raised-lens height raised_f=2.5 tabulated nominal (Vidasan DIN 966, f nominal ~2.5, max 5.0). Slot width n=drive_w=2.5 and depth t=drive_t=2.3 as DIN 963 M10 (tabulated ranges 2.0-2.6). The cone is the DIN 963 frustum (representative angle) with a spherical-cap lens of height raised_f on top. d_shank=10.0 (M10 major).",
 			"svg": "din966.svg"
 		},
 		"din979": {
 			"family": "castle_nut",
-			"sha256": "80a9e25168d77027e751f2dcbb769c489989a28b6e85d75f2b11170f592694d9",
+			"sha256": "2213668d29d14a11f3fe24a94d689bfe91793189765cdc7dff032b1cb9f430b2",
 			"source": "DIN 979 hexagon thin slotted / castle nut (M12, current successor to DIN 937): s=18 (ISO 272 / SW18), m=10, m1=5, crown dk=16 (Aspen's 17 is a mixed-edition outlier), 6 slots, slot width 3.5, bore=10.1. Crown modelled fully slotted. Confirmed vs Fuller Fasteners + Trojan SF DIN 979 tables.",
 			"svg": "din979.svg"
 		},
 		"din979i": {
 			"alias_of": "din979",
 			"family": "castle_nut",
-			"sha256": "80a9e25168d77027e751f2dcbb769c489989a28b6e85d75f2b11170f592694d9",
+			"sha256": "2213668d29d14a11f3fe24a94d689bfe91793189765cdc7dff032b1cb9f430b2",
 			"source": "DIN 979 M12, app image-variant key -- identical castle-nut envelope, aliases the din979 base.",
 			"svg": "din979.svg"
 		},
 		"din980": {
 			"family": "lock_nut",
-			"sha256": "568b9759e9549e77dabef9397fdff7cd6f458f00aabd3335f80d6a9b6025f564",
+			"sha256": "be3c27f4b3d3f4024d147456dbe851a132ace067c4e6aed105940dddf4aacb7b",
 			"source": "DIN 980 all-metal prevailing-torque hexagon nut, form V (single-piece, distorted-thread crown) (M12): s=19 (max 19.00 / min 18.67, DIN series -- wider than the SW18 of the ISO 7042 counterpart, hence a separate base) and total height m=12.0 confirmed by the RC Fastener DIN 980V spec PDF (M12 row: flats 19.00/18.67, corners min 21.10, thickness 12 nom / 11 min) and the Aspen Fasteners DIN 980 table (S=19, H=12, E=21.1); globalfastener's DIN 980(V)-1987 page agrees on s=19 / e min 21.1. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 REPRESENTATIVE form -- the crimp profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "din980.svg"
 		},
 		"din980i": {
 			"alias_of": "din980",
 			"family": "lock_nut",
-			"sha256": "568b9759e9549e77dabef9397fdff7cd6f458f00aabd3335f80d6a9b6025f564",
+			"sha256": "be3c27f4b3d3f4024d147456dbe851a132ace067c4e6aed105940dddf4aacb7b",
 			"source": "DIN 980 M12, app image-variant key -- identical lock-nut envelope, aliases the din980 base.",
 			"svg": "din980.svg"
 		},
 		"din981": {
 			"family": "slotted_round_nut",
-			"sha256": "6c05ecebe4113afb736211aee88778e52530e796297150e84f5c7e5c908f92f1",
+			"sha256": "3c2164cd92fbe7267d8678a1353ea4906f30c9e01b320c81df99d0d69463a9d5",
 			"source": "DIN 981 rolling-bearing locknut (KM1, M12x1 fine thread): OD d=22, height h=4, bore=10.9 (M12x1 minor dia), n_slots=4, slot width slot_w=3, slot radial depth slot_depth=2 (slot-floor dia 18), slot axial depth slot_h=t=2 (the grooves open from one face, partial depth, not full height). Confirmed vs SKF + MISUMI/FAG + HC-Maschinentechnik + Wegertseder tables. The internal keyway (for the MB tab washer) is not modelled.",
 			"svg": "din981.svg"
 		},
 		"din982": {
 			"family": "lock_nut",
-			"sha256": "c0effc78ab64d6f578e807a8c21a6b907e888ab22bfd1325106056277196ebbe",
+			"sha256": "b9fc0125ed72cdfd1afe3a9872c7a4d9a5523f83fc313138ba2e9edcc74e61c3",
 			"source": "DIN 982 prevailing-torque high (type P) hexagon nut with non-metallic (nylon) insert (M12): s=19 (max 19.00 / min 18.67, DIN series -- wider than the SW18 of the ISO 7040 successor, hence a separate base) and total height m=14.0 (h max/nom 14 / min 13.64) tabulated identically by fasteners.eu and the Westfield Fasteners DIN 982 PDF (Table 1: s=19, e min 21.1, h 14/13.64), cross-checked against Aspen Fasteners product data. Metal envelope only (nylon ring not drawn). top_h/top_d REPRESENTATIVE form. bore=10.1 (M12 minor, ISO 724).",
 			"svg": "din982.svg"
 		},
 		"din982i": {
 			"alias_of": "din982",
 			"family": "lock_nut",
-			"sha256": "c0effc78ab64d6f578e807a8c21a6b907e888ab22bfd1325106056277196ebbe",
+			"sha256": "b9fc0125ed72cdfd1afe3a9872c7a4d9a5523f83fc313138ba2e9edcc74e61c3",
 			"source": "DIN 982 M12, app image-variant key -- identical lock-nut envelope, aliases the din982 base.",
 			"svg": "din982.svg"
 		},
 		"din985": {
 			"family": "lock_nut",
-			"sha256": "eb403f16e630b59863d856a9dcfd6e6fbb471ab0f94c259dee14fc2673735f9b",
+			"sha256": "59fb46310dfd3aa822b2d44be78f90b078f8e4d38c1fcd850130268b666847a4",
 			"source": "DIN 985 prevailing-torque thin (type T) hexagon nut with non-metallic (nylon) insert (M12): s=19 (SW19, DIN series -- wider than the SW18 of the ISO 10511 successor, hence a separate base) and total height m=12.0 (h max 12 / min 11.57) confirmed by the Aspen Fasteners DIN 985 spec table, andrewsfasteners.uk basic-dimensions table and the itpbolt DIN 985 PDF. Metal envelope only (nylon ring not drawn). top_h/top_d are REPRESENTATIVE form (the metal skirt profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "din985.svg"
 		},
 		"din985i": {
 			"alias_of": "din985",
 			"family": "lock_nut",
-			"sha256": "eb403f16e630b59863d856a9dcfd6e6fbb471ab0f94c259dee14fc2673735f9b",
+			"sha256": "59fb46310dfd3aa822b2d44be78f90b078f8e4d38c1fcd850130268b666847a4",
 			"source": "DIN 985 M12, app image-variant key -- identical lock-nut envelope, aliases the din985 base.",
 			"svg": "din985.svg"
 		},
 		"din986": {
 			"family": "cap_nut",
-			"sha256": "478b2c09c3e00f60ec58a67f789131378a0bee3ecad4ebd48ab4611ecf1e7de3",
+			"sha256": "32dfe88bbea75e1b9961e140cdf5e7f8096da75153a0721ada0834e80d4c04ea",
 			"source": "DIN 986 all-metal prevailing-torque hexagon domed cap nut (M12): s=18 (ISO 4032-aligned SW18; legacy SW19 not shipped), total height h2=22.5, hex body h1=13.5 -> dome_height=9. The prevailing-torque crown deformation is not modelled (envelope-only, same precedent as DIN 6927). Confirmed vs Fabory + Bossard BN 167 + Fuller Fasteners + fasteners.eu.",
 			"svg": "din986.svg"
 		},
 		"din988": {
 			"family": "flat_washer",
-			"sha256": "d42aa1862b4c9ad5e8eb78c5b8cf7f7aa0a677f6239850c3f8f977bcdffd4057",
+			"sha256": "cd3d34552c78397fe5c53f5319348c2f06d828ca30ae51442fe1204020b90fe5",
 			"source": "DIN 988 (12x18x0.2 shim ring, representative)",
 			"svg": "din988.svg"
 		},
 		"din988d": {
 			"family": "flat_washer",
-			"sha256": "6cdf8d87164c40511649f85039be72a5a1ae7d4da0492da7437f97accdc24831",
+			"sha256": "1bb98ef1752593c36e69fb1dfa3a504bc360428db7e40dd19a3744a7e11e96d5",
 			"source": "DIN 988 (12x18, shim ring / Passscheibe; d1=12, d2=18). Thickness representative (DIN 988 is a shim series 0.1-2 mm; a mid 1.0 mm ring is drawn).",
 			"svg": "din988d.svg"
 		},
 		"iso10511": {
 			"family": "lock_nut",
-			"sha256": "18d949bbaae2b4784e1065dc376bf4814c676ee1148f32463bfae4a07d88e92f",
+			"sha256": "97d8af9c28f64b3db1959ae3f46f0bc253f9e250f6d72dfd3464bd8a5895dcbf",
 			"source": "ISO 10511 prevailing-torque thin hexagon nut with non-metallic (nylon) insert (M12): s=18 (SW18, ISO 4035 base) and total height m=10.2 (h_max 10.23) tabulated from the ISO 10511:2012 Table 1 PDF, cross-checked against fasteners.eu. Metal envelope only (nylon ring not drawn). top_h/top_d are representative form (the metal skirt profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "iso10511.svg"
 		},
 		"iso10511p": {
 			"alias_of": "iso10511",
 			"family": "lock_nut",
-			"sha256": "18d949bbaae2b4784e1065dc376bf4814c676ee1148f32463bfae4a07d88e92f",
+			"sha256": "97d8af9c28f64b3db1959ae3f46f0bc253f9e250f6d72dfd3464bd8a5895dcbf",
 			"source": "ISO 10511 M12, app image-variant key -- identical lock-nut envelope, aliases the iso10511 base.",
 			"svg": "iso10511.svg"
 		},
 		"iso10512": {
 			"alias_of": "iso7040",
 			"family": "lock_nut",
-			"sha256": "52e937baf97064cf07401ed227ec575e7c8678ae99b91c9790ad3480a43439e8",
+			"sha256": "426e7286e695cc342512175588c99cd2bfa1ca6d706c06dd668863c2149f4b53",
 			"source": "ISO 10512 is the fine-pitch (M12x1.5) counterpart of ISO 7040 with an identical M12 metal envelope (s=18, m=14.9 per the ISO 10512:2012 Table 1 PDF); pitch is invisible at label scale, so it aliases the ISO 7040 drawing (precedent iso8673/8674/8675).",
 			"svg": "iso7040.svg"
 		},
 		"iso10513": {
 			"alias_of": "iso7042",
 			"family": "lock_nut",
-			"sha256": "c278c30214f86fde6b958dba5c0296efd477c3fbc0bb8ae5f4ab21f41bfac09c",
+			"sha256": "b3a2aa4c09aa398d5f697107c4259c8ed4b0d905b1ac8a7c957e77e5d9342b05",
 			"source": "ISO 10513 is the fine-pitch (M12x1.5) all-metal high counterpart of ISO 7042 with an identical 2012 M12 metal envelope (s=18, m=13.3); pitch is invisible at label scale, so it aliases the ISO 7042 drawing.",
 			"svg": "iso7042.svg"
 		},
 		"iso10642": {
 			"alias_of": "din7991",
 			"family": "socket_screw",
-			"sha256": "d21ff79587bb4d8b78e9efe592363238adccc0cdf2a169a5ab13c92a551fe0e4",
+			"sha256": "29aaa02919ecbdfa356e171f0026e644575ac7c0a5d20a3336cc441f637019e5",
 			"source": "ISO 10642 hexagon socket countersunk head screw (reduced loadability), M12 \u2014 the ISO twin of DIN 7991 (same countersunk hex-socket envelope: dk=24, k=6.5, hex socket 8), confirmed by the DIN 7991 = ISO 10642 equivalence (Fuller Fasteners + Intafast DIN 7991/ISO 10642 tables). Aliases the din7991 base.",
 			"svg": "din7991.svg"
 		},
 		"iso1207": {
 			"alias_of": "din84",
 			"family": "slotted_screw",
-			"sha256": "8cec7a67c95136e77eff5f1387a34ea26ba9cb14abb6f06d85f98e459914cc96",
+			"sha256": "44fb7f02b77fd96e8580410e4935294b0d99e625a6a05fdc899ac5ec098c7175",
 			"source": "ISO 1207 slotted cheese head, M10 \u2014 same envelope as DIN 84 (dk=16.0, k=6.0, slot 2.5/2.4), aliases the DIN base. Confirmed vs the Aramfix DIN 84 datasheet + generic DIN slotted-head chart.",
 			"svg": "din84.svg"
 		},
 		"iso14579": {
 			"family": "socket_screw",
-			"sha256": "2d7ae755ddb1a98f5b7cc98b33202cd29fbbd4190de9ce1bef4d2579b29511d5",
+			"sha256": "72e0b4ec5ab52544961851449e6f6c52e158e1108419833dccf3c9b15b69444f",
 			"source": "ISO 14579 hexalobular (Torx) socket head cap screw, M12. Same head as ISO 4762 (dk=18.0, k=12.0) \u2014 only the drive differs \u2014 verified against >=2 public tables: engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762. Torx size for M12 is approximately T50. The lobular recess is a representative rounded 6-lobe icon (see THIRD-PARTY-NOTICES.md, FreeCAD Fasteners Workbench / ISO 10664 form), not the dimensioned ISO 10664 curve; socket_af=10.0 sets the overall socket half-width. d_shank=12.0 (M12 major). length=60.0 representative. tip_chamfer=1.0 mm representative.",
 			"svg": "iso14579.svg"
 		},
 		"iso14580": {
 			"family": "socket_screw",
-			"sha256": "56cd2ceb8d61bccbf8f5c5381ca3f2bf423e3808270225179b58cb53b2d52466",
+			"sha256": "18db69e2747721ad83787721a6e6d93b71ac3a8d81f1ac36ca35a9d4ac6df5e2",
 			"source": "ISO 14580 hexalobular (Torx) socket cheese head screw. REPRESENTATIVE SIZE M10: ISO 14580 has NO M12 size (its standard range ends at M10), so this is drawn at the standard's maximum M10. Cheese head dk=16.0, k=6.0: dk from the ISO 14580 dk-max series ending at M10=16 (DIN/ISO cross-reference; corroborated by ISO 14579/ISO 4762 M10 cap dk=16, Fastenright + Schrauben-Lexikon) and k from the ISO 7045 cheese-head height (ISO 14580 shares ISO 7045 cheese-head geometry; ISO 7045 M10 k=6, fasteners.eu ISO 7045). Lobular (Torx ~T50) drive; socket_af=7.0 is a REPRESENTATIVE across-size (the catalog's 6-lobe profile is a representative icon, not dimensioned ISO 10664). d_shank=10.0 (M10 major); length=50.0 representative M10 length; socket_depth=3.5 representative (blind, < k); tip_chamfer=0.8 representative. Envelope only.",
 			"svg": "iso14580.svg"
 		},
 		"iso1580": {
 			"alias_of": "din85",
 			"family": "slotted_screw",
-			"sha256": "239dd9a5e61c4d8360573a11ff7ca48ad95d02f1a9cb452ada86932feedd2c79",
+			"sha256": "777bf5994d7a2e65e5f199928f75613b3edb683c22196366630704f702dbaaa7",
 			"source": "ISO 1580 slotted pan head, M10 \u2014 same envelope as DIN 85 (dk=20.0, k=6.0), aliases the DIN base. Confirmed vs Vidasan DIN 85/ISO 1580 + Torqbolt ISO 1580 tables.",
 			"svg": "din85.svg"
 		},
 		"iso2009": {
 			"alias_of": "din963",
 			"family": "slotted_screw",
-			"sha256": "877729800c933fadc0d4640ec01a612201604db578348aa158340cd17179dea7",
+			"sha256": "06b44e1c611a98e7f3e2fed5a73a41875cdc8b15d44ca386589430126c49c2b5",
 			"source": "ISO 2009 slotted countersunk head, M10 \u2014 same screw as DIN 963, aliases the DIN base. ISO 2009 tabulates dk max 18.3 vs DIN 963 18.0 (a DIN-vs-ISO table difference of 0.3 mm, negligible at envelope scale), k=5.0. Confirmed vs Lubker ISO 2009 + Westfield DIN 963 tables.",
 			"svg": "din963.svg"
 		},
 		"iso2010": {
 			"alias_of": "din966",
 			"family": "slotted_screw",
-			"sha256": "53db22ba1a8c637cc64dacfc68ee2d80edf154310fe95f940bc6c97572ccd8b5",
+			"sha256": "7321470eba3fbd5427ca2ab46c72861666fab651755d2141c87b9ca1ef5e071b",
 			"source": "ISO 2010 slotted raised countersunk head, M10 \u2014 same screw as DIN 966 (dk~18, k=5.0, raised lens), aliases the DIN base. Confirmed vs Vidasan DIN 966/ISO 7047 + DIN 963 M10 tables.",
 			"svg": "din966.svg"
 		},
 		"iso21670": {
 			"family": "flange_nut",
-			"sha256": "80edc600c1f1d9f4cb7d136ecb742c7af774694e3306d4b4f29b88f90815848c",
+			"sha256": "fb00a44030bb36c9acfb3dd01be19e6b44164f3ad13854728bd883953db9de17",
 			"source": "ISO 21670 hex weld nut with flange (M12): s=18, m=15, d_flange=30.5, flange_thickness(c)=1.2 (rim 1.1-1.3 range), bore=10.1. Distinct from DIN 6923 (wider flange, thinner rim, taller). Weld projections on the bearing face are sub-visible and not modelled. Confirmed vs fasenco.com + globalfastener.com (ISO 21670:2003/2014) + Wurth.",
 			"svg": "iso21670.svg"
 		},
 		"iso299": {
 			"alias_of": "din508",
 			"family": "tslot_nut",
-			"sha256": "3892cdaf857743e58bf71c9e667e44be2f5e6f8ce38781a6bf7376cc7f39eea7",
+			"sha256": "641d23842079454626c683a64f40e24334828f57f69678123d6b3c191056a806",
 			"source": "ISO 299 T-slot nut (M12, 14 mm slot): the international counterpart of DIN 508 with an identical M12 envelope -- a=14 nominal (a_max=13.7), e=22, h=16, k=8 -- so it aliases the din508 drawing. Equivalence and figures confirmed vs fasteners.eu ISO 299 table + Definite Metal ISO 299 table (both list DIN 508 as the equivalent norm) + TorqBolt ISO 299 equivalents listing + Maedler/Scholz combined DIN 508 / ISO 299 product pages.",
 			"svg": "din508.svg"
 		},
 		"iso299d": {
 			"alias_of": "din508",
 			"family": "tslot_nut",
-			"sha256": "3892cdaf857743e58bf71c9e667e44be2f5e6f8ce38781a6bf7376cc7f39eea7",
+			"sha256": "641d23842079454626c683a64f40e24334828f57f69678123d6b3c191056a806",
 			"source": "ISO 299 M12, app image-variant key -- identical T-slot-nut envelope; iso299 is itself an alias of din508, so this key points at the din508 base directly.",
 			"svg": "din508.svg"
 		},
 		"iso299p": {
 			"alias_of": "din508",
 			"family": "tslot_nut",
-			"sha256": "3892cdaf857743e58bf71c9e667e44be2f5e6f8ce38781a6bf7376cc7f39eea7",
+			"sha256": "641d23842079454626c683a64f40e24334828f57f69678123d6b3c191056a806",
 			"source": "ISO 299 M12, app image-variant key -- identical T-slot-nut envelope; iso299 is itself an alias of din508, so this key points at the din508 base directly.",
 			"svg": "din508.svg"
 		},
 		"iso4014": {
 			"family": "hex_bolt",
-			"sha256": "69a755c03fa04bc899373eefca0ebf1666c87388121008f2a1f13e318533271d",
+			"sha256": "f8e722258021010fc424ffae03f4046a91064b40d0ab35ef058b61d50638d8bc",
 			"source": "ISO 4014 hexagon head bolt (partial thread), M12 coarse (1.75 mm pitch). s=18.0 (across flats, ISO 4014 nominal for M12; ISO reduced this from DIN 931's 19 mm to 18 mm \u2014 Fasteners.eu EU 24014 table shows separate DIN 931 and ISO 4014 lines confirming this; confirmed also by ITAFasteners BS EN ISO 4014 table + Jignesh Steel DIN 931/ISO 4014 table + iso-fasteners.com ISO 4014 table). k=7.5 (head height nominal; same sources; Jignesh Steel gives tolerance band 7.32\u20137.68 mm around 7.5 nominal, grade A). d_shank=12.0 = M12 nominal major diameter; shank drawn as smooth cylinder (envelope only, no thread lines, no bore). length=60.0 is a representative catalog length \u2014 M12 ISO 4014 is stocked approximately 20\u2013200 mm per W\u00fcrth + ITAFasteners + Norelem catalogs; 60 mm is a common mid-range size, not a normative value. head_chamfer=18.0 = s: ISO hex heads chamfer to approximately the across-flats circle at the top face \u2014 this dimension is not tabulated separately in ISO 4014 public summaries; setting head_chamfer to s is a representative value (actual chamfer circle is between s and e_min=21.1 mm). tip_chamfer=1.0 mm: 45 degree lead chamfer at the free end of the shank; typical 1\u20131.5 mm at M12; not individually tabulated in ISO 4014 public tables; representative.",
 			"svg": "iso4014.svg"
 		},
 		"iso4014p": {
 			"alias_of": "iso4014",
 			"family": "hex_bolt",
-			"sha256": "69a755c03fa04bc899373eefca0ebf1666c87388121008f2a1f13e318533271d",
+			"sha256": "f8e722258021010fc424ffae03f4046a91064b40d0ab35ef058b61d50638d8bc",
 			"source": "ISO 4014 M12, app image-variant key \u2014 identical ISO 4014 hex envelope (s=18), aliases the iso4014 base.",
 			"svg": "iso4014.svg"
 		},
 		"iso4017": {
 			"alias_of": "iso4014",
 			"family": "hex_bolt",
-			"sha256": "69a755c03fa04bc899373eefca0ebf1666c87388121008f2a1f13e318533271d",
+			"sha256": "f8e722258021010fc424ffae03f4046a91064b40d0ab35ef058b61d50638d8bc",
 			"source": "ISO 4017 fully threaded hex bolt, M12. Shares the same hex head as ISO 4014 for M12 (s=18.0, k=7.5): confirmed by ITAFasteners (separate ISO 4014 and ISO 4017 dimension tables, M12 head row identical in both) + Andrews Fasteners ISO 4017 table (s_nom=18, k_nom=7.5, grade A tol 7.32\u20137.68) + boltsparts.github.io ISO 4017 table (s=18.0, k=7.5). Only thread coverage differs (ISO 4017 is fully threaded; ISO 4014 is partial thread). Outer envelope at the chosen representative length is identical to iso4014 -> alias.",
 			"svg": "iso4014.svg"
 		},
 		"iso4017p": {
 			"alias_of": "iso4014",
 			"family": "hex_bolt",
-			"sha256": "69a755c03fa04bc899373eefca0ebf1666c87388121008f2a1f13e318533271d",
+			"sha256": "f8e722258021010fc424ffae03f4046a91064b40d0ab35ef058b61d50638d8bc",
 			"source": "ISO 4017 M12, app image-variant key \u2014 same ISO hex head as ISO 4014 (s=18, full thread not drawn), aliases the iso4014 base.",
 			"svg": "iso4014.svg"
 		},
 		"iso4026": {
 			"alias_of": "din913",
 			"family": "set_screw",
-			"sha256": "fab48015934058d4afa3d38a473290b5fc2024a56a82c8f528dafe79ad8e456f",
+			"sha256": "114658765a015d01cd26de1d0c0de92be96a2cc4b964cc9552ae7b14f4b6b623",
 			"source": "ISO 4026 hexagon socket set screw with flat point, M12 \u2014 same envelope as DIN 913 (socket_af=6.0, socket_depth=4.5), so it aliases the DIN base. Confirmed vs fasteners.eu ISO 4026/4029 tables + Aspen Fasteners DIN 916.",
 			"svg": "din913.svg"
 		},
 		"iso4027": {
 			"alias_of": "din914",
 			"family": "set_screw",
-			"sha256": "8b91f9f3f5bc2937918740a809419d2a81a64a7faa59e9e1ef49c280b901f064",
+			"sha256": "89e2f8b85651f46de2286f25a8dc90fe60f0df63f21ba6fb551aa707b523f79d",
 			"source": "ISO 4027 cone-point socket set screw, M12 \u2014 same envelope + cone as DIN 914, aliases the DIN base. Confirmed vs fasteners.eu ISO 4027/4029 tables + Aspen Fasteners DIN 916.",
 			"svg": "din914.svg"
 		},
 		"iso4028": {
 			"alias_of": "din915",
 			"family": "set_screw",
-			"sha256": "72681febcd8b6a60df4d4038208ed03202861ebcf51c5bf7c2e3948aa4b7fe30",
+			"sha256": "019a34d4878102b8da3fcc1ccac767f3acd30eb1c34b839107acf149292b6788",
 			"source": "ISO 4028 dog-point socket set screw, M12 \u2014 same envelope + dog as DIN 915, aliases the DIN base. Confirmed vs fasteners.eu ISO 4028/4029 tables + Aspen Fasteners DIN 916.",
 			"svg": "din915.svg"
 		},
 		"iso4029": {
 			"alias_of": "din916",
 			"family": "set_screw",
-			"sha256": "9204e961d8bf8228db5fef8d749f9e11ce60660a2b6735967dd34485e12679af",
+			"sha256": "245644ff495de4ee76eed4942fe85c83135d978504c6331487e8d74374adc1c4",
 			"source": "ISO 4029 cup-point socket set screw, M12 \u2014 same envelope + cup as DIN 916, aliases the DIN base. Confirmed vs fasteners.eu ISO 4029 table + Aspen Fasteners DIN 916.",
 			"svg": "din916.svg"
 		},
 		"iso4032": {
 			"family": "hex_nut",
-			"sha256": "c73a29106384b3abf37214e714249603de1e66f57b66b8275d291a45dde88902",
+			"sha256": "277cd266dd97c73d49ecab2f7f4959690c0e6450176d07c0e0725c3441a5f66c",
 			"source": "ISO 4032 hexagon regular nut (style 1), M12: s=18.0, m=10.8. Confirmed vs Fasteners.eu + wermac.org ISO 4032 dimension tables.",
 			"svg": "iso4032.svg"
 		},
 		"iso4032p": {
 			"alias_of": "iso4032",
 			"family": "hex_nut",
-			"sha256": "c73a29106384b3abf37214e714249603de1e66f57b66b8275d291a45dde88902",
+			"sha256": "277cd266dd97c73d49ecab2f7f4959690c0e6450176d07c0e0725c3441a5f66c",
 			"source": "ISO 4032 M12, app image-variant key -- identical hex-nut envelope, aliases the iso4032 base.",
 			"svg": "iso4032.svg"
 		},
 		"iso4033": {
 			"family": "hex_nut",
-			"sha256": "db042103e8a6d3a88f78493bdbe2937ebc26e7c78615403ac9c4fe6416d950dc",
+			"sha256": "c379192c34f02b34aa7f2f3416e976aeb0b44dae2d7eec738c6f89dbb658f76c",
 			"source": "ISO 4033 hexagon high nut (style 2), M12: s=18.0, m=12.0 (m=1.0d). Confirmed vs TorqBolt + fasten.it ISO 4033 tables.",
 			"svg": "iso4033.svg"
 		},
 		"iso4035": {
 			"family": "hex_nut",
-			"sha256": "48a5b195be6d55026a58b33ddf6fcbf4719e489e3fdd207ff0f89bd2fd349673",
+			"sha256": "f88e5e3f100ced8067b3d813f108550969da5b8410f1516e89ce8cb9d87d58dc",
 			"source": "ISO 4035 hexagon thin nut (style 0), M12: s=18.0 (ISO value; the 19mm seen in some catalogues is the DIN 439B deviation), m=6.0. Confirmed vs Fuller Fasteners ISO 4035 spec + BS EN ISO 4035 table (Engineers Edge).",
 			"svg": "iso4035.svg"
 		},
 		"iso4035p": {
 			"alias_of": "iso4035",
 			"family": "hex_nut",
-			"sha256": "48a5b195be6d55026a58b33ddf6fcbf4719e489e3fdd207ff0f89bd2fd349673",
+			"sha256": "f88e5e3f100ced8067b3d813f108550969da5b8410f1516e89ce8cb9d87d58dc",
 			"source": "ISO 4035 M12, app image-variant key -- identical thin hex-nut envelope, aliases the iso4035 base.",
 			"svg": "iso4035.svg"
 		},
 		"iso4161": {
 			"alias_of": "din6923",
 			"family": "flange_nut",
-			"sha256": "392f7940a1032c061b30d804ea6a5fdcd2db209562a5478b07669a0077ca3397",
+			"sha256": "7e11b470973adad9ad1bb2a698ac7b3e4eeaa1d53adc0823e4c737104fe43cc1",
 			"source": "ISO 4161 hex nut with flange (M12): s=18, m=12, dc=26, c=1.8 -- envelope identical to DIN 6923 (equivalent/successor standard, same body), so it aliases the din6923 base. Confirmed vs Torqbolt ISO 4161 table (s=18, dc=26, m=12, c=1.8) + RC Fastener ISO 4161 metric hex flange nut spec sheet (s max 18.00, e min 20.03, m max 12, flange dia max 26).",
 			"svg": "din6923.svg"
 		},
 		"iso4161p": {
 			"alias_of": "din6923",
 			"family": "flange_nut",
-			"sha256": "392f7940a1032c061b30d804ea6a5fdcd2db209562a5478b07669a0077ca3397",
+			"sha256": "7e11b470973adad9ad1bb2a698ac7b3e4eeaa1d53adc0823e4c737104fe43cc1",
 			"source": "ISO 4161 M12, app image-variant key -- identical flange-nut envelope; points at the din6923 base directly because iso4161 is itself an alias of din6923.",
 			"svg": "din6923.svg"
 		},
 		"iso4762": {
 			"family": "socket_screw",
-			"sha256": "770c024d69e130b438262f0276f984e798caff33a005d49d721b1306ae8c388e",
+			"sha256": "259ba9ef4401e65ffcd5c19257284e4876693a5460444845214766e65a965a0e",
 			"source": "ISO 4762 hexagon socket head cap screw, M12. dk=18.0 (head diameter), k=12.0 (head height), socket_af=10.0 (hex key across-flats), socket_depth=6.0 (key engagement, representative within the tabulated min) \u2014 all M12 values verified against >=2 public tables: engineeringhardware.com M12 socket-head-cap page and fasteners.eu/standards/iso/4762. d_shank=12.0 (M12 nominal major diameter); shank drawn as a smooth cylinder (envelope only, no thread lines, no bore). length=60.0 is a representative catalog length (M12 stocked ~16-200 mm), not normative. tip_chamfer=1.0 mm lead chamfer, representative.",
 			"svg": "iso4762.svg"
 		},
 		"iso4762p": {
 			"alias_of": "iso4762",
 			"family": "socket_screw",
-			"sha256": "770c024d69e130b438262f0276f984e798caff33a005d49d721b1306ae8c388e",
+			"sha256": "259ba9ef4401e65ffcd5c19257284e4876693a5460444845214766e65a965a0e",
 			"source": "ISO 4762 M12, app image-variant key \u2014 the standard hexagon socket head cap screw (dk=18, k=12, hex socket 10), identical to the iso4762 base envelope; aliases the iso4762 base.",
 			"svg": "iso4762.svg"
 		},
 		"iso7035": {
 			"alias_of": "din935",
 			"family": "castle_nut",
-			"sha256": "70bc60f41d12a2ce5618b9f779f64b22af4b9da56d8f9b5484111e4670fd3aae",
+			"sha256": "3347fdd379c6edfd7f7e7d89442492f0aacadf8ed573315b6bfbf62cae91de53",
 			"source": "ISO 7035 hexagon slotted nut, style 1 (M12): the ISO counterpart of DIN 935 with an identical M12 envelope (s=18, m=15, w=10, dk=16, 6 slots, 3.5), so it aliases the DIN 935 drawing. Confirmed vs fasteners.eu ISO 7035 + TorqBolt ISO 7035 + Bolting Specialist + combined DIN 935/ISO 7035 product listings.",
 			"svg": "din935.svg"
 		},
 		"iso7035p": {
 			"alias_of": "din935",
 			"family": "castle_nut",
-			"sha256": "70bc60f41d12a2ce5618b9f779f64b22af4b9da56d8f9b5484111e4670fd3aae",
+			"sha256": "3347fdd379c6edfd7f7e7d89442492f0aacadf8ed573315b6bfbf62cae91de53",
 			"source": "ISO 7035 M12, app image-variant key -- identical castle-nut envelope; iso7035 is itself an alias of din935, so this key points at the din935 base directly.",
 			"svg": "din935.svg"
 		},
 		"iso7040": {
 			"family": "lock_nut",
-			"sha256": "52e937baf97064cf07401ed227ec575e7c8678ae99b91c9790ad3480a43439e8",
+			"sha256": "426e7286e695cc342512175588c99cd2bfa1ca6d706c06dd668863c2149f4b53",
 			"source": "ISO 7040 prevailing-torque regular hexagon nut with non-metallic (nylon) insert (M12): s=18 (SW18, ISO 4032 base) and total height m=14.9 (h_max) tabulated from the ISO 7040:2012 Table 1 PDF, cross-checked against Aspen Fasteners DIN 982 PDF and fasteners.eu. Note: vendor 'ISO 7040 = s19' pages substitute DIN 982 data; the ISO standard is SW18. Metal envelope only. top_h/top_d representative form. bore=10.1 (M12 minor, ISO 724).",
 			"svg": "iso7040.svg"
 		},
 		"iso7041": {
 			"family": "lock_nut",
-			"sha256": "36010b5e882651c36b4b198b37a1bbae25ae20c554b0cf70eec10bb5c7f7702a",
+			"sha256": "dc6bc113c35a0313289c113e0ea28feeee6a55a82040f294ed6c9eeba9cc3ad6",
 			"source": "ISO 7041 prevailing-torque high (style 2) hexagon nut with non-metallic (nylon) insert (M12): s=18 (SW18, ISO 4033 base) and total height m=16.1 (h_max) tabulated from the ISO 7041:2012 Table 1 PDF, cross-checked against stainlessfix.com (s=18, h_max=16.1, exact match). Metal envelope only. top_h/top_d representative form. bore=10.1 (M12 minor, ISO 724).",
 			"svg": "iso7041.svg"
 		},
 		"iso7042": {
 			"family": "lock_nut",
-			"sha256": "c278c30214f86fde6b958dba5c0296efd477c3fbc0bb8ae5f4ab21f41bfac09c",
+			"sha256": "b3a2aa4c09aa398d5f697107c4259c8ed4b0d905b1ac8a7c957e77e5d9342b05",
 			"source": "ISO 7042 prevailing-torque all-metal high hexagon nut (M12): s=18 (SW18, ISO 4033 base) and total height m=13.3 (h_max) tabulated from the ISO 7042:2012 Table 1 PDF, cross-checked against globalfastener. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "iso7042.svg"
 		},
 		"iso7042p": {
 			"alias_of": "iso7042",
 			"family": "lock_nut",
-			"sha256": "c278c30214f86fde6b958dba5c0296efd477c3fbc0bb8ae5f4ab21f41bfac09c",
+			"sha256": "b3a2aa4c09aa398d5f697107c4259c8ed4b0d905b1ac8a7c957e77e5d9342b05",
 			"source": "ISO 7042 M12, app image-variant key -- identical lock-nut envelope, aliases the iso7042 base.",
 			"svg": "iso7042.svg"
 		},
 		"iso7045": {
 			"family": "slotted_screw",
-			"sha256": "47f17e90e13670932fa7d8ca914ffe85be9a5886673304df394b789665138346",
+			"sha256": "9e2286c6b8cafc5f0a4b5d3b02dfb93a47a3765dc3dfbbc0dbf5a7dcab84aad0",
 			"source": "ISO 7045 / DIN 7985 cross-recess (Phillips/Pozidriv) pan head machine screw, M10 x 30 (representative length; M10, not M12). dk=20.0 and k=7.5 tabulated, cross-checked across Vipa (ISO 7045/DIN 7985), Wanhong (ISO 7045 pan cross) and Fuller Fasteners ISO 7045 tables (all dk max 20.0, k max 7.5 for M10). Cross recess is ISO 4757 recess No. 4 for M10: drive_m=10.1 is the tabulated surface reference diameter (type H, ISO 4757/ISO 7045) and drive_t=5.5 the recess penetration (ISO 7721 range ~5.2-5.8, mid). drive_w=2.8 is a representative recess arm width (ISO 4757 does not tabulate a simple arm width). The cross recess is a representative tapered-pyramidal icon, not the dimensioned ISO 4757 curve. d_shank=10.0 (M10 major).",
 			"svg": "iso7045.svg"
 		},
 		"iso7046": {
 			"family": "slotted_screw",
-			"sha256": "1b6197eee9fdd6251b6cce956557fde5f465e95afdb8b1cfeea151da1a18dc08",
+			"sha256": "1ac8df17a754badef84f86d7a2b914e85185d526f78287d1ec2c0c5a09e82bc9",
 			"source": "ISO 7046 / DIN 965 cross-recess countersunk (flat) head machine screw, M10 x 30 (representative length; M10, not M12). dk=18.3 (max) and k=5.0 (max) tabulated, cross-checked across the BSN Fastener ISO 7046-1 catalog, the Lubker ISO 7046-1 table and the Fasten.it ISO 7046-1 table (all dk max 18.3, k max 5.0 for M10; ISO 2009 slotted csk matches). Cross recess is ISO 4757 recess No. 4: drive_m=10.1 tabulated surface reference diameter (type H). drive_t=4.0 is a representative recess depth chosen < head height k=5.0 (the true ISO 7721 penetration ~5.2 mm would pierce the thin envelope head floor); drive_w=2.8 representative arm width. The cross recess is a representative tapered-pyramidal icon, not the dimensioned ISO 4757 curve. d_shank=10.0 (M10 major).",
 			"svg": "iso7046.svg"
 		},
 		"iso7047": {
 			"family": "slotted_screw",
-			"sha256": "d9ecd1051fbb1ba3768d66f4bff89f59f25d59d91969d9274b02a3f726e61c78",
+			"sha256": "48b375f795ea3219f3cb078ac73c3e1828999ccbb04fcdcbcde7d8cbfe85bf24",
 			"source": "ISO 7047 cross-recess raised countersunk (oval) head machine screw, M10 x 30 (representative length; M10, not M12). Ships with NO DIN alias: the historical DIN cross raised-countersunk (DIN 966 form H) was withdrawn/merged and din966 is the slotted raised base here, so there is no clean current 1:1 DIN number (a deliberate skip, like DIN 562 / DIN 80701). dk=18.3 and countersunk head height k=5.0 tabulated as the ISO common head style shared with ISO 7046 / ISO 2009 (cross-checked BSN + Lubker + Fasten.it ISO 7046-1 / ISO 2009 M10 rows). Raised-lens height raised_f=2.5 (DIN 966 / ISO 7047 equivalence, Vidasan). Cross recess ISO 4757 No. 4: drive_m=10.1 surface reference diameter; drive_t=4.0 representative depth < k=5.0; drive_w=2.8 representative arm width. The cross recess is a representative tapered-pyramidal icon, not the ISO 4757 curve. d_shank=10.0 (M10 major).",
 			"svg": "iso7047.svg"
 		},
 		"iso7089": {
 			"family": "flat_washer",
-			"sha256": "b2c5497f9867eae7af4c1ad460fe73c3ad2f57ff8045351322c4008ed03d7611",
+			"sha256": "df1bb392cab2aee3246a4cea8c0de9a83741abe691bcd04fda551b52df52d839",
 			"source": "ISO 7089:2000 (M12) = DIN 125A",
 			"svg": "iso7089.svg"
 		},
 		"iso7089p": {
 			"alias_of": "iso7089",
 			"family": "flat_washer",
-			"sha256": "b2c5497f9867eae7af4c1ad460fe73c3ad2f57ff8045351322c4008ed03d7611",
+			"sha256": "df1bb392cab2aee3246a4cea8c0de9a83741abe691bcd04fda551b52df52d839",
 			"source": "plated (electro-zinc) variant of ISO 7089; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7089.svg"
 		},
 		"iso7091": {
 			"family": "flat_washer",
-			"sha256": "db79cf955385d1007b513bd44f0b1276f905353f284c1bd8ef2c151031f1f881",
+			"sha256": "e89eac35555518ebf8fb9c31b0ab462c0d017cf4b8876b63e2202440c66340fe",
 			"source": "ISO 7091:2000 (M12) = DIN 126",
 			"svg": "iso7091.svg"
 		},
 		"iso7091p": {
 			"alias_of": "iso7091",
 			"family": "flat_washer",
-			"sha256": "db79cf955385d1007b513bd44f0b1276f905353f284c1bd8ef2c151031f1f881",
+			"sha256": "e89eac35555518ebf8fb9c31b0ab462c0d017cf4b8876b63e2202440c66340fe",
 			"source": "plated (electro-zinc) variant of ISO 7091; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7091.svg"
 		},
 		"iso7092": {
 			"family": "flat_washer",
-			"sha256": "891f5d0e5d02f09afa53e90dd1a33de08833699e6b147e7167a53156008149eb",
+			"sha256": "74da406505ba7a34e81da841cb6dfe1f2bb54edc6288de31b93c225e7ee83cdd",
 			"source": "ISO 7092:2000 (M12) = DIN 433",
 			"svg": "iso7092.svg"
 		},
 		"iso7092p": {
 			"alias_of": "iso7092",
 			"family": "flat_washer",
-			"sha256": "891f5d0e5d02f09afa53e90dd1a33de08833699e6b147e7167a53156008149eb",
+			"sha256": "74da406505ba7a34e81da841cb6dfe1f2bb54edc6288de31b93c225e7ee83cdd",
 			"source": "plated (electro-zinc) variant of ISO 7092; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7092.svg"
 		},
 		"iso7093": {
 			"family": "flat_washer",
-			"sha256": "f4aa915c76ee40b25d728603aced35f38aff6d14898761bae540d3b6b2666a85",
+			"sha256": "df15d89f17b2b9c37851a4b4b7a031b095fc3c300a1277c3098381cdbc41c25d",
 			"source": "ISO 7093-1 (M12, large series; d1 13, d2 37, s 3). Dimensionally identical to DIN 9021; was wrongly d2 30. Fasteners.eu.",
 			"svg": "iso7093.svg"
 		},
 		"iso7093p": {
 			"alias_of": "iso7093",
 			"family": "flat_washer",
-			"sha256": "f4aa915c76ee40b25d728603aced35f38aff6d14898761bae540d3b6b2666a85",
+			"sha256": "df15d89f17b2b9c37851a4b4b7a031b095fc3c300a1277c3098381cdbc41c25d",
 			"source": "plated (electro-zinc) variant of ISO 7093; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7093.svg"
 		},
 		"iso7094": {
 			"family": "flat_washer",
-			"sha256": "37bf4c2a322648c5a9535b9e71bcd45988587e74368534bd5d37be07363aaafd",
+			"sha256": "9a256e3da899fd0035b01f1facedcc134f61ef795ea476a4f14c306d9345b81c",
 			"source": "ISO 7094 (M12, extra large series, grade C; d1 13.5, d2 44, s 4). Dimensionally equivalent to DIN 440 R; was wrongly holding the DIN 9021 values (13/37/3). Fasteners.eu / Keller-Kalmbach.",
 			"svg": "iso7094.svg"
 		},
 		"iso7094p": {
 			"alias_of": "iso7094",
 			"family": "flat_washer",
-			"sha256": "37bf4c2a322648c5a9535b9e71bcd45988587e74368534bd5d37be07363aaafd",
+			"sha256": "9a256e3da899fd0035b01f1facedcc134f61ef795ea476a4f14c306d9345b81c",
 			"source": "plated (electro-zinc) variant of ISO 7094; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7094.svg"
 		},
 		"iso7379": {
 			"family": "shoulder_screw",
-			"sha256": "8beeb41aef40f1f7c2f6eef72da20aa735fe1b55688716f488dce0016cde7b2a",
+			"sha256": "c7e5474a729820c7c8be52c4b4eca12365ae405fe5dd14b3b8885b906512cfdc",
 			"source": "ISO 7379 hexagon socket head shoulder screw. ISO 7379 designates by SHOULDER diameter, so the shoulder-12 variant (which carries an M10 thread) is used: its 12 mm ground shoulder is the size-defining diameter, matching the app key's M12-ish drawing scale. Row confirmed vs fasteners.eu ISO 7379 table (M10: ds=12, dk<=18.27, k<=8.9, s=6, b=16) + boltingspecialist.com ISO 7379 (identical M10 row: ds=12, dk<=18.27, k<=8.9, s=6, b=16). Fuller Fasteners ISO 7379 spec corroborates the head/socket detail: plain head dk=18 max (18.27 max is the knurled head), k 9 max / 8.78 min, s=6, socket depth t=4.9 min, b 16.4/15.6. Used: dk=18.0 (plain-head max), k=8.9, socket_af=6.0, socket_depth=4.9, d_thread=10.0 (M10 major, envelope-only, no drawn thread), thread_len=16.0 (b). shoulder_len=30.0 REPRESENTATIVE (common stock shoulder length, e.g. Accu SSH-M10-30 'M10 (12mm) x 30mm' ISO 7379 shoulder screw); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Head knurl, thread undercut and shoulder edge chamfers are omitted (envelope-only fine-feature rule).",
 			"svg": "iso7379.svg"
 		},
 		"iso7380": {
 			"family": "socket_screw",
-			"sha256": "68586955a25b38dfaaf15a536016400b9435b48647d1287cbdf980e36be7b58b",
+			"sha256": "28f17e0344c41d16844f711ca9d64e1f9f62c6b2b5f53ce4772112367cbd139f",
 			"source": "ISO 7380-1 hexagon socket button (low spherical-dome) head screw, M12: domed head diameter dk=21.0 (max) and head height k=6.6 (max) and hex socket across-flats socket_af=8.0 confirmed by Fuller Fasteners ISO 7380-1 + Brighton-Best ISO 7380-1 metric socket button table + fasteners.eu ISO 7380 + Westfield Fasteners ISO 7380-1 (all M12 dk-max 21.0, k-max 6.6, key 8). d_shank=12.0 (M12 major); length=60.0 REPRESENTATIVE; socket_depth=4.0 REPRESENTATIVE blind engagement (< k; tabulated ISO 7380-1 key engagement t-min 4.16); tip_chamfer=1.0 REPRESENTATIVE. The head is a spherical cap of base dk and height k; the small cylindrical base belt of a real button head is a REPRESENTATIVE envelope simplification (omitted). Envelope only \u2014 no drawn thread, no through bore.",
 			"svg": "iso7380.svg"
 		},
 		"iso7416": {
 			"family": "flat_washer",
-			"sha256": "eb5ffb09c240e67a07ec2487aa4fbe3e2f9f6de5fbd59713b54d16ca0e55816f",
+			"sha256": "ac9336707b9dc4201bf2d47d2c53ea09549b8dc2f7b4cbf469fb9d4004eae0bd",
 			"source": "ISO 7416 (M12, structural washer = DIN 6916)",
 			"svg": "iso7416.svg"
 		},
 		"iso7416p": {
 			"alias_of": "iso7416",
 			"family": "flat_washer",
-			"sha256": "eb5ffb09c240e67a07ec2487aa4fbe3e2f9f6de5fbd59713b54d16ca0e55816f",
+			"sha256": "ac9336707b9dc4201bf2d47d2c53ea09549b8dc2f7b4cbf469fb9d4004eae0bd",
 			"source": "plated (electro-zinc) variant of ISO 7416; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso7416.svg"
 		},
 		"iso7719": {
 			"family": "lock_nut",
-			"sha256": "ed5e6a4517f66699b1c63ecec742f43b9c7d44b1f51684d3ce90662537468af0",
+			"sha256": "eff86b791e14b70c35634b78cf7d6bc5c31de6d9f8e7eab6188aefa060d7d7ba",
 			"source": "ISO 7719 prevailing-torque all-metal regular hexagon nut (M12): s=18 (SW18, ISO 4032 base) and total height m=11.6 (h_max) tabulated from the ISO 7719:2012 Table 1 PDF, cross-checked against fasten.it. The deformed metal crown is drawn as a representative truncated cone (top_h/top_d/top_d2 representative form \u2014 the crimp profile is not tabulated). bore=10.1 (M12 minor, ISO 724).",
 			"svg": "iso7719.svg"
 		},
 		"iso7720": {
 			"alias_of": "iso7042",
 			"family": "lock_nut",
-			"sha256": "c278c30214f86fde6b958dba5c0296efd477c3fbc0bb8ae5f4ab21f41bfac09c",
+			"sha256": "b3a2aa4c09aa398d5f697107c4259c8ed4b0d905b1ac8a7c957e77e5d9342b05",
 			"source": "ISO 7720 is the property-class-9 variant of ISO 7042 (all-metal high), dimensionally identical for M12 (s=18, m=13.3 per ISO 7720:2012 / ISO 7042:2012 Table 1), so it aliases the ISO 7042 drawing. (The legacy dataset image for iso7720 was a nylon-insert drawing; ISO 7720 is all-metal, so the generated cone drawing is the correct form.)",
 			"svg": "iso7042.svg"
 		},
 		"iso8673": {
 			"alias_of": "iso4032",
 			"family": "hex_nut",
-			"sha256": "c73a29106384b3abf37214e714249603de1e66f57b66b8275d291a45dde88902",
+			"sha256": "277cd266dd97c73d49ecab2f7f4959690c0e6450176d07c0e0725c3441a5f66c",
 			"source": "ISO 8673 = ISO 4032 regular hex nut with fine pitch; external body geometry identical to ISO 4032, aliased to that base drawing.",
 			"svg": "iso4032.svg"
 		},
 		"iso8674": {
 			"alias_of": "iso4033",
 			"family": "hex_nut",
-			"sha256": "db042103e8a6d3a88f78493bdbe2937ebc26e7c78615403ac9c4fe6416d950dc",
+			"sha256": "c379192c34f02b34aa7f2f3416e976aeb0b44dae2d7eec738c6f89dbb658f76c",
 			"source": "ISO 8674 = ISO 4033 high hex nut with fine pitch; identical body, aliased to the base.",
 			"svg": "iso4033.svg"
 		},
 		"iso8675": {
 			"alias_of": "iso4035",
 			"family": "hex_nut",
-			"sha256": "48a5b195be6d55026a58b33ddf6fcbf4719e489e3fdd207ff0f89bd2fd349673",
+			"sha256": "f88e5e3f100ced8067b3d813f108550969da5b8410f1516e89ce8cb9d87d58dc",
 			"source": "ISO 8675 = ISO 4035 thin hex nut with fine pitch; identical body, aliased to the base.",
 			"svg": "iso4035.svg"
 		},
 		"iso8676": {
 			"alias_of": "iso4014",
 			"family": "hex_bolt",
-			"sha256": "69a755c03fa04bc899373eefca0ebf1666c87388121008f2a1f13e318533271d",
+			"sha256": "f8e722258021010fc424ffae03f4046a91064b40d0ab35ef058b61d50638d8bc",
 			"source": "ISO 8676 fine-pitch full-thread hex bolt, M12 \u2014 same M12 ISO hex head as ISO 4014 (s=18, k=7.5); pitch and thread length are not drawn, so it aliases iso4014.",
 			"svg": "iso4014.svg"
 		},
 		"iso8677": {
 			"alias_of": "din603",
 			"family": "carriage_bolt",
-			"sha256": "6e36ccf324deafe8657b5f4eb36d39f2a67231987e08391a90c80f33a5b09b25",
+			"sha256": "3d8406688a6f655536c3660304699502d5ec7e795572ec95dd6796f377759034",
 			"source": "ISO 8677 mushroom (cup) head square-neck bolt, M12 \u2014 the ISO twin of DIN 603 (same envelope: dk=30, k=7, square 12.7), confirmed by the DIN 603 = ISO 8677 equivalence (Westfield + Aspen DIN 603/ISO 8677 tables). Aliases the din603 base.",
 			"svg": "din603.svg"
 		},
 		"iso8677p": {
 			"alias_of": "din603",
 			"family": "carriage_bolt",
-			"sha256": "6e36ccf324deafe8657b5f4eb36d39f2a67231987e08391a90c80f33a5b09b25",
+			"sha256": "3d8406688a6f655536c3660304699502d5ec7e795572ec95dd6796f377759034",
 			"source": "ISO 8677 M12, app image-variant key \u2014 identical cup-head square-neck envelope; aliases the din603 base.",
 			"svg": "din603.svg"
 		},
 		"iso8738": {
 			"family": "flat_washer",
-			"sha256": "0c06e99c490bccf074b5065c4b3b1f125673f28483248fe8d99b90079ba029ff",
+			"sha256": "9ee689b0720883895200f8aa62d8bcf2b6f1e6720d67ea7d936f03f29d472417",
 			"source": "ISO 8738 (size 12, plain washer for clevis pins, dimensionally equivalent to DIN 1440; d1=12, d2=25, s=3).",
 			"svg": "iso8738.svg"
 		},
 		"iso8738p": {
 			"alias_of": "iso8738",
 			"family": "flat_washer",
-			"sha256": "0c06e99c490bccf074b5065c4b3b1f125673f28483248fe8d99b90079ba029ff",
+			"sha256": "9ee689b0720883895200f8aa62d8bcf2b6f1e6720d67ea7d936f03f29d472417",
 			"source": "plated (electro-zinc) variant of ISO 8738; plating does not change geometry, so this aliases the base drawing.",
 			"svg": "iso8738.svg"
 		},
 		"iso8765": {
 			"alias_of": "iso4014",
 			"family": "hex_bolt",
-			"sha256": "69a755c03fa04bc899373eefca0ebf1666c87388121008f2a1f13e318533271d",
+			"sha256": "f8e722258021010fc424ffae03f4046a91064b40d0ab35ef058b61d50638d8bc",
 			"source": "ISO 8765 fine-pitch partial-thread hex bolt, M12 \u2014 same M12 ISO hex head as ISO 4014 (s=18); pitch is not drawn, so it aliases iso4014.",
 			"svg": "iso4014.svg"
 		}

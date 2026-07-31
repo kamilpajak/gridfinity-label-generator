@@ -51,7 +51,7 @@ def test_centerline_coords_without_cross_emits_two_horizontal_half_axes():
     assert ends == [(-7.0, 5.0), (17.0, 5.0)]
 
 
-def test_center_layer_holds_the_symmetry_axis_lines_as_a_dashed_chain(tmp_path: Path):
+def test_center_layer_holds_the_symmetry_axes_as_a_chain_of_drawn_dashes(tmp_path: Path):
     import xml.etree.ElementTree as ET
     from build123d import BuildPart, Cylinder, Mode
     from catalog.render import render_two_views, DEFAULT_AXIS_Z
@@ -67,12 +67,40 @@ def test_center_layer_holds_the_symmetry_axis_lines_as_a_dashed_chain(tmp_path: 
     center = next(
         g for g in root.iter() if strip(g.tag) == "g" and g.get("id") == "Center"
     )
-    # A chain-line dash pattern is what makes it read as an engineering centerline.
-    assert center.get("stroke-dasharray")
+    # The chain pattern is geometry, so that every arm can end on a dash; a
+    # stroke-dasharray would run out wherever the arm happens to stop.
+    assert center.get("stroke-dasharray") is None
     lines = [c for c in center if strip(c.tag) == "line"]
-    # Each axis is two half-lines from the center: face-view cross (4) + profile
-    # rotation axis (2) = 6.
-    assert len(lines) == 6
+    # Six arms (face-view cross + profile rotation axis), each broken into dashes.
+    assert len(lines) > 6
+
+
+def test_chain_dashes_start_and_end_the_arm_on_a_dash():
+    # ISO 128: a chain line begins and ends with a long dash, never in a gap.
+    from catalog.render import _chain_dashes
+
+    segments = _chain_dashes((0.0, 0.0), (45.0, 0.0))
+
+    assert segments[0][0] == pytest.approx((0.0, 0.0))
+    assert segments[-1][1] == pytest.approx((45.0, 0.0))
+    # long, short, long, short, ... long: an odd number of dashes.
+    assert len(segments) % 2 == 1
+    first_len = segments[0][1][0] - segments[0][0][0]
+    second_len = segments[1][1][0] - segments[1][0][0]
+    assert first_len > second_len  # long dash, then short
+    assert segments[-1][1][0] - segments[-1][0][0] == pytest.approx(first_len)
+    # dashes stay inside the arm and never overlap
+    assert all(a[0] < b[0] for a, b in segments)
+    assert all(segments[i][1][0] < segments[i + 1][0][0] for i in range(len(segments) - 1))
+
+
+def test_chain_dashes_collapse_to_one_stroke_on_a_short_arm():
+    # Too short for a full long dash: a solid stroke reads better than a fragment.
+    from catalog.render import _chain_dashes
+
+    segments = _chain_dashes((0.0, 0.0), (3.0, 0.0))
+
+    assert segments == [((0.0, 0.0), (3.0, 0.0))]
 
 
 def _stroke_width(svg_text: str, layer: str) -> float:

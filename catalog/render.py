@@ -1,4 +1,5 @@
 """Project a 3D Part to a two-view (front + side) monochrome SVG technical drawing."""
+import math
 from dataclasses import dataclass
 
 from build123d import ExportSVG, Unit, LineType, Location, Polyline
@@ -27,6 +28,14 @@ HIDDEN_COLOR = (0, 0, 0)
 CENTERLINE_COLOR = (0, 0, 0)
 _CENTER_EXT_FRAC = 0.08  # overhang past the outline, as a fraction of view size
 _CENTER_MIN_EXT_MM = 1.5  # floor so small drawings still get a visible overhang
+
+# Chain-line pattern for the symmetry axes, in multiples of the line width. These
+# are the exporter's own CENTER proportions, kept so the drawings look unchanged,
+# but the dashes are emitted as geometry (see _chain_dashes) instead of a
+# stroke-dasharray.
+_CENTER_LONG = 31.75
+_CENTER_SHORT = 6.35
+_CENTER_DASH_GAP = 6.35
 
 # No margin: the view box hugs the drawing, so the whole image slot on the label
 # is drawing. Whitespace around it belongs to whoever places the image — the label
@@ -110,6 +119,49 @@ def _centerline_coords(bbox, ext, cross):
     return coords
 
 
+def _chain_dashes(start, end, weight=CENTERLINE_WEIGHT_MM):
+    """Dash segments of one centerline arm, beginning and ending on a long dash.
+
+    ISO 128 wants a chain line to start and finish with a long dash, never in a
+    gap. A stroke-dasharray cannot promise that: the pattern runs until the line
+    ends, wherever that falls, which left some arms stopping in a gap — visible as
+    an axis that fades out short of its tip, and as an empty band at the edge of
+    the image (the view box follows the geometry, which does reach the tip).
+
+    So the dashes are emitted as geometry. The arm keeps the exact length it was
+    given — the overhang past the outline stays consistent across the drawing —
+    and the pattern is stretched by up to half a period to land on it, which is
+    what a drafter does with the linetype scale and is imperceptible over these
+    lengths. An arm too short for one long dash becomes a single solid stroke.
+    """
+    (x0, y0), (x1, y1) = start, end
+    length = math.hypot(x1 - x0, y1 - y0)
+    if length <= 0:
+        return []
+
+    long_dash = _CENTER_LONG * weight
+    short_dash = _CENTER_SHORT * weight
+    gap = _CENTER_DASH_GAP * weight
+    period = long_dash + gap + short_dash + gap
+
+    repeats = max(0, round((length - long_dash) / period))
+    fit = length / (repeats * period + long_dash)
+    long_dash, short_dash, gap = long_dash * fit, short_dash * fit, gap * fit
+
+    ux, uy = (x1 - x0) / length, (y1 - y0) / length
+    point_at = lambda t: (x0 + ux * t, y0 + uy * t)  # noqa: E731 - local shorthand
+
+    segments = []
+    at = 0.0
+    for _ in range(repeats):
+        segments.append((point_at(at), point_at(at + long_dash)))
+        at += long_dash + gap
+        segments.append((point_at(at), point_at(at + short_dash)))
+        at += short_dash + gap
+    segments.append((point_at(at), point_at(length)))
+    return segments
+
+
 def _edges_bbox(edges):
     """Combined (xmin, ymin, xmax, ymax) of projected 2D edges."""
     xs_min = ys_min = float("inf")
@@ -153,7 +205,11 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
     ext = round(max(_CENTER_MIN_EXT_MM, _CENTER_EXT_FRAC * max(fw, fh, sw, sh)), 2)
     center_coords = _centerline_coords(front_bbox, ext, cross=True)
     center_coords += _centerline_coords(side_bbox, ext, cross=False)
-    centerlines = [Polyline((a[0], a[1], 0), (b[0], b[1], 0)) for a, b in center_coords]
+    centerlines = [
+        Polyline((a[0], a[1], 0), (b[0], b[1], 0))
+        for start, end in center_coords
+        for a, b in _chain_dashes(start, end)
+    ]
 
     exporter = ExportSVG(unit=Unit.MM, precision=4, margin=_MARGIN_MM)
     exporter.add_layer("Visible", line_weight=VISIBLE_WEIGHT_MM, line_type=LineType.CONTINUOUS)
@@ -163,7 +219,7 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
     )
     exporter.add_layer(
         "Center", line_color=CENTERLINE_COLOR, line_weight=CENTERLINE_WEIGHT_MM,
-        line_type=LineType.CENTER,
+        line_type=LineType.CONTINUOUS,  # the chain pattern is geometry, not a dasharray
     )
     exporter.add_shape(_to_polylines(v_front + v_side), layer="Visible")
     exporter.add_shape(_to_polylines(h_front + h_side), layer="Hidden")

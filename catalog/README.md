@@ -84,6 +84,18 @@ absolute width on the finished output chosen for the format, the way CAD plots
 lineweights in paper space; 2 dots is the practical minimum for a solid line on a
 maintained thermal head and 3 the production recommendation.
 
+**Centerlines are drawn as geometry, not as a `stroke-dasharray`**
+(`_chain_dashes`). ISO 128 wants a chain line to begin and end with a long dash;
+a dash array cannot promise that, because the pattern simply runs until the line
+stops, wherever that falls. Some arms therefore ended in a gap — the axis faded
+out short of its tip, and the image carried an empty band up to 1.3mm wide,
+since the view box follows the geometry, which does reach the tip. Each arm now
+keeps its exact length (so the overhang past the outline stays consistent) and
+the pattern is stretched by up to half a period to land on it — what a drafter
+does with the linetype scale. The empty band is down to a 0.1mm median, all 125
+drawings under 0.3mm, and what remains is the half line width the exporter adds.
+The `LineType.CENTER` proportions are preserved, so the drawings look unchanged.
+
 **The view box hugs the drawing — no margin.** The whole box is scaled into a
 fixed slot on the label, so any padding baked into the SVG comes straight out of
 the drawing's own size. Spacing around the image belongs to whoever places it

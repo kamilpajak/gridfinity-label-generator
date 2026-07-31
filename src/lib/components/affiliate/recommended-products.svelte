@@ -58,6 +58,8 @@
 	{@const IconComponent = getProductIcon(product.id)}
 	{@const hasLink = product.affiliateLink !== null}
 
+	<!-- Affiliate links point outside the app, so resolve() does not apply to them. -->
+	<!-- eslint-disable svelte/no-navigation-without-resolve -->
 	<a
 		href={product.affiliateLink ?? '#'}
 		target={hasLink ? '_blank' : undefined}
@@ -116,6 +118,7 @@
 			{product.description}
 		</p>
 	</a>
+	<!-- eslint-enable svelte/no-navigation-without-resolve -->
 {/snippet}
 
 <div data-testid="recommended-products-card" class="w-full">

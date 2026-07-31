@@ -74,11 +74,13 @@ scale.
 
 `_weights_for_extent()` therefore picks the printed width first
 (`VISIBLE_DOTS`, `THIN_DOTS`) and converts back through the drawing's own extent,
-so every drawing measures the same on paper. Both are set to 2 dots: that is the
-practical minimum for a solid line on a maintained thermal head, and the safer
-3-dot outline was tried and rejected because at the ~128 dots a drawing gets on
-the label it swallows the detail (a socket head or a washer chamfer merges into a
-blob). The hierarchy between the layers is carried by the dash patterns. All layers
+so every drawing measures the same on paper. The outline and hidden edges are 2
+dots — the practical minimum for a solid line on a maintained thermal head — and
+the safer 3-dot outline was tried and rejected because at the ~128 dots a drawing
+gets on the label it swallows the detail (a socket head or a washer chamfer merges
+into a blob). Centerlines run at 1.5 dots (`CENTER_DOTS`): they carry no geometry,
+only the symmetry reading, and a chain line crossing the whole drawing is the
+densest layer at this size. All layers
 are pure black — gray dithers away on a 1-bit head — and hidden/center stay
 apart by dash pattern and weight. The dash patterns are likewise in dots
 (`HIDDEN_DASH_DOTS`, `CENTER_DASH_DOTS`): the exporter's ISO pattern (dash 12d)

@@ -29,10 +29,13 @@ LABEL_SLOT_MM = 9.15
 # 2 dots is the practical minimum for a solid line on a maintained thermal head.
 # 3 dots is the safer print recommendation, but at the ~128 dots a drawing gets on
 # the label it swallows the detail: a socket head or a washer's chamfer merges into
-# a blob. Both layers therefore sit on the floor, and the weight hierarchy between
-# them is carried by the dash patterns instead.
+# a blob. Outline and hidden edges therefore sit on the floor. Centerlines carry no
+# geometry, only the symmetry reading, so they go below it — they are the densest
+# layer at this size (a chain line crossing the whole drawing) and would otherwise
+# compete with the outline.
 VISIBLE_DOTS = 2.0
-THIN_DOTS = 2.0  # hidden edges and centerlines
+HIDDEN_DOTS = 2.0
+CENTER_DOTS = 1.5
 
 # Dash patterns, also in printed dots. The ISO 128-2 pattern (dash 12d, gap 3d)
 # is built for a full-size sheet; at ~130 dots across it leaves one or two marks
@@ -55,8 +58,8 @@ def dots_to_drawing_mm(dots: float, extent_mm: float) -> float:
     return dots * _DOT_MM * extent_mm / LABEL_SLOT_MM
 
 
-def _weights_for_extent(geometry_extent_mm: float) -> tuple[float, float]:
-    """Visible and thin line weights for a drawing of the given geometry extent.
+def _weights_for_extent(geometry_extent_mm: float) -> tuple[float, float, float]:
+    """Visible, hidden and centerline weights for a drawing of the given extent.
 
     The exported viewBox is the geometry plus the fixed margins plus (because
     ExportSVG fits the view box to the strokes) about one visible line width, and
@@ -67,8 +70,9 @@ def _weights_for_extent(geometry_extent_mm: float) -> tuple[float, float]:
     box_without_stroke = geometry_extent_mm + 2 * _MARGIN_MM
     k = VISIBLE_DOTS * _DOT_MM / LABEL_SLOT_MM
     visible = round(k * box_without_stroke / (1 - k), 4)
-    thin = round(visible * THIN_DOTS / VISIBLE_DOTS, 4)
-    return visible, thin
+    hidden = round(visible * HIDDEN_DOTS / VISIBLE_DOTS, 4)
+    center = round(visible * CENTER_DOTS / VISIBLE_DOTS, 4)
+    return visible, hidden, center
 
 
 def _rewrite_dash_patterns(path: str, extent_mm: float) -> None:
@@ -229,16 +233,16 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
         (side_bbox[2] + ext) - (front_bbox[0] - ext),
         max(front_bbox[3] + ext, side_bbox[3]) - min(front_bbox[1] - ext, side_bbox[1]),
     )
-    visible_weight, thin_weight = _weights_for_extent(geometry_extent)
+    visible_weight, hidden_weight, center_weight = _weights_for_extent(geometry_extent)
     dash_extent = geometry_extent + 2 * _MARGIN_MM + visible_weight
 
     exporter = ExportSVG(unit=Unit.MM, precision=4, margin=_MARGIN_MM)
     exporter.add_layer("Visible", line_weight=visible_weight, line_type=LineType.CONTINUOUS)
     exporter.add_layer(
-        "Hidden", line_color=HIDDEN_COLOR, line_weight=thin_weight, line_type=LineType.ISO_DASH
+        "Hidden", line_color=HIDDEN_COLOR, line_weight=hidden_weight, line_type=LineType.ISO_DASH
     )
     exporter.add_layer(
-        "Center", line_color=CENTERLINE_COLOR, line_weight=thin_weight,
+        "Center", line_color=CENTERLINE_COLOR, line_weight=center_weight,
         line_type=LineType.CENTER,
     )
     exporter.add_shape(_to_polylines(v_front + v_side), layer="Visible")

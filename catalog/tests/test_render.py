@@ -109,15 +109,25 @@ def test_line_weights_print_the_same_width_whatever_the_drawing_size(tmp_path: P
     # A drawing five times larger is scaled down five times harder to fit the same
     # label slot, so its lines must be five times thicker in drawing units to reach
     # the paper at the target width. Anything else prints thin on large drawings.
-    from catalog.render import VISIBLE_DOTS, THIN_DOTS
+    from catalog.render import CENTER_DOTS, HIDDEN_DOTS, VISIBLE_DOTS
 
     small = _ring_svg(6.0, tmp_path)
     large = _ring_svg(30.0, tmp_path)
 
     for svg in (small, large):
         assert _printed_dots(svg, "Visible") == pytest.approx(VISIBLE_DOTS, abs=0.02)
-        assert _printed_dots(svg, "Hidden") == pytest.approx(THIN_DOTS, abs=0.02)
-        assert _printed_dots(svg, "Center") == pytest.approx(THIN_DOTS, abs=0.02)
+        assert _printed_dots(svg, "Hidden") == pytest.approx(HIDDEN_DOTS, abs=0.02)
+        assert _printed_dots(svg, "Center") == pytest.approx(CENTER_DOTS, abs=0.02)
+
+
+def test_centerlines_are_drawn_thinner_than_the_outline(tmp_path: Path):
+    # A chain line crossing the whole drawing is the densest layer at label size,
+    # so it stays below the outline rather than competing with it.
+    from catalog.render import CENTER_DOTS, VISIBLE_DOTS
+
+    assert CENTER_DOTS < VISIBLE_DOTS
+    svg = _ring_svg(10.0, tmp_path)
+    assert _printed_dots(svg, "Center") < _printed_dots(svg, "Visible")
 
 
 def test_dash_patterns_are_shortened_for_miniature_reproduction(tmp_path: Path):

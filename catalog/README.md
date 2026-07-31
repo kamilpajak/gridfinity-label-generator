@@ -63,10 +63,13 @@ its legacy column from that file, because `integrate.py` repoints the live
 file would show each drawing next to itself. Never regenerate the snapshot.
 
 **Line style** (`catalog/render.py`): widths are absolute in drawing units —
-`VISIBLE_WEIGHT_MM` 0.4, `HIDDEN_WEIGHT_MM` 0.3, `CENTERLINE_WEIGHT_MM` 0.2 — the
-values the families were drawn and reviewed with, and the baseline for print
-testing on the label printer. Tune them from measured print results rather than
-from theory. All layers are pure black: the printer is monochrome, so the former
+`VISIBLE_WEIGHT_MM`, `HIDDEN_WEIGHT_MM`, `CENTERLINE_WEIGHT_MM`. They started at
+0.4/0.3/0.2, the values the families were drawn and reviewed with, and are being
+raised in steps from printed results; tune them from what comes off the tape
+rather than from theory. The chain-line rhythm deliberately does **not** follow
+the pen (see `_CENTER_LONG_MM`): tying it to the width, as ISO 128 and the
+exporter do for a full-size sheet, meant every tuning step reshaped the axes —
+going from 0.2 to 0.3mm alone collapsed 69 of 125 axes into a solid line. All layers are pure black: the printer is monochrome, so the former
 gray hidden line could only dither.
 
 Known property of absolute widths, worth understanding before changing them: the

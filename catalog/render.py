@@ -6,36 +6,42 @@ from build123d import ExportSVG, Unit, LineType, Location, Polyline
 
 # --- Line style ---
 #
-# Widths are absolute in drawing units, the values the catalog families were drawn
-# and reviewed with. They are the baseline for print testing on the label printer;
-# adjust from measured results rather than from theory.
+# Widths are absolute in drawing units. They started from the 0.4/0.3/0.2 the
+# catalog families were drawn and reviewed with and are being tuned from printed
+# results, one step at a time — adjust them from what comes off the tape rather
+# than from theory.
 #
 # Known property of this scheme: the app scales every drawing into the same small
 # image slot, and the drawings span 20mm to 133mm in their own coordinates, so the
-# same width reaches the paper at different widths — measured 0.8 to 4.1 dots at
-# 360dpi for a 0.8mm line, i.e. 0.4 to 2.1 dots for the 0.4mm below. Deriving the
-# weights from a target printed width instead was tried (git history: "set line
-# widths in printed dots") and gave a uniform 2 dots everywhere, but at the ~128
-# dots a drawing gets on the label it cost visible detail.
+# same width reaches the paper at different widths — the 0.5mm below lands between
+# 0.5 and 3.1 dots at 360dpi, median 1.5. Deriving the weights from a target
+# printed width instead was tried (git history: "set line widths in printed dots")
+# and gave a uniform 2 dots everywhere, but at the ~128 dots a drawing gets on the
+# label it cost visible detail.
 #
 # All layers are pure black: the label printer is monochrome, so a gray would only
 # dither. Hidden and center lines stay apart by dash pattern and weight.
-VISIBLE_WEIGHT_MM = 0.4
-HIDDEN_WEIGHT_MM = 0.3
-CENTERLINE_WEIGHT_MM = 0.2
+VISIBLE_WEIGHT_MM = 0.5
+HIDDEN_WEIGHT_MM = 0.4
+CENTERLINE_WEIGHT_MM = 0.3
 
 HIDDEN_COLOR = (0, 0, 0)
 CENTERLINE_COLOR = (0, 0, 0)
 _CENTER_EXT_FRAC = 0.08  # overhang past the outline, as a fraction of view size
 _CENTER_MIN_EXT_MM = 1.5  # floor so small drawings still get a visible overhang
 
-# Chain-line pattern for the symmetry axes, in multiples of the line width. These
-# are the exporter's own CENTER proportions, kept so the drawings look unchanged,
-# but the dashes are emitted as geometry (see _chain_dashes) instead of a
-# stroke-dasharray.
-_CENTER_LONG = 31.75
-_CENTER_SHORT = 6.35
-_CENTER_DASH_GAP = 6.35
+# Chain-line pattern for the symmetry axes, in millimetres of drawing. The
+# exporter (and ISO 128) express dash lengths as multiples of the line width,
+# which is right for a full-size sheet where the width is picked once per drawing
+# group. Here the width is a printer setting being tuned, and tying the rhythm to
+# it means every adjustment reshapes the axes: raising the pen from 0.2 to 0.3mm
+# made the long dash 9.5mm, longer than a small drawing's whole arm, and 69 of 125
+# axes collapsed into a solid line — which reads as an edge, not an axis. So the
+# pattern is fixed at what those 0.2mm drawings had, and only the pen changes.
+# The dashes are emitted as geometry (see _chain_dashes), not a stroke-dasharray.
+_CENTER_LONG_MM = 6.35
+_CENTER_SHORT_MM = 1.27
+_CENTER_DASH_GAP_MM = 1.27
 
 # No margin: the view box hugs the drawing, so the whole image slot on the label
 # is drawing. Whitespace around it belongs to whoever places the image — the label
@@ -119,7 +125,7 @@ def _centerline_coords(bbox, ext, cross):
     return coords
 
 
-def _chain_dashes(start, end, weight=CENTERLINE_WEIGHT_MM):
+def _chain_dashes(start, end):
     """Dash segments of one centerline arm, beginning and ending on a long dash.
 
     ISO 128 wants a chain line to start and finish with a long dash, never in a
@@ -139,9 +145,7 @@ def _chain_dashes(start, end, weight=CENTERLINE_WEIGHT_MM):
     if length <= 0:
         return []
 
-    long_dash = _CENTER_LONG * weight
-    short_dash = _CENTER_SHORT * weight
-    gap = _CENTER_DASH_GAP * weight
+    long_dash, short_dash, gap = _CENTER_LONG_MM, _CENTER_SHORT_MM, _CENTER_DASH_GAP_MM
     period = long_dash + gap + short_dash + gap
 
     repeats = max(0, round((length - long_dash) / period))

@@ -1,0 +1,25 @@
+{
+	"iso7379": {
+		"family": "shoulder_screw",
+		"shape": {
+			"dk": 18.0,
+			"k": 8.9,
+			"d_shoulder": 12.0,
+			"shoulder_len": 30.0,
+			"d_thread": 10.0,
+			"thread_len": 16.0,
+			"socket_af": 6.0,
+			"socket_depth": 4.9,
+			"tip_chamfer": 1.2
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [
+			{
+				"system": "ISO",
+				"code": "7379"
+			}
+		],
+		"source": "ISO 7379 hexagon socket head shoulder screw. ISO 7379 designates by SHOULDER diameter, so the shoulder-12 variant (which carries an M10 thread) is used: its 12 mm ground shoulder is the size-defining diameter, matching the app key's M12-ish drawing scale. Row confirmed vs fasteners.eu ISO 7379 table (M10: ds=12, dk<=18.27, k<=8.9, s=6, b=16) + boltingspecialist.com ISO 7379 (identical M10 row: ds=12, dk<=18.27, k<=8.9, s=6, b=16). Fuller Fasteners ISO 7379 spec corroborates the head/socket detail: plain head dk=18 max (18.27 max is the knurled head), k 9 max / 8.78 min, s=6, socket depth t=4.9 min, b 16.4/15.6. Used: dk=18.0 (plain-head max), k=8.9, socket_af=6.0, socket_depth=4.9, d_thread=10.0 (M10 major, envelope-only, no drawn thread), thread_len=16.0 (b). shoulder_len=30.0 REPRESENTATIVE (common stock shoulder length, e.g. Accu SSH-M10-30 'M10 (12mm) x 30mm' ISO 7379 shoulder screw); tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. Head knurl, thread undercut and shoulder edge chamfers are omitted (envelope-only fine-feature rule)."
+	}
+}

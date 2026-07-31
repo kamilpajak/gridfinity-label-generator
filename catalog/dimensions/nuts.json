@@ -52,6 +52,21 @@
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "6330" }]
 	},
+	"din934": {
+		"family": "hex_nut",
+		"shape": { "s": 19.0, "m": 10.0, "bore": 10.1 },
+		"hardwareType": "nut",
+		"source": "DIN 934 hexagon full nut (the classic standard nut, old DIN series), M12: s=19.0 (nom=max), m=10.0 (nom=max), e min 21.1. Old DIN series keeps s=19 vs the 18mm of successor ISO 4032, and m=10 vs 10.8, so it stays a distinct base drawing. Confirmed vs Westfield Fasteners DIN 934 specification table + boltingspecialist.com DIN 934 table (both list M12: s=19, m=10, e min 21.1).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "934" }]
+	},
+	"din934i": {
+		"alias_of": "din934",
+		"hardwareType": "nut",
+		"source": "DIN 934 M12, app image-variant key -- identical hex-nut envelope, aliases the din934 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "934" }]
+	},
 	"din936": {
 		"family": "hex_nut",
 		"shape": { "s": 19.0, "m": 7.0, "bore": 10.1 },
@@ -83,6 +98,21 @@
 		"source": "DIN 6334 hexagon coupling nut (Verbindungsmutter / connector nut), M12x1.75 coarse: across-flats s=19.0 (SW19 is the confirmed current value for DIN 6334, not 18), length m=l=36.0 (=3x12), bore=10.1 (M12 coarse minor). Plain hexagonal prism with double-chamfered ends, through-threaded (joins two threaded rods) - same shape as a hex nut, just tall. Confirmed vs Fasteners.eu + Fuller Fasteners + Andrews Fasteners + Bolt Depot DIN 6334 tables.",
 		"verified": true,
 		"designations": [{ "system": "DIN", "code": "6334" }]
+	},
+	"din6915": {
+		"family": "hex_nut",
+		"shape": { "s": 22.0, "m": 10.0, "bore": 10.1 },
+		"hardwareType": "nut",
+		"source": "DIN 6915 hexagon nut with large width across flats for HV high-strength structural steel bolting, M12: s=22.0 (nom, min 21.16), m=10.0 (nom, min 9.64), e min 23.91, dw min 20. One spanner size up from the regular series (SW22 vs SW19/18 at M12). Confirmed vs Fasteners.eu DIN 6915 table + BigBoltNut DIN 6915 dimension table (both list M12: s min 21.16, m min 9.64, e min 23.91).",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6915" }]
+	},
+	"din6915i": {
+		"alias_of": "din6915",
+		"hardwareType": "nut",
+		"source": "DIN 6915 M12, app image-variant key -- identical hex-nut envelope, aliases the din6915 base.",
+		"verified": true,
+		"designations": [{ "system": "DIN", "code": "6915" }]
 	},
 	"iso8673": {
 		"alias_of": "iso4032",

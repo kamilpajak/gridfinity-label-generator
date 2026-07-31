@@ -30,6 +30,13 @@ from catalog.models.prism_head_bolt import prism_head_bolt
 from catalog.models.hex_flange_bolt import hex_flange_bolt
 from catalog.models.knurled_screw import knurled_screw
 from catalog.models.wing_screw import wing_screw
+from catalog.models.eye_bolt import eye_bolt
+from catalog.models.t_head_bolt import t_head_bolt
+from catalog.models.nib_bolt import nib_bolt
+from catalog.models.shoulder_screw import shoulder_screw
+from catalog.models.square_head_bolt import square_head_bolt
+from catalog.models.turnbuckle_nut import turnbuckle_nut
+from catalog.models.knurled_screw_high import knurled_screw_high
 
 KNOWN_FAMILIES = {
     "flat_washer": flat_washer,
@@ -69,6 +76,13 @@ KNOWN_FAMILIES = {
     "hex_flange_bolt": hex_flange_bolt,
     "knurled_screw": knurled_screw,
     "wing_screw": wing_screw,
+    "eye_bolt": eye_bolt,
+    "t_head_bolt": t_head_bolt,
+    "nib_bolt": nib_bolt,
+    "shoulder_screw": shoulder_screw,
+    "square_head_bolt": square_head_bolt,
+    "turnbuckle_nut": turnbuckle_nut,
+    "knurled_screw_high": knurled_screw_high,
 }
 
 

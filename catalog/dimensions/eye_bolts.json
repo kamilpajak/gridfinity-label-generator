@@ -1,0 +1,34 @@
+{
+	"din444": {
+		"family": "eye_bolt",
+		"shape": {
+			"d_shank": 12.0,
+			"length": 70.0,
+			"eye_od": 25.0,
+			"eye_hole": 12.0,
+			"eye_t": 14.0,
+			"tip_chamfer": 1.2
+		},
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "444"
+			}
+		],
+		"source": "DIN 444 eye bolt / Augenschraube, Type B (M12x70). Envelope confirmed vs fasteners.eu DIN 444 table (M12: eye bore d2=12 H9, eye outer dia d3=25 max, transition radius r approx 6, eye width s=14 max for Types B/C, stock lengths 30-300) + boltingspecialist.com DIN 444 Type B table (M12x1.75: d2=12 H9, d3=25 H14, r=6, s=14 H12, thread length b=30, stock lengths 70 and 100). eye_od=25.0 is d3, eye_hole=12.0 is d2, eye_t=14.0 is s. d_shank=12.0 is the M12 major diameter (envelope-only, no drawn thread). length=70.0 is a tabulated stock length (boltingspecialist M12x70), read as the shank length below the eye. tip_chamfer=1.2 REPRESENTATIVE 45-degree lead. The eye-to-shank transition radius r=6 is omitted; the straight neck at shank width is representative form."
+	},
+	"din444d": {
+		"alias_of": "din444",
+		"hardwareType": "screw",
+		"verified": true,
+		"designations": [
+			{
+				"system": "DIN",
+				"code": "444"
+			}
+		],
+		"source": "DIN 444 M12, app image-variant key -- identical eye-bolt envelope, aliases the din444 base."
+	}
+}

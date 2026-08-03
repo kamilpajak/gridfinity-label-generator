@@ -112,7 +112,7 @@ jobs:
 
       # BLOCKING: Secret scanning
       - name: Scan for secrets
-        uses: trufflesecurity/trufflehog@8feb77b20aeb64366d106b08f2941287755c173b # main
+        uses: trufflesecurity/trufflehog@82df476e759c1448517fac6bfb3677685cdcd78a # main
         with:
           path: ./
           extra_args: --only-verified

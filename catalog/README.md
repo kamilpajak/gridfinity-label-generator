@@ -63,17 +63,29 @@ its legacy column from that file, because `integrate.py` repoints the live
 file would show each drawing next to itself. Never regenerate the snapshot.
 
 **Line style is a target on the paper, not a width in drawing units**
-(`catalog/render.py`). The app scales every drawing into the same ~9.15mm image
-slot, but drawings span 21mm to 129mm in their own coordinates, so a width fixed
+(`catalog/render.py`). The app scales every drawing into an image slot on the
+label, but drawings span 21mm to 129mm in their own coordinates, so a width fixed
 in drawing units reaches the paper at wildly different widths — the 0.5mm this
 catalog used landed between 0.5 and 3.1 dots at 360dpi. `VISIBLE_DOTS` (1.5),
 `HIDDEN_DOTS` (1.2) and `CENTER_DOTS` (0.9) are printed widths;
-`_weights_for_extent()` converts each back into drawing units through that
-drawing's own extent, so every drawing measures the same on paper. The values
-keep the 5:4:3 ratio of the 0.5/0.4/0.3mm they replace and sit on what that
+`_weights_for_geometry()` converts each back into drawing units per drawing. The
+values keep the 5:4:3 ratio of the 0.5/0.4/0.3mm they replace and sit on what that
 scheme printed at the median drawing, so the average weight is unchanged and only
-the spread is gone. Tune them from printed results. All layers are pure black:
-the printer is monochrome, so the former gray hidden line could only dither.
+the spread is gone. Tune them from printed results. All layers are pure black: the
+printer is monochrome, so the former gray hidden line could only dither.
+
+The reference is the slot the app hands a drawing on its DEFAULT label — 12mm
+tape, 35mm long, no QR — which `calculateOptimalImageSize()` makes 11.4 x 10mm.
+The slot is **not square** and the app fits contain-style, so the weights solve
+against `min(slotW/w, slotH/h)`; sizing the pen from the drawing's longer side
+alone made a portrait and a landscape drawing differ by half again on the same
+label. On that reference every drawing prints 1.50 dots exactly. Longer labels
+give a wider slot (22.1mm at 70mm, 32.6mm at 100mm), so a drawing reproduced there
+is larger and its lines print proportionally thicker, up to 2.9x at 100mm — the
+same behaviour as any illustration scaled up. Uniformity is a promise across
+drawings at one label size, not across label sizes. With the QR code on a 35mm
+label the slot collapses to 4mm and everything prints sub-dot; that is a layout
+problem (a 57-dot drawing), not something a line width can fix.
 
 The dash patterns are uniform too, by two different mechanisms. Hidden lines get
 it for free: the exporter derives the dash from the line weight, and the weight
@@ -89,6 +101,15 @@ printed dots, with 72 of 181 under a single dot. A uniform 2 dots was tried and
 rejected as too heavy for the detail — see the commits "set line widths in
 printed dots instead of drawing millimetres" and "draw at the 2-dot print floor".
 
+**Drawings are simplified after sampling** (`_simplify`). Every projected edge is
+sampled at `_SEGMENTS` points because the sampler cannot tell a line from an arc,
+so a hex outline used to store each straight side as 73 points: 904 of the 942
+paths in din472.svg were perfectly straight and the catalog weighed 14.5MB against
+0.77MB for the rasters it replaces. Ramer-Douglas-Peucker at 1/2000 of the drawing
+extent brings that to 1.3MB (0.24MB gzipped) and moves 1% of ink pixels, all of
+them single boundary pixels. The standard picker renders one image per standard,
+so its thumbnails also load lazily.
+
 **Centerlines are drawn as geometry, not as a `stroke-dasharray`**
 (`_chain_dashes`). ISO 128 wants a chain line to begin and end with a long dash;
 a dash array cannot promise that, because the pattern simply runs until the line
@@ -96,10 +117,17 @@ stops, wherever that falls. Some arms therefore ended in a gap — the axis fade
 out short of its tip, and the image carried an empty band up to 1.3mm wide,
 since the view box follows the geometry, which does reach the tip. Each arm now
 keeps its exact length (so the overhang past the outline stays consistent) and
-the pattern is stretched by up to half a period to land on it — what a drafter
-does with the linetype scale. The empty band is down to a 0.1mm median, all 125
-drawings under 0.3mm, and what remains is the half line width the exporter adds.
-The `LineType.CENTER` proportions are preserved, so the drawings look unchanged.
+the pattern is stretched to land on it — what a drafter does with the linetype
+scale. What remains at the edge of the image is the half line width the exporter
+adds so the outermost stroke is not clipped.
+
+An arm collapses to a single solid stroke only when it is shorter than one long
+dash. Rounding the repeat count without a floor also collapsed arms up to 1.8
+long dashes, which drew 338 of the 750 axes as one continuous line — the wrong
+line type, reading as an edge. Forcing the chain on costs rhythm instead: an arm
+just over one long dash squeezes a whole period into it and its dashes run as
+short as 0.4 of nominal, which is a far smaller lie than a solid line. 8 arms of
+750 are now solid, and no segment exceeds the fitter's worst-case stretch.
 
 **The view box hugs the drawing — no margin.** The whole box is scaled into a
 fixed slot on the label, so any padding baked into the SVG comes straight out of

@@ -1,3 +1,4 @@
+import math
 from pathlib import Path
 
 import pytest
@@ -79,7 +80,7 @@ def test_chain_dashes_start_and_end_the_arm_on_a_dash():
     # ISO 128: a chain line begins and ends with a long dash, never in a gap.
     from catalog.render import _chain_dashes
 
-    segments = _chain_dashes((0.0, 0.0), (45.0, 0.0), box_extent_mm=100.0)
+    segments = _chain_dashes((0.0, 0.0), (45.0, 0.0), visible_weight_mm=1.0)
 
     assert segments[0][0] == pytest.approx((0.0, 0.0))
     assert segments[-1][1] == pytest.approx((45.0, 0.0))
@@ -98,7 +99,7 @@ def test_chain_dashes_collapse_to_one_stroke_on_a_short_arm():
     # Too short for a full long dash: a solid stroke reads better than a fragment.
     from catalog.render import _chain_dashes
 
-    segments = _chain_dashes((0.0, 0.0), (3.0, 0.0), box_extent_mm=100.0)
+    segments = _chain_dashes((0.0, 0.0), (3.0, 0.0), visible_weight_mm=1.0)
 
     assert segments == [((0.0, 0.0), (3.0, 0.0))]
 
@@ -110,7 +111,7 @@ def _stroke_width(svg_text: str, layer: str) -> float:
     return float(re.search(r'stroke-width="([\d.]+)"', group).group(1))
 
 
-def _box_extent(svg_text: str) -> float:
+def _view_box(svg_text: str) -> tuple[float, float]:
     import re
 
     w, h = (
@@ -119,15 +120,23 @@ def _box_extent(svg_text: str) -> float:
             r'viewBox="[-\d.]+ [-\d.]+ ([\d.]+) ([\d.]+)"', svg_text
         ).groups()
     )
-    return max(w, h)
+    return w, h
+
+
+# The reference slot, spelled out here rather than imported, so the test states
+# what the app hands a drawing on its default 12x35mm label instead of repeating
+# whatever the renderer currently believes: height = 12 - 2*1mm margin, width =
+# 31 - max(15, 31*0.6) - 1 (calculateOptimalImageSize, label-constraint-solver.ts).
+_SLOT_W_MM = 31.0 - max(15.0, 31.0 * 0.6) - 1.0
+_SLOT_H_MM = 10.0
+_DOT_MM = 25.4 / 360
 
 
 def _printed_dots(svg_text: str, layer: str) -> float:
-    """Width in printer dots that `layer` reaches once the drawing fits the slot."""
-    from catalog.render import LABEL_SLOT_MM, PRINT_DPI
-
-    scale = LABEL_SLOT_MM / _box_extent(svg_text)
-    return _stroke_width(svg_text, layer) * scale / (25.4 / PRINT_DPI)
+    """Width in printer dots that `layer` reaches on the reference label."""
+    w, h = _view_box(svg_text)
+    scale = min(_SLOT_W_MM / w, _SLOT_H_MM / h)  # the app fits contain-style
+    return _stroke_width(svg_text, layer) * scale / _DOT_MM
 
 
 def _ring_svg(radius: float, tmp_path: Path) -> str:
@@ -159,6 +168,38 @@ def test_every_drawing_prints_the_same_line_widths(tmp_path: Path):
         assert _printed_dots(svg, "Center") == pytest.approx(CENTER_DOTS, abs=0.02)
 
 
+def test_portrait_and_landscape_drawings_print_the_same_width(tmp_path: Path):
+    # The slot is not square, so the drawing that binds on the slot's width and the
+    # one that binds on its height must still meet on the paper. Sizing the pen from
+    # the longer side alone silently made this pair differ by half again.
+    from build123d import BuildPart, Cylinder, Mode
+
+    from catalog.render import VISIBLE_DOTS, render_two_views, DEFAULT_AXIS_Z
+
+    def svg_of(part, name):
+        out = tmp_path / f"{name}.svg"
+        render_two_views(part, DEFAULT_AXIS_Z, str(out))
+        return out.read_text()
+
+    # A wide, thin disc: the side view adds little width, so the drawing stays
+    # close to square and binds on the slot's height.
+    with BuildPart() as tall:
+        Cylinder(radius=30, height=2)
+        Cylinder(radius=10, height=2, mode=Mode.SUBTRACT)
+    with BuildPart() as flat:
+        Cylinder(radius=5, height=60)
+        Cylinder(radius=2, height=60, mode=Mode.SUBTRACT)
+
+    portrait = svg_of(tall.part, "portrait")
+    landscape = svg_of(flat.part, "landscape")
+    pw, ph = _view_box(portrait)
+    lw, lh = _view_box(landscape)
+    assert pw / ph < _SLOT_W_MM / _SLOT_H_MM < lw / lh  # they bind on opposite axes
+
+    assert _printed_dots(portrait, "Visible") == pytest.approx(VISIBLE_DOTS, abs=0.02)
+    assert _printed_dots(landscape, "Visible") == pytest.approx(VISIBLE_DOTS, abs=0.02)
+
+
 def test_dash_patterns_print_the_same_whatever_the_drawing_size(tmp_path: Path):
     # Uniform weights are only half of a uniform look: an axis whose dashes scaled
     # with the drawing would read as a chain line on one and as dots on another.
@@ -166,25 +207,39 @@ def test_dash_patterns_print_the_same_whatever_the_drawing_size(tmp_path: Path):
 
     from catalog.render import (
         HIDDEN_DOTS,
-        LABEL_SLOT_MM,
-        PRINT_DPI,
+        _CENTER_DASH_GAP_DOTS,
         _CENTER_LONG_DOTS,
+        _CENTER_SHORT_DOTS,
     )
 
-    dot_mm = 25.4 / PRINT_DPI
+    # Worst case the fitter can stretch a long dash: it rounds the repeat count, so
+    # an arm just below the rounding-up point carries half a period of surplus.
+    period = _CENTER_LONG_DOTS + 2 * _CENTER_DASH_GAP_DOTS + _CENTER_SHORT_DOTS
+    max_long_dots = _CENTER_LONG_DOTS * (1 + 0.5 * period / (_CENTER_LONG_DOTS + period))
+
     for svg in (_ring_svg(6.0, tmp_path), _ring_svg(30.0, tmp_path)):
-        to_dots = (LABEL_SLOT_MM / _box_extent(svg)) / dot_mm
+        w, h = _view_box(svg)
+        to_dots = min(_SLOT_W_MM / w, _SLOT_H_MM / h) / _DOT_MM
+
         hidden = re.search(r'<g[^>]*id="Hidden"[^>]*>', svg).group(0)
         dash = float(re.search(r'stroke-dasharray="([\d.]+)', hidden).group(1))
         assert dash * to_dots == pytest.approx(12 * HIDDEN_DOTS, abs=0.05)
 
+        # Nothing may run past that bound. A longer segment means an arm collapsed
+        # into a solid stroke, which reads as an edge rather than an axis; before
+        # the repeat floor was added, arms up to 1.8 long dashes did exactly that.
+        # Scope to the Center layer: simplified straight edges are <line> too.
+        center = re.search(r'<g[^>]*id="Center"[^>]*>(.*?)</g>', svg, re.S).group(1)
         longest = max(
-            abs(float(m.group(3)) - float(m.group(1)))
+            math.hypot(
+                float(m.group(3)) - float(m.group(1)),
+                float(m.group(4)) - float(m.group(2)),
+            )
             for m in re.finditer(
-                r'x1="([-\d.]+)" y1="([-\d.]+)" x2="([-\d.]+)"', svg
+                r'x1="([-\d.]+)" y1="([-\d.]+)" x2="([-\d.]+)" y2="([-\d.]+)"', center
             )
         )
-        assert longest * to_dots == pytest.approx(_CENTER_LONG_DOTS, rel=0.35)
+        assert longest * to_dots <= max_long_dots
 
 
 def test_view_box_hugs_the_drawing_with_no_margin(tmp_path: Path):

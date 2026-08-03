@@ -21,9 +21,24 @@ from build123d import ExportSVG, Unit, LineType, Location, Polyline
 # dither. Hidden and center lines stay apart by dash pattern and weight.
 PRINT_DPI = 360
 _DOT_MM = 25.4 / PRINT_DPI
-# The image slot the app scales a drawing into, measured off the rendered label
-# canvas (12mm tape): ~8.9 x 9.4mm, so a drawing's longest side lands on ~9.15mm.
-LABEL_SLOT_MM = 9.15
+
+# The reference image slot: what `calculateOptimalImageSize()` in
+# src/lib/utils/label-constraint-solver.ts hands a drawing on the app's DEFAULT
+# label — 12mm tape, 35mm long, no QR code. Height is `printableHeight`
+# (12 − 2 × 1mm margin); width is `printableWidth − max(15, printableWidth × 0.6)
+# − 1mm` = 31 − 18.6 − 1. The app fits the drawing into that box CONTAIN-style, so
+# the weights below are solved against `min(slotW/w, slotH/h)`, not against a
+# single dimension: the slot is not square, and assuming it was made the printed
+# width depend on whether a drawing happened to be portrait or landscape.
+#
+# Other label lengths give a wider slot (22.1mm at 70mm, 32.6mm at 100mm), so a
+# drawing reproduced there is larger and its lines print proportionally thicker —
+# the same behaviour as any illustration scaled up. Uniformity is a promise ACROSS
+# DRAWINGS at one label size, not across label sizes. With the QR code on a 35mm
+# label the slot collapses to 4mm and everything prints sub-dot; that is a layout
+# problem (a 57-dot drawing), not something a line width can fix.
+LABEL_SLOT_W_MM = 11.4
+LABEL_SLOT_H_MM = 10.0
 
 VISIBLE_DOTS = 1.5
 HIDDEN_DOTS = 1.2
@@ -69,21 +84,32 @@ _SEGMENTS = 72  # per-edge discretization before simplification
 _CHORD_TOLERANCE_FRAC = 1 / 2000
 
 
-def dots_to_drawing_mm(dots: float, box_extent_mm: float) -> float:
-    """Width in drawing units that prints as `dots` once fitted to the label slot."""
-    return dots * _DOT_MM * box_extent_mm / LABEL_SLOT_MM
+def dots_to_drawing_mm(dots: float, visible_weight_mm: float) -> float:
+    """Length in drawing units that prints as `dots`, given that drawing's pen.
 
-
-def _weights_for_extent(geometry_extent_mm: float) -> tuple[float, float, float]:
-    """Visible, hidden and centerline weights for a drawing of the given extent.
-
-    The exported view box is the geometry plus (because ExportSVG fits the box to
-    the strokes) one visible line width, and it is that whole box the app scales
-    into the slot. Solving for the width that is a fixed share `k` of the final
-    box keeps the printed result on target instead of a few percent thin.
+    `visible_weight_mm` already encodes the drawing's scale into the slot, since
+    it was solved to print as VISIBLE_DOTS, so everything else follows from it.
     """
-    k = VISIBLE_DOTS * _DOT_MM / LABEL_SLOT_MM
-    visible = round(k * geometry_extent_mm / (1 - k), 4)
+    return dots * visible_weight_mm / VISIBLE_DOTS
+
+
+def _weights_for_geometry(width_mm: float, height_mm: float) -> tuple[float, float, float]:
+    """Visible, hidden and centerline weights for a drawing of the given size.
+
+    The app fits the drawing into the slot contain-style, so the binding axis is
+    whichever of `slotW/w` and `slotH/h` is smaller — solve both and take the
+    thicker pen. The exported view box is the geometry plus (because ExportSVG
+    fits the box to the strokes) one visible line width in each direction, hence
+    the `slot − target` in the denominator rather than plain `slot`.
+    """
+    target = VISIBLE_DOTS * _DOT_MM
+    visible = round(
+        max(
+            target * width_mm / (LABEL_SLOT_W_MM - target),
+            target * height_mm / (LABEL_SLOT_H_MM - target),
+        ),
+        4,
+    )
     hidden = round(visible * HIDDEN_DOTS / VISIBLE_DOTS, 4)
     center = round(visible * CENTER_DOTS / VISIBLE_DOTS, 4)
     return visible, hidden, center
@@ -197,7 +223,7 @@ def _centerline_coords(bbox, ext, cross):
     return coords
 
 
-def _chain_dashes(start, end, box_extent_mm):
+def _chain_dashes(start, end, visible_weight_mm):
     """Dash segments of one centerline arm, beginning and ending on a long dash.
 
     ISO 128 wants a chain line to start and finish with a long dash, never in a
@@ -208,21 +234,30 @@ def _chain_dashes(start, end, box_extent_mm):
 
     So the dashes are emitted as geometry. The arm keeps the exact length it was
     given — the overhang past the outline stays consistent across the drawing —
-    and the pattern is stretched by up to half a period to land on it, which is
-    what a drafter does with the linetype scale and is imperceptible over these
-    lengths. An arm too short for one long dash becomes a single solid stroke.
+    and the pattern is stretched to land on it, which is what a drafter does with
+    the linetype scale.
+
+    An arm shorter than one long dash becomes a single solid stroke, and only
+    then: rounding the repeat count without a floor let arms up to 1.8 long
+    dashes collapse as well, which drew 338 of the catalogue's 750 axes as one
+    continuous line — the wrong line type, reading as an edge rather than an
+    axis. Forcing the chain on costs rhythm instead: an arm just over one long
+    dash squeezes a full period into it, so its dashes run as little as 0.4 of
+    nominal. A finer chain is a far smaller lie than a solid line.
     """
     (x0, y0), (x1, y1) = start, end
     length = math.hypot(x1 - x0, y1 - y0)
     if length <= 0:
         return []
 
-    long_dash = dots_to_drawing_mm(_CENTER_LONG_DOTS, box_extent_mm)
-    short_dash = dots_to_drawing_mm(_CENTER_SHORT_DOTS, box_extent_mm)
-    gap = dots_to_drawing_mm(_CENTER_DASH_GAP_DOTS, box_extent_mm)
+    long_dash = dots_to_drawing_mm(_CENTER_LONG_DOTS, visible_weight_mm)
+    short_dash = dots_to_drawing_mm(_CENTER_SHORT_DOTS, visible_weight_mm)
+    gap = dots_to_drawing_mm(_CENTER_DASH_GAP_DOTS, visible_weight_mm)
     period = long_dash + gap + short_dash + gap
 
-    repeats = max(0, round((length - long_dash) / period))
+    if length < long_dash:
+        return [(start, end)]
+    repeats = max(1, round((length - long_dash) / period))
     fit = length / (repeats * period + long_dash)
     long_dash, short_dash, gap = long_dash * fit, short_dash * fit, gap * fit
 
@@ -285,17 +320,18 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
     center_coords += _centerline_coords(side_bbox, ext, cross=False)
 
     # Everything the drawing occupies: both views plus the centerline overhang.
-    geometry_extent = max(
-        (side_bbox[2] + ext) - (front_bbox[0] - ext),
-        max(front_bbox[3] + ext, side_bbox[3]) - min(front_bbox[1] - ext, side_bbox[1]),
+    geometry_width = (side_bbox[2] + ext) - (front_bbox[0] - ext)
+    geometry_height = max(front_bbox[3] + ext, side_bbox[3]) - min(
+        front_bbox[1] - ext, side_bbox[1]
     )
-    visible_weight, hidden_weight, center_weight = _weights_for_extent(geometry_extent)
-    box_extent = geometry_extent + visible_weight
+    visible_weight, hidden_weight, center_weight = _weights_for_geometry(
+        geometry_width, geometry_height
+    )
 
     centerlines = [
         Polyline((a[0], a[1], 0), (b[0], b[1], 0))
         for start, end in center_coords
-        for a, b in _chain_dashes(start, end, box_extent)
+        for a, b in _chain_dashes(start, end, visible_weight)
     ]
 
     # 3 decimals is a micron of drawing, two orders finer than the simplification
@@ -310,7 +346,7 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
         "Center", line_color=CENTERLINE_COLOR, line_weight=center_weight,
         line_type=LineType.CONTINUOUS,  # the chain pattern is geometry, not a dasharray
     )
-    chord_tolerance = geometry_extent * _CHORD_TOLERANCE_FRAC
+    chord_tolerance = max(geometry_width, geometry_height) * _CHORD_TOLERANCE_FRAC
     exporter.add_shape(_to_polylines(v_front + v_side, chord_tolerance), layer="Visible")
     exporter.add_shape(_to_polylines(h_front + h_side, chord_tolerance), layer="Hidden")
     exporter.add_shape(centerlines, layer="Center")

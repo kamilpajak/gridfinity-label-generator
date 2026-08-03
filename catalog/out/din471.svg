@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg width="23.518mm" height="18.427mm" viewBox="-9.259 -9.343 23.518 18.427" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="23.464mm" height="18.373mm" viewBox="-9.232 -9.316 23.464 18.373" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <g transform="scale(1,-1)" stroke-linecap="round">
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.272" id="Visible">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.2178" id="Visible">
       <path d="M 0.153,6.457 L 0.172,6.245 L 0.225,6.04 L 0.313,5.846 L 0.432,5.67 L 0.579,5.517 L 0.75,5.391 L 0.94,5.296 L 1.143,5.234" />
       <line x1="1.143" y1="5.234" x2="1.143" y2="5.234" />
       <path d="M 1.143,5.234 L 0.94,5.296 L 0.75,5.391 L 0.579,5.517 L 0.432,5.67 L 0.313,5.846 L 0.225,6.04 L 0.172,6.245 L 0.153,6.457" />
@@ -422,7 +422,7 @@
       <line x1="12.623" y1="-7.448" x2="11.623" y2="-7.448" />
       <line x1="12.623" y1="7.707" x2="11.623" y2="7.707" />
     </g>
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.2176" id="Hidden" stroke-dasharray="2.611 0.653">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.1742" id="Hidden" stroke-dasharray="2.09 0.523">
       <path d="M 2.191,7.428 L 2.03,7.538 L 1.89,7.608 L 1.743,7.66 L 1.551,7.698 L 1.356,7.706 L 1.2,7.69 L 1.011,7.644 L 0.866,7.585 L 0.697,7.488 L 0.573,7.391 L 0.438,7.251 L 0.346,7.124 L 0.271,6.987 L 0.203,6.804 L 0.163,6.613 L 0.153,6.457" />
       <line x1="2.191" y1="7.428" x2="2.191" y2="7.428" />
       <line x1="2.635" y1="7.274" x2="2.191" y2="7.428" />
@@ -1115,7 +1115,7 @@
       <line x1="12.623" y1="7.207" x2="11.623" y2="7.207" />
       <line x1="12.623" y1="5.707" x2="11.623" y2="5.707" />
     </g>
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.1632" id="Center">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.1307" id="Center">
       <line x1="0.0" y1="0.129" x2="-3.509" y2="0.129" />
       <line x1="-4.211" y1="0.129" x2="-4.912" y2="0.129" />
       <line x1="-5.614" y1="0.129" x2="-9.123" y2="0.129" />

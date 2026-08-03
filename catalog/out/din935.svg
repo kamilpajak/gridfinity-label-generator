@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg width="40.894mm" height="24.578mm" viewBox="-10.897 -12.289 40.894 24.578" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="40.8mm" height="24.483mm" viewBox="-10.849 -12.242 40.8 24.483" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <g transform="scale(1,-1)" stroke-linecap="round">
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.473" id="Visible">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.3788" id="Visible">
       <line x1="-9.0" y1="5.196" x2="-4.5" y2="7.794" />
       <line x1="-4.5" y1="7.794" x2="-0.0" y2="10.392" />
       <line x1="-9.0" y1="-5.196" x2="-9.0" y2="0.0" />
@@ -103,7 +103,7 @@
       <line x1="28.048" y1="-8.999" x2="27.279" y2="-10.331" />
       <line x1="18.047" y1="-8.999" x2="18.816" y2="-10.331" />
     </g>
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.3784" id="Hidden" stroke-dasharray="4.541 1.135">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.303" id="Hidden" stroke-dasharray="3.636 0.909">
       <line x1="-0.0" y1="10.392" x2="-4.5" y2="7.794" />
       <line x1="-4.5" y1="7.794" x2="-9.0" y2="5.196" />
       <line x1="4.5" y1="7.794" x2="0.0" y2="10.392" />
@@ -231,7 +231,7 @@
       <line x1="13.058" y1="7.806" x2="13.058" y2="4.737" />
       <line x1="28.047" y1="-5.05" x2="18.048" y2="-5.05" />
     </g>
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.2838" id="Center">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.2273" id="Center">
       <line x1="-0.0" y1="0.0" x2="-4.1" y2="0.0" />
       <line x1="-4.92" y1="0.0" x2="-5.74" y2="0.0" />
       <line x1="-6.56" y1="0.0" x2="-10.66" y2="0.0" />
@@ -244,8 +244,12 @@
       <line x1="-0.0" y1="0.0" x2="-0.0" y2="4.636" />
       <line x1="-0.0" y1="5.563" x2="-0.0" y2="6.49" />
       <line x1="-0.0" y1="7.417" x2="-0.0" y2="12.052" />
-      <line x1="20.55" y1="0.0" x2="11.34" y2="0.0" />
-      <line x1="20.55" y1="0.0" x2="29.761" y2="0.0" />
+      <line x1="20.55" y1="0.0" x2="17.008" y2="0.0" />
+      <line x1="16.299" y1="0.0" x2="15.591" y2="0.0" />
+      <line x1="14.882" y1="0.0" x2="11.34" y2="0.0" />
+      <line x1="20.55" y1="0.0" x2="24.093" y2="0.0" />
+      <line x1="24.801" y1="0.0" x2="25.51" y2="0.0" />
+      <line x1="26.218" y1="0.0" x2="29.761" y2="0.0" />
     </g>
   </g>
 </svg>

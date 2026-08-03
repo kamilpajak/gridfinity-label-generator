@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg width="20.74mm" height="15.543mm" viewBox="-7.87 -7.744 20.74 15.543" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="20.692mm" height="15.495mm" viewBox="-7.846 -7.72 20.692 15.495" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <g transform="scale(1,-1)" stroke-linecap="round">
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.2399" id="Visible">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.1921" id="Visible">
       <path d="M 1.034,3.672 L 0.845,3.743 L 0.67,3.844 L 0.514,3.971 L 0.38,4.122 L 0.272,4.292 L 0.193,4.477 L 0.144,4.673 L 0.128,4.874" />
       <path d="M 0.128,4.874 L 0.164,5.17 L 0.269,5.449 L 0.437,5.696 L 0.658,5.896 L 0.921,6.037 L 1.21,6.112 L 1.508,6.117 L 1.799,6.051" />
       <line x1="0.896" y1="3.192" x2="1.034" y2="3.672" />
@@ -332,7 +332,7 @@
       <line x1="11.25" y1="6.124" x2="10.25" y2="6.124" />
       <line x1="11.25" y1="6.124" x2="10.25" y2="6.124" />
     </g>
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.1919" id="Hidden" stroke-dasharray="2.303 0.576">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.1537" id="Hidden" stroke-dasharray="1.844 0.461">
       <path d="M 1.799,6.051 L 1.508,6.117 L 1.21,6.112 L 0.921,6.037 L 0.658,5.896 L 0.437,5.696 L 0.269,5.45 L 0.164,5.17 L 0.128,4.874" />
       <path d="M 0.128,4.874 L 0.144,4.673 L 0.193,4.477 L 0.272,4.292 L 0.38,4.122 L 0.514,3.971 L 0.67,3.844 L 0.845,3.743 L 1.034,3.672" />
       <line x1="1.034" y1="3.672" x2="1.034" y2="3.672" />
@@ -1083,7 +1083,7 @@
       <line x1="11.25" y1="5.624" x2="10.25" y2="5.624" />
       <line x1="11.25" y1="4.124" x2="10.25" y2="4.124" />
     </g>
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.1439" id="Center">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.1153" id="Center">
       <line x1="0.0" y1="-0.028" x2="-2.981" y2="-0.028" />
       <line x1="-3.577" y1="-0.028" x2="-4.173" y2="-0.028" />
       <line x1="-4.769" y1="-0.028" x2="-7.75" y2="-0.028" />

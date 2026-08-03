@@ -136,8 +136,8 @@
 							</span>
 						{/if}
 						<span class="badge fam">{prettyFamily(item.family)}</span>
-						{#if item.currentImage?.endsWith('.svg')}
-							<span class="badge live" title="the app serves this drawing today">live</span>
+						{#if item.served}
+							<span class="badge live" title="the app serves this drawing to users">live</span>
 						{/if}
 					</div>
 

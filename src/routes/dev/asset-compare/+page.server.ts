@@ -25,6 +25,7 @@ const MANIFEST = join(ROOT, 'catalog', 'out', 'manifest.json');
 const CATALOG_OUT = join(ROOT, 'catalog', 'out');
 const IMAGE_MAPPINGS = join(ROOT, 'data', 'image-mappings.json');
 const LEGACY_IMAGE_MAPPINGS = join(ROOT, 'data', 'legacy-image-mappings.json');
+const SHIPPED_STANDARDS = join(ROOT, 'src', 'lib', 'data', 'standards-generated.ts');
 
 interface ManifestEntry {
 	family: string;
@@ -48,8 +49,8 @@ export interface ComparisonItem {
 	svg: string;
 	/** Public URL of the legacy raster, served from static/. */
 	legacyImage: string | null;
-	/** Public URL the app serves for this standard today (svg once integrated). */
-	currentImage: string | null;
+	/** Whether the shipped dataset actually serves this drawing to users. */
+	served: boolean;
 	hardwareType: string | null;
 }
 
@@ -63,6 +64,17 @@ function readComparison() {
 		ManifestEntry
 	>;
 	const current = JSON.parse(readFileSync(IMAGE_MAPPINGS, 'utf-8')) as Record<string, LegacyEntry>;
+	// Which drawings reach a user. Not the same question as "is this key mapped":
+	// image-mappings.json is repointed for every manifest key the moment the SVG is
+	// copied, so reading it here badged all 247, and more than half of those keys
+	// are not ids the app knows at all — the DIN and ISO forms of one fastener are
+	// a single shipped standard, so din931 rides along inside iso4014. The shipped
+	// dataset is the only place that says what is really drawn.
+	const servedFiles = new Set(
+		[
+			...readFileSync(SHIPPED_STANDARDS, 'utf-8').matchAll(/image: '\/images\/standards\/([^']+)'/g)
+		].map((match) => match[1])
+	);
 	const legacy = JSON.parse(readFileSync(LEGACY_IMAGE_MAPPINGS, 'utf-8')) as Record<
 		string,
 		LegacyEntry
@@ -87,7 +99,7 @@ function readComparison() {
 			aliasOf: entry.alias_of ?? null,
 			svg: readSvg(entry.svg),
 			legacyImage: legacy[id]?.image ?? null,
-			currentImage: current[id]?.image ?? null,
+			served: servedFiles.has(entry.svg),
 			hardwareType: current[id]?.hardwareType ?? legacy[id]?.hardwareType ?? null
 		}))
 		.sort((a, b) => a.id.localeCompare(b.id));

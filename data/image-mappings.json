@@ -56,7 +56,7 @@
 		"hardwareType": "screw"
 	},
 	"iso14583": {
-		"image": "/images/standards/din_7985.png",
+		"image": "/images/standards/iso7045.svg",
 		"hardwareType": "screw"
 	},
 	"iso4017": {
@@ -140,7 +140,7 @@
 		"hardwareType": "nut"
 	},
 	"din562": {
-		"image": "/images/standards/din_557.png",
+		"image": "/images/standards/din557.svg",
 		"hardwareType": "nut"
 	},
 	"iso7089": {

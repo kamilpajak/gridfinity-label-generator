@@ -64,3 +64,32 @@ def test_integrate_rejects_new_entry_with_unknown_family(tmp_path: Path):
 
     with pytest.raises(KeyError, match="din999"):
         apply(str(manifest), str(out), str(static_dir), str(mappings))
+
+
+def test_integrate_touches_nothing_when_one_standard_is_rejected(tmp_path: Path):
+    # A rejected standard used to abort mid-loop, after the ones before it had
+    # already been copied: static/ then held drawings that image-mappings.json
+    # knew nothing about, with nothing recording the mismatch.
+    import pytest
+
+    from catalog.integrate import apply
+
+    out = tmp_path / "out"; out.mkdir()
+    (out / "iso4026.svg").write_text("<svg/>")
+    (out / "din999.svg").write_text("<svg/>")
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps({
+        "standards": {
+            "iso4026": {"svg": "iso4026.svg", "family": "set_screw"},
+            "din999": {"svg": "din999.svg", "family": "mystery"},
+        }
+    }))
+    static_dir = tmp_path / "static"; static_dir.mkdir()
+    mappings = tmp_path / "image-mappings.json"
+    mappings.write_text(json.dumps({}))
+
+    with pytest.raises(KeyError, match="din999"):
+        apply(str(manifest), str(out), str(static_dir), str(mappings))
+
+    assert list(static_dir.iterdir()) == []
+    assert json.loads(mappings.read_text()) == {}

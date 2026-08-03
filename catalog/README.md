@@ -47,14 +47,29 @@ them, and `scripts/catalog-repoint-standards.mjs` keeps the shipped
 label renderer loads `.svg` standard images directly — the old png→svg
 "priority" upgrade path (`AVAILABLE_SVGS`) is no longer load-bearing.
 
-The repoint script has a second pass for shipped entries with no manifest key
-of their own whose legacy png already showed another standard's drawing via a
-designation cross-reference (e.g. `iso8678` → `din_603.png`): it swaps that png
-for the same standard's svg — a like-for-like upgrade, no new equivalence
-claim. Still deferred at the data level: the 18 `image-mappings.json` keys that
-are not manifest keys and still point at legacy pngs (mostly unshipped ids);
-repointing those is a per-key visual-equivalence decision for the contact
-sheet.
+The repoint script has a second pass for shipped standards with no manifest key
+of their own whose legacy png already showed another standard's drawing. Those
+are an explicit allowlist (`BRIDGES`), not a filename rule: matching by filename
+let any png whose name collided with a manifest key be bridged without anyone
+deciding to, and two of the eight it picked up are approximations inherited from
+the legacy dataset — `iso14583` draws a hexalobular drive as a cross recess and
+`din562` draws a thin square nut at DIN 557's full height. Neither is introduced
+here; both keep exactly what the raster already showed, and a correct drawing
+would need its own catalog entry. `iso7090`, `iso8678` and `iso4162` are milder
+cases of the same thing (chamfer, head diameter, flange series), noted in the
+list. The script writes the bridges into `data/image-mappings.json` as well,
+because `integrate.py` never sees those ids, and it fails if the two files
+disagree about any standard — left unchecked they did, and regenerating the
+dataset from the mappings would have silently undone every bridge. Still deferred
+at the data level: the 18 `image-mappings.json` keys that are not manifest keys
+and still point at legacy pngs (mostly unshipped ids); repointing those is a
+per-key visual-equivalence decision for the contact sheet.
+
+`integrate.py` is all-or-nothing. It resolves every standard first — missing
+drawing, unmapped family — and only touches the filesystem once nothing can
+fail, then replaces `image-mappings.json` through a temporary file. Checking
+inside the copy loop meant a rejected standard left the drawings before it
+already copied while the mappings were never written.
 
 `data/legacy-image-mappings.json` is a **frozen** snapshot of the standard →
 raster mapping as it shipped before vectorization. `/dev/asset-compare` reads

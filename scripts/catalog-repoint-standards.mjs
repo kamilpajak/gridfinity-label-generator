@@ -16,6 +16,7 @@ import { resolve } from 'node:path';
 const root = process.cwd();
 const manifestPath = resolve(root, 'catalog/out/manifest.json');
 const generatedPath = resolve(root, 'src/lib/data/standards-generated.ts');
+const mappingsPath = resolve(root, 'data/image-mappings.json');
 
 const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')).standards;
 let source = readFileSync(generatedPath, 'utf8');
@@ -58,17 +59,55 @@ for (const [id, meta] of Object.entries(manifest)) {
 	source = source.slice(0, start) + next + source.slice(end);
 }
 
-// Pass 2: entries whose id has no manifest key but whose legacy png already
-// shows another standard's drawing (image inherited via designation
-// cross-reference, e.g. iso8678 -> din_603.png). Swapping that png for the
-// SAME standard's svg is a like-for-like upgrade, not a new equivalence claim.
+// Pass 2: standards with no manifest key of their own, whose legacy png already
+// showed another standard's drawing. Swapping that png for the vectorization of
+// the SAME raster is a like-for-like upgrade — it does not introduce a claim the
+// dataset was not already making.
+//
+// The list is explicit on purpose. Matching by filename instead let any png whose
+// name happened to collide with a manifest key be bridged automatically, which is
+// how two approximations below were picked up without anyone deciding to. Adding
+// an entry here is a per-key decision, the same review the remaining unmapped
+// keys still await.
+const BRIDGES = {
+	// Exact: fine pitch only, and pitch is not drawn.
+	iso12474: 'din_912.png',
+	// Approximations inherited from the legacy dataset, not introduced here. Each
+	// keeps whatever the raster already showed; a correct drawing would need its
+	// own catalog entry.
+	din562: 'din_557.png', // thin square nut drawn at DIN 557 full height
+	iso14583: 'din_7985.png', // hexalobular drive drawn as a cross recess
+	iso7090: 'din_125.png', // chamfered washer drawn as the unchamfered form
+	iso8678: 'din_603.png', // small-head cup square-neck bolt drawn at normal head
+	iso4162: 'din_6921.png', // small-series flange bolt drawn at the normal flange
+	iso15071: 'din_6921.png',
+	iso15072: 'din_6921.png'
+};
+
 let bridged = 0;
-source = source.replace(/image: '\/images\/standards\/([a-z0-9_.]+)\.png'/g, (full, base) => {
-	const meta = manifest[base.replaceAll('_', '')];
-	if (!meta) return full;
+const bridgedImages = {};
+for (const [id, legacyPng] of Object.entries(BRIDGES)) {
+	const meta = manifest[legacyPng.replace('.png', '').replaceAll('_', '')];
+	if (!meta) throw new Error(`bridge ${id}: ${legacyPng} has no matching drawing`);
+	const marker = `\n\t\tid: '${id}',`;
+	const start = source.indexOf(marker);
+	if (start === -1) continue; // not a shipped standard
+	const end = source.indexOf('\n\t}', start);
+	const block = source.slice(start, end);
+	const image = `/images/standards/${meta.svg}`;
+	// Record it either way: on a rerun the dataset is already bridged, but the
+	// mappings still have to be checked against it.
+	bridgedImages[id] = image;
+	if (block.includes(`image: '${image}'`)) continue;
+	if (!block.includes(`image: '/images/standards/${legacyPng}'`)) {
+		throw new Error(`bridge ${id}: expected it to still show ${legacyPng}`);
+	}
+	source =
+		source.slice(0, start) +
+		block.replace(/image: '[^']*'/, `image: '${image}'`) +
+		source.slice(end);
 	bridged++;
-	return `image: '/images/standards/${meta.svg}'`;
-});
+}
 
 const withImages = (source.match(/image: '/g) ?? []).length;
 source = source.replace(
@@ -77,6 +116,37 @@ source = source.replace(
 );
 
 writeFileSync(generatedPath, source);
+
+// integrate.py owns image-mappings.json but never sees the bridges, since those
+// ids are not manifest keys. Left alone the two files disagree, and regenerating
+// the dataset from the mappings would silently undo every bridge.
+const mappings = JSON.parse(readFileSync(mappingsPath, 'utf8'));
+let mappingsChanged = 0;
+for (const [id, image] of Object.entries(bridgedImages)) {
+	if (mappings[id] && mappings[id].image !== image) {
+		mappings[id].image = image;
+		mappingsChanged++;
+	}
+}
+if (mappingsChanged) {
+	writeFileSync(mappingsPath, JSON.stringify(mappings, null, '\t') + '\n');
+}
+
+// Nothing else keeps the two in step, so check rather than trust.
+const shipped = [...source.matchAll(/id: '([^']+)',[\s\S]*?(?=\n\t\})/g)].flatMap((m) => {
+	const image = /image: '([^']+)'/.exec(m[0]);
+	return image ? [[m[1], image[1]]] : [];
+});
+const disagreements = shipped.filter(([id, image]) => mappings[id] && mappings[id].image !== image);
+if (disagreements.length) {
+	throw new Error(
+		`image-mappings.json disagrees with standards-generated.ts for: ${disagreements
+			.map(([id]) => id)
+			.join(', ')}`
+	);
+}
+
 console.log(
-	`repointed ${repointed}, inserted ${inserted}, bridged ${bridged}, total with images ${withImages}`
+	`repointed ${repointed}, inserted ${inserted}, bridged ${bridged} ` +
+		`(${mappingsChanged} written back to image-mappings.json), total with images ${withImages}`
 );

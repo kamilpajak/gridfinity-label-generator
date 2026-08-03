@@ -57,7 +57,16 @@ _CENTER_DASH_GAP_DOTS = 3.7
 # stroke is not clipped in half.
 _MARGIN_MM = 0.0
 
-_SEGMENTS = 72  # per-edge discretization; smooth enough for label-size icons
+_SEGMENTS = 72  # per-edge discretization before simplification
+
+# Every edge is sampled at _SEGMENTS points and then simplified back down, because
+# the sampler cannot tell a straight edge from a curved one: without this a hex
+# outline stored each of its straight sides as 73 points, and din472.svg reached
+# 1.15MB against 4KB for the raster it replaces. The tolerance is a fraction of
+# the drawing's own extent, so it means the same thing on a 21mm washer and a
+# 130mm bolt: about 1/12 of a printer dot once the drawing is fitted to the label,
+# and still invisible at the magnification the contact sheet uses.
+_CHORD_TOLERANCE_FRAC = 1 / 2000
 
 
 def dots_to_drawing_mm(dots: float, box_extent_mm: float) -> float:
@@ -80,7 +89,43 @@ def _weights_for_extent(geometry_extent_mm: float) -> tuple[float, float, float]
     return visible, hidden, center
 
 
-def _to_polylines(edges, n=_SEGMENTS):
+def _simplify(points, tolerance):
+    """Drop sampled points that lie within `tolerance` of the chord they sit on.
+
+    Ramer-Douglas-Peucker. A straight edge collapses to its two endpoints; an arc
+    keeps only as many points as the tolerance needs.
+    """
+    if len(points) < 3 or tolerance <= 0:
+        return points
+
+    keep = [False] * len(points)
+    keep[0] = keep[-1] = True
+    stack = [(0, len(points) - 1)]
+    while stack:
+        first, last = stack.pop()
+        if last <= first + 1:
+            continue
+        ax, ay = points[first][0], points[first][1]
+        dx = points[last][0] - ax
+        dy = points[last][1] - ay
+        chord = math.hypot(dx, dy)
+        worst, worst_at = -1.0, -1
+        for i in range(first + 1, last):
+            px, py = points[i][0], points[i][1]
+            if chord == 0:  # closed edge: the chord degenerates to a point
+                deviation = math.hypot(px - ax, py - ay)
+            else:
+                deviation = abs((px - ax) * dy - (py - ay) * dx) / chord
+            if deviation > worst:
+                worst, worst_at = deviation, i
+        if worst > tolerance:
+            keep[worst_at] = True
+            stack.append((first, worst_at))
+            stack.append((worst_at, last))
+    return [p for p, k in zip(points, keep) if k]
+
+
+def _to_polylines(edges, tolerance=0.0, n=_SEGMENTS):
     """Discretize edges into polylines to avoid ExportSVG's closed-ellipse assert."""
     out = []
     for e in edges:
@@ -90,6 +135,7 @@ def _to_polylines(edges, n=_SEGMENTS):
             v = (round(p.X, 4), round(p.Y, 4), round(p.Z, 4))
             if not pts or v != pts[-1]:
                 pts.append(v)
+        pts = _simplify(pts, tolerance)
         if len(pts) >= 2:
             out.append(Polyline(*pts))
     return out
@@ -252,7 +298,9 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
         for a, b in _chain_dashes(start, end, box_extent)
     ]
 
-    exporter = ExportSVG(unit=Unit.MM, precision=4, margin=_MARGIN_MM)
+    # 3 decimals is a micron of drawing, two orders finer than the simplification
+    # tolerance below, and it costs a quarter of the file size of 4.
+    exporter = ExportSVG(unit=Unit.MM, precision=3, margin=_MARGIN_MM)
     exporter.add_layer("Visible", line_weight=visible_weight, line_type=LineType.CONTINUOUS)
     exporter.add_layer(
         "Hidden", line_color=HIDDEN_COLOR, line_weight=hidden_weight,
@@ -262,7 +310,8 @@ def render_two_views(part, preset: CameraPreset, out_path: str, gap_mm: float = 
         "Center", line_color=CENTERLINE_COLOR, line_weight=center_weight,
         line_type=LineType.CONTINUOUS,  # the chain pattern is geometry, not a dasharray
     )
-    exporter.add_shape(_to_polylines(v_front + v_side), layer="Visible")
-    exporter.add_shape(_to_polylines(h_front + h_side), layer="Hidden")
+    chord_tolerance = geometry_extent * _CHORD_TOLERANCE_FRAC
+    exporter.add_shape(_to_polylines(v_front + v_side, chord_tolerance), layer="Visible")
+    exporter.add_shape(_to_polylines(h_front + h_side, chord_tolerance), layer="Hidden")
     exporter.add_shape(centerlines, layer="Center")
     exporter.write(out_path)

@@ -47,8 +47,17 @@
 	});
 </script>
 
+<!-- The standard picker lists every standard at once, so the browser must not
+     fetch all of the drawings the moment the popover opens. -->
 {#if svgSrc && useSvg}
-	<img src={svgSrc} {alt} class={className} onerror={handleSvgError} />
+	<img
+		src={svgSrc}
+		{alt}
+		class={className}
+		loading="lazy"
+		decoding="async"
+		onerror={handleSvgError}
+	/>
 {:else}
-	<img {src} {alt} class={className} />
+	<img {src} {alt} class={className} loading="lazy" decoding="async" />
 {/if}

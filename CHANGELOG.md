@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Sharper hardware drawings: 117 standards now use generated vector (SVG) technical drawings instead of the legacy raster images, so labels and thumbnails stay crisp at any print resolution. Five of them — the hexagon socket set screws ISO 4026–4029 (DIN 913–916) and the hexalobular cheese head screw ISO 14579 — get an illustration for the first time.
+- Print-friendly drawings: all lines are pure black, since a label printer cannot reproduce the gray that hidden edges used to be drawn in, and the image is cropped to the drawing so it is not shrunk by a built-in margin. Line thickness is now set so that every fastener prints at the same weight, instead of large parts coming out hairline-thin.
+- Label layout for 25 standards: the new drawings are less wide than the pictures they replace, so these labels now place the drawing beside the text instead of as a full-width band above it. The text column is narrower as a result. Affected are mostly long fasteners such as ISO 4014, DIN 609 and DIN 444.
+
 ### Fixed
 
 - The production Docker image no longer rebuilds the standards dataset without the maintainer data. That rebuild gave 90 of 235 standards a wrong hardware type and stripped 231 descriptions, so the form required a length for nuts, washers, and rings such as the DIN 315 wing nut. The image now ships the committed dataset.

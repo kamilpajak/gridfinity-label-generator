@@ -51,7 +51,7 @@
 			<div>
 				<h1>Asset Comparison Lab</h1>
 				<p class="sub">
-					legacy raster <span class="arrow">→</span> generated vector · washer catalog
+					legacy raster <span class="arrow">→</span> generated vector · fastener catalog
 				</p>
 			</div>
 		</div>
@@ -136,6 +136,9 @@
 							</span>
 						{/if}
 						<span class="badge fam">{prettyFamily(item.family)}</span>
+						{#if item.served}
+							<span class="badge live" title="the app serves this drawing to users">live</span>
+						{/if}
 					</div>
 
 					{#if overlay}
@@ -189,6 +192,7 @@
 		--paper-edge: #e4dcc8;
 		--cyan: #4cc4f0;
 		--amber: #f2b23a;
+		--green: #4ad07a;
 		--text: #d6e4f0;
 		--muted: #7f97ad;
 
@@ -467,6 +471,10 @@
 	.badge.alias {
 		color: var(--amber);
 		border-color: rgba(242, 178, 58, 0.4);
+	}
+	.badge.live {
+		color: var(--green);
+		border-color: rgba(74, 208, 122, 0.4);
 	}
 
 	.panes {

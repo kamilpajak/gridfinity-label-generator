@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-08-04
+
 ### Fixed
 
-- The production Docker image no longer rebuilds the standards dataset without the maintainer data. That rebuild gave 90 of 235 standards a wrong hardware type and stripped 231 descriptions, so the form required a length for nuts, washers, and rings such as the DIN 315 wing nut. The image now ships the committed dataset.
+- Searching for a standard works again. The production image was rebuilding the standards data without the maintainer data, which replaced every description with the bare standard number. Searching for words such as "wood", "countersunk" or "slotted" returned nothing, so the only way to find a fastener was to know its number. The image now ships the committed dataset.
+- Hardware types are correct again. The same rebuild gave 90 of 235 standards a wrong type, so the form asked for a length for nuts, washers and rings such as the DIN 315 wing nut.
+- Machine screws that were listed as self-tapping, and the type of DIN 2510, are corrected in the image mappings.
 
 ## [3.0.0] - 2026-07-04
 

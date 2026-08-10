@@ -70,6 +70,14 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    ignore:
+      # Only even-numbered Node releases become LTS. Odd ones are supported for
+      # about eight months, so the base image must skip them: Node 25 reached
+      # end of life on 2026-06-01, before Dependabot's proposal was even old
+      # enough to merge. Add the next odd major here when it appears.
+      - dependency-name: 'node'
+        versions:
+          - '25.x'
     cooldown:
       default-days: 7
       semver-major-days: 14

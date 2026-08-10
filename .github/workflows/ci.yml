@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
         with:
           fetch-depth: 0 # Full history for commitlint validation
 
@@ -92,7 +92,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
 
       - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v3
         with:
@@ -125,7 +125,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
         with:
           fetch-depth: 0 # Full history for accurate blame information
 
@@ -172,7 +172,7 @@ jobs:
       security-events: write
 
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v4
 
       - name: Check if Dockerfile exists
         id: dockerfile-check

@@ -56,9 +56,11 @@ updates:
     commit-message:
       prefix: 'ci'
       include: 'scope'
+    # Only `default-days` here: Dependabot rejects the `semver-*-days` keys for
+    # the github-actions ecosystem, because action tags are not required to be
+    # semver, so it cannot tell a major bump from a patch one.
     cooldown:
       default-days: 7
-      semver-major-days: 14
     groups:
       actions-minor-and-patch:
         applies-to: version-updates
@@ -78,6 +80,7 @@ updates:
       - dependency-name: 'node'
         versions:
           - '25.x'
+    # Docker tags are not semver either, so the same restriction applies. A base
+    # image bump is rare enough that 7 days for everything is fine.
     cooldown:
       default-days: 7
-      semver-major-days: 14

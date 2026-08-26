@@ -129,9 +129,9 @@
 			<div class="rounded-xl border border-slate-800/50 bg-slate-950/50 p-5">
 				{@render section('4. Cookies and local storage', Cookie)}
 				<p class="text-xs leading-relaxed text-slate-400">
-					<strong class="font-medium text-slate-300">No cookies are used for tracking.</strong> Your
-					batch labels and settings may be saved in your browser's local storage. This data stays on
-					your device and can be cleared at any time through your browser settings.
+					<strong class="font-medium text-slate-300">No cookies are used for tracking.</strong> Your batch
+					labels and settings may be saved in your browser's local storage. This data stays on your device
+					and can be cleared at any time through your browser settings.
 				</p>
 			</div>
 

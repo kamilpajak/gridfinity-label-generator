@@ -1,10 +1,12 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Builder
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 
-# Install pnpm (pinned version for reproducible builds)
-RUN corepack enable && corepack prepare pnpm@11.1.3 --activate
+# Install pnpm (pinned version for reproducible builds).
+# Installed through npm rather than corepack: corepack is deprecated and Node
+# 25 already ships without it, so a corepack call breaks on the next bump.
+RUN npm install -g pnpm@11.1.3
 
 # Set working directory
 WORKDIR /app
@@ -29,7 +31,7 @@ RUN pnpm build
 RUN pnpm prune --prod
 
 # Stage 2: Production
-FROM node:22-alpine AS production
+FROM node:24-alpine AS production
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001

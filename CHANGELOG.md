@@ -9,13 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Sharper hardware drawings: 117 standards now use generated vector (SVG) technical drawings instead of the legacy raster images, so labels and thumbnails stay crisp at any print resolution. Five of them — the hexagon socket set screws ISO 4026–4029 (DIN 913–916) and the hexalobular cheese head screw ISO 14579 — get an illustration for the first time.
+- Sharper hardware drawings: 117 standards now use generated vector (SVG) technical drawings instead of the legacy raster images, so labels and thumbnails stay crisp at any print resolution. 21 of them get an illustration for the first time, among them the hexagon socket set screws ISO 4026–4029, the high hexagon nut ISO 4033, the prevailing torque nuts ISO 7041 and ISO 10512, and the hexalobular cheese head screw ISO 14579.
 - Print-friendly drawings: all lines are pure black, since a label printer cannot reproduce the gray that hidden edges used to be drawn in, and the image is cropped to the drawing so it is not shrunk by a built-in margin. Line thickness is now set so that every fastener prints at the same weight, instead of large parts coming out hairline-thin.
-- Label layout for 25 standards: the new drawings are less wide than the pictures they replace, so these labels now place the drawing beside the text instead of as a full-width band above it. The text column is narrower as a result. Affected are mostly long fasteners such as ISO 4014, DIN 609 and DIN 444.
+- Label layout for 26 standards: the new drawings are narrower than the pictures they replace, so these labels no longer put the drawing across the top as a full-width band with both lines of text side by side underneath. The drawing now sits next to the text, the same way it does for every other standard. Affected are mostly long fasteners such as ISO 4014, DIN 609 and DIN 444.
+
+## [3.1.0] - 2026-08-04
 
 ### Fixed
 
-- The production Docker image no longer rebuilds the standards dataset without the maintainer data. That rebuild gave 90 of 235 standards a wrong hardware type and stripped 231 descriptions, so the form required a length for nuts, washers, and rings such as the DIN 315 wing nut. The image now ships the committed dataset.
+- Searching for a standard works again. The production image was rebuilding the standards data without the maintainer data, which replaced every description with the bare standard number. Searching for words such as "wood", "countersunk" or "slotted" returned nothing, so the only way to find a fastener was to know its number. The image now ships the committed dataset.
+- Hardware types are correct again. The same rebuild gave 90 of 235 standards a wrong type, so the form asked for a length for nuts, washers and rings such as the DIN 315 wing nut.
+- Machine screws that were listed as self-tapping, and the type of DIN 2510, are corrected in the image mappings.
 
 ## [3.0.0] - 2026-07-04
 

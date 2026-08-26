@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg width="28.803mm" height="23.702mm" viewBox="-11.901 -11.851 28.803 23.702" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="28.984mm" height="23.883mm" viewBox="-11.992 -11.942 28.984 23.883" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <g transform="scale(1,-1)" stroke-linecap="round">
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.2674" id="Visible">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.4485" id="Visible">
       <line x1="-0.0" y1="8.85" x2="-1.762" y2="10.097" />
       <line x1="-1.762" y1="10.097" x2="-4.509" y2="9.205" />
       <line x1="1.762" y1="10.097" x2="-0.0" y2="8.85" />
@@ -74,7 +74,7 @@
       <line x1="15.148" y1="-9.205" x2="14.148" y2="-9.205" />
       <line x1="15.148" y1="-10.097" x2="14.148" y2="-10.097" />
     </g>
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.2139" id="Hidden" stroke-dasharray="2.567 0.642">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.3588" id="Hidden" stroke-dasharray="4.306 1.076">
       <line x1="-0.0" y1="8.85" x2="-1.762" y2="10.097" />
       <line x1="1.762" y1="10.097" x2="-0.0" y2="8.85" />
       <line x1="-1.762" y1="10.097" x2="-4.509" y2="9.205" />
@@ -163,7 +163,7 @@
       <line x1="15.148" y1="6.25" x2="14.148" y2="6.25" />
       <line x1="15.148" y1="-6.25" x2="14.148" y2="-6.25" />
     </g>
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.1604" id="Center">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.2691" id="Center">
       <line x1="0.0" y1="-0.0" x2="-2.802" y2="-0.0" />
       <line x1="-3.362" y1="-0.0" x2="-3.923" y2="-0.0" />
       <line x1="-4.483" y1="-0.0" x2="-7.285" y2="-0.0" />

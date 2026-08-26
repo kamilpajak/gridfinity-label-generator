@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<svg width="121.288mm" height="37.266mm" viewBox="-14.483 -18.633 121.288 37.266" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="122.05mm" height="38.028mm" viewBox="-14.864 -19.014 122.05 38.028" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <g transform="scale(1,-1)" stroke-linecap="round">
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="1.126" id="Visible">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="1.8884" id="Visible">
       <line x1="6.85" y1="-11.0" x2="-6.85" y2="-11.0" />
       <line x1="6.85" y1="-11.0" x2="6.85" y2="11.0" />
       <line x1="-6.85" y1="-11.0" x2="-6.85" y2="11.0" />
@@ -22,7 +22,7 @@
       <line x1="99.023" y1="4.998" x2="98.025" y2="5.997" />
       <line x1="99.023" y1="-4.998" x2="98.025" y2="-5.997" />
     </g>
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.9008" id="Hidden" stroke-dasharray="10.81 2.702">
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="1.5107" id="Hidden" stroke-dasharray="18.128 4.532">
       <line x1="6.85" y1="-11.0" x2="-6.85" y2="-11.0" />
       <line x1="6.85" y1="-11.0" x2="6.85" y2="11.0" />
       <line x1="-6.85" y1="-11.0" x2="-6.85" y2="11.0" />
@@ -43,13 +43,9 @@
       <line x1="99.023" y1="4.998" x2="99.019" y2="5.0" />
       <line x1="19.056" y1="-6.0" x2="19.266" y2="-6.0" />
     </g>
-    <g fill="none" stroke="rgb(0,0,0)" stroke-width="0.6756" id="Center">
-      <line x1="0.0" y1="0.0" x2="-5.354" y2="0.0" />
-      <line x1="-6.425" y1="0.0" x2="-7.495" y2="0.0" />
-      <line x1="-8.566" y1="0.0" x2="-13.92" y2="0.0" />
-      <line x1="0.0" y1="0.0" x2="5.354" y2="0.0" />
-      <line x1="6.425" y1="0.0" x2="7.495" y2="0.0" />
-      <line x1="8.566" y1="0.0" x2="13.92" y2="0.0" />
+    <g fill="none" stroke="rgb(0,0,0)" stroke-width="1.133" id="Center">
+      <line x1="0.0" y1="0.0" x2="-13.92" y2="0.0" />
+      <line x1="0.0" y1="0.0" x2="13.92" y2="0.0" />
       <line x1="0.0" y1="0.0" x2="0.0" y2="-6.95" />
       <line x1="0.0" y1="-8.34" x2="0.0" y2="-9.73" />
       <line x1="0.0" y1="-11.12" x2="0.0" y2="-18.07" />

@@ -13,9 +13,16 @@ from build123d import ExportSVG, Unit, LineType, Location, Polyline
 # below are therefore a target on the PAPER, converted back into drawing units
 # per drawing through its own extent, so every drawing prints the same.
 #
-# The values keep the 5:4:3 ratio of the 0.5/0.4/0.3mm they replace and sit on
-# what that scheme printed at the median drawing, so the average weight is
-# unchanged — only the spread is gone. Tune them from printed results.
+# The values keep the 5:4:3 ratio of the 0.5/0.4/0.3mm they replace. They started
+# at 1.5/1.2/0.9, which is what that scheme printed at the median drawing, and
+# were then settled on tape: a strip carrying din125, din127, din316, din7991 and
+# din936 at 1.5, 2.0, 2.5 and 3.0 dots showed the first two too thin to hold every
+# line, and both 2.5 and 3.0 clean. 2.5 wins the tie because ink costs detail —
+# rasterised into the slot at 360dpi, going from 2.5 to 3.0 dots closes 5.9% of
+# the white enclosed by the outlines (24582 to 23121 px across the five drawings)
+# for no gain in what survives the printer.
+#
+# Regenerate the test with catalog/qa/print_test_variants.py before changing these.
 #
 # All layers are pure black: the label printer is monochrome, so a gray would only
 # dither. Hidden and center lines stay apart by dash pattern and weight.
@@ -40,9 +47,9 @@ _DOT_MM = 25.4 / PRINT_DPI
 LABEL_SLOT_W_MM = 11.4
 LABEL_SLOT_H_MM = 10.0
 
-VISIBLE_DOTS = 1.5
-HIDDEN_DOTS = 1.2
-CENTER_DOTS = 0.9
+VISIBLE_DOTS = 2.5
+HIDDEN_DOTS = 2.0
+CENTER_DOTS = 1.5
 
 HIDDEN_COLOR = (0, 0, 0)
 CENTERLINE_COLOR = (0, 0, 0)

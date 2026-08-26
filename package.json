@@ -90,7 +90,7 @@
 		"ipaddr.js": "^2.5.0",
 		"js-levenshtein": "^1.1.6",
 		"qrcode": "^1.5.4",
-		"svelte-dnd-action": "^0.9.78",
+		"svelte-dnd-action": "^0.9.79",
 		"zustand": "^5.0.15"
 	},
 	"lint-staged": {

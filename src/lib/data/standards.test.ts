@@ -103,7 +103,7 @@ describe('Standards Image Validation', () => {
 
 		expect(iso7046).toBeDefined();
 		expect(iso7046?.image).toBeDefined();
-		expect(iso7046?.image).toContain('din_965.png');
+		expect(iso7046?.image).toContain('iso7046.svg');
 	});
 });
 

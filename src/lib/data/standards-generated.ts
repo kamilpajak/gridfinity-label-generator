@@ -8,7 +8,7 @@
  * Total standards: 235
  * ISO standards: 119
  * DIN standards: 116
- * Standards with images: 156
+ * Standards with images: 161
  */
 
 import type { ISODINStandard, HardwareType } from './standards';
@@ -40,7 +40,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_7984.png'
+		image: '/images/standards/iso14580.svg'
 	},
 	{
 		id: 'iso14584',
@@ -78,7 +78,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_93.png'
+		image: '/images/standards/din93.svg'
 	},
 	{
 		id: 'din95',
@@ -142,7 +142,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_127.png'
+		image: '/images/standards/din127.svg'
 	},
 	{
 		id: 'din128',
@@ -155,7 +155,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_128.png'
+		image: '/images/standards/din128.svg'
 	},
 	{
 		id: 'din137',
@@ -181,7 +181,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_186.png'
+		image: '/images/standards/din186.svg'
 	},
 	{
 		id: 'din261',
@@ -194,7 +194,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_261.png'
+		image: '/images/standards/din261.svg'
 	},
 	{
 		id: 'din315',
@@ -207,7 +207,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_315.png'
+		image: '/images/standards/din315.svg'
 	},
 	{
 		id: 'din316',
@@ -220,7 +220,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_316.png'
+		image: '/images/standards/din316.svg'
 	},
 	{
 		id: 'din404',
@@ -246,7 +246,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_431.png'
+		image: '/images/standards/din431.svg'
 	},
 	{
 		id: 'din432',
@@ -259,7 +259,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_432.png'
+		image: '/images/standards/din432.svg'
 	},
 	{
 		id: 'din434',
@@ -272,7 +272,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_434.png'
+		image: '/images/standards/din434.svg'
 	},
 	{
 		id: 'din435',
@@ -285,7 +285,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_435.png'
+		image: '/images/standards/din435.svg'
 	},
 	{
 		id: 'din436',
@@ -298,7 +298,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_436.png'
+		image: '/images/standards/din436.svg'
 	},
 	{
 		id: 'din444',
@@ -311,7 +311,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_444.png'
+		image: '/images/standards/din444.svg'
 	},
 	{
 		id: 'din462',
@@ -325,7 +325,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_462.png'
+		image: '/images/standards/din462.svg'
 	},
 	{
 		id: 'din463',
@@ -338,7 +338,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_463.png'
+		image: '/images/standards/din463.svg'
 	},
 	{
 		id: 'din464',
@@ -351,7 +351,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_464.png'
+		image: '/images/standards/din464.svg'
 	},
 	{
 		id: 'din466',
@@ -364,7 +364,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_466.png'
+		image: '/images/standards/din466.svg'
 	},
 	{
 		id: 'din467',
@@ -377,7 +377,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_467.png'
+		image: '/images/standards/din467.svg'
 	},
 	{
 		id: 'din471',
@@ -390,7 +390,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'ring' as HardwareType,
-		image: '/images/standards/din_471.png'
+		image: '/images/standards/din471.svg'
 	},
 	{
 		id: 'din472',
@@ -403,7 +403,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'ring' as HardwareType,
-		image: '/images/standards/din_472.png'
+		image: '/images/standards/din472.svg'
 	},
 	{
 		id: 'din478',
@@ -416,7 +416,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_478.png'
+		image: '/images/standards/din478.svg'
 	},
 	{
 		id: 'din479',
@@ -453,7 +453,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_508.png'
+		image: '/images/standards/din508.svg'
 	},
 	{
 		id: 'din546',
@@ -466,7 +466,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_546.png'
+		image: '/images/standards/din546.svg'
 	},
 	{
 		id: 'din557',
@@ -479,7 +479,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_557.png'
+		image: '/images/standards/din557.svg'
 	},
 	{
 		id: 'din562',
@@ -492,7 +492,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_557.png'
+		image: '/images/standards/din557.svg'
 	},
 	{
 		id: 'din564',
@@ -555,7 +555,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_604.png'
+		image: '/images/standards/din604.svg'
 	},
 	{
 		id: 'din605',
@@ -568,7 +568,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_605.png'
+		image: '/images/standards/din605.svg'
 	},
 	{
 		id: 'din607',
@@ -581,7 +581,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_607.png'
+		image: '/images/standards/din607.svg'
 	},
 	{
 		id: 'din608',
@@ -606,7 +606,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_609.png'
+		image: '/images/standards/din609.svg'
 	},
 	{
 		id: 'din610',
@@ -619,7 +619,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_610.png'
+		image: '/images/standards/din609.svg'
 	},
 	{
 		id: 'din653',
@@ -632,7 +632,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_653.png'
+		image: '/images/standards/din653.svg'
 	},
 	{
 		id: 'din787',
@@ -645,7 +645,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_787.png'
+		image: '/images/standards/din787.svg'
 	},
 	{
 		id: 'din792',
@@ -682,7 +682,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_917.png'
+		image: '/images/standards/din917.svg'
 	},
 	{
 		id: 'din928',
@@ -695,7 +695,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_928.png'
+		image: '/images/standards/din928.svg'
 	},
 	{
 		id: 'din935',
@@ -708,7 +708,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_935.png'
+		image: '/images/standards/din935.svg'
 	},
 	{
 		id: 'din936',
@@ -721,7 +721,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_439.png'
+		image: '/images/standards/din936.svg'
 	},
 	{
 		id: 'din937',
@@ -734,7 +734,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_937.png'
+		image: '/images/standards/din937.svg'
 	},
 	{
 		id: 'din979',
@@ -748,7 +748,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_979.png'
+		image: '/images/standards/din979.svg'
 	},
 	{
 		id: 'din981',
@@ -761,7 +761,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_981.png'
+		image: '/images/standards/din981.svg'
 	},
 	{
 		id: 'din986',
@@ -774,7 +774,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_986.png'
+		image: '/images/standards/din986.svg'
 	},
 	{
 		id: 'din988',
@@ -787,7 +787,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'other' as HardwareType,
-		image: '/images/standards/din_988.png'
+		image: '/images/standards/din988.svg'
 	},
 	{
 		id: 'iso1051',
@@ -842,7 +842,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_84.png'
+		image: '/images/standards/din84.svg'
 	},
 	{
 		id: 'iso1234',
@@ -912,7 +912,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'other' as HardwareType,
-		image: '/images/standards/din_1479.png'
+		image: '/images/standards/din1479.svg'
 	},
 	{
 		id: 'din1480',
@@ -991,7 +991,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_85.png'
+		image: '/images/standards/din85.svg'
 	},
 	{
 		id: 'din1587',
@@ -1004,7 +1004,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_1587.png'
+		image: '/images/standards/din1587.svg'
 	},
 	{
 		id: 'din1804',
@@ -1029,7 +1029,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_1816.png'
+		image: '/images/standards/din1816.svg'
 	},
 	{
 		id: 'iso2009',
@@ -1046,7 +1046,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_963.png'
+		image: '/images/standards/din963.svg'
 	},
 	{
 		id: 'iso2010',
@@ -1063,7 +1063,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_964.png'
+		image: '/images/standards/din966.svg'
 	},
 	{
 		id: 'din2093',
@@ -1076,7 +1076,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'other' as HardwareType,
-		image: '/images/standards/din_2093.png'
+		image: '/images/standards/din2093.svg'
 	},
 	{
 		id: 'iso2338',
@@ -1253,7 +1253,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/iso_4014.png'
+		image: '/images/standards/iso4014.svg'
 	},
 	{
 		id: 'iso4016',
@@ -1287,7 +1287,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/iso_4014.png'
+		image: '/images/standards/iso4014.svg'
 	},
 	{
 		id: 'iso4018',
@@ -1325,7 +1325,8 @@ export const generatedStandards: ISODINStandard[] = [
 				code: '913'
 			}
 		],
-		hardwareType: 'screw' as HardwareType
+		hardwareType: 'screw' as HardwareType,
+		image: '/images/standards/din913.svg'
 	},
 	{
 		id: 'iso4027',
@@ -1342,7 +1343,8 @@ export const generatedStandards: ISODINStandard[] = [
 				code: '914'
 			}
 		],
-		hardwareType: 'screw' as HardwareType
+		hardwareType: 'screw' as HardwareType,
+		image: '/images/standards/din914.svg'
 	},
 	{
 		id: 'iso4028',
@@ -1359,7 +1361,8 @@ export const generatedStandards: ISODINStandard[] = [
 				code: '915'
 			}
 		],
-		hardwareType: 'screw' as HardwareType
+		hardwareType: 'screw' as HardwareType,
+		image: '/images/standards/din915.svg'
 	},
 	{
 		id: 'iso4029',
@@ -1376,7 +1379,8 @@ export const generatedStandards: ISODINStandard[] = [
 				code: '916'
 			}
 		],
-		hardwareType: 'screw' as HardwareType
+		hardwareType: 'screw' as HardwareType,
+		image: '/images/standards/din916.svg'
 	},
 	{
 		id: 'iso4032',
@@ -1393,7 +1397,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/iso_4032.png'
+		image: '/images/standards/iso4032.svg'
 	},
 	{
 		id: 'iso4033',
@@ -1411,7 +1415,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_982.png'
+		image: '/images/standards/iso4033.svg'
 	},
 	{
 		id: 'iso4035',
@@ -1428,7 +1432,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_439.png'
+		image: '/images/standards/iso4035.svg'
 	},
 	{
 		id: 'iso4162',
@@ -1445,7 +1449,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'other' as HardwareType,
-		image: '/images/standards/din_6921.png'
+		image: '/images/standards/din6921.svg'
 	},
 	{
 		id: 'iso4762',
@@ -1462,7 +1466,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_912.png'
+		image: '/images/standards/iso4762.svg'
 	},
 	{
 		id: 'iso4766',
@@ -1529,7 +1533,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_6330.png'
+		image: '/images/standards/din6330.svg'
 	},
 	{
 		id: 'din6331',
@@ -1542,7 +1546,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_6331.png'
+		image: '/images/standards/din6331.svg'
 	},
 	{
 		id: 'din6334',
@@ -1555,7 +1559,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_6334.png'
+		image: '/images/standards/din6334.svg'
 	},
 	{
 		id: 'din6340',
@@ -1568,7 +1572,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_6340.png'
+		image: '/images/standards/din6340.svg'
 	},
 	{
 		id: 'din6796',
@@ -1581,7 +1585,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_6796.png'
+		image: '/images/standards/din6796.svg'
 	},
 	{
 		id: 'din6797',
@@ -1619,7 +1623,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_6914.png'
+		image: '/images/standards/din6914.svg'
 	},
 	{
 		id: 'din6915',
@@ -1633,7 +1637,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'other' as HardwareType,
-		image: '/images/standards/din_6915.png'
+		image: '/images/standards/din6915.svg'
 	},
 	{
 		id: 'din6916',
@@ -1646,7 +1650,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_6916.png'
+		image: '/images/standards/din6916.svg'
 	},
 	{
 		id: 'din6917',
@@ -1684,7 +1688,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_6923.png'
+		image: '/images/standards/din6923.svg'
 	},
 	{
 		id: 'din6925',
@@ -1697,7 +1701,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_6925.png'
+		image: '/images/standards/din6925.svg'
 	},
 	{
 		id: 'din6926',
@@ -1710,7 +1714,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_6926.png'
+		image: '/images/standards/din6923.svg'
 	},
 	{
 		id: 'din6927',
@@ -1723,7 +1727,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_6927.png'
+		image: '/images/standards/din6927.svg'
 	},
 	{
 		id: 'iso7040',
@@ -1741,7 +1745,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_982.png'
+		image: '/images/standards/iso7040.svg'
 	},
 	{
 		id: 'iso7041',
@@ -1759,7 +1763,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_982.png'
+		image: '/images/standards/iso7041.svg'
 	},
 	{
 		id: 'iso7042',
@@ -1780,7 +1784,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_6925.png'
+		image: '/images/standards/iso7042.svg'
 	},
 	{
 		id: 'iso7045',
@@ -1797,7 +1801,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_7985.png'
+		image: '/images/standards/iso7045.svg'
 	},
 	{
 		id: 'iso7046',
@@ -1815,7 +1819,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_965.png'
+		image: '/images/standards/iso7046.svg'
 	},
 	{
 		id: 'iso7047',
@@ -1833,7 +1837,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_966.png'
+		image: '/images/standards/iso7047.svg'
 	},
 	{
 		id: 'iso7048',
@@ -1935,7 +1939,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_125.png'
+		image: '/images/standards/iso7089.svg'
 	},
 	{
 		id: 'iso7090',
@@ -1953,7 +1957,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_125.png'
+		image: '/images/standards/din125.svg'
 	},
 	{
 		id: 'iso7091',
@@ -1970,7 +1974,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_126.png'
+		image: '/images/standards/iso7091.svg'
 	},
 	{
 		id: 'iso7092',
@@ -1987,7 +1991,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_433.png'
+		image: '/images/standards/iso7092.svg'
 	},
 	{
 		id: 'iso7093',
@@ -2005,7 +2009,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_9021.png'
+		image: '/images/standards/iso7093.svg'
 	},
 	{
 		id: 'iso7094',
@@ -2022,7 +2026,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_440.png'
+		image: '/images/standards/iso7094.svg'
 	},
 	{
 		id: 'din7337',
@@ -2108,7 +2112,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_7349.png'
+		image: '/images/standards/din7349.svg'
 	},
 	{
 		id: 'iso7379',
@@ -2125,7 +2129,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/iso_7379.png'
+		image: '/images/standards/iso7379.svg'
 	},
 	{
 		id: 'iso7380',
@@ -2143,7 +2147,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/iso_7380.png'
+		image: '/images/standards/iso7380.svg'
 	},
 	{
 		id: 'iso7434',
@@ -2207,7 +2211,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'other' as HardwareType,
-		image: '/images/standards/din_7603.png'
+		image: '/images/standards/din7603.svg'
 	},
 	{
 		id: 'iso7719',
@@ -2225,7 +2229,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_980.png'
+		image: '/images/standards/iso7719.svg'
 	},
 	{
 		id: 'iso7720',
@@ -2243,7 +2247,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_982.png'
+		image: '/images/standards/iso7042.svg'
 	},
 	{
 		id: 'din7965',
@@ -2269,7 +2273,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_7968.png'
+		image: '/images/standards/din609.svg'
 	},
 	{
 		id: 'din7969',
@@ -2295,7 +2299,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_7980.png'
+		image: '/images/standards/din7980.svg'
 	},
 	{
 		id: 'din7984',
@@ -2308,7 +2312,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_7984.png'
+		image: '/images/standards/din7984.svg'
 	},
 	{
 		id: 'din7990',
@@ -2321,7 +2325,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_7990.png'
+		image: '/images/standards/din931.svg'
 	},
 	{
 		id: 'din7991',
@@ -2334,7 +2338,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_7991.png'
+		image: '/images/standards/din7991.svg'
 	},
 	{
 		id: 'din7997',
@@ -2361,7 +2365,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_7999.png'
+		image: '/images/standards/din6914.svg'
 	},
 	{
 		id: 'iso8673',
@@ -2379,7 +2383,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_934.png'
+		image: '/images/standards/iso4032.svg'
 	},
 	{
 		id: 'iso8674',
@@ -2397,7 +2401,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_982.png'
+		image: '/images/standards/iso4033.svg'
 	},
 	{
 		id: 'iso8675',
@@ -2415,7 +2419,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_439.png'
+		image: '/images/standards/iso4035.svg'
 	},
 	{
 		id: 'iso8676',
@@ -2432,7 +2436,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_961.png'
+		image: '/images/standards/iso4014.svg'
 	},
 	{
 		id: 'iso8678',
@@ -2449,7 +2453,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_603.png'
+		image: '/images/standards/din603.svg'
 	},
 	{
 		id: 'iso8733',
@@ -2556,7 +2560,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'washer' as HardwareType,
-		image: '/images/standards/din_1440.png'
+		image: '/images/standards/iso8738.svg'
 	},
 	{
 		id: 'iso8740',
@@ -2745,7 +2749,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_960.png'
+		image: '/images/standards/iso4014.svg'
 	},
 	{
 		id: 'iso10510',
@@ -2780,7 +2784,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_985.png'
+		image: '/images/standards/iso10511.svg'
 	},
 	{
 		id: 'iso10512',
@@ -2798,7 +2802,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_985.png'
+		image: '/images/standards/iso7040.svg'
 	},
 	{
 		id: 'iso10513',
@@ -2816,7 +2820,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_980.png'
+		image: '/images/standards/iso7042.svg'
 	},
 	{
 		id: 'iso10642',
@@ -2833,7 +2837,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_7991.png'
+		image: '/images/standards/din7991.svg'
 	},
 	{
 		id: 'iso10644',
@@ -2916,7 +2920,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_912.png'
+		image: '/images/standards/iso4762.svg'
 	},
 	{
 		id: 'iso13337',
@@ -2950,7 +2954,8 @@ export const generatedStandards: ISODINStandard[] = [
 				code: '34822'
 			}
 		],
-		hardwareType: 'screw' as HardwareType
+		hardwareType: 'screw' as HardwareType,
+		image: '/images/standards/iso14579.svg'
 	},
 	{
 		id: 'iso14581',
@@ -3001,7 +3006,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_7985.png'
+		image: '/images/standards/iso7045.svg'
 	},
 	{
 		id: 'iso14585',
@@ -3071,7 +3076,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'other' as HardwareType,
-		image: '/images/standards/din_6921.png'
+		image: '/images/standards/din6921.svg'
 	},
 	{
 		id: 'iso15072',
@@ -3089,7 +3094,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'other' as HardwareType,
-		image: '/images/standards/din_6921.png'
+		image: '/images/standards/din6921.svg'
 	},
 	{
 		id: 'din15237',
@@ -3423,7 +3428,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_929.png'
+		image: '/images/standards/iso21670.svg'
 	},
 	{
 		id: 'din22424',
@@ -3477,7 +3482,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'screw' as HardwareType,
-		image: '/images/standards/din_25201.png'
+		image: '/images/standards/din25201.svg'
 	},
 	{
 		id: 'din34817',
@@ -3502,7 +3507,7 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_70852.png'
+		image: '/images/standards/din70852.svg'
 	},
 	{
 		id: 'din70952',
@@ -3555,6 +3560,6 @@ export const generatedStandards: ISODINStandard[] = [
 			}
 		],
 		hardwareType: 'nut' as HardwareType,
-		image: '/images/standards/din_80705.png'
+		image: '/images/standards/din80705.svg'
 	}
 ] as const;

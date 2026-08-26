@@ -87,3 +87,7 @@ data/dinmedia-*.json
 # Python bytecode (maintainer catalog pipeline)
 __pycache__/
 *.pyc
+
+# Pen weight calibration output. The two scripts in catalog/qa/ rebuild all of it
+# from the committed dimensions, and the strip is only ever printed once.
+catalog/out/print-test/

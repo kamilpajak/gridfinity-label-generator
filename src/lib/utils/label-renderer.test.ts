@@ -279,5 +279,25 @@ describe('label-renderer', () => {
 			expect(result.src).toBe('/images/standards/din_912.png');
 			expect(result.image).toBeNull();
 		});
+
+		it('should load SVG standard images directly (aspect-ratio measurement)', async () => {
+			globalThis.Image = createMockImageThatLoads(120, 90);
+
+			const result = await resolveImageWithSvgPriority('/images/standards/din912.svg');
+
+			expect(result.src).toBe('/images/standards/din912.svg');
+			expect(result.image).toBeInstanceOf(MockImage);
+			expect(result.image?.width).toBe(120);
+			expect(result.image?.height).toBe(90);
+		});
+
+		it('should return null image when SVG standard image fails to load', async () => {
+			globalThis.Image = createMockImageThatFails();
+
+			const result = await resolveImageWithSvgPriority('/images/standards/din912.svg');
+
+			expect(result.src).toBe('/images/standards/din912.svg');
+			expect(result.image).toBeNull();
+		});
 	});
 });

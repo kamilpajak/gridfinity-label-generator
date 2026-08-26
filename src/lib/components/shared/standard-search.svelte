@@ -101,7 +101,11 @@
 					<StandardImage
 						src={standard.image}
 						alt={formatDesignations(standard)}
-						class="ml-3 h-10 w-10 flex-shrink-0 rounded bg-white/90 object-contain"
+						class="ml-3 h-10 w-10 flex-shrink-0 rounded object-contain {standard.image.endsWith(
+							'.svg'
+						)
+							? 'invert'
+							: 'bg-white/90'}"
 					/>
 				{/if}
 			</Command.Item>

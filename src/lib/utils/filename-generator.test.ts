@@ -136,6 +136,28 @@ describe('generateLabelFilename', () => {
 			expect(filename).toBe('DIN934_M10.png');
 		});
 
+		it('should generate filename without length for rings even when a stale length is passed', () => {
+			const mockStandard: ISODINStandard = {
+				id: 'din471',
+				designations: [{ system: 'DIN', code: '471' }],
+				primarySystem: 'DIN',
+				description: 'Retaining Ring for Shafts',
+				hardwareType: HardwareType.RING,
+				image: '/images/din471.png'
+			};
+
+			const filename = generateLabelFilename({
+				labelMode: 'fastener',
+				standard: mockStandard,
+				threadSize: 'M8',
+				length: '20', // Stale length left over from a previously selected screw (#169)
+				printableWidth: 31,
+				printableHeight: 12
+			});
+
+			expect(filename).toBe('DIN471_M8.png');
+		});
+
 		it('should handle imperial thread sizes', () => {
 			const mockStandard: ISODINStandard = {
 				id: 'asme_b18_3',

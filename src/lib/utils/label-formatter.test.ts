@@ -195,6 +195,29 @@ describe('formatPrimaryText', () => {
 			expect(result).toBe('');
 		});
 	});
+
+	describe('Length-less hardware (#169)', () => {
+		it.each([HardwareType.NUT, HardwareType.WASHER, HardwareType.RING])(
+			'should drop the length for %s and show only the thread size',
+			(hardwareType) => {
+				const result = formatPrimaryText('fastener', 'M8', '20', '', '', '', hardwareType);
+				expect(result).toBe('M8');
+			}
+		);
+
+		it('should drop the length for an imperial nut but keep the UNC designation', () => {
+			const result = formatPrimaryText('fastener', '1/4', '1', '', '20', 'UNC', HardwareType.NUT);
+			expect(result).toBe('1/4−20 UNC');
+		});
+
+		it.each([HardwareType.SCREW, HardwareType.PIN, HardwareType.RIVET, HardwareType.OTHER])(
+			'should keep the length for %s',
+			(hardwareType) => {
+				const result = formatPrimaryText('fastener', 'M8', '20', '', '', '', hardwareType);
+				expect(result).toBe('M8 × 20');
+			}
+		);
+	});
 });
 
 describe('formatSecondaryText', () => {

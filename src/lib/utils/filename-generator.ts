@@ -67,9 +67,9 @@ function generateFastenerFilename(
 	const parts = [sanitizedStandard];
 
 	if (sanitizedThreadSize) {
-		// Add length if present (screws/bolts have length, nuts/washers don't).
-		// Nuts, washers and rings have no length; drop it even if the length
-		// argument still holds a stale value from a previously selected screw (#169).
+		// Add the length for hardware that has one. Nuts, washers and rings have
+		// none; drop it even if the argument still holds a stale value from a
+		// previously selected screw (#169).
 		const effectiveLength = shouldDisableLength(standard.hardwareType) ? '' : length;
 		if (effectiveLength && effectiveLength.trim() !== '') {
 			const sanitizedLength = sanitizeThreadSize(effectiveLength);

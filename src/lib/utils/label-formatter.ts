@@ -45,7 +45,7 @@ function formatThreadDesignation(
 	threadSize: string,
 	pitch?: string,
 	threadType?: string,
-	hardwareType?: string
+	hardwareType?: HardwareType
 ): string {
 	const isMetric = isMetricSize(threadSize);
 	const startsWithM = threadSize.toUpperCase().startsWith('M');

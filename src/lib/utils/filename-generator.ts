@@ -4,7 +4,7 @@
  * Generates descriptive filenames for exported labels based on their configuration.
  */
 
-import type { ISODINStandard } from '$lib/data/standards';
+import { shouldDisableLength, type ISODINStandard } from '$lib/data/standards';
 
 export interface FilenameOptions {
 	labelMode: 'fastener' | 'general';
@@ -67,9 +67,12 @@ function generateFastenerFilename(
 	const parts = [sanitizedStandard];
 
 	if (sanitizedThreadSize) {
-		// Add length if present (screws/bolts have length, nuts/washers don't)
-		if (length && length.trim() !== '') {
-			const sanitizedLength = sanitizeThreadSize(length);
+		// Add length if present (screws/bolts have length, nuts/washers don't).
+		// Nuts, washers and rings have no length; drop it even if the length
+		// argument still holds a stale value from a previously selected screw (#169).
+		const effectiveLength = shouldDisableLength(standard.hardwareType) ? '' : length;
+		if (effectiveLength && effectiveLength.trim() !== '') {
+			const sanitizedLength = sanitizeThreadSize(effectiveLength);
 			const unit = isImperial ? 'in' : 'mm';
 			parts.push(`${sanitizedThreadSize}x${sanitizedLength}${unit}`);
 		} else {

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Batch mode: adding a nut, washer or ring to the batch right after a screw no longer prints the screw's old length on the label. The preview already dropped it; the batch chip, the label list and the exported strip now do too.
+- Exporting a nut or washer PNG right after a screw no longer adds the screw's old length to the file name, for example `DIN125_M6.png` instead of `DIN125_M6x20mm.png`.
 
 ## [3.1.0] - 2026-08-04
 

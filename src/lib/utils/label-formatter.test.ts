@@ -195,6 +195,59 @@ describe('formatPrimaryText', () => {
 			expect(result).toBe('');
 		});
 	});
+
+	describe('Length-less hardware (#169)', () => {
+		it.each([HardwareType.NUT, HardwareType.WASHER, HardwareType.RING])(
+			'should drop the length for %s and show only the thread size',
+			(hardwareType) => {
+				const result = formatPrimaryText('fastener', 'M8', '20', '', '', '', hardwareType);
+				expect(result).toBe('M8');
+			}
+		);
+
+		it('should drop the length for an imperial nut but keep the UNC designation', () => {
+			const result = formatPrimaryText('fastener', '1/4', '1', '', '20', 'UNC', HardwareType.NUT);
+			expect(result).toBe('1/4−20 UNC');
+		});
+
+		it.each([HardwareType.SCREW, HardwareType.PIN, HardwareType.RIVET, HardwareType.OTHER])(
+			'should keep the length for %s',
+			(hardwareType) => {
+				const result = formatPrimaryText('fastener', 'M8', '20', '', '', '', hardwareType);
+				expect(result).toBe('M8 × 20');
+			}
+		);
+	});
+
+	describe('Pitch-less hardware (#169)', () => {
+		it('should drop the pitch for a washer and show only the thread size', () => {
+			const result = formatPrimaryText('fastener', 'M8', '', '', '1', '', HardwareType.WASHER);
+			expect(result).toBe('M8');
+		});
+
+		it('should drop the pitch and thread type for an imperial washer', () => {
+			const result = formatPrimaryText('fastener', '1/4', '', '', '20', 'UNC', HardwareType.WASHER);
+			expect(result).toBe('1/4');
+		});
+
+		it('should drop the pitch for a self-tapping screw but keep the length', () => {
+			const result = formatPrimaryText(
+				'fastener',
+				'M3',
+				'20',
+				'',
+				'0.5',
+				'',
+				HardwareType.SELF_TAPPING
+			);
+			expect(result).toBe('3 × 20');
+		});
+
+		it('should keep the pitch for a nut', () => {
+			const result = formatPrimaryText('fastener', 'M8', '', '', '1', '', HardwareType.NUT);
+			expect(result).toBe('M8 × 1');
+		});
+	});
 });
 
 describe('formatSecondaryText', () => {

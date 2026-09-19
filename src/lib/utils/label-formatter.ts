@@ -4,7 +4,7 @@
  * Provides functions for formatting label text based on mode and input values
  */
 
-import { HardwareType } from '$lib/data/standards';
+import { HardwareType, shouldDisableLength, shouldDisablePitch } from '$lib/data/standards';
 
 /**
  * Checks if a thread size uses metric units (mm, not inches)
@@ -45,7 +45,7 @@ function formatThreadDesignation(
 	threadSize: string,
 	pitch?: string,
 	threadType?: string,
-	hardwareType?: string
+	hardwareType?: HardwareType
 ): string {
 	const isMetric = isMetricSize(threadSize);
 	const startsWithM = threadSize.toUpperCase().startsWith('M');
@@ -90,19 +90,30 @@ export function formatPrimaryText(
 	primaryText: string,
 	pitch?: string,
 	threadType?: string,
-	hardwareType?: string
+	hardwareType?: HardwareType
 ): string {
 	if (labelMode === 'fastener') {
 		const isMetric = isMetricSize(threadSize);
-		const formattedThread = formatThreadDesignation(threadSize, pitch, threadType, hardwareType);
+		// Washers and self-tapping screws have no thread pitch; drop it even if the
+		// pitch select still holds a stale value from a previously selected screw (#169).
+		const effectivePitch = shouldDisablePitch(hardwareType) ? undefined : pitch;
+		const formattedThread = formatThreadDesignation(
+			threadSize,
+			effectivePitch,
+			threadType,
+			hardwareType
+		);
+		// Nuts, washers and rings have no length; drop it even if the length input
+		// still holds a stale value from a previously selected screw/pin/rivet (#169).
+		const effectiveLength = shouldDisableLength(hardwareType) ? '' : length;
 
-		if (formattedThread && length) {
+		if (formattedThread && effectiveLength) {
 			// Show both thread size (with pitch) and length
 			// Both metric and imperial: use × (multiplication sign) for better visual appearance
 			// Metric: M5 × 0.5 × 20
 			// Imperial: 3/8−16 UNC × 2"
 			const lengthSuffix = isMetric ? '' : '″';
-			return `${formattedThread} × ${length}${lengthSuffix}`;
+			return `${formattedThread} × ${effectiveLength}${lengthSuffix}`;
 		} else if (formattedThread) {
 			// Show only thread size with pitch (for nuts/washers or when no length specified)
 			return formattedThread;

@@ -92,6 +92,72 @@ describe('generateLabelFilename', () => {
 			expect(filename).toBe('DIN934_M10.png');
 		});
 
+		it('should generate filename without length for washers even when a stale length is passed', () => {
+			const mockStandard: ISODINStandard = {
+				id: 'din125',
+				designations: [{ system: 'DIN', code: '125' }],
+				primarySystem: 'DIN',
+				description: 'Flat Washer',
+				hardwareType: HardwareType.WASHER,
+				image: '/images/din125.png'
+			};
+
+			const filename = generateLabelFilename({
+				labelMode: 'fastener',
+				standard: mockStandard,
+				threadSize: 'M6',
+				length: '20', // Stale length left over from a previously selected screw (#169)
+				printableWidth: 31,
+				printableHeight: 12
+			});
+
+			expect(filename).toBe('DIN125_M6.png');
+		});
+
+		it('should generate filename without length for nuts even when a stale length is passed', () => {
+			const mockStandard: ISODINStandard = {
+				id: 'din934',
+				designations: [{ system: 'DIN', code: '934' }],
+				primarySystem: 'DIN',
+				description: 'Hexagon Nut',
+				hardwareType: HardwareType.NUT,
+				image: '/images/din934.png'
+			};
+
+			const filename = generateLabelFilename({
+				labelMode: 'fastener',
+				standard: mockStandard,
+				threadSize: 'M10',
+				length: '20', // Stale length left over from a previously selected screw (#169)
+				printableWidth: 31,
+				printableHeight: 12
+			});
+
+			expect(filename).toBe('DIN934_M10.png');
+		});
+
+		it('should generate filename without length for rings even when a stale length is passed', () => {
+			const mockStandard: ISODINStandard = {
+				id: 'din471',
+				designations: [{ system: 'DIN', code: '471' }],
+				primarySystem: 'DIN',
+				description: 'Retaining Ring for Shafts',
+				hardwareType: HardwareType.RING,
+				image: '/images/din471.png'
+			};
+
+			const filename = generateLabelFilename({
+				labelMode: 'fastener',
+				standard: mockStandard,
+				threadSize: 'M8',
+				length: '20', // Stale length left over from a previously selected screw (#169)
+				printableWidth: 31,
+				printableHeight: 12
+			});
+
+			expect(filename).toBe('DIN471_M8.png');
+		});
+
 		it('should handle imperial thread sizes', () => {
 			const mockStandard: ISODINStandard = {
 				id: 'asme_b18_3',

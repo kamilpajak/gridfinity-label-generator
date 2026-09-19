@@ -720,6 +720,42 @@ describe('batch-renderer', () => {
 		});
 	});
 
+	describe('length-less hardware (#169)', () => {
+		it('drops the length from a washer label but keeps it for a screw label', async () => {
+			const batch: BatchRenderData = {
+				height: 12,
+				labels: [
+					{
+						mode: 'fastener',
+						measurementSystem: 'metric',
+						threadSize: 'M8',
+						length: 20,
+						width: 40,
+						standard: 'iso4762' // screw, has a length
+					},
+					{
+						mode: 'fastener',
+						measurementSystem: 'metric',
+						threadSize: 'M8',
+						length: 20,
+						width: 40,
+						standard: 'iso7089' // washer, no length
+					}
+				],
+				maxLabels: 20
+			};
+
+			await renderBatchTape({ canvas: mockCanvas, batch, dpi: 300 });
+
+			expect(mockSolveLabelLayout).toHaveBeenCalledWith(
+				expect.objectContaining({ primaryText: 'M8 × 20' })
+			);
+			expect(mockSolveLabelLayout).toHaveBeenCalledWith(
+				expect.objectContaining({ primaryText: 'M8' })
+			);
+		});
+	});
+
 	describe('cutting line placement', () => {
 		it('should draw 2 cutting lines for 3 labels', async () => {
 			const batch: BatchRenderData = {

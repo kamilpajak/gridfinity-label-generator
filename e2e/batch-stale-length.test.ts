@@ -42,7 +42,7 @@ test.describe('Batch Mode - stale length and pitch on length-less hardware (#169
 	}
 
 	test('washer label added after a fine-pitch screw has no pitch', async ({ page }) => {
-		// Given: a screw label with a fine pitch and length was added to the batch
+		// Given: the form holds a DIN 912 M8 screw with a fine pitch and length 20
 		const batchPage = new BatchModePage(page);
 		await batchPage.goto();
 		const form = new SingleModePage(page);
@@ -51,6 +51,10 @@ test.describe('Batch Mode - stale length and pitch on length-less hardware (#169
 		await form.selectThreadSize('M8');
 		await form.selectPitch('1.0');
 		await form.fillLength('20');
+
+		// And: the fine pitch was really selected
+		await form.preview.waitForLabelRender();
+		await expect(form.preview.canvas).toHaveAttribute('data-primary-text', 'M8 × 1.0 × 20');
 
 		// When: the form switches to a washer standard, which has no thread pitch
 		await form.selectHardwareByName('7089', /ISO 7089.*DIN 125/);

@@ -4,7 +4,7 @@
  * Provides functions for formatting label text based on mode and input values
  */
 
-import { HardwareType, shouldDisableLength } from '$lib/data/standards';
+import { HardwareType, shouldDisableLength, shouldDisablePitch } from '$lib/data/standards';
 
 /**
  * Checks if a thread size uses metric units (mm, not inches)
@@ -94,7 +94,15 @@ export function formatPrimaryText(
 ): string {
 	if (labelMode === 'fastener') {
 		const isMetric = isMetricSize(threadSize);
-		const formattedThread = formatThreadDesignation(threadSize, pitch, threadType, hardwareType);
+		// Washers and self-tapping screws have no thread pitch; drop it even if the
+		// pitch select still holds a stale value from a previously selected screw (#169).
+		const effectivePitch = shouldDisablePitch(hardwareType) ? undefined : pitch;
+		const formattedThread = formatThreadDesignation(
+			threadSize,
+			effectivePitch,
+			threadType,
+			hardwareType
+		);
 		// Nuts, washers and rings have no length; drop it even if the length input
 		// still holds a stale value from a previously selected screw/pin/rivet (#169).
 		const effectiveLength = shouldDisableLength(hardwareType) ? '' : length;

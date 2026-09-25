@@ -198,8 +198,22 @@ export const woodScrewSizes = ['3', '3.5', '4', '4.5', '5', '6', '8', '10'];
 /**
  * Standard IDs that are wood screws (not sheet metal self-tapping)
  * These use plain diameter sizes instead of ST series.
+ *
+ * Includes the hexalobular (Torx-style, ISO 10664 drive) chipboard/wood screw
+ * standards ISO 14585/14586/14587, which are the hexalobular-drive counterparts
+ * of the slotted wood screws DIN 95/96/97 and share the same nominal mm sizing
+ * (e.g. 3.5, 4, 5mm) rather than the ST-gauge sheet-metal self-tapping series.
  */
-export const WOOD_SCREW_STANDARD_IDS = ['din571', 'din7997', 'din95', 'din96', 'din97'];
+export const WOOD_SCREW_STANDARD_IDS = [
+	'din571',
+	'din7997',
+	'din95',
+	'din96',
+	'din97',
+	'iso14585',
+	'iso14586',
+	'iso14587'
+];
 
 /**
  * Minimal standard interface for thread size system determination

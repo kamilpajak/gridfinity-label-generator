@@ -230,6 +230,13 @@ describe('ThreadSizeSystem', () => {
 			expect(WOOD_SCREW_STANDARD_IDS).toContain('din96');
 			expect(WOOD_SCREW_STANDARD_IDS).toContain('din97');
 		});
+
+		it('should include the hexalobular (Torx-drive) wood/chipboard screw standards', async () => {
+			const { WOOD_SCREW_STANDARD_IDS } = await import('./thread-pitch');
+			expect(WOOD_SCREW_STANDARD_IDS).toContain('iso14585');
+			expect(WOOD_SCREW_STANDARD_IDS).toContain('iso14586');
+			expect(WOOD_SCREW_STANDARD_IDS).toContain('iso14587');
+		});
 	});
 
 	describe('getThreadSizeSystem function', () => {
@@ -249,6 +256,12 @@ describe('ThreadSizeSystem', () => {
 			const { getThreadSizeSystem } = await import('./thread-pitch');
 			const mockStandard = { id: 'iso7049', hardwareType: 'self_tapping' };
 			expect(getThreadSizeSystem(mockStandard, 'metric')).toBe('tapping');
+		});
+
+		it('should return "nominal" for ISO 14586 (hexalobular/Torx countersunk wood screws)', async () => {
+			const { getThreadSizeSystem } = await import('./thread-pitch');
+			const mockStandard = { id: 'iso14586', hardwareType: 'self_tapping' };
+			expect(getThreadSizeSystem(mockStandard, 'metric')).toBe('nominal');
 		});
 
 		it('should return "iso_metric" for regular metric screws', async () => {

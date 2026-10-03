@@ -36,6 +36,7 @@ docker run -p 8081:80 \
   -e ORIGIN=http://localhost:8081 \
   -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
   -e PUBLIC_MATOMO_SITE_ID=1 \
+  -e PUBLIC_ALLOWED_ORIGINS=http://localhost:8081 \
   gridscribe-test
 
 # Test in browser
@@ -103,6 +104,7 @@ docker run -d \
   -e ORIGIN=https://gridfinitylabels.com \
   -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
   -e PUBLIC_MATOMO_SITE_ID=1 \
+  -e PUBLIC_ALLOWED_ORIGINS=https://gridfinitylabels.com,https://www.gridfinitylabels.com \
   --restart unless-stopped \
   ghcr.io/kamilpajak/gridfinity-label-generator:latest
 
@@ -148,6 +150,7 @@ docker run -d \
   -e ORIGIN=https://gridfinitylabels.com \
   -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
   -e PUBLIC_MATOMO_SITE_ID=1 \
+  -e PUBLIC_ALLOWED_ORIGINS=https://gridfinitylabels.com,https://www.gridfinitylabels.com \
   --restart unless-stopped \
   ghcr.io/kamilpajak/gridfinity-label-generator:latest
 
@@ -194,6 +197,7 @@ docker run -d \
   -e ORIGIN=https://gridfinitylabels.com \
   -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
   -e PUBLIC_MATOMO_SITE_ID=1 \
+  -e PUBLIC_ALLOWED_ORIGINS=https://gridfinitylabels.com,https://www.gridfinitylabels.com \
   --restart unless-stopped \
   ghcr.io/kamilpajak/gridfinity-label-generator:$TARGET_SHA
 
@@ -219,6 +223,7 @@ docker run -d --name gridscribe -p 8081:80 \
   -e ORIGIN=https://gridfinitylabels.com \
   -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
   -e PUBLIC_MATOMO_SITE_ID=1 \
+  -e PUBLIC_ALLOWED_ORIGINS=https://gridfinitylabels.com,https://www.gridfinitylabels.com \
   --restart unless-stopped \
   ghcr.io/kamilpajak/gridfinity-label-generator:sha-$PREVIOUS_SHA
 ```
@@ -323,6 +328,22 @@ Required environment variables for the container:
 | `PORT`     | `80`                           | Internal container port         |
 | `ORIGIN`   | `https://gridfinitylabels.com` | Public URL (for CORS/SvelteKit) |
 
+Required for the QR code shortener:
+
+| Variable                 | Value                                                           | Description                            |
+| ------------------------ | --------------------------------------------------------------- | -------------------------------------- |
+| `PUBLIC_ALLOWED_ORIGINS` | `https://gridfinitylabels.com,https://www.gridfinitylabels.com` | Origins allowed to call `/api/shorten` |
+
+Comma-separated list of origins. `localhost:5173`, `localhost:4173` and
+`localhost:3000` are always allowed, so dev works without this variable. Any other
+origin — including the real domain — is rejected with `403 Forbidden` unless listed
+here.
+
+Leaving this unset does not break the page and does not show an error. QR codes are
+still generated, but long URLs are no longer shortened: the full URL goes into the QR
+code, which makes it denser and harder to scan on a small label. Set the variable to
+the exact origins the site is served from, scheme included, no trailing slash.
+
 Analytics (optional but recommended):
 
 | Variable                | Value                                      | Description          |
@@ -330,12 +351,35 @@ Analytics (optional but recommended):
 | `PUBLIC_MATOMO_URL`     | `https://statistics.gridfinitylabels.com/` | Matomo analytics URL |
 | `PUBLIC_MATOMO_SITE_ID` | `1`                                        | Matomo site ID       |
 
+Affiliate links (optional, leave unset to hide affiliate links):
+
+| Variable                    | Value          | Description                       |
+| --------------------------- | -------------- | --------------------------------- |
+| `PUBLIC_AMAZON_STORE_ID`    | Associates tag | Amazon Associates store id        |
+| `PUBLIC_AFFILIATE_PTE560BT` | Affiliate URL  | Link for the Brother PT-E560BT    |
+| `PUBLIC_AFFILIATE_PTP710BT` | Affiliate URL  | Link for the Brother P-touch CUBE |
+| `PUBLIC_AFFILIATE_TZE231`   | Affiliate URL  | Link for the Brother TZe-231 tape |
+| `PUBLIC_AFFILIATE_MAGNETS`  | Affiliate URL  | Link for the neodymium magnets    |
+
+Privacy policy (optional, operator details shown in the in-app policy):
+
+| Variable                    | Value          | Description                         |
+| --------------------------- | -------------- | ----------------------------------- |
+| `PUBLIC_CONTACT_EMAIL`      | Operator email | Contact address shown in the policy |
+| `PUBLIC_PRIVACY_CONTROLLER` | Operator name  | Named data controller               |
+
+Leave both empty and the policy renders a neutral self-hosted notice instead.
+
 Optional:
 
-| Variable          | Default   | Description                              |
-| ----------------- | --------- | ---------------------------------------- |
-| `HOST`            | `0.0.0.0` | Bind address (already set in Dockerfile) |
-| `BODY_SIZE_LIMIT` | -         | Request body size limit                  |
+| Variable                 | Default   | Description                                |
+| ------------------------ | --------- | ------------------------------------------ |
+| `HOST`                   | `0.0.0.0` | Bind address (already set in Dockerfile)   |
+| `BODY_SIZE_LIMIT`        | -         | Request body size limit                    |
+| `PUBLIC_ALLOW_E2E_PAGES` | unset     | `true` exposes the `/e2e` test-only routes |
+
+Keep `PUBLIC_ALLOW_E2E_PAGES` unset in production. It exists for end-to-end test runs
+and serves internal comparison pages that are not meant for visitors.
 
 ---
 
@@ -350,7 +394,22 @@ Optional:
 - [ ] Container logs show no errors
 - [ ] `curl http://localhost:8081` works on VPS
 - [ ] Application accessible via `https://gridfinitylabels.com`
+- [ ] QR code shortener answers its own origin (see below)
 - [ ] All features work as expected
+
+The shortener check is worth running by hand, because a missing
+`PUBLIC_ALLOWED_ORIGINS` shows no error in the browser:
+
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' \
+  -X POST https://gridfinitylabels.com/api/shorten \
+  -H 'Content-Type: application/json' \
+  -H 'Origin: https://gridfinitylabels.com' \
+  -d '{"url":"https://example.com/a-url-longer-than-fifty-characters-for-testing"}'
+```
+
+`200` means shortening works. `403` means the origin is not in
+`PUBLIC_ALLOWED_ORIGINS` and every QR code is carrying its full long URL.
 
 ---
 

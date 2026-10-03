@@ -38,6 +38,8 @@ ehthumbs.db
 .env.*
 !.env.example
 !.env.test
+# Filled-in VPS deploy env (real operator values); template is scripts/deploy.env.example
+scripts/deploy.env
 
 # Vite
 vite.config.js.timestamp-*

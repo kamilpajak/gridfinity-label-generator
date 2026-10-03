@@ -37,7 +37,10 @@ readonly PREVIOUS_CONTAINER_NAME="gridscribe-previous"
 readonly HOST_PORT="8081"
 readonly CONTAINER_PORT="80"
 readonly DEFAULT_ENV_FILE="/etc/gridscribe/deploy.env"
-readonly DEPLOY_LOG="${HOME}/gridscribe-deployments.log"
+# A fixed path, not ${HOME}: the env file is root-only, so the script runs under sudo and
+# ${HOME} resolved to /root while the deployment guide told the operator to read
+# ~/gridscribe-deployments.log in their own home.
+readonly DEPLOY_LOG="/var/log/gridscribe-deployments.log"
 readonly HEALTH_TIMEOUT_SECONDS=60
 readonly HEALTH_POLL_SECONDS=2
 readonly SMOKE_TEST_TIMEOUT_SECONDS=15
@@ -154,11 +157,13 @@ EXIT CODES
      failing the origin check, so the site is up but the shortener is broken
 
 EXAMPLES
-  ./scripts/deploy.sh
-  ./scripts/deploy.sh --dry-run
-  ./scripts/deploy.sh --tag sha-abc1234
-  ./scripts/deploy.sh --check-only
-  ./scripts/deploy.sh --env-file ~/gridscribe.env
+  Run under sudo: the env file is root-owned and mode 600, and the deployment log is
+  under /var/log.
+  sudo ./scripts/deploy.sh
+  sudo ./scripts/deploy.sh --dry-run
+  sudo ./scripts/deploy.sh --tag sha-abc1234
+  sudo ./scripts/deploy.sh --check-only
+  sudo ./scripts/deploy.sh --env-file /etc/gridscribe/staging.env
 EOF
 }
 
@@ -184,6 +189,17 @@ lower() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
 # Spelled out rather than `date -Is`, which is a GNU extension: on a BSD date it
 # fails and the log line would silently carry an empty timestamp.
 timestamp() { date -u '+%Y-%m-%dT%H:%M:%SZ'; }
+
+# Warns instead of failing. $DEPLOY_LOG is under /var/log, so a run without the rights
+# to write there would otherwise abort through `set -e` after a deploy that had already
+# passed every check, and report a failure that did not happen.
+append_deploy_log() {
+	# The redirection is inside a subshell so that its own failure message is captured
+	# too: a redirection error is printed by the shell, not by the command, and would
+	# escape a plain `2>/dev/null` on the printf.
+	(printf '%s\n' "$1" >>"$DEPLOY_LOG") 2>/dev/null ||
+		warn "could not append to $DEPLOY_LOG: $1"
+}
 
 parse_args() {
 	while [ $# -gt 0 ]; do
@@ -571,7 +587,7 @@ rollback() {
 	wait_until_healthy || return 1
 	PREVIOUS_SAVED=0
 	info "rolled back and healthy"
-	printf 'rolled back at %s\n' "$(timestamp)" >>"$DEPLOY_LOG"
+	append_deploy_log "rolled back at $(timestamp)"
 	return 0
 }
 
@@ -684,7 +700,7 @@ main() {
 	# roll back a container that is serving correctly.
 	disarm_interrupt_rollback
 	discard_previous_container
-	printf 'deployed %s at %s\n' "$digest" "$(timestamp)" >>"$DEPLOY_LOG"
+	append_deploy_log "deployed $digest at $(timestamp)"
 	info "deploy complete"
 	printf '%s\n' "$digest"
 }

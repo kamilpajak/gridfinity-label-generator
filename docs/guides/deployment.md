@@ -37,9 +37,29 @@ docker build -t gridscribe-test .
 
 # Run locally. Copy .env.example to .env and fill it in first; an env file keeps
 # the list of variables in one place instead of a -e list you retype from memory.
+#
+# Read it with `.`, not with --env-file: the values in .env are quoted, and
+# `docker run --env-file` does not strip quotes, so PUBLIC_ALLOWED_ORIGINS would
+# arrive with the quote characters inside the value and never match an Origin
+# header. A bare `-e NAME` makes docker take the value from this shell instead,
+# already unquoted.
+set -a
+. ./.env
+set +a
+
 docker run -p 8081:80 \
-  --env-file .env \
   -e ORIGIN=http://localhost:8081 \
+  -e PUBLIC_ALLOWED_ORIGINS \
+  -e PUBLIC_MATOMO_URL \
+  -e PUBLIC_MATOMO_SITE_ID \
+  -e PUBLIC_AMAZON_STORE_ID \
+  -e PUBLIC_AFFILIATE_PTE560BT \
+  -e PUBLIC_AFFILIATE_PTP710BT \
+  -e PUBLIC_AFFILIATE_TZE231 \
+  -e PUBLIC_AFFILIATE_MAGNETS \
+  -e PUBLIC_CONTACT_EMAIL \
+  -e PUBLIC_PRIVACY_CONTROLLER \
+  -e PUBLIC_ALLOW_E2E_PAGES \
   gridscribe-test
 
 # Test in browser
@@ -129,8 +149,13 @@ else's analytics or contact details.
 ```bash
 ssh user@your-vps.com
 cd /opt/gridscribe && sudo git pull
-./scripts/deploy.sh
+sudo ./scripts/deploy.sh
 ```
+
+Every `deploy.sh` command on this page runs under `sudo`. The script reads
+`/etc/gridscribe/deploy.env`, which step 3 above made root-owned and mode `600`, and it
+appends to `/var/log/gridscribe-deployments.log`. Without `sudo` it stops at
+`error: env file is not readable: /etc/gridscribe/deploy.env` and exits `2`.
 
 The script:
 
@@ -153,7 +178,7 @@ The script:
    probing it alone could only ever catch the variable not reaching the container at
    all. Nothing is sent to is.gd or TinyURL.
 7. On success removes `gridscribe-previous`, appends the deployed digest to
-   `~/gridscribe-deployments.log`, and prints the digest.
+   `/var/log/gridscribe-deployments.log`, and prints the digest.
 
 If validation fails nothing is touched and the running container keeps serving. If a
 check fails after the container was replaced, the previous container is renamed back and
@@ -162,7 +187,7 @@ started again.
 ### Before deploying anything
 
 ```bash
-./scripts/deploy.sh --dry-run    # validate and print the exact docker run command
+sudo ./scripts/deploy.sh --dry-run    # validate and print the exact docker run command
 ```
 
 `--dry-run` prints the command including its values. Do not paste that output into an
@@ -171,7 +196,7 @@ issue or a chat.
 ### Checking a deployment that is already running
 
 ```bash
-./scripts/deploy.sh --check-only
+sudo ./scripts/deploy.sh --check-only
 ```
 
 This validates the env file and smoke-tests the container that is already running. It
@@ -182,10 +207,20 @@ This is the check that would have caught the three-month shortener outage, where
 without it: the page renders, the QR code is valid and scans fine — it just carries the
 full long URL instead of a short one. A daily cron entry is enough:
 
+A root crontab, not the operator's own: a user crontab cannot read
+`/etc/gridscribe/deploy.env` and would mail `env file is not readable` every morning
+while the shortener went unchecked. Write `/etc/cron.d/gridscribe-shortener-check`,
+owned by root and mode `644`:
+
 ```cron
-# Check the QR shortener every morning; mail the output on failure
-17 6 * * * cd /opt/gridscribe && ./scripts/deploy.sh --check-only
+# Check the QR shortener every morning; cron mails the output on failure.
+# The user field is what makes this run as root.
+MAILTO=you@example.com
+17 6 * * * root cd /opt/gridscribe && ./scripts/deploy.sh --check-only
 ```
+
+Check it once by hand first, with `sudo ./scripts/deploy.sh --check-only`, so a
+misconfigured path is found now rather than in six months of silent mail.
 
 ### Exit codes
 
@@ -206,7 +241,7 @@ Merge to `master`, wait for the Docker Build workflow to finish, then on the VPS
 
 ```bash
 cd /opt/gridscribe && sudo git pull
-./scripts/deploy.sh
+sudo ./scripts/deploy.sh
 ```
 
 `git pull` matters as much as the image does: it is what brings a new variable, or a
@@ -222,15 +257,15 @@ script exits.
 ### Roll back on purpose
 
 ```bash
-# Find a tag in ~/gridscribe-deployments.log or in the container registry
-./scripts/deploy.sh --tag sha-abc1234
+# Find a tag in /var/log/gridscribe-deployments.log or in the container registry
+sudo ./scripts/deploy.sh --tag sha-abc1234
 ```
 
 ### Find available versions
 
 ```bash
 # Deployment history
-cat ~/gridscribe-deployments.log
+sudo cat /var/log/gridscribe-deployments.log
 
 # Or the container registry
 # https://github.com/kamilpajak/gridfinity-label-generator/pkgs/container/gridfinity-label-generator
@@ -242,23 +277,46 @@ If the script itself is broken, start the container by hand — but from the env
 from a retyped `-e` list. Retyping that list from memory is how the shortener broke in the
 first place.
 
+Read the file with `.`, the same way `deploy.sh` does, and pass bare `-e NAME` flags so
+docker takes each value from the shell. Do **not** use `--env-file` here: it does not
+strip quotes, so `ORIGIN` would arrive as `"https://gridfinitylabels.com"` and
+adapter-node would refuse to start with `Invalid ORIGIN`, while an unquoted `ORIGIN` next
+to a still-quoted `PUBLIC_ALLOWED_ORIGINS` starts fine and answers `403` to every
+shortener call — silently, which is the whole failure this page exists to prevent.
+
+Run it as root (`sudo -i`): `/etc/gridscribe/deploy.env` is mode `600` and root-owned.
+
 ```bash
 docker stop gridscribe && docker rm gridscribe
+
+set -a
+. /etc/gridscribe/deploy.env
+set +a
+
 docker run -d \
   --name gridscribe \
   -p 8081:80 \
-  --env-file /etc/gridscribe/deploy.env \
   -e NODE_ENV=production \
   -e PORT=80 \
   -e PUBLIC_ALLOW_E2E_PAGES=false \
+  -e PUBLIC_ALLOWED_ORIGINS \
+  -e PUBLIC_MATOMO_URL \
+  -e PUBLIC_MATOMO_SITE_ID \
+  -e PUBLIC_AMAZON_STORE_ID \
+  -e PUBLIC_AFFILIATE_PTE560BT \
+  -e PUBLIC_AFFILIATE_PTP710BT \
+  -e PUBLIC_AFFILIATE_TZE231 \
+  -e PUBLIC_AFFILIATE_MAGNETS \
+  -e PUBLIC_CONTACT_EMAIL \
+  -e PUBLIC_PRIVACY_CONTROLLER \
+  -e ORIGIN \
   --restart unless-stopped \
   ghcr.io/kamilpajak/gridfinity-label-generator:latest
 ```
 
-`--env-file` does no shell quoting, so the values in `/etc/gridscribe/deploy.env` must be
-written without surrounding quotes for this command to work. `scripts/deploy.sh` sources
-the file instead, which is why the template uses quotes. After a break-glass start, check
-the shortener by hand:
+If only the deploy logic is broken and validation still works,
+`sudo ./scripts/deploy.sh --dry-run` prints the same argv with the values already filled
+in, ready to copy. After a break-glass start, check the shortener by hand:
 
 ```bash
 curl -s -o /dev/null -w '%{http_code}\n' \
@@ -368,24 +426,27 @@ what each variable does; the template is what you copy to
 passes, and `src/lib/config/deploy-script-vars.test.ts` fails CI when the app starts
 reading a `PUBLIC_*` variable the script does not know about.
 
-Required environment variables for the container:
+Required environment variables for the container. The two origin values belong to the
+operator, not to this repository, and the committed template leaves them empty —
+`https://gridfinitylabels.com` below is only what the maintainer's own deployment uses:
 
-| Variable   | Value                          | Description                     |
-| ---------- | ------------------------------ | ------------------------------- |
-| `NODE_ENV` | `production`                   | Node environment                |
-| `PORT`     | `80`                           | Internal container port         |
-| `ORIGIN`   | `https://gridfinitylabels.com` | Public URL (for CORS/SvelteKit) |
+| Variable   | Value           | Description                     |
+| ---------- | --------------- | ------------------------------- |
+| `NODE_ENV` | `production`    | Node environment                |
+| `PORT`     | `80`            | Internal container port         |
+| `ORIGIN`   | your own domain | Public URL (for CORS/SvelteKit) |
 
 Required for the QR code shortener:
 
-| Variable                 | Value                                                           | Description                            |
-| ------------------------ | --------------------------------------------------------------- | -------------------------------------- |
-| `PUBLIC_ALLOWED_ORIGINS` | `https://gridfinitylabels.com,https://www.gridfinitylabels.com` | Origins allowed to call `/api/shorten` |
+| Variable                 | Value                                   | Description                            |
+| ------------------------ | --------------------------------------- | -------------------------------------- |
+| `PUBLIC_ALLOWED_ORIGINS` | every hostname your own site answers on | Origins allowed to call `/api/shorten` |
 
 Comma-separated list of origins. `localhost:5173`, `localhost:4173` and
 `localhost:3000` are always allowed, so dev works without this variable. Any other
-origin — including the real domain — is rejected with `403 Forbidden` unless listed
-here.
+origin — including the real domain, for example `https://gridfinitylabels.com` and
+`https://www.gridfinitylabels.com` on the maintainer's deployment — is rejected with
+`403 Forbidden` unless listed here.
 
 Leaving this unset does not break the page and does not show an error. QR codes are
 still generated, but long URLs are no longer shortened: the full URL goes into the QR
@@ -438,14 +499,14 @@ and serves internal comparison pages that are not meant for visitors.
 - [ ] Image pushed to ghcr.io
 - [ ] Package visibility set correctly (public/private)
 - [ ] `cd /opt/gridscribe && sudo git pull` ran, so the host has the current script and template
-- [ ] `./scripts/deploy.sh --dry-run` passes
-- [ ] `./scripts/deploy.sh` exits 0
+- [ ] `sudo ./scripts/deploy.sh --dry-run` passes
+- [ ] `sudo ./scripts/deploy.sh` exits 0
 - [ ] Container logs show no errors
 - [ ] Application accessible via `https://gridfinitylabels.com`
 - [ ] A QR code generated on the live site encodes a short URL (is.gd or tinyurl), not the full one
 - [ ] All features work as expected
 
-`./scripts/deploy.sh` already runs the shortener check against the container on the VPS.
+`sudo ./scripts/deploy.sh` already runs the shortener check against the container on the VPS.
 The check below goes through Cloudflare to the live site, which the script cannot do, and
 it is worth running by hand because a missing `PUBLIC_ALLOWED_ORIGINS` shows no error in
 the browser:

@@ -153,8 +153,10 @@ OPTIONS
   -h, --help         Show this help.
 
 OUTPUT
-  Progress, warnings and errors go to stderr. On success stdout holds the deployed
-  image digest and nothing else.
+  Warnings and errors go to stderr. Progress goes to stderr too, but only when stderr
+  is a terminal, so an unattended run that succeeds writes nothing there and a cron
+  entry mails only real failures. On success stdout holds the deployed image digest
+  reference and nothing else.
 
 EXIT CODES
   0  deployed, healthy, and the shortener accepted the site's own origin
@@ -182,7 +184,22 @@ EXAMPLES
 EOF
 }
 
-info() { printf '%s\n' "$*" >&2; }
+# Progress is written to stderr only when stderr is a terminal. Warnings and errors
+# always print, and the result on stdout is never affected.
+#
+# The deployment guide's cron entry says cron mails the output on failure, and cron mails
+# ANY output: a passing --check-only wrote 945 bytes of progress to stderr, so the
+# operator got identical mail every morning, filtered it, and the next real failure would
+# have arrived in a mailbox nobody reads - the same silent-failure shape as the outage
+# this script exists to prevent. This also matches the repository's CLI conventions,
+# which put progress behind a TTY test on the stream it is written to.
+#
+# The cost is that `./scripts/deploy.sh > log 2>&1` records only warnings, errors and the
+# digest. The --help OUTPUT section says so.
+info() {
+	[ -t 2 ] || return 0
+	printf '%s\n' "$*" >&2
+}
 warn() { printf 'warning: %s\n' "$*" >&2; }
 
 die() {

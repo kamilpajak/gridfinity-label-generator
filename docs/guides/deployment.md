@@ -237,11 +237,16 @@ while the shortener went unchecked. Write `/etc/cron.d/gridscribe-shortener-chec
 owned by root and mode `644`:
 
 ```cron
-# Check the QR shortener every morning; cron mails the output on failure.
-# The user field is what makes this run as root.
+# Check the QR shortener every morning. The user field is what makes this run as root.
 MAILTO=you@example.com
 17 6 * * * root cd /opt/gridscribe && ./scripts/deploy.sh --check-only
 ```
+
+Cron mails any output a job produces, so a check that printed progress on a healthy day
+would mail you every morning — and mail you stop reading is no better than no mail at all.
+The script writes progress to stderr only when stderr is a terminal, which cron's is not,
+so a passing run under cron is silent and you only hear about a real failure. Run it by
+hand and you still see every step.
 
 Check it once by hand first, with `sudo ./scripts/deploy.sh --check-only`, so a
 misconfigured path is found now rather than in six months of silent mail.

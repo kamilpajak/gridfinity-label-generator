@@ -229,3 +229,31 @@ pnpm validate-images
 - Node.js 18+ (ES modules)
 - Playwright (image/metadata scraping)
 - Sharp (image processing)
+
+---
+
+## Deployment
+
+### deploy.sh
+
+Runs on the VPS, not locally. It replaces the running container with an image from
+ghcr.io and passes the full environment the app needs.
+
+```bash
+./scripts/deploy.sh --help        # usage, options and exit codes
+./scripts/deploy.sh --dry-run     # validate, print the docker run command, change nothing
+./scripts/deploy.sh               # deploy :latest
+./scripts/deploy.sh --tag sha-abc1234
+./scripts/deploy.sh --check-only  # verify the deployment that is already running
+```
+
+Values come from `/etc/gridscribe/deploy.env` on the VPS, created from
+`deploy.env.example` in this directory. That file is sourced by the script, so keep it
+root-owned.
+
+The script names every variable it passes, in `REQUIRED_VARS`, `OPTIONAL_VARS` and
+`REFUSED_VARS`. The test `src/lib/config/deploy-script-vars.test.ts` fails when `src/`
+starts reading a `PUBLIC_*` variable none of those lists knows about, and when the
+committed template carries an operator-specific value.
+
+See [`../docs/guides/deployment.md`](../docs/guides/deployment.md).

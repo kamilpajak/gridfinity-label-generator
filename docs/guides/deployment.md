@@ -10,6 +10,10 @@ Quick reference guide for deploying GridScribe to VPS using GitHub Container Reg
 - GitHub account with Personal Access Token (PAT) with `write:packages` permission
 - VPS with Docker installed
 - Cloudflare Tunnel configured (pointing to `localhost:8081`)
+- A clone of this repository on the VPS at `/opt/gridscribe`, so `scripts/deploy.sh`
+  is available there
+- `/etc/gridscribe/deploy.env` on the VPS, filled in from
+  [`scripts/deploy.env.example`](../../scripts/deploy.env.example)
 
 ---
 
@@ -31,12 +35,11 @@ PORT=80 node build/index.js
 # Build Docker image
 docker build -t gridscribe-test .
 
-# Run locally
+# Run locally. Copy .env.example to .env and fill it in first; an env file keeps
+# the list of variables in one place instead of a -e list you retype from memory.
 docker run -p 8081:80 \
+  --env-file .env \
   -e ORIGIN=http://localhost:8081 \
-  -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
-  -e PUBLIC_MATOMO_SITE_ID=1 \
-  -e PUBLIC_ALLOWED_ORIGINS=http://localhost:8081 \
   gridscribe-test
 
 # Test in browser
@@ -76,156 +79,177 @@ This allows pulling images without authentication on VPS.
 
 ## 🖥️ VPS Deployment
 
-### Initial deployment
+Deploys run through [`scripts/deploy.sh`](../../scripts/deploy.sh). The script holds the
+whole `docker run` invocation, so the list of environment variables lives in version
+control instead of in someone's shell history. It refuses to start the container when a
+required variable is missing or malformed, and it verifies after start that the QR URL
+shortener accepts the site's own origin.
+
+Values come from `/etc/gridscribe/deploy.env` on the VPS. That file is never committed —
+the Matomo and affiliate ids belong to the operator. The committed template is
+[`scripts/deploy.env.example`](../../scripts/deploy.env.example).
+
+### One-time setup
 
 ```bash
-# 1. SSH to VPS
 ssh user@your-vps.com
 
-# 2. Stop old container (if exists)
-docker stop gridscribe 2>/dev/null || true
-docker rm gridscribe 2>/dev/null || true
+# 1. Clone the repository; the deploy script lives in it
+sudo git clone https://github.com/kamilpajak/gridfinity-label-generator.git /opt/gridscribe
 
-# 3. Pull new image (using latest)
-docker pull ghcr.io/kamilpajak/gridfinity-label-generator:latest
+# 2. Create the env file from the template and fill in the blanks
+sudo install -d -m 755 /etc/gridscribe
+sudo cp /opt/gridscribe/scripts/deploy.env.example /etc/gridscribe/deploy.env
+sudo $EDITOR /etc/gridscribe/deploy.env
 
-# 4. Record the SHA for rollback capability
-DEPLOYED_SHA=$(docker inspect ghcr.io/kamilpajak/gridfinity-label-generator:latest \
-  --format='{{index .RepoDigests 0}}' | cut -d'@' -f2 | cut -c1-12)
-echo "Deployed SHA: $DEPLOYED_SHA" >> ~/gridscribe-deployments.log
-echo "Deployed at: $(date)" >> ~/gridscribe-deployments.log
-
-# 5. Run container
-docker run -d \
-  --name gridscribe \
-  -p 8081:80 \
-  -e NODE_ENV=production \
-  -e PORT=80 \
-  -e ORIGIN=https://gridfinitylabels.com \
-  -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
-  -e PUBLIC_MATOMO_SITE_ID=1 \
-  -e PUBLIC_ALLOWED_ORIGINS=https://gridfinitylabels.com,https://www.gridfinitylabels.com \
-  --restart unless-stopped \
-  ghcr.io/kamilpajak/gridfinity-label-generator:latest
-
-# 6. Health check
-sleep 5
-if curl -f http://localhost:8081 > /dev/null 2>&1; then
-  echo "✅ Deployment successful"
-else
-  echo "❌ Deployment failed - check logs"
-  docker logs gridscribe
-fi
-
-# 7. Cloudflare Tunnel will route traffic from gridfinitylabels.com
+# 3. The script sources this file, so keep it root-owned and not world readable
+sudo chown root:root /etc/gridscribe/deploy.env
+sudo chmod 600 /etc/gridscribe/deploy.env
 ```
+
+The template already carries the correct `ORIGIN` and `PUBLIC_ALLOWED_ORIGINS` for
+`gridfinitylabels.com`. Everything else is left empty on purpose: an empty value turns
+that feature off, and a fork must not inherit someone else's analytics or contact
+details.
+
+### Deploy
+
+```bash
+ssh user@your-vps.com
+cd /opt/gridscribe && sudo git pull
+./scripts/deploy.sh
+```
+
+The script:
+
+1. Reads `/etc/gridscribe/deploy.env` and checks every required variable. Each entry of
+   `PUBLIC_ALLOWED_ORIGINS` must be a bare `scheme://host[:port]`, and `ORIGIN` must
+   appear in the list.
+2. Warns about any `PUBLIC_*` name in the file that no code reads — that catches a typo.
+3. Pulls `ghcr.io/kamilpajak/gridfinity-label-generator:latest`.
+4. Renames the running container to `gridscribe-previous` and starts the new one, passing
+   every variable as an explicit `-e` flag so the full environment is visible in
+   `docker inspect`.
+5. Waits for `http://localhost:8081/` to answer. No fixed sleep.
+6. Smoke-tests `POST /api/shorten` with the production `Origin` header and an empty JSON
+   body. `400` ("URL is required") means the allowlist accepted the origin, because the
+   origin check runs before the body is read. `403` means the shortener would reject the
+   site's own front end, so the script rolls back. Nothing is sent to is.gd or TinyURL.
+7. On success removes `gridscribe-previous`, appends the deployed digest to
+   `~/gridscribe-deployments.log`, and prints the digest.
+
+If validation fails nothing is touched and the running container keeps serving. If a
+check fails after the container was replaced, the previous container is renamed back and
+started again.
+
+### Before deploying anything
+
+```bash
+./scripts/deploy.sh --dry-run    # validate and print the exact docker run command
+```
+
+`--dry-run` prints the command including its values. Do not paste that output into an
+issue or a chat.
+
+### Checking a deployment that is already running
+
+```bash
+./scripts/deploy.sh --check-only
+```
+
+This validates the env file and smoke-tests the container that is already running. It
+deploys nothing and is safe to run unattended.
+
+This is the check that would have caught the three-month shortener outage, where
+`PUBLIC_ALLOWED_ORIGINS` was missing from the running container. Nothing looks wrong
+without it: the page renders, the QR code is valid and scans fine — it just carries the
+full long URL instead of a short one. A daily cron entry is enough:
+
+```cron
+# Check the QR shortener every morning; mail the output on failure
+17 6 * * * cd /opt/gridscribe && ./scripts/deploy.sh --check-only
+```
+
+### Exit codes
+
+The script and its `--help` use the same set.
+
+| Code | Meaning                                                                                                                                                                                                                               |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `0`  | Deployed, healthy, and the shortener accepted the site's own origin. Also a passing `--check-only`                                                                                                                                    |
+| `2`  | Usage error, or a required variable is missing or malformed. Nothing was touched and the running container keeps serving                                                                                                              |
+| `7`  | The deploy did not land and the previous version is serving again: the image could not be pulled, or a check failed. Safe to retry                                                                                                    |
+| `8`  | Partial. Either the container was replaced and the rollback also failed, so the live site needs attention now, or `--check-only` found the running deployment failing the origin check, so the site is up but the shortener is broken |
 
 ---
 
 ## 🔄 Update Deployment
 
-Updates are automatic via GitHub Actions. Just merge to `master` and the image will be built.
-
-### On VPS
+Merge to `master`, wait for the Docker Build workflow to finish, then on the VPS:
 
 ```bash
-# 1. Pull latest image
-docker pull ghcr.io/kamilpajak/gridfinity-label-generator:latest
-
-# 2. Record SHA before updating (for potential rollback)
-DEPLOYED_SHA=$(docker inspect ghcr.io/kamilpajak/gridfinity-label-generator:latest \
-  --format='{{index .RepoDigests 0}}' | cut -d'@' -f2 | cut -c1-12)
-echo "Updating to SHA: $DEPLOYED_SHA at $(date)" >> ~/gridscribe-deployments.log
-
-# 3. Stop and remove old container
-docker stop gridscribe
-docker rm gridscribe
-
-# 4. Run new version
-docker run -d \
-  --name gridscribe \
-  -p 8081:80 \
-  -e NODE_ENV=production \
-  -e PORT=80 \
-  -e ORIGIN=https://gridfinitylabels.com \
-  -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
-  -e PUBLIC_MATOMO_SITE_ID=1 \
-  -e PUBLIC_ALLOWED_ORIGINS=https://gridfinitylabels.com,https://www.gridfinitylabels.com \
-  --restart unless-stopped \
-  ghcr.io/kamilpajak/gridfinity-label-generator:latest
-
-# 5. Verify deployment
-sleep 5
-curl -f http://localhost:8081 && echo "✅ Update successful" || echo "❌ Update failed"
+cd /opt/gridscribe && sudo git pull
+./scripts/deploy.sh
 ```
+
+`git pull` matters as much as the image does: it is what brings a new variable, or a
+changed template, onto the host.
 
 ---
 
 ## ⏪ Rollback
 
-If a deployment fails, you can rollback to a previous version using SHA tags.
+A failed health check or a failed shortener check rolls back on its own, before the
+script exits.
+
+### Roll back on purpose
+
+```bash
+# Find a tag in ~/gridscribe-deployments.log or in the container registry
+./scripts/deploy.sh --tag sha-abc1234
+```
 
 ### Find available versions
 
 ```bash
-# View deployment history
+# Deployment history
 cat ~/gridscribe-deployments.log
 
-# Or check GitHub Container Registry
-# Visit: https://github.com/kamilpajak/gridfinity-label-generator/pkgs/container/gridfinity-label-generator
+# Or the container registry
+# https://github.com/kamilpajak/gridfinity-label-generator/pkgs/container/gridfinity-label-generator
 ```
 
-### Rollback to specific SHA
+### Break glass
+
+If the script itself is broken, start the container by hand — but from the env file, never
+from a retyped `-e` list. Retyping that list from memory is how the shortener broke in the
+first place.
 
 ```bash
-# Use SHA from deployment log (e.g., sha-abc1234)
-TARGET_SHA="sha-abc1234"
-
-# Pull the specific version
-docker pull ghcr.io/kamilpajak/gridfinity-label-generator:$TARGET_SHA
-
-# Stop current container
-docker stop gridscribe
-docker rm gridscribe
-
-# Run the previous version
+docker stop gridscribe && docker rm gridscribe
 docker run -d \
   --name gridscribe \
   -p 8081:80 \
+  --env-file /etc/gridscribe/deploy.env \
   -e NODE_ENV=production \
   -e PORT=80 \
-  -e ORIGIN=https://gridfinitylabels.com \
-  -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
-  -e PUBLIC_MATOMO_SITE_ID=1 \
-  -e PUBLIC_ALLOWED_ORIGINS=https://gridfinitylabels.com,https://www.gridfinitylabels.com \
+  -e PUBLIC_ALLOW_E2E_PAGES=false \
   --restart unless-stopped \
-  ghcr.io/kamilpajak/gridfinity-label-generator:$TARGET_SHA
-
-# Verify
-curl -f http://localhost:8081 && echo "✅ Rollback successful"
-
-# Log the rollback
-echo "Rolled back to $TARGET_SHA at $(date)" >> ~/gridscribe-deployments.log
+  ghcr.io/kamilpajak/gridfinity-label-generator:latest
 ```
 
-### Emergency rollback (last working version)
+`--env-file` does no shell quoting, so the values in `/etc/gridscribe/deploy.env` must be
+written without surrounding quotes for this command to work. `scripts/deploy.sh` sources
+the file instead, which is why the template uses quotes. After a break-glass start, check
+the shortener by hand:
 
 ```bash
-# Get the second-to-last SHA from logs
-PREVIOUS_SHA=$(grep "Deployed SHA" ~/gridscribe-deployments.log | tail -2 | head -1 | awk '{print $3}')
-
-echo "Rolling back to: $PREVIOUS_SHA"
-
-docker pull ghcr.io/kamilpajak/gridfinity-label-generator:sha-$PREVIOUS_SHA
-docker stop gridscribe && docker rm gridscribe
-docker run -d --name gridscribe -p 8081:80 \
-  -e NODE_ENV=production -e PORT=80 \
-  -e ORIGIN=https://gridfinitylabels.com \
-  -e PUBLIC_MATOMO_URL=https://statistics.gridfinitylabels.com/ \
-  -e PUBLIC_MATOMO_SITE_ID=1 \
-  -e PUBLIC_ALLOWED_ORIGINS=https://gridfinitylabels.com,https://www.gridfinitylabels.com \
-  --restart unless-stopped \
-  ghcr.io/kamilpajak/gridfinity-label-generator:sha-$PREVIOUS_SHA
+curl -s -o /dev/null -w '%{http_code}\n' \
+  -X POST http://localhost:8081/api/shorten \
+  -H 'Content-Type: application/json' \
+  -H 'Origin: https://gridfinitylabels.com' \
+  -d '{}'
+# 400 = the origin allowlist is correct. 403 = it is missing or wrong.
 ```
 
 ---
@@ -320,6 +344,13 @@ systemctl status cloudflared
 
 ## 📝 Environment Variables
 
+The authoritative template is
+[`scripts/deploy.env.example`](../../scripts/deploy.env.example). The tables below explain
+what each variable does; the template is what you copy to
+`/etc/gridscribe/deploy.env` and fill in. `scripts/deploy.sh` names every variable it
+passes, and `src/lib/config/deploy-script-vars.test.ts` fails CI when the app starts
+reading a `PUBLIC_*` variable the script does not know about.
+
 Required environment variables for the container:
 
 | Variable   | Value                          | Description                     |
@@ -389,16 +420,18 @@ and serves internal comparison pages that are not meant for visitors.
 - [ ] Docker image builds successfully
 - [ ] Image pushed to ghcr.io
 - [ ] Package visibility set correctly (public/private)
-- [ ] Old container stopped and removed on VPS
-- [ ] New container running on VPS
+- [ ] `cd /opt/gridscribe && sudo git pull` ran, so the host has the current script and template
+- [ ] `./scripts/deploy.sh --dry-run` passes
+- [ ] `./scripts/deploy.sh` exits 0
 - [ ] Container logs show no errors
-- [ ] `curl http://localhost:8081` works on VPS
 - [ ] Application accessible via `https://gridfinitylabels.com`
-- [ ] QR code shortener answers its own origin (see below)
+- [ ] A QR code generated on the live site encodes a short URL (is.gd or tinyurl), not the full one
 - [ ] All features work as expected
 
-The shortener check is worth running by hand, because a missing
-`PUBLIC_ALLOWED_ORIGINS` shows no error in the browser:
+`./scripts/deploy.sh` already runs the shortener check against the container on the VPS.
+The check below goes through Cloudflare to the live site, which the script cannot do, and
+it is worth running by hand because a missing `PUBLIC_ALLOWED_ORIGINS` shows no error in
+the browser:
 
 ```bash
 curl -s -o /dev/null -w '%{http_code}\n' \

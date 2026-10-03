@@ -1,5 +1,5 @@
 /**
- * Drift guard between the app and the VPS deploy script.
+ * Drift guard between the app, the VPS deploy script and the committed env template.
  *
  * `scripts/deploy.sh` names every environment variable the container is started
  * with. A `PUBLIC_*` variable the app reads but the script does not know about would
@@ -7,8 +7,18 @@
  * `PUBLIC_ALLOWED_ORIGINS` stayed missing from the live deployment for three months
  * while `POST /api/shorten` answered 403 to the site's own origin.
  *
- * It also guards the committed template against shipping operator-specific values,
- * which a fork would otherwise copy unedited.
+ * Every assertion here is a rule rather than a list of the names known today, because
+ * a list only guards what someone remembered to add to it:
+ *
+ * - Listing a variable used to be enough to satisfy the drift check, including listing
+ *   it in `REFUSED_VARS` — which `build_run_args` never passes. Pasting a new name into
+ *   the nearest array therefore turned CI green while guaranteeing the container never
+ *   received the value. The arrays are now checked against what `build_run_args`
+ *   actually does with them, and against the template.
+ * - The template was checked against five hardcoded operator-specific prefixes, so a
+ *   future `PUBLIC_SENTRY_DSN` with a real key in it would have been committed to a
+ *   public repository with CI green. The rule is now that every value in the template
+ *   is empty, which needs no maintenance when a variable is added.
  *
  * These tests read the script and the template as text. They do not run them.
  */
@@ -27,31 +37,31 @@ const OPTIONAL_VARS_ARRAY = 'OPTIONAL_VARS';
 const REFUSED_VARS_ARRAY = 'REFUSED_VARS';
 const ALL_VAR_ARRAYS = [REQUIRED_VARS_ARRAY, OPTIONAL_VARS_ARRAY, REFUSED_VARS_ARRAY] as const;
 
+/** The arrays whose values come from the operator's env file and reach the container. */
+const PASSED_VAR_ARRAYS = [REQUIRED_VARS_ARRAY, OPTIONAL_VARS_ARRAY] as const;
+
+/** The script function that builds the `docker run` argv. */
+const RUN_ARGS_BUILDER = 'build_run_args';
+
 /** Without this the shortener rejects its own front end and every QR code stays long. */
 const SHORTENER_ORIGIN_VAR = 'PUBLIC_ALLOWED_ORIGINS';
 
 /** `true` on the public site would expose the internal `/e2e` comparison routes. */
 const E2E_PAGES_VAR = 'PUBLIC_ALLOW_E2E_PAGES';
 
-/** Shared, already-public values the template is allowed to commit. */
+/** SvelteKit adapter-node resolves request URLs with it. */
 const SITE_ORIGIN_VAR = 'ORIGIN';
-
-/**
- * Prefixes of variables that identify one operator. The committed template must
- * leave these empty, so a fork does not report to the maintainer's analytics or
- * publish the maintainer's contact details.
- */
-const OPERATOR_SPECIFIC_PREFIXES = [
-	'PUBLIC_MATOMO_',
-	'PUBLIC_AFFILIATE_',
-	'PUBLIC_AMAZON_',
-	'PUBLIC_CONTACT_',
-	'PUBLIC_PRIVACY_'
-];
 
 const SHELL_COMMENT_PATTERN = /#.*$/;
 const ENV_ASSIGNMENT_PATTERN = /^\s*(?:export\s+)?([A-Z][A-Z0-9_]*)=(.*)$/;
 const SURROUNDING_QUOTES_PATTERN = /^(['"])(.*)\1$/;
+const SHELL_VAR_NAME_PATTERN = /^[A-Z][A-Z0-9_]*$/;
+/** `readonly NAME="literal"` at the top of the script. */
+const SCRIPT_CONSTANT_PATTERN = /^readonly ([A-Z][A-Z0-9_]*)="([^"$]*)"$/gm;
+/** `-e "NAME=..."` inside the argv builder. `NAME` may be a `${CONSTANT}`. */
+const RUN_ARG_ENV_PATTERN = /-e "([^"=]+)=/g;
+/** `${ARRAY[@]}` — how the builder iterates one of the variable arrays. */
+const arrayExpansion = (arrayName: string) => `\${${arrayName}[@]}`;
 
 /** Entries of one `NAME=( ... )` array in the deploy script, comments stripped. */
 function scriptArrayEntries(script: string, arrayName: string): string[] {
@@ -63,6 +73,42 @@ function scriptArrayEntries(script: string, arrayName: string): string[] {
 		.split('\n')
 		.map((line) => line.replace(SHELL_COMMENT_PATTERN, '').trim())
 		.filter(Boolean);
+}
+
+/** The text of one `name() { ... }` function, up to its closing brace in column 0. */
+function scriptFunctionBody(script: string, functionName: string): string {
+	const start = script.indexOf(`${functionName}() {`);
+	if (start === -1) {
+		throw new Error(`${functionName} not found in scripts/deploy.sh`);
+	}
+	const end = script.indexOf('\n}', start);
+	if (end === -1) {
+		throw new Error(`${functionName} is never closed in scripts/deploy.sh`);
+	}
+	return script.slice(start, end);
+}
+
+/** `readonly NAME="literal"` constants, so `-e "${NAME}=false"` can be resolved. */
+function scriptConstants(script: string): Map<string, string> {
+	const constants = new Map<string, string>();
+	for (const [, name, value] of script.matchAll(SCRIPT_CONSTANT_PATTERN)) {
+		constants.set(name, value);
+	}
+	return constants;
+}
+
+/**
+ * Variable names the argv builder pins to a fixed value, such as
+ * `-e "${E2E_PAGES_VAR}=false"`. Names that come from the env file are passed inside a
+ * loop over an array, so their line reads `-e "${name}=${value}"` and is skipped here:
+ * the lowercase `${name}` resolves to no constant and fails the shell-name filter.
+ */
+function pinnedVarNames(script: string): string[] {
+	const constants = scriptConstants(script);
+	const body = scriptFunctionBody(script, RUN_ARGS_BUILDER);
+	return [...body.matchAll(RUN_ARG_ENV_PATTERN)]
+		.map(([, name]) => constants.get(name.replace(/^\$\{(.*)\}$/, '$1')) ?? name)
+		.filter((name) => SHELL_VAR_NAME_PATTERN.test(name));
 }
 
 /** `NAME="value"` assignments in the committed template, keyed by name. */
@@ -80,6 +126,8 @@ function templateAssignments(template: string): Map<string, string> {
 
 describe('scripts/deploy.sh environment coverage', () => {
 	const script = readFileSync(DEPLOY_SCRIPT, 'utf8');
+	const passedVars = PASSED_VAR_ARRAYS.flatMap((name) => scriptArrayEntries(script, name));
+	const refusedVars = scriptArrayEntries(script, REFUSED_VARS_ARRAY);
 
 	it('names every PUBLIC_ variable the app reads', () => {
 		const known = new Set(ALL_VAR_ARRAYS.flatMap((name) => scriptArrayEntries(script, name)));
@@ -102,34 +150,113 @@ describe('scripts/deploy.sh environment coverage', () => {
 	});
 
 	it('refuses the e2e preview routes in production', () => {
-		const refused = scriptArrayEntries(script, REFUSED_VARS_ARRAY);
+		expect(refusedVars).toContain(E2E_PAGES_VAR);
+	});
 
-		expect(refused).toContain(E2E_PAGES_VAR);
+	it('passes the required and optional arrays to the container', () => {
+		const builder = scriptFunctionBody(script, RUN_ARGS_BUILDER);
+
+		for (const arrayName of PASSED_VAR_ARRAYS) {
+			expect(
+				builder,
+				`${RUN_ARGS_BUILDER} must iterate ${arrayName}, or the variables listed there ` +
+					'are never passed to the container.'
+			).toContain(arrayExpansion(arrayName));
+		}
+	});
+
+	it('pins every refused variable instead of passing it', () => {
+		const builder = scriptFunctionBody(script, RUN_ARGS_BUILDER);
+		const pinned = pinnedVarNames(script);
+
+		// A refused variable has to be visibly pinned off in `docker inspect`, not merely
+		// absent. Requiring that also stops REFUSED_VARS from being used as a parking
+		// space: a new name dropped in there satisfied the coverage test above while
+		// guaranteeing the container never received the value.
+		const notPinned = refusedVars.filter((name) => !pinned.includes(name));
+		expect(
+			notPinned,
+			'These names are in REFUSED_VARS but are not pinned to a fixed value in ' +
+				`${RUN_ARGS_BUILDER}. REFUSED_VARS is for variables that must never carry an ` +
+				'operator value and are pinned off so the decision shows up in `docker inspect`. ' +
+				'A variable the container actually needs belongs in REQUIRED_VARS or OPTIONAL_VARS.'
+		).toEqual([]);
+
+		expect(
+			builder,
+			`${RUN_ARGS_BUILDER} must not iterate ${REFUSED_VARS_ARRAY}: those values must ` +
+				'never be taken from the env file.'
+		).not.toContain(arrayExpansion(REFUSED_VARS_ARRAY));
+	});
+
+	it('does not pin a variable that comes from the env file', () => {
+		const pinned = pinnedVarNames(script);
+
+		const overridden = passedVars.filter((name) => pinned.includes(name));
+
+		expect(
+			overridden,
+			'These names are both read from the env file and pinned to a fixed value in ' +
+				`${RUN_ARGS_BUILDER}, so the operator's value is silently ignored.`
+		).toEqual([]);
 	});
 });
 
 describe('scripts/deploy.env.example', () => {
+	const script = readFileSync(DEPLOY_SCRIPT, 'utf8');
 	const assignments = templateAssignments(readFileSync(ENV_TEMPLATE, 'utf8'));
 
-	it('commits no operator-specific value', () => {
+	it('commits no value at all', () => {
+		// A rule, not a list of operator-specific prefixes: the next variable anyone adds
+		// is covered without touching this test. A real Matomo id, affiliate tag, contact
+		// address or API key in the template would be published in a public repository,
+		// and a fork copying the template unedited would inherit it.
 		const withValue = [...assignments]
-			.filter(([name]) => OPERATOR_SPECIFIC_PREFIXES.some((prefix) => name.startsWith(prefix)))
 			.filter(([, value]) => value !== '')
-			.map(([name]) => name);
+			.map(([name, value]) => `${name}=${value}`);
 
 		expect(
 			withValue,
-			'The committed template must leave operator-specific values empty. A fork that ' +
-				'copies it unedited would otherwise report to someone else’s analytics or ' +
-				'publish someone else’s contact details.'
+			'Every value in the committed template must be empty. Show an example in a ' +
+				'comment above the assignment instead. A committed value is published in a ' +
+				'public repository, and a fork that copies the template unedited inherits it.'
 		).toEqual([]);
 	});
 
-	it('commits a shortener allowlist that covers the committed site origin', () => {
-		const origin = assignments.get(SITE_ORIGIN_VAR) ?? '';
-		const allowlist = assignments.get(SHORTENER_ORIGIN_VAR) ?? '';
+	it('leaves the operator to name the domain this host serves', () => {
+		// Deliberately empty rather than pre-filled with gridfinitylabels.com. Every check
+		// in deploy.sh is internal — it compares ORIGIN against the committed allowlist and
+		// probes the container with those same committed values — so a fork that changed
+		// neither would pass every check and still 403 its own front end. Empty makes the
+		// required-variable check force a decision.
+		for (const name of [SITE_ORIGIN_VAR, SHORTENER_ORIGIN_VAR]) {
+			expect(assignments.has(name), `${name} must be present in the template`).toBe(true);
+			expect(assignments.get(name)).toBe('');
+		}
+	});
 
-		expect(origin).not.toBe('');
-		expect(allowlist.split(',').map((entry) => entry.trim())).toContain(origin);
+	it('assigns every variable the deploy passes to the container', () => {
+		const passedVars = PASSED_VAR_ARRAYS.flatMap((name) => scriptArrayEntries(script, name));
+
+		const unassigned = passedVars.filter((name) => !assignments.has(name));
+
+		expect(
+			unassigned,
+			'These variables are passed to the container by scripts/deploy.sh but are not ' +
+				'assigned in scripts/deploy.env.example, so the operator never learns they exist ' +
+				'and the host env file stays behind.'
+		).toEqual([]);
+	});
+
+	it('does not assign a refused variable', () => {
+		const refused = scriptArrayEntries(script, REFUSED_VARS_ARRAY);
+
+		const assigned = refused.filter((name) => assignments.has(name));
+
+		expect(
+			assigned,
+			'These variables are in REFUSED_VARS, so scripts/deploy.sh refuses to deploy when ' +
+				'they are set. The template must describe them in a comment, not assign them.'
+		).toEqual([]);
 	});
 });

@@ -107,10 +107,22 @@ sudo chown root:root /etc/gridscribe/deploy.env
 sudo chmod 600 /etc/gridscribe/deploy.env
 ```
 
-The template already carries the correct `ORIGIN` and `PUBLIC_ALLOWED_ORIGINS` for
-`gridfinitylabels.com`. Everything else is left empty on purpose: an empty value turns
-that feature off, and a fork must not inherit someone else's analytics or contact
-details.
+Every value in the template is empty, including `ORIGIN` and
+`PUBLIC_ALLOWED_ORIGINS`, and each one has an example in the comment above it. Fill in
+at least those two, with the domain **this** host serves:
+
+- `ORIGIN` — the public URL, e.g. `https://gridfinitylabels.com`
+- `PUBLIC_ALLOWED_ORIGINS` — every hostname the site answers on, e.g.
+  `https://gridfinitylabels.com,https://www.gridfinitylabels.com`
+
+`deploy.sh` refuses to deploy while either is empty, which is deliberate. Every check it
+makes is internal: it compares `ORIGIN` against the allowlist in the same file, and
+probes the container with those same values. Nothing in the deploy can tell what domain
+the host really serves. A template that shipped `gridfinitylabels.com` pre-filled would
+let a fork deploy at its own domain, pass every check, and still answer `403` to its own
+front end — the outage this script exists to prevent. The optional values stay empty on
+purpose too: an empty value turns that feature off, and a fork must not inherit someone
+else's analytics or contact details.
 
 ### Deploy
 

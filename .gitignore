@@ -38,8 +38,12 @@ ehthumbs.db
 .env.*
 !.env.example
 !.env.test
-# Filled-in VPS deploy env (real operator values); template is scripts/deploy.env.example
-scripts/deploy.env
+# Filled-in VPS deploy env (real operator values); template is scripts/deploy.env.example.
+# A glob, not one literal path: the generic `.env.*` rule above only matches basenames
+# that start with `.env.`, so a per-environment copy such as scripts/deploy.env.prod was
+# committable and would have published real Matomo ids and contact details.
+scripts/deploy.env*
+!scripts/deploy.env.example
 
 # Vite
 vite.config.js.timestamp-*

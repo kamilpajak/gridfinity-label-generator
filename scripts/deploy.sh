@@ -725,6 +725,26 @@ dump_container_logs() {
 	docker logs --tail "$LOG_TAIL_LINES" "$CONTAINER_NAME" >&2 2>&1 || true
 }
 
+# The digest of $1 for $IMAGE_REPO, or $DIGEST_UNKNOWN when the host has none.
+#
+# Not `index .RepoDigests 0`. An image that carries tags from more than one repository
+# lists one digest reference per repository, and index 0 is whichever came first: a deploy
+# of revtest/gridscribe logged `gridscribe@sha256:4112...`, naming a repository it had not
+# deployed. The reference is matched against $IMAGE_REPO instead.
+readonly DIGEST_UNKNOWN="digest unknown on this host"
+image_digest() {
+	local reference
+	while IFS= read -r reference; do
+		case "$reference" in
+		"${IMAGE_REPO}@"*)
+			printf '%s' "${reference#*@}"
+			return 0
+			;;
+		esac
+	done < <(docker inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$1" 2>/dev/null || true)
+	printf '%s' "$DIGEST_UNKNOWN"
+}
+
 # Keeps the running container under a second name instead of recording its image id.
 # An image id is what `docker image prune -a` deletes, and the deployment guide's own
 # Cleanup section recommends exactly that prune.
@@ -887,8 +907,13 @@ main() {
 			die "$EXIT_NOT_DEPLOYED" "docker pull failed for $image_ref. Nothing was changed; retry."
 	fi
 
-	local digest
-	digest="$(docker inspect --format '{{index .RepoDigests 0}}' "$image_ref" 2>/dev/null || printf '%s' "$image_ref")"
+	local digest reference
+	digest="$(image_digest "$image_ref")"
+	if [ "$digest" = "$DIGEST_UNKNOWN" ]; then
+		reference="$image_ref"
+	else
+		reference="${IMAGE_REPO}@${digest}"
+	fi
 
 	stash_current_container
 	arm_interrupt_rollback
@@ -917,9 +942,14 @@ main() {
 	# roll back a container that is serving correctly.
 	disarm_interrupt_rollback
 	discard_previous_container
-	append_deploy_log "deployed $digest at $(timestamp)"
+	# Both the tag and the digest. The log is what the guide's Rollback section tells the
+	# operator to read during an incident, and the only thing --tag accepts is a tag: a
+	# line holding a digest alone was useless there, because parse_args refuses anything
+	# with an @ or a : in it. Verified: feeding a logged digest back as --tag exited 2
+	# with "refusing an image tag with unexpected characters".
+	append_deploy_log "deployed ${image_ref} (${digest}) at $(timestamp)"
 	info "deploy complete"
-	printf '%s\n' "$digest"
+	printf '%s\n' "$reference"
 }
 
 main "$@"

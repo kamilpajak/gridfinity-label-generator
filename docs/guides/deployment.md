@@ -189,8 +189,9 @@ The script:
    container was started by an earlier run, so an entry the env file lists and the running
    container does not accept comes back `403`.
 
-7. On success removes `gridscribe-previous`, appends the deployed digest to
-   `/var/log/gridscribe-deployments.log`, and prints the digest.
+7. On success removes `gridscribe-previous`, appends the deployed tag and digest to
+   `/var/log/gridscribe-deployments.log`, and prints the digest reference on stdout. A
+   log append that fails is a warning, not a failure.
 
 If validation fails nothing is touched and the running container keeps serving. If a
 check fails after the container was replaced, the previous container is renamed back and
@@ -293,6 +294,21 @@ sudo cat /var/log/gridscribe-deployments.log
 # Or the container registry
 # https://github.com/kamilpajak/gridfinity-label-generator/pkgs/container/gridfinity-label-generator
 ```
+
+Each successful deploy appends one line naming both the tag and the digest:
+
+```text
+deployed ghcr.io/kamilpajak/gridfinity-label-generator:sha-abc1234 (sha256:4112…) at 2026-10-03T14:49:41Z
+```
+
+The tag is the part `--tag` takes — `sha-abc1234` above. `--tag` refuses anything with an
+`@` or a `:` in it, so the digest is there to identify the exact image, not to be pasted
+back.
+
+The history can have gaps. Appending to the log is only a warning: a run without write
+access to `/var/log` prints `warning: could not append to
+/var/log/gridscribe-deployments.log: …` and still exits `0`, with the deploy done. The
+registry is the complete list.
 
 ### Break glass
 

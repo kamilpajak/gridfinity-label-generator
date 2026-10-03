@@ -43,6 +43,12 @@ readonly DEFAULT_ENV_FILE="/etc/gridscribe/deploy.env"
 readonly DEPLOY_LOG="/var/log/gridscribe-deployments.log"
 readonly HEALTH_TIMEOUT_SECONDS=60
 readonly HEALTH_POLL_SECONDS=2
+# Bound on a single health request. Larger than the poll interval, because a cold
+# adapter-node server-side render can take longer than two seconds and a poll that
+# timed out early would make a slow but healthy container look dead. Much smaller than
+# the whole budget, because nothing else can happen while a poll is in flight - see
+# wait_until_healthy.
+readonly HEALTH_REQUEST_TIMEOUT_SECONDS=10
 readonly SMOKE_TEST_TIMEOUT_SECONDS=15
 readonly LOG_TAIL_LINES=50
 
@@ -444,18 +450,37 @@ build_run_args() {
 	RUN_ARGS+=("$image_ref")
 }
 
+# Polls until the port answers, or until $HEALTH_TIMEOUT_SECONDS of wall clock have
+# passed.
+#
+# Each poll is bounded. Without --max-time a container that completes the TCP handshake
+# and then never sends a byte - an app that binds the port before it can serve, or one
+# wedged in startup - leaves curl waiting with no deadline of its own. The loop then
+# never comes round, so $HEALTH_TIMEOUT_SECONDS never fires; and because bash defers a
+# trap handler until the running foreground command returns, arm_interrupt_rollback's
+# INT/TERM/HUP trap cannot run either. Reproduced against a container that accepts the
+# connection and never answers: the run was still going at 91s against a 60s budget,
+# the site was down, and SIGTERM had no effect for a further 30s.
+#
+# The budget is measured on the clock, not counted as iterations times the poll
+# interval. A poll that uses its full timeout advances the clock by more than
+# $HEALTH_POLL_SECONDS, so counting iterations let the real wait run well past the
+# documented one.
+#
+# -S is deliberately absent. The loop already handles a failed poll, and curl's "Recv
+# failure: Connection reset by peer" on stderr made every successful deploy print errors
+# while the container was still booting.
 wait_until_healthy() {
-	local waited=0
-	while [ "$waited" -lt "$HEALTH_TIMEOUT_SECONDS" ]; do
-		# -S is deliberately absent. The loop already handles a failed poll, and
-		# curl's "Recv failure: Connection reset by peer" on stderr made every
-		# successful deploy print errors while the container was still booting.
-		if curl -fs -o /dev/null "http://localhost:${HOST_PORT}/"; then
-			info "container answers on http://localhost:${HOST_PORT}/ after ${waited}s"
+	local started="$SECONDS"
+	while [ $((SECONDS - started)) -lt "$HEALTH_TIMEOUT_SECONDS" ]; do
+		if curl -fs -o /dev/null \
+			--connect-timeout "$HEALTH_REQUEST_TIMEOUT_SECONDS" \
+			--max-time "$HEALTH_REQUEST_TIMEOUT_SECONDS" \
+			"http://localhost:${HOST_PORT}/"; then
+			info "container answers on http://localhost:${HOST_PORT}/ after $((SECONDS - started))s"
 			return 0
 		fi
 		sleep "$HEALTH_POLL_SECONDS"
-		waited=$((waited + HEALTH_POLL_SECONDS))
 	done
 	return 1
 }

@@ -176,11 +176,19 @@ The script:
 5. Waits for `http://localhost:8081/` to answer. No fixed sleep.
 6. Smoke-tests `POST /api/shorten` once per entry of `PUBLIC_ALLOWED_ORIGINS`, with an
    empty JSON body. `400` ("URL is required") means the allowlist accepted that origin,
-   because the origin check runs before the body is read. `403` on any entry means the
-   shortener would reject a front end the site serves, so the script rolls back. Every
-   entry is probed, not only `ORIGIN`: `ORIGIN` is already known to be in the list, so
-   probing it alone could only ever catch the variable not reaching the container at
-   all. Nothing is sent to is.gd or TinyURL.
+   because the origin check runs before the body is read. `403` on any entry rolls the
+   deploy back. Nothing is sent to is.gd or TinyURL.
+
+   Be clear about what this proves on a deploy. The container was just started from the
+   same list the check reads, so every entry is accepted by construction: the check shows
+   the value reached the app and that the app accepts each entry exactly as written. It
+   does **not** check that an entry names a hostname anything serves — an entry like
+   `https://not-served-anywhere.invalid` is reported as accepted and the deploy exits `0`.
+   It cannot check a hostname that is **missing** from the list either, because a missing
+   hostname is not an entry. Under `--check-only` the same walk is worth more: there the
+   container was started by an earlier run, so an entry the env file lists and the running
+   container does not accept comes back `403`.
+
 7. On success removes `gridscribe-previous`, appends the deployed digest to
    `/var/log/gridscribe-deployments.log`, and prints the digest.
 

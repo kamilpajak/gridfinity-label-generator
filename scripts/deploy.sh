@@ -132,6 +132,8 @@ PREVIOUS_SAVED=0
 NEW_CONTAINER_OWNS_NAME=0
 RUN_ARGS=()
 ORIGIN_ENTRIES=()
+# The entries smoke_test_shortener found the running container rejecting.
+REJECTED_ORIGINS=()
 
 usage() {
 	cat <<'EOF'
@@ -654,23 +656,69 @@ probe_shortener_origin() {
 	esac
 }
 
-# Probes EVERY entry of PUBLIC_ALLOWED_ORIGINS, not just ORIGIN. Probing ORIGIN alone
-# was a tautology: validate_env has already proved ORIGIN is a member of the list, so
-# the only thing the probe could ever catch was the variable not reaching the container
-# at all. A second served hostname missing from the list now fails the deploy too.
+# Probes every entry of PUBLIC_ALLOWED_ORIGINS against the running container and leaves
+# the rejected ones in $REJECTED_ORIGINS.
+#
+# What the walk proves depends on which path called it, and the two are not the same.
+#
+# On the deploy path it is weak. The container was started from the same value this
+# function reads, so every entry is accepted by construction. All it can show is that the
+# value reached the app and that the app accepts each entry exactly as written - no
+# mangled quoting, no entry the app's own comma-splitting and trimming disagree with. It
+# CANNOT tell that an entry names a hostname nothing serves: reproduced with
+# PUBLIC_ALLOWED_ORIGINS="http://localhost:8097,https://not-served-anywhere.invalid,
+# https://also-bogus.test", where the deploy reported both bogus entries as accepted and
+# exited 0. The claim in the commit that introduced the walk - that a second served
+# hostname missing from the list now fails the deploy - was wrong, and is retracted here:
+# a hostname missing from the list is never an entry, so it is never probed. Catching
+# that would need a request from outside this host, which the deploy has no way to make.
+#
+# Under --check-only the walk earns its keep. The container was started by an earlier
+# run, possibly from an older env file or by hand through the break-glass recipe, so an
+# entry this file lists and the running container does not accept comes back 403.
+# Reproduced against a container whose own allowlist held only the first of the two
+# entries the env file listed: the second was reported REJECTED and the check exited 8.
 smoke_test_shortener() {
-	local entry failed=0
+	local entry
+	REJECTED_ORIGINS=()
 	split_origin_list "$PUBLIC_ALLOWED_ORIGINS"
 	local entries=("${ORIGIN_ENTRIES[@]+"${ORIGIN_ENTRIES[@]}"}")
 
 	info "probing the shortener with every entry of PUBLIC_ALLOWED_ORIGINS (${#entries[@]})"
 	for entry in "${entries[@]+"${entries[@]}"}"; do
-		probe_shortener_origin "$entry" || failed=1
+		probe_shortener_origin "$entry" || REJECTED_ORIGINS+=("$entry")
 	done
 
-	[ "$failed" -eq 0 ] || return 1
+	[ ${#REJECTED_ORIGINS[@]} -eq 0 ] || return 1
 	info "shortener origin check OK"
 	return 0
+}
+
+# Is $ORIGIN itself among the rejected entries?
+origin_was_rejected() {
+	local needle entry
+	needle="$(lower "$(trim "$ORIGIN")")"
+	for entry in "${REJECTED_ORIGINS[@]+"${REJECTED_ORIGINS[@]}"}"; do
+		if [ "$(lower "$entry")" = "$needle" ]; then
+			return 0
+		fi
+	done
+	return 1
+}
+
+# Names the rejected entries and separates the two cases, because they need different
+# attention and the old wording always claimed the worse one. "The site is up, but every
+# QR code carries the full long URL" was false whenever ORIGIN itself passed and only a
+# secondary hostname failed - reproduced with a container whose allowlist held only the
+# first of two listed entries, where codes generated on that first origin shortened fine.
+# The warnings above carry the HTTP status for each entry; this is the one line an
+# unattended mail reader is most likely to keep, so the list goes in it.
+rejected_origins_summary() {
+	if origin_was_rejected; then
+		printf '%s' "the running deployment rejects the origin(s): ${REJECTED_ORIGINS[*]}. ORIGIN ($ORIGIN) is one of them, so every QR code generated on the site carries the full long URL."
+	else
+		printf '%s' "the running deployment rejects the origin(s): ${REJECTED_ORIGINS[*]}. ORIGIN ($ORIGIN) was accepted, so QR codes generated on the main site are fine; codes generated on the rejected hostname(s) carry the full long URL."
+	fi
 }
 
 dump_container_logs() {
@@ -818,7 +866,7 @@ main() {
     docker ps -a --filter name=$CONTAINER_NAME
     docker logs --tail $LOG_TAIL_LINES $CONTAINER_NAME"
 		smoke_test_shortener ||
-			die "$EXIT_PARTIAL" "the running deployment fails the shortener origin check. The site is up, but every QR code carries the full long URL."
+			die "$EXIT_PARTIAL" "$(rejected_origins_summary)"
 		info "check passed"
 		exit 0
 	fi
@@ -862,7 +910,7 @@ main() {
 	if ! smoke_test_shortener; then
 		dump_container_logs
 		rollback || die "$EXIT_PARTIAL" "the shortener check failed and the previous container could not be restored - see the warning above. The live site needs attention now."
-		die "$EXIT_NOT_DEPLOYED" "deploy rejected: the shortener refused the site's own origin; rolled back"
+		die "$EXIT_NOT_DEPLOYED" "deploy rejected and rolled back to the previous container: $(rejected_origins_summary)"
 	fi
 
 	# The deploy has passed every check from here on, so an interrupt must no longer

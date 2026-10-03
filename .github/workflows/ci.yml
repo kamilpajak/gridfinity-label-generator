@@ -54,6 +54,18 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # ShellCheck ships with the Ubuntu runner image, and Prettier has no shell
+      # parser, so this step is the only thing that lints scripts/deploy.sh. The
+      # guard keeps it working if a future runner image drops the package; a
+      # one-line invocation does not need a third-party action.
+      - name: Lint shell scripts
+        run: |
+          if ! command -v shellcheck > /dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y shellcheck
+          fi
+          shellcheck --version
+          shellcheck scripts/deploy.sh
+
       - name: Validate commit messages
         if: github.event_name == 'pull_request'
         run: |

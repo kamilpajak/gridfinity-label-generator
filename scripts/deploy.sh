@@ -157,9 +157,11 @@ OUTPUT
 EXIT CODES
   0  deployed, healthy, and the shortener accepted the site's own origin
      (or --check-only passed)
-  2  usage error, a required variable is missing or malformed, or an earlier deploy
-     left a container behind and has to be sorted out first. Nothing was touched and
-     the running container keeps serving
+  2  usage error, the env file is malformed or a required variable is missing, or a
+     stale gridscribe-previous container is in the way while the site is still up.
+     Nothing was touched and the running container keeps serving. A stale
+     gridscribe-previous found while nothing is serving is NOT this code: the deploy
+     goes ahead and keeps that container as its rollback target
   7  the deploy did not land and the previous version is serving again: the image
      could not be pulled, the new container failed a check, or the run was
      interrupted. Safe to retry once the cause is fixed
@@ -684,16 +686,44 @@ stash_current_container() {
 	# an earlier run died in between, which makes it the last container known to have
 	# served the site. Deleting it - which is what this function used to do first,
 	# before checking anything - throws away the only rollback target there is.
+	#
+	# What to do next depends entirely on whether anything is serving, so ask. The
+	# earlier version refused either way and said "Nothing was touched", which an
+	# operator and a cron wrapper both read as "the site is fine". On this path it
+	# usually is not: reaching here means a run died between the rename and the end, so
+	# the container holding $CONTAINER_NAME is that run's new container, not the one that
+	# was serving. Reproduced by killing a deploy stuck in the health wait: GET / gave
+	# 000 while the next run exited 2 claiming the running container keeps serving.
 	if docker inspect "$PREVIOUS_CONTAINER_NAME" >/dev/null 2>&1; then
-		die "$EXIT_USAGE" "a container named $PREVIOUS_CONTAINER_NAME is still here, so an earlier deploy did not finish.
-  It is the last container known to have served the site, so this run will not
-  delete it. Nothing was touched.
-  Put it back, then deploy again:
+		if container_is_answering; then
+			die "$EXIT_USAGE" "a container named $PREVIOUS_CONTAINER_NAME is still here, so an earlier deploy did not finish.
+  $CONTAINER_NAME is answering on http://localhost:${HOST_PORT}/, so the site is up and
+  this run changed nothing. Drop the stale copy, then deploy again:
+    docker rm -f $PREVIOUS_CONTAINER_NAME
+  Or, to go back to the stale copy instead, because it is the last container known to
+  have served the site:
     docker rm -f $CONTAINER_NAME
     docker rename $PREVIOUS_CONTAINER_NAME $CONTAINER_NAME
-    docker start $CONTAINER_NAME
-  Or, if $CONTAINER_NAME is serving correctly already, drop the stale copy:
-    docker rm -f $PREVIOUS_CONTAINER_NAME"
+    docker start $CONTAINER_NAME"
+		fi
+
+		# Nothing answers, so the site is down and re-running the deploy is the
+		# operator's natural recovery. Refusing turned that one command into four and
+		# left the site down in between. Adopt the stranded container as this run's
+		# rollback target instead: it is still the last container known to have served
+		# the site, a failed deploy can still fall back to it, and nothing known-good is
+		# deleted here. Only the non-answering $CONTAINER_NAME goes.
+		warn "a container named $PREVIOUS_CONTAINER_NAME is here, so an earlier deploy did not finish, and nothing answers on http://localhost:${HOST_PORT}/ - the site is DOWN."
+		info "keeping $PREVIOUS_CONTAINER_NAME as this run's rollback target and replacing $CONTAINER_NAME"
+		if docker inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
+			docker rm -f "$CONTAINER_NAME" >/dev/null ||
+				die "$EXIT_PARTIAL" "the site is down, $CONTAINER_NAME is not answering, and it could not be removed. The live site needs attention now:
+    docker rm -f $CONTAINER_NAME
+    docker rename $PREVIOUS_CONTAINER_NAME $CONTAINER_NAME
+    docker start $CONTAINER_NAME"
+		fi
+		PREVIOUS_SAVED=1
+		return 0
 	fi
 
 	if docker inspect "$CONTAINER_NAME" >/dev/null 2>&1; then

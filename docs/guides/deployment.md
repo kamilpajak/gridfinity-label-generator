@@ -188,6 +188,17 @@ If validation fails nothing is touched and the running container keeps serving. 
 check fails after the container was replaced, the previous container is renamed back and
 started again.
 
+If a run is killed between step 4 and step 7 it leaves a `gridscribe-previous` container
+behind. What the next run does then depends on whether anything is serving:
+
+- The site answers on `http://localhost:8081/` — the run stops with exit `2` and changes
+  nothing. `gridscribe-previous` is older than what is serving, so removing it is your
+  call: `docker rm -f gridscribe-previous`.
+- Nothing answers — the site is down, so the run says so, removes the container that is
+  not answering, keeps `gridscribe-previous` as its own rollback target, and deploys. One
+  command restores the site, and the last container known to have served it is still
+  there to fall back to.
+
 ### Before deploying anything
 
 ```bash
@@ -233,7 +244,7 @@ The script and its `--help` use the same set.
 | Code | Meaning                                                                                                                                                                                                                                          |
 | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `0`  | Deployed, healthy, and the shortener accepted the site's own origin. Also a passing `--check-only`                                                                                                                                               |
-| `2`  | Usage error, a required variable is missing or malformed, or an earlier deploy left a `gridscribe-previous` container behind. Nothing was touched and the running container keeps serving                                                        |
+| `2`  | Usage error, the env file is malformed or a required variable is missing, or a stale `gridscribe-previous` container is in the way **while the site is still answering**. Nothing was touched and the running container keeps serving            |
 | `7`  | The deploy did not land and the previous version is serving again: the image could not be pulled, a check failed, or the run was interrupted. Safe to retry                                                                                      |
 | `8`  | Partial. The container was replaced and the rollback also failed, so the live site needs attention now; or `--check-only` found the shortener rejecting an origin the site serves; or `--check-only` found nothing answering on port 8081 at all |
 
@@ -317,6 +328,11 @@ docker run -d \
   --restart unless-stopped \
   ghcr.io/kamilpajak/gridfinity-label-generator:latest
 ```
+
+A break-glass start leaves whatever `docker ps -a` already showed. If that includes
+`gridscribe-previous`, remove it (`docker rm -f gridscribe-previous`) once the site is
+answering again, or the next `deploy.sh` run stops with exit `2` because a stale copy is
+in the way.
 
 If only the deploy logic is broken and validation still works,
 `sudo ./scripts/deploy.sh --dry-run` prints the same argv with the values already filled

@@ -85,6 +85,21 @@ readonly REFUSED_VARS=(
 
 readonly E2E_PAGES_VAR="PUBLIC_ALLOW_E2E_PAGES"
 
+# This script's own settings, as opposed to the app's environment. They come from the
+# command line and must not come from the env file: load_env_file sources that file
+# into this shell, so an assignment to one of these would quietly overrule what the
+# operator typed. The fixed settings above are readonly and abort the source on
+# contact; these have to be mutable, so they are compared by hand after the source.
+readonly SCRIPT_SETTING_VARS=(
+	TAG
+	ENV_FILE
+	DRY_RUN
+	CHECK_ONLY
+	DO_PULL
+	PREVIOUS_SAVED
+	NEW_CONTAINER_OWNS_NAME
+)
+
 TAG="latest"
 ENV_FILE="${GRIDSCRIBE_ENV_FILE:-$DEFAULT_ENV_FILE}"
 DRY_RUN=0
@@ -200,6 +215,8 @@ parse_args() {
 		esac
 	done
 
+	# Safe to check here, before the env file is read, because load_env_file refuses an
+	# env file that assigns TAG at all - so this is the only source of the value.
 	case "$TAG" in
 	'' | *[!A-Za-z0-9._-]*)
 		die "$EXIT_USAGE" "refusing an image tag with unexpected characters: '$TAG'"
@@ -225,8 +242,35 @@ load_env_file() {
     sudo \$EDITOR $ENV_FILE"
 	[ -r "$ENV_FILE" ] || die "$EXIT_USAGE" "env file is not readable: $ENV_FILE"
 
+	local name
+	local before=()
+	for name in "${SCRIPT_SETTING_VARS[@]}"; do
+		before+=("${!name}")
+	done
+
 	# shellcheck source=/dev/null
 	. "$ENV_FILE"
+
+	# The env file is sourced into this shell, so a line such as TAG="sha-deadbee"
+	# used to overrule --tag silently and skip the --tag character check in
+	# parse_args, which runs before the file is read. DRY_RUN=1 was worse: every
+	# deploy became a no-op that still exited 0. Refusing rather than restoring the
+	# command-line value, so the operator does not keep a line that does nothing.
+	local index
+	local clobbered=()
+	for index in "${!SCRIPT_SETTING_VARS[@]}"; do
+		name="${SCRIPT_SETTING_VARS[$index]}"
+		if [ "${!name}" != "${before[$index]}" ]; then
+			clobbered+=("$name")
+		fi
+	done
+	if [ ${#clobbered[@]} -gt 0 ]; then
+		die "$EXIT_USAGE" "$ENV_FILE assigns deploy.sh's own setting(s): ${clobbered[*]}
+  The file is sourced, so those assignments overrule the command line. Nothing was
+  touched and the running container keeps serving.
+  Remove the line(s) and pass the option instead, for example --tag sha-abc1234.
+  The env file is for the app's environment only; see scripts/deploy.env.example."
+	fi
 
 	# A typo'd variable name is the one mistake no other check here can see: the app
 	# would read an unset variable and silently turn the feature off.

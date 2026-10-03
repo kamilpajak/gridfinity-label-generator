@@ -35,8 +35,8 @@ const SHORTENER_ORIGIN_VAR = 'PUBLIC_ALLOWED_ORIGINS';
  * A `docker run` example satisfies the check either by naming the variable inline, as a
  * bare `-e PUBLIC_ALLOWED_ORIGINS` or an explicit `-e PUBLIC_ALLOWED_ORIGINS=...`, or by
  * reading an env file that carries it (`--env-file ...`). The copy-paste commands in the
- * guide use the bare form after sourcing the env file, because `--env-file` does not
- * strip the quotes the file needs for `scripts/deploy.sh` to source it.
+ * guide use the bare form after reading the env file with `.`, because `docker run
+ * --env-file` does not strip the quotes the file is written with.
  */
 const ENV_FILE_FLAG = '--env-file';
 

@@ -251,12 +251,14 @@ sudo ./scripts/deploy.sh --check-only  # verify the deployment that is already r
 ```
 
 Values come from `/etc/gridscribe/deploy.env` on the VPS, created from
-`deploy.env.example` in this directory. That file is sourced by the script, so keep it
-root-owned. Every value in the template is empty, including `ORIGIN` and
-`PUBLIC_ALLOWED_ORIGINS`: they have to name the domain this host serves, and nothing in
-the deploy can work that out on its own. The file is for the app's environment only — an
-assignment to one of the script's own options, such as `TAG` or `DRY_RUN`, is refused,
-because sourcing would let it overrule the command line.
+`deploy.env.example` in this directory. The script reads that file line by line — it does
+not source it — so a line that is not `NAME=value` is refused rather than run. Keep it
+root-owned anyway; it holds operator values. Every value in the template is empty,
+including `ORIGIN` and `PUBLIC_ALLOWED_ORIGINS`: they have to name the domain this host
+serves, and nothing in the deploy can work that out on its own. The file is for the app's
+environment only — an assignment to one of the script's own options, such as `TAG` or
+`DRY_RUN`, or to one of its fixed settings, such as `HOST_PORT`, is refused with exit
+`2`.
 
 The script names every variable it passes, in `REQUIRED_VARS`, `OPTIONAL_VARS` and
 `REFUSED_VARS`. The test `src/lib/config/deploy-script-vars.test.ts` fails when `src/`

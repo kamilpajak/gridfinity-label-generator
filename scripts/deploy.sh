@@ -13,14 +13,14 @@
 # Matomo and affiliate ids belong to the operator. Start from
 # scripts/deploy.env.example.
 #
-# SECURITY: this script SOURCES the env file, so the file can run arbitrary shell as
-# whoever runs the deploy. Keep it root-owned and not group/world writable:
+# The env file is READ line by line, not sourced - see load_env_file. It still holds
+# operator values, so keep it root-owned and not group/world readable:
 #   sudo chown root:root /etc/gridscribe/deploy.env
 #   sudo chmod 600 /etc/gridscribe/deploy.env
-# Sourcing is deliberate. `docker run --env-file` does no shell quoting, so
-# PUBLIC_ALLOWED_ORIGINS="https://example.com" would reach the app with the quote
-# characters inside the value and never match a browser's Origin header - the exact
-# class of silent failure this script exists to prevent.
+# The reading strips one layer of matching quotes, which is what `docker run --env-file`
+# does not do: PUBLIC_ALLOWED_ORIGINS="https://example.com" passed that way reaches the
+# app with the quote characters inside the value and never matches a browser's Origin
+# header - the exact class of silent failure this script exists to prevent.
 #
 # There is deliberately no --format=json renderer. The repository's CLI conventions
 # ask for one, and for an agent-driven tool that would be right, but this script is
@@ -94,6 +94,11 @@ readonly REFUSED_VARS=(
 
 readonly E2E_PAGES_VAR="PUBLIC_ALLOW_E2E_PAGES"
 
+# One line of the env file: an optional `export `, a shell identifier, `=`, and the rest.
+# The rest is handed to parse_env_value rather than matched here, because a value may
+# contain anything at all once it is quoted.
+readonly ENV_ASSIGNMENT_PATTERN='^[[:space:]]*(export[[:space:]]+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)$'
+
 # Repeated verbatim by the ORIGIN check and by the allowlist check, so the two cannot
 # drift into describing different rules.
 readonly BARE_ORIGIN_HINT="  Expected scheme://host with no trailing slash and no path, and without the
@@ -101,10 +106,10 @@ readonly BARE_ORIGIN_HINT="  Expected scheme://host with no trailing slash and n
   explicit one never matches. For example https://gridfinitylabels.com"
 
 # This script's own settings, as opposed to the app's environment. They come from the
-# command line and must not come from the env file: load_env_file sources that file
-# into this shell, so an assignment to one of these would quietly overrule what the
-# operator typed. The fixed settings above are readonly and abort the source on
-# contact; these have to be mutable, so they are compared by hand after the source.
+# command line and must not come from the env file, so load_env_file refuses a file that
+# assigns one of them by name. The fixed settings above need no list: they are readonly,
+# and load_env_file asks the shell which names are readonly rather than keeping a second
+# copy of that list here to drift.
 readonly SCRIPT_SETTING_VARS=(
 	TAG
 	ENV_FILE
@@ -262,6 +267,82 @@ var_is_known() {
 	return 1
 }
 
+var_is_script_setting() {
+	local needle="$1" name
+	for name in "${SCRIPT_SETTING_VARS[@]}"; do
+		if [ "$name" = "$needle" ]; then
+			return 0
+		fi
+	done
+	return 1
+}
+
+# Is $1 one of the script's own fixed settings - the readonly constants at the top?
+# Asked of the shell instead of kept as a second list beside SCRIPT_SETTING_VARS, so
+# adding a constant up there cannot leave this check behind. `declare -p` prints
+# `declare -r NAME=...` for a readonly scalar and `declare -ar NAME=...` for a readonly
+# array, so only the flag letters are examined.
+var_is_fixed_setting() {
+	local declaration flags
+	declaration="$(declare -p "$1" 2>/dev/null)" || return 1
+	flags="${declaration#declare -}"
+	flags="${flags%% *}"
+	case "$flags" in
+	*r*) return 0 ;;
+	esac
+	return 1
+}
+
+# Strips one layer of matching quotes from the right-hand side of an assignment, plus a
+# trailing comment outside the quotes, and leaves the result in $ENV_VALUE. Returns 1
+# when what follows the value is neither blank nor a comment, so the caller can refuse
+# the line instead of guessing what the operator meant. A global rather than a return
+# value because a command substitution runs in a subshell, where `die` would exit only
+# the subshell.
+ENV_VALUE=""
+parse_env_value() {
+	local raw quoted rest
+	raw="$(trim "$1")"
+	case "$raw" in
+	'"'*)
+		quoted="${raw#\"}"
+		case "$quoted" in *'"'*) ;; *) return 1 ;; esac
+		ENV_VALUE="${quoted%%\"*}"
+		rest="${quoted#*\"}"
+		;;
+	"'"*)
+		quoted="${raw#\'}"
+		case "$quoted" in *"'"*) ;; *) return 1 ;; esac
+		ENV_VALUE="${quoted%%\'*}"
+		rest="${quoted#*\'}"
+		;;
+	*)
+		ENV_VALUE="${raw%%[[:space:]]*}"
+		rest="${raw#"$ENV_VALUE"}"
+		;;
+	esac
+	case "$(trim "$rest")" in
+	'' | '#'*) return 0 ;;
+	esac
+	return 1
+}
+
+# Reads $ENV_FILE one line at a time. It is deliberately NOT sourced.
+#
+# Sourcing was shorter and wrong three ways over. It ran every line as shell, so a stray
+# line in a root-owned config file executed as root under sudo - verified: a file with
+# `id -un > /tmp/x` appended ran the command on a plain --dry-run. It let the file assign
+# this script's own options, where TAG="sha-deadbee" overruled --tag and skipped the
+# character check in parse_args and DRY_RUN=1 turned every deploy into a no-op that
+# still exited 0. And it let the file touch the fixed constants, where HOST_PORT=9999
+# ended the run with a raw `HOST_PORT: readonly variable` from bash and exit status 1 -
+# a code neither --help nor the deployment guide documents.
+#
+# Accepted on a line: a comment, a blank line, or NAME=value with an optional leading
+# `export ` and at most one layer of matching quotes. The quotes are what the template's
+# own quoting is for; nothing else is interpreted, so a $, a backtick or a semicolon in a
+# value reaches the container verbatim. A value spanning lines and shell expansion are
+# deliberately unsupported: the file is a list of values, not a program.
 load_env_file() {
 	[ -f "$ENV_FILE" ] || die "$EXIT_USAGE" "env file not found: $ENV_FILE
   Create it from scripts/deploy.env.example:
@@ -270,44 +351,77 @@ load_env_file() {
     sudo \$EDITOR $ENV_FILE"
 	[ -r "$ENV_FILE" ] || die "$EXIT_USAGE" "env file is not readable: $ENV_FILE"
 
-	local name
-	local before=()
-	for name in "${SCRIPT_SETTING_VARS[@]}"; do
-		before+=("${!name}")
-	done
+	local line number=0 name
+	local clobbered=() fixed=()
 
-	# shellcheck source=/dev/null
-	. "$ENV_FILE"
+	# `|| [ -n "$line" ]` so a final line without a newline is still read.
+	while IFS= read -r line || [ -n "$line" ]; do
+		number=$((number + 1))
+		# A file edited on Windows would otherwise put a carriage return at the end of
+		# every value, where it survives into the container and never matches anything.
+		line="${line%$'\r'}"
 
-	# The env file is sourced into this shell, so a line such as TAG="sha-deadbee"
-	# used to overrule --tag silently and skip the --tag character check in
-	# parse_args, which runs before the file is read. DRY_RUN=1 was worse: every
-	# deploy became a no-op that still exited 0. Refusing rather than restoring the
-	# command-line value, so the operator does not keep a line that does nothing.
-	local index
-	local clobbered=()
-	for index in "${!SCRIPT_SETTING_VARS[@]}"; do
-		name="${SCRIPT_SETTING_VARS[$index]}"
-		if [ "${!name}" != "${before[$index]}" ]; then
-			clobbered+=("$name")
+		case "$(trim "$line")" in
+		'' | '#'*) continue ;;
+		esac
+
+		if [[ ! $line =~ $ENV_ASSIGNMENT_PATTERN ]]; then
+			die "$EXIT_USAGE" "$ENV_FILE line $number is not an assignment: $line
+  The file is read line by line, not run as a shell script. Every line is a comment, a
+  blank line, or NAME=value. A value with spaces in it needs quotes, for example
+  PUBLIC_PRIVACY_CONTROLLER=\"Jane Doe\".
+  Nothing was touched and the running container keeps serving."
 		fi
-	done
+		name="${BASH_REMATCH[2]}"
+
+		if ! parse_env_value "${BASH_REMATCH[3]}"; then
+			die "$EXIT_USAGE" "$ENV_FILE line $number: cannot read the value of $name: $line
+  Expected NAME=value, NAME=\"value\" or NAME='value', optionally followed by a comment.
+  An unterminated quote, or anything else after the closing quote, is refused rather
+  than guessed at.
+  Nothing was touched and the running container keeps serving."
+		fi
+
+		# Collected rather than reported one at a time, so one run names every line the
+		# operator has to change.
+		if var_is_script_setting "$name"; then
+			clobbered+=("$name")
+			continue
+		fi
+		if var_is_fixed_setting "$name"; then
+			fixed+=("$name")
+			continue
+		fi
+
+		# A typo'd variable name is the one mistake no other check here can see: the app
+		# would read an unset variable and silently turn the feature off.
+		if ! var_is_known "$name"; then
+			warn "$ENV_FILE line $number sets $name, which no code in src/ reads. A typo? It is not passed to the container."
+			continue
+		fi
+
+		# -g because this runs inside a function and the value has to outlive it. The
+		# name has already been matched against $ENV_ASSIGNMENT_PATTERN, so it is a
+		# plain shell identifier.
+		declare -g "$name=$ENV_VALUE"
+	done <"$ENV_FILE"
+
 	if [ ${#clobbered[@]} -gt 0 ]; then
 		die "$EXIT_USAGE" "$ENV_FILE assigns deploy.sh's own setting(s): ${clobbered[*]}
-  The file is sourced, so those assignments overrule the command line. Nothing was
-  touched and the running container keeps serving.
+  Those are this script's options, not the app's environment, and they are only ever
+  taken from the command line. Nothing was touched and the running container keeps
+  serving.
   Remove the line(s) and pass the option instead, for example --tag sha-abc1234.
   The env file is for the app's environment only; see scripts/deploy.env.example."
 	fi
 
-	# A typo'd variable name is the one mistake no other check here can see: the app
-	# would read an unset variable and silently turn the feature off.
-	local key
-	while IFS= read -r key; do
-		if ! var_is_known "$key"; then
-			warn "$ENV_FILE sets $key, which no code in src/ reads. A typo? It is not passed to the container."
-		fi
-	done < <(grep -oE 'PUBLIC_[A-Z0-9_]+' "$ENV_FILE" | sort -u)
+	if [ ${#fixed[@]} -gt 0 ]; then
+		die "$EXIT_USAGE" "$ENV_FILE assigns deploy.sh's fixed setting(s): ${fixed[*]}
+  Those are constants in the script - the image repository, the container names, the
+  published port, the deployment log path and the timeouts. They are not configurable
+  from the env file; edit scripts/deploy.sh if one of them has to change. Nothing was
+  touched and the running container keeps serving."
+	fi
 }
 
 # scheme://host[:port], no trailing slash, no path, and never the scheme's own default

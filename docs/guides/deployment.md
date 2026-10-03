@@ -122,7 +122,7 @@ sudo install -d -m 755 /etc/gridscribe
 sudo cp /opt/gridscribe/scripts/deploy.env.example /etc/gridscribe/deploy.env
 sudo $EDITOR /etc/gridscribe/deploy.env
 
-# 3. The script sources this file, so keep it root-owned and not world readable
+# 3. The file holds operator values, so keep it root-owned and not world readable
 sudo chown root:root /etc/gridscribe/deploy.env
 sudo chmod 600 /etc/gridscribe/deploy.env
 ```
@@ -164,7 +164,11 @@ The script:
    non-default port, and `ORIGIN` must appear in the list. `https://host:443` is
    refused: a browser leaves the default port out of the `Origin` header, so an
    explicit `:443` never matches.
-2. Warns about any `PUBLIC_*` name in the file that no code reads — that catches a typo.
+2. Warns about any name in the file that no code reads — that catches a typo. The file is
+   read line by line, not sourced: a line that is not `NAME=value`, and an assignment to
+   one of the script's own options (`TAG`, `DRY_RUN`, `CHECK_ONLY`, `DO_PULL`, `ENV_FILE`)
+   or fixed settings (`HOST_PORT` and the rest), is refused with exit `2` naming the line.
+   One layer of matching quotes is stripped; nothing else in a value is interpreted.
 3. Pulls `ghcr.io/kamilpajak/gridfinity-label-generator:latest`.
 4. Renames the running container to `gridscribe-previous` and starts the new one, passing
    every variable as an explicit `-e` flag so the full environment is visible in

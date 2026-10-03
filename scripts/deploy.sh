@@ -91,6 +91,10 @@ DRY_RUN=0
 CHECK_ONLY=0
 DO_PULL=1
 PREVIOUS_SAVED=0
+# 1 once this run has taken ownership of $CONTAINER_NAME, which happens the moment
+# `docker run` is invoked. Until then the name still belongs to whatever was serving
+# the site, and a rollback must not delete it.
+NEW_CONTAINER_OWNS_NAME=0
 RUN_ARGS=()
 ORIGIN_ENTRIES=()
 
@@ -118,11 +122,12 @@ OUTPUT
 EXIT CODES
   0  deployed, healthy, and the shortener accepted the site's own origin
      (or --check-only passed)
-  2  usage error, or a required variable is missing or malformed. Nothing was
-     touched and the running container keeps serving
+  2  usage error, a required variable is missing or malformed, or an earlier deploy
+     left a container behind and has to be sorted out first. Nothing was touched and
+     the running container keeps serving
   7  the deploy did not land and the previous version is serving again: the image
-     could not be pulled, or the new container failed a check and was rolled back.
-     Safe to retry once the cause is fixed
+     could not be pulled, the new container failed a check, or the run was
+     interrupted. Safe to retry once the cause is fixed
   8  partial. Either the container was replaced and the rollback also failed, so the
      live site needs attention now, or --check-only found the running deployment
      failing the origin check, so the site is up but the shortener is broken
@@ -434,7 +439,23 @@ dump_container_logs() {
 # An image id is what `docker image prune -a` deletes, and the deployment guide's own
 # Cleanup section recommends exactly that prune.
 stash_current_container() {
-	docker rm -f "$PREVIOUS_CONTAINER_NAME" >/dev/null 2>&1 || true
+	# $PREVIOUS_CONTAINER_NAME exists only while a deploy is in flight: a finished run
+	# either removes it (success) or renames it back (rollback). Finding one here means
+	# an earlier run died in between, which makes it the last container known to have
+	# served the site. Deleting it - which is what this function used to do first,
+	# before checking anything - throws away the only rollback target there is.
+	if docker inspect "$PREVIOUS_CONTAINER_NAME" >/dev/null 2>&1; then
+		die "$EXIT_USAGE" "a container named $PREVIOUS_CONTAINER_NAME is still here, so an earlier deploy did not finish.
+  It is the last container known to have served the site, so this run will not
+  delete it. Nothing was touched.
+  Put it back, then deploy again:
+    docker rm -f $CONTAINER_NAME
+    docker rename $PREVIOUS_CONTAINER_NAME $CONTAINER_NAME
+    docker start $CONTAINER_NAME
+  Or, if $CONTAINER_NAME is serving correctly already, drop the stale copy:
+    docker rm -f $PREVIOUS_CONTAINER_NAME"
+	fi
+
 	if docker inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
 		docker stop "$CONTAINER_NAME" >/dev/null
 		docker rename "$CONTAINER_NAME" "$PREVIOUS_CONTAINER_NAME"
@@ -446,7 +467,15 @@ stash_current_container() {
 }
 
 rollback() {
-	docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+	# A rollback already under way needs no second one on top of it.
+	disarm_interrupt_rollback
+	# Only this run's own container may be removed. An interrupt can fire before
+	# `docker run` was reached, and then $CONTAINER_NAME is still the container that
+	# was serving the site a moment ago.
+	if [ "$NEW_CONTAINER_OWNS_NAME" -eq 1 ]; then
+		docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
+		NEW_CONTAINER_OWNS_NAME=0
+	fi
 	if [ "$PREVIOUS_SAVED" -eq 0 ]; then
 		warn "there was no previous container, so there is nothing to restore"
 		return 1
@@ -463,10 +492,41 @@ rollback() {
 
 discard_previous_container() {
 	if [ "$PREVIOUS_SAVED" -eq 1 ]; then
-		docker rm "$PREVIOUS_CONTAINER_NAME" >/dev/null 2>&1 || true
+		docker rm -f "$PREVIOUS_CONTAINER_NAME" >/dev/null 2>&1 ||
+			warn "could not remove $PREVIOUS_CONTAINER_NAME. Remove it by hand, or the next deploy will refuse to start."
 		PREVIOUS_SAVED=0
 	fi
 }
+
+# An interrupted deploy used to leave the site down: the new container kept
+# restarting under `--restart unless-stopped` while the known-good one sat stopped
+# under $PREVIOUS_CONTAINER_NAME. A dropped SSH session (SIGHUP) or a Ctrl-C anywhere
+# in the ~75s of health check plus smoke test was enough.
+on_interrupt() {
+	local signal="$1"
+	# Disarmed first, so a second Ctrl-C stops the script outright instead of
+	# re-entering a rollback that is already running.
+	disarm_interrupt_rollback
+	warn "interrupted by SIG${signal} while replacing the container"
+	if rollback; then
+		die "$EXIT_NOT_DEPLOYED" "interrupted; rolled back to the previous container"
+	fi
+	die "$EXIT_PARTIAL" "interrupted, and the previous container could not be restored - see the warning above. The live site needs attention now."
+}
+
+# Armed only around the mutating phase, so interrupting --dry-run or --check-only
+# still just stops. The two docker calls inside stash_current_container are outside
+# the armed window on purpose: until the rename has happened there is no previous
+# container to restore, and the container that was serving is still in place.
+arm_interrupt_rollback() {
+	local signal
+	for signal in INT TERM HUP; do
+		# shellcheck disable=SC2064 # $signal must expand now, not when the trap fires.
+		trap "on_interrupt $signal" "$signal"
+	done
+}
+
+disarm_interrupt_rollback() { trap - INT TERM HUP; }
 
 main() {
 	parse_args "$@"
@@ -505,8 +565,10 @@ main() {
 	digest="$(docker inspect --format '{{index .RepoDigests 0}}' "$image_ref" 2>/dev/null || printf '%s' "$image_ref")"
 
 	stash_current_container
+	arm_interrupt_rollback
 
 	info "starting the new container"
+	NEW_CONTAINER_OWNS_NAME=1
 	if ! "${RUN_ARGS[@]}" >/dev/null; then
 		rollback || die "$EXIT_PARTIAL" "the new container would not start and the previous one could not be restored - see the warning above. The live site needs attention now."
 		die "$EXIT_NOT_DEPLOYED" "the new container would not start; rolled back to the previous one"
@@ -525,6 +587,9 @@ main() {
 		die "$EXIT_NOT_DEPLOYED" "deploy rejected: the shortener refused the site's own origin; rolled back"
 	fi
 
+	# The deploy has passed every check from here on, so an interrupt must no longer
+	# roll back a container that is serving correctly.
+	disarm_interrupt_rollback
 	discard_previous_container
 	printf 'deployed %s at %s\n' "$digest" "$(timestamp)" >>"$DEPLOY_LOG"
 	info "deploy complete"

@@ -123,18 +123,23 @@ cd /opt/gridscribe && sudo git pull
 The script:
 
 1. Reads `/etc/gridscribe/deploy.env` and checks every required variable. Each entry of
-   `PUBLIC_ALLOWED_ORIGINS` must be a bare `scheme://host[:port]`, and `ORIGIN` must
-   appear in the list.
+   `PUBLIC_ALLOWED_ORIGINS` must be a bare `scheme://host`, optionally with a
+   non-default port, and `ORIGIN` must appear in the list. `https://host:443` is
+   refused: a browser leaves the default port out of the `Origin` header, so an
+   explicit `:443` never matches.
 2. Warns about any `PUBLIC_*` name in the file that no code reads — that catches a typo.
 3. Pulls `ghcr.io/kamilpajak/gridfinity-label-generator:latest`.
 4. Renames the running container to `gridscribe-previous` and starts the new one, passing
    every variable as an explicit `-e` flag so the full environment is visible in
    `docker inspect`.
 5. Waits for `http://localhost:8081/` to answer. No fixed sleep.
-6. Smoke-tests `POST /api/shorten` with the production `Origin` header and an empty JSON
-   body. `400` ("URL is required") means the allowlist accepted the origin, because the
-   origin check runs before the body is read. `403` means the shortener would reject the
-   site's own front end, so the script rolls back. Nothing is sent to is.gd or TinyURL.
+6. Smoke-tests `POST /api/shorten` once per entry of `PUBLIC_ALLOWED_ORIGINS`, with an
+   empty JSON body. `400` ("URL is required") means the allowlist accepted that origin,
+   because the origin check runs before the body is read. `403` on any entry means the
+   shortener would reject a front end the site serves, so the script rolls back. Every
+   entry is probed, not only `ORIGIN`: `ORIGIN` is already known to be in the list, so
+   probing it alone could only ever catch the variable not reaching the container at
+   all. Nothing is sent to is.gd or TinyURL.
 7. On success removes `gridscribe-previous`, appends the deployed digest to
    `~/gridscribe-deployments.log`, and prints the digest.
 
@@ -174,12 +179,12 @@ full long URL instead of a short one. A daily cron entry is enough:
 
 The script and its `--help` use the same set.
 
-| Code | Meaning                                                                                                                                                                                                                               |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `0`  | Deployed, healthy, and the shortener accepted the site's own origin. Also a passing `--check-only`                                                                                                                                    |
-| `2`  | Usage error, or a required variable is missing or malformed. Nothing was touched and the running container keeps serving                                                                                                              |
-| `7`  | The deploy did not land and the previous version is serving again: the image could not be pulled, or a check failed. Safe to retry                                                                                                    |
-| `8`  | Partial. Either the container was replaced and the rollback also failed, so the live site needs attention now, or `--check-only` found the running deployment failing the origin check, so the site is up but the shortener is broken |
+| Code | Meaning                                                                                                                                                                                                                                          |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `0`  | Deployed, healthy, and the shortener accepted the site's own origin. Also a passing `--check-only`                                                                                                                                               |
+| `2`  | Usage error, a required variable is missing or malformed, or an earlier deploy left a `gridscribe-previous` container behind. Nothing was touched and the running container keeps serving                                                        |
+| `7`  | The deploy did not land and the previous version is serving again: the image could not be pulled, a check failed, or the run was interrupted. Safe to retry                                                                                      |
+| `8`  | Partial. The container was replaced and the rollback also failed, so the live site needs attention now; or `--check-only` found the shortener rejecting an origin the site serves; or `--check-only` found nothing answering on port 8081 at all |
 
 ---
 

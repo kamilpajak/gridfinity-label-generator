@@ -85,6 +85,12 @@ readonly REFUSED_VARS=(
 
 readonly E2E_PAGES_VAR="PUBLIC_ALLOW_E2E_PAGES"
 
+# Repeated verbatim by the ORIGIN check and by the allowlist check, so the two cannot
+# drift into describing different rules.
+readonly BARE_ORIGIN_HINT="  Expected scheme://host with no trailing slash and no path, and without the
+  scheme's default port - a browser leaves :443 off https and :80 off http, so an
+  explicit one never matches. For example https://gridfinitylabels.com"
+
 # This script's own settings, as opposed to the app's environment. They come from the
 # command line and must not come from the env file: load_env_file sources that file
 # into this shell, so an assignment to one of these would quietly overrule what the
@@ -282,11 +288,20 @@ load_env_file() {
 	done < <(grep -oE 'PUBLIC_[A-Z0-9_]+' "$ENV_FILE" | sort -u)
 }
 
-# scheme://host[:port], no trailing slash, no path. A browser's Origin header has
-# exactly this shape and api-security.ts compares the strings after lowercasing only,
-# so a trailing slash or a path silently never matches.
+# scheme://host[:port], no trailing slash, no path, and never the scheme's own default
+# port. A browser's Origin header has exactly this shape and api-security.ts compares
+# the strings after lowercasing only, so a trailing slash, a path, or an explicit :443
+# silently never matches: new URL('https://host:443').origin is 'https://host', and
+# that is what the browser sends. Verified against the production image - an allowlist
+# of https://host:443 answers 400 to Origin: https://host:443 and 403 to the browser's
+# https://host.
 is_bare_origin() {
-	printf '%s' "$1" | grep -qE '^https?://[A-Za-z0-9._-]+(:[0-9]{1,5})?$'
+	local candidate="$1"
+	printf '%s' "$candidate" | grep -qE '^https?://[A-Za-z0-9._-]+(:[0-9]{1,5})?$' || return 1
+	case "$candidate" in
+	https://*:443 | http://*:80) return 1 ;;
+	esac
+	return 0
 }
 
 # Reads a comma-separated origin list into the global ORIGIN_ENTRIES array. An array
@@ -311,8 +326,7 @@ validate_origin_list() {
 		fi
 		if ! is_bare_origin "$entry"; then
 			die "$EXIT_USAGE" "PUBLIC_ALLOWED_ORIGINS entry is not a bare origin: '$entry'
-  Expected scheme://host[:port] with no trailing slash and no path,
-  for example https://gridfinitylabels.com"
+$BARE_ORIGIN_HINT"
 		fi
 	done
 }
@@ -356,8 +370,7 @@ validate_env() {
 
 	if ! is_bare_origin "$(trim "$ORIGIN")"; then
 		die "$EXIT_USAGE" "ORIGIN is not a bare origin: '$ORIGIN'
-  Expected scheme://host[:port] with no trailing slash and no path,
-  for example https://gridfinitylabels.com"
+$BARE_ORIGIN_HINT"
 	fi
 
 	validate_origin_list "$PUBLIC_ALLOWED_ORIGINS"
@@ -418,7 +431,10 @@ build_run_args() {
 wait_until_healthy() {
 	local waited=0
 	while [ "$waited" -lt "$HEALTH_TIMEOUT_SECONDS" ]; do
-		if curl -fsS -o /dev/null "http://localhost:${HOST_PORT}/"; then
+		# -S is deliberately absent. The loop already handles a failed poll, and
+		# curl's "Recv failure: Connection reset by peer" on stderr made every
+		# successful deploy print errors while the container was still booting.
+		if curl -fs -o /dev/null "http://localhost:${HOST_PORT}/"; then
 			info "container answers on http://localhost:${HOST_PORT}/ after ${waited}s"
 			return 0
 		fi
@@ -428,8 +444,14 @@ wait_until_healthy() {
 	return 1
 }
 
+# Does the port answer at all? Asked on its own, because a shortener probe cannot tell
+# a rejected origin from nothing listening.
+container_is_answering() {
+	curl -fs -o /dev/null -m "$SMOKE_TEST_TIMEOUT_SECONDS" "http://localhost:${HOST_PORT}/"
+}
+
 # Checks the EFFECT of PUBLIC_ALLOWED_ORIGINS, not its presence. POSTs an empty JSON
-# body with the production Origin header. In src/routes/api/shorten/+server.ts the
+# body with one Origin header. In src/routes/api/shorten/+server.ts the
 # origin check is step 1, the two rate limiters are steps 2 and 3, and the empty-body
 # check is step 4, so:
 #   400 "URL is required"     -> the origin was accepted; the variable reached the app
@@ -438,14 +460,14 @@ wait_until_healthy() {
 # Nothing is sent to is.gd or TinyURL, because the request never reaches step 7.
 # Content-Type is application/json because SvelteKit's built-in CSRF check rejects
 # form content types only; a form-encoded body would 403 for an unrelated reason.
-smoke_test_shortener() {
-	local response code body
+probe_shortener_origin() {
+	local probed_origin="$1" response code body
 	response="$(curl -sS -m "$SMOKE_TEST_TIMEOUT_SECONDS" -w '\n%{http_code}' -X POST \
 		-H 'Content-Type: application/json' \
-		-H "Origin: $(trim "$ORIGIN")" \
+		-H "Origin: $probed_origin" \
 		--data '{}' \
 		"http://localhost:${HOST_PORT}/api/shorten" 2>/dev/null)" || {
-		warn "shortener smoke test could not reach the container on port ${HOST_PORT}"
+		warn "shortener probe for $probed_origin could not reach the container on port ${HOST_PORT}"
 		return 1
 	}
 
@@ -454,25 +476,44 @@ smoke_test_shortener() {
 
 	case "$code" in
 	400 | 429)
-		info "shortener origin check OK: $(trim "$ORIGIN") is accepted (HTTP $code on the empty test body, as expected)"
+		info "  $probed_origin accepted (HTTP $code on the empty test body, as expected)"
 		return 0
 		;;
 	403)
 		if printf '%s' "$body" | grep -q '"error"'; then
-			warn "shortener REJECTED its own origin $(trim "$ORIGIN") with 403."
+			warn "shortener REJECTED $probed_origin with 403."
 			warn "PUBLIC_ALLOWED_ORIGINS did not reach the running app, or does not contain this origin."
-			warn "Every QR code would carry the full long URL. Body: $body"
+			warn "A QR code generated on that origin would carry the full long URL. Body: $body"
 		else
-			warn "got 403, but not from the endpoint's own origin check. Body: $body"
-			warn "This can mean SvelteKit's CSRF check rejected the request; see smoke_test_shortener in this script."
+			warn "got 403 for $probed_origin, but not from the endpoint's own origin check. Body: $body"
+			warn "This can mean SvelteKit's CSRF check rejected the request; see probe_shortener_origin in this script."
 		fi
 		return 1
 		;;
 	*)
-		warn "shortener smoke test got an unexpected status $code. Body: $body"
+		warn "shortener probe for $probed_origin got an unexpected status $code. Body: $body"
 		return 1
 		;;
 	esac
+}
+
+# Probes EVERY entry of PUBLIC_ALLOWED_ORIGINS, not just ORIGIN. Probing ORIGIN alone
+# was a tautology: validate_env has already proved ORIGIN is a member of the list, so
+# the only thing the probe could ever catch was the variable not reaching the container
+# at all. A second served hostname missing from the list now fails the deploy too.
+smoke_test_shortener() {
+	local entry failed=0
+	split_origin_list "$PUBLIC_ALLOWED_ORIGINS"
+	local entries=("${ORIGIN_ENTRIES[@]+"${ORIGIN_ENTRIES[@]}"}")
+
+	info "probing the shortener with every entry of PUBLIC_ALLOWED_ORIGINS (${#entries[@]})"
+	for entry in "${entries[@]+"${entries[@]}"}"; do
+		probe_shortener_origin "$entry" || failed=1
+	done
+
+	[ "$failed" -eq 0 ] || return 1
+	info "shortener origin check OK"
+	return 0
 }
 
 dump_container_logs() {
@@ -583,6 +624,14 @@ main() {
 
 	if [ "$CHECK_ONLY" -eq 1 ]; then
 		info "checking the container already running on port ${HOST_PORT} - deploying nothing"
+		# Liveness first. The shortener probe cannot tell "the origin was rejected"
+		# from "nothing answered", and it used to report the former either way - so an
+		# unattended check mailed a shortener diagnosis while the site was fully down.
+		container_is_answering ||
+			die "$EXIT_PARTIAL" "nothing answers on http://localhost:${HOST_PORT}/ - the site is down, so the shortener could not be checked.
+  Look at the container first:
+    docker ps -a --filter name=$CONTAINER_NAME
+    docker logs --tail $LOG_TAIL_LINES $CONTAINER_NAME"
 		smoke_test_shortener ||
 			die "$EXIT_PARTIAL" "the running deployment fails the shortener origin check. The site is up, but every QR code carries the full long URL."
 		info "check passed"

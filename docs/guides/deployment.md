@@ -9,7 +9,9 @@ Quick reference guide for deploying GridScribe to VPS using GitHub Container Reg
 - Docker installed locally and on VPS
 - GitHub account with Personal Access Token (PAT) with `write:packages` permission
 - VPS with Docker installed
-- Cloudflare Tunnel configured (pointing to `localhost:8081`)
+- Cloudflare Tunnel configured, pointing at `http://127.0.0.1:8081` — the container is
+  published on the loopback address only, and the tunnel is the only route to it from
+  outside the host
 - A clone of this repository on the VPS at `/opt/gridscribe`, so `scripts/deploy.sh`
   is available there
 - `/etc/gridscribe/deploy.env` on the VPS, filled in from
@@ -47,8 +49,8 @@ set -a
 . ./.env
 set +a
 
-docker run -p 8081:80 \
-  -e ORIGIN=http://localhost:8081 \
+docker run -p 127.0.0.1:8081:80 \
+  -e ORIGIN=http://127.0.0.1:8081 \
   -e PUBLIC_ALLOWED_ORIGINS \
   -e PUBLIC_MATOMO_URL \
   -e PUBLIC_MATOMO_SITE_ID \
@@ -63,7 +65,7 @@ docker run -p 8081:80 \
   gridscribe-test
 
 # Test in browser
-open http://localhost:8081
+open http://127.0.0.1:8081
 ```
 
 ---
@@ -167,13 +169,14 @@ The script:
 2. Warns about any name in the file that no code reads — that catches a typo. The file is
    read line by line, not sourced: a line that is not `NAME=value`, and an assignment to
    one of the script's own options (`TAG`, `DRY_RUN`, `CHECK_ONLY`, `DO_PULL`, `ENV_FILE`)
-   or fixed settings (`HOST_PORT` and the rest), is refused with exit `2` naming the line.
+   or fixed settings (`HOST_PORT`, `HOST_BIND_ADDRESS` and the rest), is refused with exit `2`
+   naming the line.
    One layer of matching quotes is stripped; nothing else in a value is interpreted.
 3. Pulls `ghcr.io/kamilpajak/gridfinity-label-generator:latest`.
 4. Renames the running container to `gridscribe-previous` and starts the new one, passing
    every variable as an explicit `-e` flag so the full environment is visible in
    `docker inspect`.
-5. Waits for `http://localhost:8081/` to answer. No fixed sleep.
+5. Waits for `http://127.0.0.1:8081/` to answer. No fixed sleep.
 6. Smoke-tests `POST /api/shorten` once per entry of `PUBLIC_ALLOWED_ORIGINS`, with an
    empty JSON body. `400` ("URL is required") means the allowlist accepted that origin,
    because the origin check runs before the body is read. `403` on any entry rolls the
@@ -200,7 +203,7 @@ started again.
 If a run is killed between step 4 and step 7 it leaves a `gridscribe-previous` container
 behind. What the next run does then depends on whether anything is serving:
 
-- The site answers on `http://localhost:8081/` — the run stops with exit `2` and changes
+- The site answers on `http://127.0.0.1:8081/` — the run stops with exit `2` and changes
   nothing. `gridscribe-previous` is older than what is serving, so removing it is your
   call: `docker rm -f gridscribe-previous`.
 - Nothing answers — the site is down, so the run says so, removes the container that is
@@ -238,18 +241,104 @@ owned by root and mode `644`:
 
 ```cron
 # Check the QR shortener every morning. The user field is what makes this run as root.
-MAILTO=you@example.com
-17 6 * * * root cd /opt/gridscribe && ./scripts/deploy.sh --check-only
+# PATH is explicit because cron's default is minimal and the script needs docker and curl.
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+17 6 * * * root /usr/local/bin/gridscribe-check
 ```
 
-Cron mails any output a job produces, so a check that printed progress on a healthy day
-would mail you every morning — and mail you stop reading is no better than no mail at all.
-The script writes progress to stderr only when stderr is a terminal, which cron's is not,
-so a passing run under cron is silent and you only hear about a real failure. Run it by
-hand and you still see every step.
+**Do not rely on `MAILTO` without checking that the host can actually send mail.** On a box
+with no MTA — no `sendmail`, no `postfix`, nothing listening on 25 — `MAILTO` is decoration,
+and a check whose alarm goes nowhere is exactly as silent as the bug it is looking for, one
+level up. Verify with `command -v sendmail; systemctl is-active postfix`.
 
-Check it once by hand first, with `sudo ./scripts/deploy.sh --check-only`, so a
-misconfigured path is found now rather than in six months of silent mail.
+Where there is no MTA but there is a Prometheus/Alertmanager stack, report through that
+instead. `/usr/local/bin/gridscribe-check`, root-owned and mode `755`:
+
+```bash
+#!/bin/bash
+# Runs the shortener check and reports the outcome as a node_exporter textfile metric.
+# Writes atomically, so a scrape never sees half a file.
+set -uo pipefail
+out=/var/lib/node_exporter/textfile/gridscribe.prom
+job=shortener-check
+start=$(date +%s)
+
+output=$(/opt/gridscribe/scripts/deploy.sh --check-only \
+  --env-file /etc/gridscribe/deploy.env 2>&1)
+code=$?
+end=$(date +%s)
+
+logger -t gridscribe-check -p daemon.info "exit $code"
+[ "$code" -eq 0 ] || logger -t gridscribe-check -p daemon.err -- "$output"
+
+tmp=$(mktemp "${out}.XXXXXX")
+{
+  printf 'gridscribe_job_last_run_timestamp_seconds{job="%s"} %s\n' "$job" "$end"
+  printf 'gridscribe_job_last_duration_seconds{job="%s"} %s\n' "$job" "$((end - start))"
+  printf 'gridscribe_job_last_exit_code{job="%s"} %s\n' "$job" "$code"
+  [ "$code" -eq 0 ] &&
+    printf 'gridscribe_job_last_success_timestamp_seconds{job="%s"} %s\n' "$job" "$end"
+} >"$tmp"
+chmod 644 "$tmp"
+mv "$tmp" "$out"
+exit "$code"
+```
+
+`--env-file` is passed explicitly so an inherited `GRIDSCRIBE_ENV_FILE` cannot re-point the
+check at some other file. The exit code is captured in a variable rather than piped into
+`logger`, because a pipe would return `logger`'s status and throw the real one away.
+
+Then two alert rules — the second matters more than the first, because it is what notices
+that the check itself stopped running:
+
+```yaml
+- alert: GridscribeShortenerCheckFailing
+  expr: gridscribe_job_last_exit_code{job="shortener-check"} != 0
+  for: 15m
+  labels: { severity: warning }
+  annotations:
+    summary: 'QR shortener check is failing'
+    description: 'deploy.sh --check-only exited non-zero. journalctl -t gridscribe-check'
+
+- alert: GridscribeShortenerCheckStale
+  expr: time() - gridscribe_job_last_success_timestamp_seconds{job="shortener-check"} > 129600
+  for: 15m
+  labels: { severity: warning }
+  annotations:
+    summary: 'QR shortener check has not succeeded for 36h'
+    description: 'The daily check is not running, or has been failing since its last success.'
+```
+
+Prove both halves before trusting it. That the quiet path is quiet:
+
+```bash
+sudo env -i PATH=/usr/bin:/bin /opt/gridscribe/scripts/deploy.sh --check-only \
+  --env-file /etc/gridscribe/deploy.env >/root/cronsim.txt 2>&1; echo "exit=$?"
+sudo test ! -s /root/cronsim.txt && echo "silent, as cron will see it"
+```
+
+The redirect is the point — `env -i` alone does not detach the terminal, so `[ -t 2 ]` is
+still true and the script still prints every progress line.
+
+And that the alarm fires. **Add** a bogus origin, keep the real ones and `ORIGIN`: replacing
+the list instead would fail the `ORIGIN`-is-listed check first and exit `2`, not `8`.
+
+```bash
+sudo -i bash -c 'umask 077; sed "s#^PUBLIC_ALLOWED_ORIGINS=\(.\)#PUBLIC_ALLOWED_ORIGINS=\1https://not-served.invalid,#" /etc/gridscribe/deploy.env > /root/broken.env'
+sudo /opt/gridscribe/scripts/deploy.sh --check-only --env-file /root/broken.env; echo "exit=$?"
+sudo shred -u /root/broken.env
+```
+
+Expect exit `8` and a warning naming `https://not-served.invalid`.
+
+A stale clone is a stale guard, and `--check-only` validates against whatever the host has
+checked out. One more line catches both ways that can happen — behind `origin/master`, or
+locally modified, which is its own trap because `git pull` **aborts** on a modified tracked
+file rather than overwriting it, so the edit survives every future pull:
+
+```cron
+23 6 * * * root git -C /opt/gridscribe fetch -q origin master && { [ -z "$(git -C /opt/gridscribe status --porcelain)" ] && git -C /opt/gridscribe diff --quiet HEAD origin/master -- scripts/ docs/guides/deployment.md; } || logger -t gridscribe-check -p daemon.err "/opt/gridscribe is modified or behind origin/master"
+```
 
 ### Exit codes
 
@@ -283,12 +372,47 @@ changed template, onto the host.
 A failed health check or a failed shortener check rolls back on its own, before the
 script exits.
 
-### Roll back on purpose
+### Take a rollback handle before every deploy
+
+Do this first, every time. It is the only rollback that does not depend on the registry:
 
 ```bash
-# Find a tag in /var/log/gridscribe-deployments.log or in the container registry
-sudo ./scripts/deploy.sh --tag sha-abc1234
+sudo docker tag "$(sudo docker inspect -f '{{.Image}}' gridscribe)" \
+  ghcr.io/kamilpajak/gridfinity-label-generator:rollback-prev
 ```
+
+Then going back is one command:
+
+```bash
+sudo ./scripts/deploy.sh --tag rollback-prev --no-pull
+```
+
+Two things to know about that tag. It names **whatever image you last tagged**, not "one
+version back" — confirm what it actually is before trusting it:
+
+```bash
+sudo docker inspect -f '{{.Created}}' ghcr.io/kamilpajak/gridfinity-label-generator:rollback-prev
+```
+
+And `--no-pull` matters: without it the run tries to pull `rollback-prev` from the registry,
+where it does not exist, and exits `7` before touching anything.
+
+### Rolling back to a registry tag usually does not work
+
+```bash
+sudo ./scripts/deploy.sh --tag sha-abc1234   # expect this to fail
+```
+
+Two independent reasons, both worth knowing before an incident:
+
+- **No `sha-` tag is ever written to the deployment log.** Every deploy command on this page
+  uses the default `latest`, so the log records `…:latest` — and `latest` is a moving pointer,
+  useless as a rollback target.
+- **The registry does not keep them.** `.github/workflows/docker-cleanup.yml` keeps only the
+  newest 10 versions and does not protect `sha-` tags, and `pr-` builds consume those slots
+  too. Anything more than days old is gone, so the pull fails with exit `7`.
+
+This is why the local `rollback-prev` tag above exists.
 
 ### Find available versions
 
@@ -303,12 +427,13 @@ sudo cat /var/log/gridscribe-deployments.log
 Each successful deploy appends one line naming both the tag and the digest:
 
 ```text
-deployed ghcr.io/kamilpajak/gridfinity-label-generator:sha-abc1234 (sha256:4112…) at 2026-10-03T14:49:41Z
+deployed ghcr.io/kamilpajak/gridfinity-label-generator:latest (sha256:4112…) at 2026-10-03T14:49:41Z
 ```
 
-The tag is the part `--tag` takes — `sha-abc1234` above. `--tag` refuses anything with an
-`@` or a `:` in it, so the digest is there to identify the exact image, not to be pasted
-back.
+The tag is the part `--tag` takes. `--tag` refuses anything with an `@` or a `:` in it, so
+the digest is there to identify the exact image, not to be pasted back — and since the tag
+recorded is `latest`, neither half of that line is a usable rollback target. Use
+`rollback-prev` above.
 
 The history can have gaps. Appending to the log is only a warning: a run without write
 access to `/var/log` prints `warning: could not append to
@@ -321,21 +446,38 @@ If the script itself is broken, start the container by hand — but from the env
 from a retyped `-e` list. Retyping that list from memory is how the shortener broke in the
 first place.
 
-The easiest correct command comes from the script itself: `sudo ./scripts/deploy.sh
---dry-run` prints the exact `docker run` with every value already filled in, ready to
-paste. Use that whenever validation still works and only the deploy logic is broken.
+**Step 0, before anything else:** take the rollback handle, because the command below
+removes the running container.
 
-If the script cannot run at all, read the file with `.` and pass bare `-e NAME` flags so
-docker takes each value from the shell. Two warnings about this fallback, because it is
-**not** what `deploy.sh` does:
+```bash
+sudo docker tag "$(sudo docker inspect -f '{{.Image}}' gridscribe)" \
+  ghcr.io/kamilpajak/gridfinity-label-generator:rollback-prev
+```
 
-- Sourcing runs the file. `deploy.sh` parses it line by line, refuses any line that is not
-  an assignment, and expands nothing inside a value. `.` executes every line as root and
-  expands `$`, backticks and `$(...)`, so a value like `dept $USER` arrives changed and a
-  stray command in the file runs. Read the file before sourcing it if anyone else could
-  have edited it.
-- Do **not** use `--env-file` instead: it does not strip quotes, so `ORIGIN` would arrive
-  as `"https://gridfinitylabels.com"` and adapter-node would refuse to start with
+If validation still works and only the deploy logic is broken, the script will print the
+exact command for you:
+
+```bash
+sudo sh -c 'umask 077; ./scripts/deploy.sh --dry-run 2>/root/dryrun.txt'
+```
+
+Note the `2>`: that output goes to **stderr**, so `>` alone captures nothing and prints
+every operator value on your terminal instead. The file holds real values — read it, use it,
+then `sudo shred -u /root/dryrun.txt`. Do not paste it into an issue, a chat or a ticket.
+
+If the script cannot run at all, read the env file and pass bare `-e NAME` flags so docker
+takes each value from the shell. Read it with the loop below rather than with `.`, because
+sourcing is **not** what `deploy.sh` does and the difference is dangerous:
+
+- **`.` executes the file.** `deploy.sh` parses it line by line, accepts only `NAME=value`,
+  and interprets nothing inside a value. `.` runs every line as root. A line such as
+  `PATH=/tmp/x:/usr/bin` — no `$`, no backtick, nothing that looks like code — silently
+  redirects the `docker` in the next command. `LD_PRELOAD` and `BASH_ENV` are the same
+  shape. `deploy.sh` would have warned about each of those names and skipped it.
+- **`.` also expands values**, so `dept $USER` arrives changed, and a value ending in a
+  backslash swallows the following line.
+- Do **not** reach for `--env-file` either: it does not strip quotes, so `ORIGIN` would
+  arrive as `"https://gridfinitylabels.com"` and adapter-node would refuse to start with
   `Invalid ORIGIN`, while an unquoted `ORIGIN` next to a still-quoted
   `PUBLIC_ALLOWED_ORIGINS` starts fine and answers `403` to every shortener call —
   silently, which is the whole failure this page exists to prevent.
@@ -345,13 +487,21 @@ Run it as root (`sudo -i`): `/etc/gridscribe/deploy.env` is mode `600` and root-
 ```bash
 docker stop gridscribe && docker rm gridscribe
 
-set -a
-. /etc/gridscribe/deploy.env
-set +a
+# Reads only NAME=value lines and only the names the app uses. Executes nothing.
+while IFS= read -r line; do
+  case "$line" in ''|\#*) continue ;; esac
+  name=${line%%=*}
+  case "$name" in ORIGIN|PUBLIC_*) ;; *) continue ;; esac
+  value=${line#*=}
+  if [ ${#value} -ge 2 ]; then
+    case "$value" in \'*\'|\"*\") value=${value:1:${#value}-2} ;; esac
+  fi
+  export "$name=$value"
+done < /etc/gridscribe/deploy.env
 
 docker run -d \
   --name gridscribe \
-  -p 8081:80 \
+  -p 127.0.0.1:8081:80 \
   -e NODE_ENV=production \
   -e PORT=80 \
   -e PUBLIC_ALLOW_E2E_PAGES=false \
@@ -381,7 +531,7 @@ in, ready to copy. After a break-glass start, check the shortener by hand:
 
 ```bash
 curl -s -o /dev/null -w '%{http_code}\n' \
-  -X POST http://localhost:8081/api/shorten \
+  -X POST http://127.0.0.1:8081/api/shorten \
   -H 'Content-Type: application/json' \
   -H 'Origin: https://gridfinitylabels.com' \
   -d '{}'
@@ -414,18 +564,33 @@ docker inspect gridscribe
 docker stats gridscribe  # resource usage
 ```
 
-### Cleanup
+### Disk and cleanup
+
+`scripts/deploy.sh` deletes no image on purpose. Its rollback target is the **stopped**
+`gridscribe-previous` container, and that container is also what keeps the image it was
+created from out of the "unused" set. Pruning the wrong thing throws the rollback away.
+
+Safe at any time — dangling layers only, nothing tagged and no container:
 
 ```bash
-# Remove old images
-docker image prune -a
-
-# Remove stopped containers
-docker container prune
-
-# Full cleanup
-docker system prune -a
+docker image prune
+df -h /var/lib/docker
 ```
+
+**Do not run these on this host**, and especially not during an incident:
+
+| Command                  | What it destroys                                          |
+| ------------------------ | --------------------------------------------------------- |
+| `docker container prune` | the stopped `gridscribe-previous` — the rollback target   |
+| `docker image prune -a`  | the superseded image, so a `--tag` rollback stops working |
+| `docker system prune -a` | both of the above                                         |
+
+Disk growth is roughly one 212 MB image per deploy, with most layers shared with the
+previous build, against 92 GB free and a handful of deploys a year. There is deliberately no
+automation: run `docker image prune` by hand after a deploy you have confirmed good.
+
+The deployment log grows about one 110-byte line per deploy. No logrotate config is shipped,
+deliberately — revisit if it ever reaches a megabyte.
 
 ---
 
@@ -446,7 +611,7 @@ netstat -tulpn | grep 8081
 
 ```bash
 # Check environment variables
-docker inspect gridscribe | grep -A 10 "Env"
+docker inspect gridscribe | grep -A 10 "Env"   # prints every value - redact before sharing
 
 # Access container shell
 docker exec -it gridscribe sh
@@ -468,8 +633,8 @@ echo $GITHUB_TOKEN | docker login ghcr.io -u YOUR_GITHUB_USERNAME --password-std
 ### Cloudflare Tunnel not working
 
 ```bash
-# Verify container is listening on 8081
-curl http://localhost:8081
+# Verify container is listening on 8081 (loopback only, by design)
+curl http://127.0.0.1:8081
 
 # Check Cloudflare Tunnel status
 # (depends on your tunnel setup - cloudflared service)
@@ -548,11 +713,11 @@ Leave both empty and the policy renders a neutral self-hosted notice instead.
 
 Optional:
 
-| Variable                 | Default   | Description                                |
-| ------------------------ | --------- | ------------------------------------------ |
-| `HOST`                   | `0.0.0.0` | Bind address (already set in Dockerfile)   |
-| `BODY_SIZE_LIMIT`        | -         | Request body size limit                    |
-| `PUBLIC_ALLOW_E2E_PAGES` | unset     | `true` exposes the `/e2e` test-only routes |
+| Variable                 | Default   | Description                                                                                                                                                                                                                                                                |
+| ------------------------ | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `HOST`                   | `0.0.0.0` | Bind address **inside** the container (set in the Dockerfile). Nothing to do with the host publish address — the container must listen on all of its own interfaces, or the host-side `127.0.0.1:8081` publish has nothing to connect to. Do not "fix" this to `127.0.0.1` |
+| `BODY_SIZE_LIMIT`        | -         | Request body size limit                                                                                                                                                                                                                                                    |
+| `PUBLIC_ALLOW_E2E_PAGES` | unset     | `true` exposes the `/e2e` test-only routes                                                                                                                                                                                                                                 |
 
 Keep `PUBLIC_ALLOW_E2E_PAGES` unset in production. It exists for end-to-end test runs
 and serves internal comparison pages that are not meant for visitors.
@@ -571,6 +736,9 @@ and serves internal comparison pages that are not meant for visitors.
 - [ ] Container logs show no errors
 - [ ] Application accessible via `https://gridfinitylabels.com`
 - [ ] A QR code generated on the live site encodes a short URL (is.gd or tinyurl), not the full one
+- [ ] `docker port gridscribe` shows `127.0.0.1:8081` and nothing else
+- [ ] From another machine, `curl http://<public-ipv4>:8081/` and the IPv6 form both fail
+- [ ] `df -h /var/lib/docker` has room
 - [ ] All features work as expected
 
 `sudo ./scripts/deploy.sh` already runs the shortener check against the container on the VPS.

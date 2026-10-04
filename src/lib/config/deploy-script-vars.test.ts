@@ -100,6 +100,33 @@ const DOCKER_RUN_COMMAND_PATTERN = /^\s*(?:sudo\s+)?docker\s+run\b/;
 /** A URL anywhere on a comment line, whose host must be a reserved example host. */
 const URL_IN_VALUE_PATTERN = /https?:\/\/[^\s,"'<>]+/g;
 /** `${ARRAY[@]}` — how the builder iterates one of the variable arrays. */
+/** The host-port publish flag inside the argv builder, e.g. `-p "${A}:${B}:${C}"`. */
+const PUBLISH_FLAG_PATTERN = /-p "([^"]+)"/g;
+/** `-e "NAME=value"` inside the argv builder, value included, so a pin can be resolved. */
+const RUN_ARG_ENV_ASSIGNMENT_PATTERN = /-e "([^"]+)"/g;
+/** `${NAME}` inside a flag, resolvable through the script's readonly constants. */
+const CONSTANT_EXPANSION_PATTERN = /\$\{([A-Z][A-Z0-9_]*)\}/g;
+
+/** Addresses that keep the published port off every non-local interface. */
+const LOOPBACK_PUBLISH_HOSTS = ['127.0.0.1', '::1'];
+/** The bind address constant the publish flag and every probe must both go through. */
+const BIND_ADDRESS_CONSTANT = 'HOST_BIND_ADDRESS';
+/** Written out so a probe cannot quietly go back to a hardcoded address or to `localhost`. */
+const PROBE_URL_PREFIX = 'http://${HOST_BIND_ADDRESS}:${HOST_PORT}';
+/** Every function that talks to the container over HTTP. */
+const PROBE_FUNCTIONS = ['wait_until_healthy', 'container_is_answering', 'probe_shortener_origin'];
+/** Flags that would make the publish spec meaningless, or lose the restart policy. */
+const FORBIDDEN_RUN_FLAGS = ['--network', '--net', '--publish-all', '-P'];
+const REQUIRED_RUN_FLAGS = ['--restart unless-stopped'];
+/** The guide's own `docker run` blocks that publish the app's port. */
+const GUIDE_PUBLISHED_PORT = '8081';
+const GUIDE_PUBLISHING_COMMAND_COUNT = 2;
+
+/** Substitutes `${NAME}` from the script's readonly constants, leaving unknown names alone. */
+function resolveScriptConstants(value: string, constants: Map<string, string>): string {
+	return value.replace(CONSTANT_EXPANSION_PATTERN, (whole, name) => constants.get(name) ?? whole);
+}
+
 const arrayExpansion = (arrayName: string) => `\${${arrayName}[@]}`;
 
 /**
@@ -496,6 +523,179 @@ describe('docs/guides/deployment.md container commands', () => {
 					'variables, which scripts/deploy.sh does pass. Add `-e NAME` for each one, or ' +
 					'the documented command starts a container with a different environment from a ' +
 					'real deploy — the failure this page exists to prevent.'
+			).toEqual([]);
+		}
+	);
+});
+
+/**
+ * The published port must stay on the loopback address.
+ *
+ * There is no firewall in front of docker's DNAT rules on the deployment host, so the bind
+ * address is the whole perimeter: `-p 8081:80` publishes the app on the public IP and
+ * bypasses Cloudflare's TLS, WAF and logs entirely. These rules exist because an adversarial
+ * review of the first version of this guard found four edits that broke production while
+ * every rule still passed: flipping the e2e pin (the older rules collected names, not
+ * values), adding `--network host` (which makes docker ignore the publish spec and the app
+ * bind the host directly), moving the constants to a different loopback address or port
+ * (which leaves the tunnel pointing at nothing), and dropping the restart policy.
+ */
+describe('scripts/deploy.sh port publishing', () => {
+	const script = readFileSync(DEPLOY_SCRIPT, 'utf8');
+	const constants = scriptConstants(script);
+	const builder = scriptFunctionBody(script, RUN_ARGS_BUILDER);
+
+	it('publishes on a loopback address only', () => {
+		const specs = [...builder.matchAll(PUBLISH_FLAG_PATTERN)].map(([, spec]) => spec);
+
+		expect(specs, `${RUN_ARGS_BUILDER} must publish exactly one port mapping`).toHaveLength(1);
+
+		const resolved = resolveScriptConstants(specs[0], constants);
+		const fields = resolved.split(':');
+
+		expect(
+			fields,
+			`The publish spec resolves to '${resolved}'. It must have three colon-separated ` +
+				'fields - host address, host port, container port. Two fields means the host ' +
+				'address was left out, which binds every interface including the public one.'
+		).toHaveLength(3);
+
+		expect(
+			LOOPBACK_PUBLISH_HOSTS,
+			`The publish spec resolves to '${resolved}', whose host address is not a loopback ` +
+				'address. With no firewall in front of docker, that puts the app on the public IP.'
+		).toContain(fields[0]);
+	});
+
+	it('probes the address it publishes on', () => {
+		const missing = PROBE_FUNCTIONS.filter(
+			(name) => !scriptFunctionBody(script, name).includes(PROBE_URL_PREFIX)
+		);
+
+		expect(
+			missing,
+			`These functions do not probe ${PROBE_URL_PREFIX}. The publish address and the probe ` +
+				'address have to be the same string, or they can drift: a probe hardcoded to an ' +
+				'address, or left as `localhost`, starts depending on /etc/hosts instead of on the ' +
+				'constant the container is actually published with.'
+		).toEqual([]);
+	});
+
+	it('has no probe left on a hostname', () => {
+		// The rule above only asks whether the prefix appears somewhere in each function, and
+		// wait_until_healthy contains it twice - so changing one of the two back to `localhost`
+		// satisfied it. Reproduced before this assertion existed. The deployment host resolves
+		// `localhost` to ::1 only, where nothing listens, so a probe on the hostname works by
+		// falling back to IPv4 and would stop working the day that resolution changes.
+		const code = script
+			.split('\n')
+			.filter((line) => !COMMENT_LINE_PATTERN.test(line))
+			.join('\n');
+		const strays = [...code.matchAll(/http:\/\/[A-Za-z][A-Za-z0-9.-]*:/g)].map(([url]) => url);
+
+		expect(
+			strays,
+			'These URLs in scripts/deploy.sh address the container by hostname instead of through ' +
+				`the ${BIND_ADDRESS_CONSTANT} constant. Every probe and every message must use ` +
+				`${PROBE_URL_PREFIX}, so the address the script talks to cannot differ from the one ` +
+				'it published.'
+		).toEqual([]);
+	});
+
+	it('keeps the loopback address in exactly one place', () => {
+		// Comment lines are exempt: the rationale for the bind address legitimately spells the
+		// address out, and the rule is about a second place the code could read it from.
+		const code = script
+			.split('\n')
+			.filter((line) => !COMMENT_LINE_PATTERN.test(line))
+			.join('\n');
+		const occurrences = code.split(LOOPBACK_PUBLISH_HOSTS[0]).length - 1;
+
+		expect(
+			occurrences,
+			`'${LOOPBACK_PUBLISH_HOSTS[0]}' appears ${occurrences} times in scripts/deploy.sh. It ` +
+				`must appear exactly once, as the ${BIND_ADDRESS_CONSTANT} constant, so changing the ` +
+				'bind address is one reviewed edit rather than a hunt through the file.'
+		).toBe(1);
+	});
+
+	it('pins the e2e routes off by value, not only by name', () => {
+		const assignments = [...builder.matchAll(RUN_ARG_ENV_ASSIGNMENT_PATTERN)]
+			.map(([, assignment]) => resolveScriptConstants(assignment, constants))
+			.filter((assignment) => assignment.startsWith(`${E2E_PAGES_VAR}=`));
+
+		expect(
+			assignments,
+			`${RUN_ARGS_BUILDER} must pin ${E2E_PAGES_VAR} exactly once. The other guards in this ` +
+				'file collect flag NAMES, so flipping the pinned value would publish the internal ' +
+				'/e2e routes with every test still green.'
+		).toEqual([`${E2E_PAGES_VAR}=false`]);
+	});
+
+	it('does not use a flag that would defeat the publish spec', () => {
+		const present = FORBIDDEN_RUN_FLAGS.filter((flag) =>
+			new RegExp(`(^|\\s)${flag.replace('-', '\\-')}(\\s|$)`, 'm').test(builder)
+		);
+
+		expect(
+			present,
+			`${RUN_ARGS_BUILDER} uses these flags, each of which makes the loopback publish ` +
+				'meaningless: host networking ignores -p entirely and binds the app on the host, ' +
+				'and publish-all opens every exposed port on every interface.'
+		).toEqual([]);
+	});
+
+	it('keeps the restart policy', () => {
+		const missing = REQUIRED_RUN_FLAGS.filter((flag) => !builder.includes(flag));
+
+		expect(
+			missing,
+			`${RUN_ARGS_BUILDER} must pass these flags. Without the restart policy the site does ` +
+				'not come back after a reboot, and nothing else here would notice.'
+		).toEqual([]);
+	});
+});
+
+/**
+ * The guide's own `docker run` blocks must publish the same way the script does.
+ *
+ * The break-glass block is the one an operator pastes during an incident, from whatever copy
+ * of the page they have open — so a stale `-p 8081:80` there reopens the public port at the
+ * worst possible moment, and `--restart unless-stopped` keeps it open across reboots.
+ * Deliberately not restricted to the production image: a locally built image on
+ * 0.0.0.0:8081 on that host is the same exposure.
+ */
+describe('docs/guides/deployment.md port publishing', () => {
+	const guide = readFileSync(DEPLOYMENT_GUIDE, 'utf8');
+	const publishing = guideDockerRunCommands(guide).filter((command) =>
+		command.includes(GUIDE_PUBLISHED_PORT)
+	);
+
+	it('finds every docker run command that publishes the port', () => {
+		expect(
+			publishing.length,
+			`Expected ${GUIDE_PUBLISHING_COMMAND_COUNT} docker run commands publishing port ` +
+				`${GUIDE_PUBLISHED_PORT} in the guide, found ${publishing.length}. An exact count, ` +
+				'not a minimum, so deleting one block cannot make the rule below pass vacuously.'
+		).toBe(GUIDE_PUBLISHING_COMMAND_COUNT);
+	});
+
+	it.each(publishing.map((command, index) => ({ index, command })))(
+		'publishes on a loopback address (command $index)',
+		({ command }) => {
+			const specs = [...command.matchAll(PUBLISH_FLAG_PATTERN)].map(([, spec]) => spec);
+			const bare = [...command.matchAll(/-p (\S+)/g)].map(([, spec]) => spec);
+			const allSpecs = specs.length > 0 ? specs : bare;
+			const bad = allSpecs.filter((spec) => {
+				const fields = spec.split(':');
+				return fields.length !== 3 || !LOOPBACK_PUBLISH_HOSTS.includes(fields[0]);
+			});
+
+			expect(
+				bad,
+				'This docker run command in the guide publishes without a loopback host address. ' +
+					`Use -p ${LOOPBACK_PUBLISH_HOSTS[0]}:${GUIDE_PUBLISHED_PORT}:80 so the command ` +
+					'cannot put the app on a public interface.'
 			).toEqual([]);
 		}
 	);

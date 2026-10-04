@@ -169,9 +169,11 @@ EXIT CODES
   7  the deploy did not land and the previous version is serving again: the image
      could not be pulled, the new container failed a check, or the run was
      interrupted. Safe to retry once the cause is fixed
-  8  partial. Either the container was replaced and the rollback also failed, so the
-     live site needs attention now, or --check-only found the running deployment
-     failing the origin check, so the site is up but the shortener is broken
+  8  partial, and the live site needs attention. One of three things: the container was
+     replaced and the rollback also failed; or --check-only found the running
+     deployment rejecting an origin, so the site is up but the shortener is broken for
+     the origins the error names; or --check-only found nothing answering on the port
+     at all, so the site is down and the shortener could not be checked
 
 EXAMPLES
   Run under sudo: the env file is root-owned and mode 600, and the deployment log is

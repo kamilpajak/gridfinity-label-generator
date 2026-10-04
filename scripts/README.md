@@ -263,7 +263,9 @@ environment only — an assignment to one of the script's own options, such as `
 The script names every variable it passes, in `REQUIRED_VARS`, `OPTIONAL_VARS` and
 `REFUSED_VARS`. The test `src/lib/config/deploy-script-vars.test.ts` fails when `src/`
 starts reading a `PUBLIC_*` variable none of those lists knows about, when a listed
-variable never reaches the container, and when the committed template carries any value
-at all.
+variable never reaches the container, when either committed template (`deploy.env.example`
+here or `.env.example` in the repository root) carries a value at all, and when one of the
+two hand-typed `docker run` commands in the deployment guide stops passing a variable the
+script passes.
 
 See [`../docs/guides/deployment.md`](../docs/guides/deployment.md).

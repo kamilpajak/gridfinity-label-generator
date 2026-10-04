@@ -118,6 +118,7 @@ readonly SCRIPT_SETTING_VARS=(
 	DO_PULL
 	PREVIOUS_SAVED
 	NEW_CONTAINER_OWNS_NAME
+	CURRENT_STOPPED_NOT_RENAMED
 )
 
 TAG="latest"
@@ -130,6 +131,11 @@ PREVIOUS_SAVED=0
 # `docker run` is invoked. Until then the name still belongs to whatever was serving
 # the site, and a rollback must not delete it.
 NEW_CONTAINER_OWNS_NAME=0
+# 1 only inside the window in stash_current_container between `docker stop` and the
+# rename that follows it. In that window the container that was serving is still under
+# $CONTAINER_NAME, merely stopped, and PREVIOUS_SAVED is not set yet, so a rollback has
+# to start it again rather than report that there is nothing to restore.
+CURRENT_STOPPED_NOT_RENAMED=0
 RUN_ARGS=()
 ORIGIN_ENTRIES=()
 # The entries smoke_test_shortener found the running container rejecting.
@@ -326,8 +332,12 @@ var_is_fixed_setting() {
 # value because a command substitution runs in a subshell, where `die` would exit only
 # the subshell.
 ENV_VALUE=""
+# Set by parse_env_value when an unquoted value had a trailing comment after it, so
+# load_env_file can say what was dropped.
+ENV_TRAILING_COMMENT=""
 parse_env_value() {
 	local raw quoted rest
+	ENV_TRAILING_COMMENT=""
 	raw="$(trim "$1")"
 	case "$raw" in
 	'"'*)
@@ -345,6 +355,13 @@ parse_env_value() {
 	*)
 		ENV_VALUE="${raw%%[[:space:]]*}"
 		rest="${raw#"$ENV_VALUE"}"
+		# An unquoted value stops at the first space, so `NAME=Jane #1 Ltd` would reach
+		# the container as `Jane` with the remainder read as a comment. That is the usual
+		# dotenv convention and worth keeping, but dropping part of a value without
+		# saying so is the kind of silence this script exists to remove.
+		case "$(trim "$rest")" in
+		'#'*) ENV_TRAILING_COMMENT="$(trim "$rest")" ;;
+		esac
 		;;
 	esac
 	case "$(trim "$rest")" in
@@ -417,6 +434,10 @@ load_env_file() {
 		if var_is_fixed_setting "$name"; then
 			fixed+=("$name")
 			continue
+		fi
+
+		if [ -n "$ENV_TRAILING_COMMENT" ]; then
+			warn "$ENV_FILE line $number: $name is unquoted, so '$ENV_TRAILING_COMMENT' was read as a comment and is not part of the value. Quote the value if it belongs to it."
 		fi
 
 		# A typo'd variable name is the one mistake no other check here can see: the app
@@ -835,9 +856,11 @@ stash_current_container() {
 	fi
 
 	if docker inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
+		CURRENT_STOPPED_NOT_RENAMED=1
 		docker stop "$CONTAINER_NAME" >/dev/null
 		docker rename "$CONTAINER_NAME" "$PREVIOUS_CONTAINER_NAME"
 		PREVIOUS_SAVED=1
+		CURRENT_STOPPED_NOT_RENAMED=0
 		info "kept the running container as $PREVIOUS_CONTAINER_NAME for rollback"
 	else
 		info "no container named $CONTAINER_NAME is present - this is a first deploy"
@@ -854,6 +877,21 @@ rollback() {
 		docker rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true
 		NEW_CONTAINER_OWNS_NAME=0
 	fi
+	# A signal can land inside stash_current_container, between the `docker stop` and the
+	# rename right after it - `docker stop` waits for the container to exit, up to its
+	# default ten-second grace, so that window is seconds wide. The container that was
+	# serving is then still under $CONTAINER_NAME and only needs starting again.
+	# NEW_CONTAINER_OWNS_NAME is 0 in that window, so the block above left it alone.
+	if [ "$CURRENT_STOPPED_NOT_RENAMED" -eq 1 ] && docker inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
+		info "restarting $CONTAINER_NAME, which was stopped but not yet renamed"
+		CURRENT_STOPPED_NOT_RENAMED=0
+		docker start "$CONTAINER_NAME" >/dev/null || return 1
+		wait_until_healthy || return 1
+		info "rolled back and healthy"
+		append_deploy_log "rolled back at $(timestamp)"
+		return 0
+	fi
+
 	if [ "$PREVIOUS_SAVED" -eq 0 ]; then
 		warn "there was no previous container, so there is nothing to restore"
 		return 1
@@ -974,8 +1012,11 @@ main() {
 		reference="${IMAGE_REPO}@${digest}"
 	fi
 
-	stash_current_container
+	# Armed before the stash, not after: the stash stops and renames the container that
+	# is serving, and a signal in there used to kill the script with the site down and no
+	# rollback at all.
 	arm_interrupt_rollback
+	stash_current_container
 
 	info "starting the new container"
 	NEW_CONTAINER_OWNS_NAME=1

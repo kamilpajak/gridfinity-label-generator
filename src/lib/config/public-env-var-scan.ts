@@ -75,5 +75,5 @@ export function findPublicEnvVarsReadBySource(): Map<string, string> {
 
 /** Sorted names only, for assertions that do not care where a variable is read. */
 export function listPublicEnvVarsReadBySource(): string[] {
-	return [...findPublicEnvVarsReadBySource().keys()].sort();
+	return [...findPublicEnvVarsReadBySource().keys()].sort((a, b) => a.localeCompare(b));
 }

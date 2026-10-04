@@ -493,7 +493,9 @@ while IFS= read -r line; do
   name=${line%%=*}
   case "$name" in ORIGIN|PUBLIC_*) ;; *) continue ;; esac
   value=${line#*=}
-  case "$value" in \'*\'|\"*\") value=${value:1:${#value}-2} ;; esac
+  if [ ${#value} -ge 2 ]; then
+    case "$value" in \'*\'|\"*\") value=${value:1:${#value}-2} ;; esac
+  fi
   export "$name=$value"
 done < /etc/gridscribe/deploy.env
 

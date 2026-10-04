@@ -639,17 +639,24 @@ $BARE_ORIGIN_HINT"
 	# shape only; nothing can check that the host is the one you meant.
 	local matomo
 	matomo="$(trim "${PUBLIC_MATOMO_URL-}")"
-	if [ -n "$matomo" ] && [[ ! $matomo =~ ^https://[A-Za-z0-9._-]+/$ ]]; then
+	# The trailing slash is required because the app appends `matomo.js` and `matomo.php`
+	# directly. A port and a subdirectory are allowed: a self-hosted Matomo behind a reverse
+	# proxy commonly lives at https://host/matomo/ or on a non-standard port, and refusing
+	# those would block a legitimate deployment for no security gain.
+	if [ -n "$matomo" ] && [[ ! $matomo =~ ^https://[A-Za-z0-9._-]+(:[0-9]+)?(/[A-Za-z0-9._~-]+)*/$ ]]; then
 		die "$EXIT_USAGE" "PUBLIC_MATOMO_URL is not an https URL ending in a slash: '$matomo'
-  It is interpolated into a <script src> on every page, so only https and a plain host are
-  accepted, for example https://statistics.example.com/
+  It is interpolated into a <script src> on every page, so https is required, and the app
+  appends matomo.js to it so it must end in a slash. A port and a path are fine, for example
+  https://statistics.example.com/ or https://stats.example.com:8443/matomo/
   Nothing was touched and the running container keeps serving."
 	fi
 
 	for name in "${AFFILIATE_LINK_VARS[@]}"; do
 		local link
 		link="$(trim "${!name-}")"
-		if [ -n "$link" ] && [[ ! $link =~ ^https:// ]]; then
+		# A host is required, not just the scheme: a bare `https://` passes a prefix test and
+		# renders as a broken href. Which host it is stays deliberately unchecked.
+		if [ -n "$link" ] && [[ ! $link =~ ^https://[A-Za-z0-9._-]+ ]]; then
 			die "$EXIT_USAGE" "$name is not an https URL: '$link'
   Affiliate values are rendered straight into an href, so a javascript: or data: value
   would execute in the visitor's browser.
@@ -1128,9 +1135,9 @@ main() {
 		# and nothing saying that nothing was deployed. Capturing a dry run to a file
 		# before pasting it somewhere is the normal thing to do, which is exactly when
 		# the warning has to travel with the values.
-		printf '%s\n' "dry run - nothing was changed. The command that would run (contains values, do not paste this into an issue):" >&2
-		printf '%q ' "${RUN_ARGS[@]}" >&2
-		printf '\n' >&2
+		printf '%s\n' "dry run - nothing was changed. The command that would run (contains values, do not paste this into an issue):" >&2 || true
+		printf '%q ' "${RUN_ARGS[@]}" >&2 || true
+		printf '\n' >&2 || true
 		exit 0
 	fi
 
@@ -1185,7 +1192,10 @@ main() {
 	# with "refusing an image tag with unexpected characters".
 	append_deploy_log "deployed ${image_ref} (${digest}) at $(timestamp)"
 	info "deploy complete"
-	printf '%s\n' "$reference"
+	# `|| true` for the same reason as info/warn/die: the deploy has already succeeded and the
+	# site is healthy by this point, so a consumer that closed the pipe must not turn that into
+	# a non-zero exit for whatever called this script.
+	printf '%s\n' "$reference" || true
 }
 
 main "$@"

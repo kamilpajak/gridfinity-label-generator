@@ -257,8 +257,14 @@ root-owned anyway; it holds operator values. Every value in the template is empt
 including `ORIGIN` and `PUBLIC_ALLOWED_ORIGINS`: they have to name the domain this host
 serves, and nothing in the deploy can work that out on its own. The file is for the app's
 environment only — an assignment to one of the script's own options, such as `TAG` or
-`DRY_RUN`, or to one of its fixed settings, such as `HOST_PORT`, is refused with exit
-`2`.
+`DRY_RUN`, or to one of its fixed settings, such as `HOST_PORT` or `HOST_BIND_ADDRESS`, is
+refused with exit `2`.
+
+The container is published on `127.0.0.1:8081` only — a tunnel or reverse proxy on the same
+host is assumed — and the drift test now guards the publish address as well as the variable
+lists. The script deletes no image on purpose: its rollback target is the stopped
+`gridscribe-previous` container, so `docker container prune` and `docker system prune -a`
+would throw that rollback away. Use plain `docker image prune` for dangling layers.
 
 The script names every variable it passes, in `REQUIRED_VARS`, `OPTIONAL_VARS` and
 `REFUSED_VARS`. The test `src/lib/config/deploy-script-vars.test.ts` fails when `src/`

@@ -36,6 +36,18 @@ readonly CONTAINER_NAME="gridscribe"
 readonly PREVIOUS_CONTAINER_NAME="gridscribe-previous"
 readonly HOST_PORT="8081"
 readonly CONTAINER_PORT="80"
+# The host address the published port is bound to. Loopback, because the only route to this
+# app from outside this host is a cloudflared tunnel that dials it on this host's own
+# loopback. `-p 8081:80` binds every interface, and docker's DNAT chain is consulted before
+# ufw's INPUT rules, so a host firewall does not undo it - the app would answer on the
+# public IP, bypassing Cloudflare's TLS, WAF and logs. Note "from outside this host": the
+# container keeps HOST=0.0.0.0 inside, sits on the default bridge, and is therefore still
+# reachable by other containers on this host.
+#
+# A readonly constant and not an option, so load_env_file refuses an env file that tries to
+# widen it, and a deployment that must publish elsewhere is a reviewed edit to this line
+# rather than a flag someone passes once.
+readonly HOST_BIND_ADDRESS="127.0.0.1"
 readonly DEFAULT_ENV_FILE="/etc/gridscribe/deploy.env"
 # A fixed path, not ${HOME}: the env file is root-only, so the script runs under sudo and
 # ${HOME} resolved to /root while the deployment guide told the operator to read
@@ -93,6 +105,14 @@ readonly REFUSED_VARS=(
 )
 
 readonly E2E_PAGES_VAR="PUBLIC_ALLOW_E2E_PAGES"
+
+# The optional values that end up in an href, so validate_env can check their scheme.
+readonly AFFILIATE_LINK_VARS=(
+	PUBLIC_AFFILIATE_PTE560BT
+	PUBLIC_AFFILIATE_PTP710BT
+	PUBLIC_AFFILIATE_TZE231
+	PUBLIC_AFFILIATE_MAGNETS
+)
 
 # One line of the env file: an optional `export `, a shell identifier, `=`, and the rest.
 # The rest is handed to parse_env_value rather than matched here, because a value may
@@ -207,16 +227,22 @@ EOF
 #
 # The cost is that `./scripts/deploy.sh > log 2>&1` records only warnings, errors and the
 # digest. The --help OUTPUT section says so.
+# `|| true` on every write: the script runs under `set -e`, and a dropped SSH session
+# closes the pty, after which `printf >&2` fails with EIO. Unguarded, that killed the
+# script at the warn() inside on_interrupt - BEFORE rollback ran - and made every die()
+# exit 1 instead of its own code, so the documented exit-code table stopped holding in
+# exactly the situation it is written for. `[ -t 2 ]` does not help: an orphaned pty is
+# still a tty, so isatty() still returns 1 and the failing printf is still reached.
 info() {
 	[ -t 2 ] || return 0
-	printf '%s\n' "$*" >&2
+	printf '%s\n' "$*" >&2 || true
 }
-warn() { printf 'warning: %s\n' "$*" >&2; }
+warn() { printf 'warning: %s\n' "$*" >&2 || true; }
 
 die() {
 	local code="$1"
 	shift
-	printf 'error: %s\n' "$*" >&2
+	printf 'error: %s\n' "$*" >&2 || true
 	exit "$code"
 }
 
@@ -386,6 +412,43 @@ parse_env_value() {
 # own quoting is for; nothing else is interpreted, so a $, a backtick or a semicolon in a
 # value reaches the container verbatim. A value spanning lines and shell expansion are
 # deliberately unsupported: the file is a list of values, not a program.
+# The env file is not only a confidentiality boundary, it is an INTEGRITY boundary for the
+# public site: PUBLIC_MATOMO_URL is interpolated into a <script src> on every page
+# (src/lib/matomo.ts) and the affiliate values are rendered into href attributes, neither
+# with any validation. Whoever can write this file can put a script tag on the live site.
+# So refuse to read it unless root owns it and nobody else can write or read it.
+#
+# Skipped, with a warning rather than a failure, where neither stat dialect is available -
+# the check is a guard, not a reason to make the script unrunnable on an odd platform.
+require_private_env_file() {
+	local info=""
+	info="$(stat -c '%u %a' "$ENV_FILE" 2>/dev/null)" ||
+		info="$(stat -f '%u %Lp' "$ENV_FILE" 2>/dev/null)" ||
+		info=""
+	if [ -z "$info" ]; then
+		warn "could not check the ownership and mode of $ENV_FILE: no usable stat. It must be owned by root and mode 600."
+		return 0
+	fi
+
+	local owner mode
+	owner="${info%% *}"
+	mode="${info##* }"
+	[ "$owner" = "0" ] || die "$EXIT_USAGE" "$ENV_FILE is owned by uid $owner, not root.
+  Its values are passed straight into the container, and one of them becomes a <script src>
+  on every page of the site, so anyone who can write this file can run code in every
+  visitor's browser. Fix it and run again:
+    sudo chown root:root $ENV_FILE
+    sudo chmod 600 $ENV_FILE
+  Nothing was touched and the running container keeps serving."
+	# Octal: anything in the group or other digits means somebody else can read or write it.
+	if [ "$((8#$mode & 8#077))" -ne 0 ]; then
+		die "$EXIT_USAGE" "$ENV_FILE is mode $mode; it must be 600.
+  Group and other must have no access - see the note above about what these values do.
+    sudo chmod 600 $ENV_FILE
+  Nothing was touched and the running container keeps serving."
+	fi
+}
+
 load_env_file() {
 	[ -f "$ENV_FILE" ] || die "$EXIT_USAGE" "env file not found: $ENV_FILE
   Create it from scripts/deploy.env.example:
@@ -393,6 +456,7 @@ load_env_file() {
     sudo cp scripts/deploy.env.example $ENV_FILE
     sudo \$EDITOR $ENV_FILE"
 	[ -r "$ENV_FILE" ] || die "$EXIT_USAGE" "env file is not readable: $ENV_FILE"
+	require_private_env_file
 
 	local line number=0 name
 	local clobbered=() fixed=()
@@ -465,7 +529,7 @@ load_env_file() {
 	if [ ${#fixed[@]} -gt 0 ]; then
 		die "$EXIT_USAGE" "$ENV_FILE assigns deploy.sh's fixed setting(s): ${fixed[*]}
   Those are constants in the script - the image repository, the container names, the
-  published port, the deployment log path and the timeouts. They are not configurable
+  published port and the address it is bound to, the deployment log path and the timeouts. They are not configurable
   from the env file; edit scripts/deploy.sh if one of them has to change. Nothing was
   touched and the running container keeps serving."
 	fi
@@ -568,6 +632,31 @@ $BARE_ORIGIN_HINT"
   full long URL. Add $ORIGIN to PUBLIC_ALLOWED_ORIGINS in $ENV_FILE."
 	fi
 
+	# These two are the only optional values that are not cosmetic. PUBLIC_MATOMO_URL is
+	# interpolated into a <script src> on every page and the affiliate values are rendered
+	# into href attributes, neither validated anywhere in the app - so a wrong scheme here
+	# is script execution or a javascript: link in every visitor's browser. Checked by
+	# shape only; nothing can check that the host is the one you meant.
+	local matomo
+	matomo="$(trim "${PUBLIC_MATOMO_URL-}")"
+	if [ -n "$matomo" ] && [[ ! $matomo =~ ^https://[A-Za-z0-9._-]+/$ ]]; then
+		die "$EXIT_USAGE" "PUBLIC_MATOMO_URL is not an https URL ending in a slash: '$matomo'
+  It is interpolated into a <script src> on every page, so only https and a plain host are
+  accepted, for example https://statistics.example.com/
+  Nothing was touched and the running container keeps serving."
+	fi
+
+	for name in "${AFFILIATE_LINK_VARS[@]}"; do
+		local link
+		link="$(trim "${!name-}")"
+		if [ -n "$link" ] && [[ ! $link =~ ^https:// ]]; then
+			die "$EXIT_USAGE" "$name is not an https URL: '$link'
+  Affiliate values are rendered straight into an href, so a javascript: or data: value
+  would execute in the visitor's browser.
+  Nothing was touched and the running container keeps serving."
+		fi
+	done
+
 	for name in "${OPTIONAL_VARS[@]}"; do
 		if [ -z "$(trim "${!name-}")" ]; then
 			info "  $name is empty - that feature stays off"
@@ -585,7 +674,7 @@ build_run_args() {
 	RUN_ARGS=(
 		docker run -d
 		--name "$CONTAINER_NAME"
-		-p "${HOST_PORT}:${CONTAINER_PORT}"
+		-p "${HOST_BIND_ADDRESS}:${HOST_PORT}:${CONTAINER_PORT}"
 		--restart unless-stopped
 		# Also set in the Dockerfile; repeated so the intent is visible here and in
 		# `docker inspect`.
@@ -637,8 +726,8 @@ wait_until_healthy() {
 		if curl -fs -o /dev/null \
 			--connect-timeout "$HEALTH_REQUEST_TIMEOUT_SECONDS" \
 			--max-time "$HEALTH_REQUEST_TIMEOUT_SECONDS" \
-			"http://localhost:${HOST_PORT}/"; then
-			info "container answers on http://localhost:${HOST_PORT}/ after $((SECONDS - started))s"
+			"http://${HOST_BIND_ADDRESS}:${HOST_PORT}/"; then
+			info "container answers on http://${HOST_BIND_ADDRESS}:${HOST_PORT}/ after $((SECONDS - started))s"
 			return 0
 		fi
 		sleep "$HEALTH_POLL_SECONDS"
@@ -648,8 +737,27 @@ wait_until_healthy() {
 
 # Does the port answer at all? Asked on its own, because a shortener probe cannot tell
 # a rejected origin from nothing listening.
+# Asserts the RUNNING container publishes where this script would publish it. Without this
+# nothing ever re-checks the bind address: a container started by the guide's break-glass
+# recipe, by a hand-typed `docker run`, or by a clone that predates the loopback change
+# publishes on every interface, `--restart unless-stopped` makes that survive reboots, and
+# every other check here still passes because they all probe the loopback and get an answer
+# either way. This is what turns the bind address from a one-time proof into something the
+# daily --check-only enforces.
+require_loopback_publish() {
+	local bound
+	bound="$(docker inspect -f "{{with index .HostConfig.PortBindings \"${CONTAINER_PORT}/tcp\"}}{{(index . 0).HostIp}}{{end}}" "$CONTAINER_NAME" 2>/dev/null || true)"
+	if [ "$bound" != "$HOST_BIND_ADDRESS" ]; then
+		die "$EXIT_PARTIAL" "$CONTAINER_NAME publishes port ${CONTAINER_PORT} on '${bound:-all interfaces}', not $HOST_BIND_ADDRESS.
+  There is no firewall in front of docker's own DNAT rules, so the app is answering on this
+  host's public address, bypassing the tunnel. Redeploy with this script to fix it:
+    cd /opt/gridscribe && sudo ./scripts/deploy.sh
+  Nothing was touched by this check."
+	fi
+}
+
 container_is_answering() {
-	curl -fs -o /dev/null -m "$SMOKE_TEST_TIMEOUT_SECONDS" "http://localhost:${HOST_PORT}/"
+	curl -fs -o /dev/null -m "$SMOKE_TEST_TIMEOUT_SECONDS" "http://${HOST_BIND_ADDRESS}:${HOST_PORT}/"
 }
 
 # Checks the EFFECT of PUBLIC_ALLOWED_ORIGINS, not its presence. POSTs an empty JSON
@@ -668,7 +776,7 @@ probe_shortener_origin() {
 		-H 'Content-Type: application/json' \
 		-H "Origin: $probed_origin" \
 		--data '{}' \
-		"http://localhost:${HOST_PORT}/api/shorten" 2>/dev/null)" || {
+		"http://${HOST_BIND_ADDRESS}:${HOST_PORT}/api/shorten" 2>/dev/null)" || {
 		warn "shortener probe for $probed_origin could not reach the container on port ${HOST_PORT}"
 		return 1
 	}
@@ -816,7 +924,7 @@ stash_current_container() {
 			# deletes the container that is actually serving the site. So ask.
 			if [ "$(docker inspect -f '{{.State.Running}}' "$CONTAINER_NAME" 2>/dev/null)" = "true" ]; then
 				die "$EXIT_USAGE" "a container named $PREVIOUS_CONTAINER_NAME is still here, so an earlier deploy did not finish.
-  $CONTAINER_NAME is running and the site answers on http://localhost:${HOST_PORT}/, so
+  $CONTAINER_NAME is running and the site answers on http://${HOST_BIND_ADDRESS}:${HOST_PORT}/, so
   this run changed nothing. Drop the stale copy, then deploy again:
     docker rm -f $PREVIOUS_CONTAINER_NAME
   Or, to go back to the stale copy instead, because it is the last container known to
@@ -826,7 +934,7 @@ stash_current_container() {
     docker start $CONTAINER_NAME"
 			fi
 			die "$EXIT_USAGE" "a container named $PREVIOUS_CONTAINER_NAME is still here, so an earlier deploy did not finish.
-  The site answers on http://localhost:${HOST_PORT}/, but $CONTAINER_NAME is NOT running,
+  The site answers on http://${HOST_BIND_ADDRESS}:${HOST_PORT}/, but $CONTAINER_NAME is NOT running,
   so something else holds that port - most likely $PREVIOUS_CONTAINER_NAME itself. This
   run changed nothing. Check which container is serving before you delete anything:
     docker ps --filter publish=${HOST_PORT}
@@ -842,7 +950,7 @@ stash_current_container() {
 		# rollback target instead: it is still the last container known to have served
 		# the site, a failed deploy can still fall back to it, and nothing known-good is
 		# deleted here. Only the non-answering $CONTAINER_NAME goes.
-		warn "a container named $PREVIOUS_CONTAINER_NAME is here, so an earlier deploy did not finish, and nothing answers on http://localhost:${HOST_PORT}/ - the site is DOWN."
+		warn "a container named $PREVIOUS_CONTAINER_NAME is here, so an earlier deploy did not finish, and nothing answers on http://${HOST_BIND_ADDRESS}:${HOST_PORT}/ - the site is DOWN."
 		info "keeping $PREVIOUS_CONTAINER_NAME as this run's rollback target and replacing $CONTAINER_NAME"
 		if docker inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
 			docker rm -f "$CONTAINER_NAME" >/dev/null ||
@@ -885,6 +993,11 @@ rollback() {
 	if [ "$CURRENT_STOPPED_NOT_RENAMED" -eq 1 ] && docker inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
 		info "restarting $CONTAINER_NAME, which was stopped but not yet renamed"
 		CURRENT_STOPPED_NOT_RENAMED=0
+		# Set before the start can fail. A known-good container exists under
+		# $CONTAINER_NAME, so if this branch does not complete, rollback_failure must not
+		# report "there was no previous container to fall back to" - that message sent the
+		# operator to delete the only container that had ever served the site.
+		PREVIOUS_SAVED=1
 		docker start "$CONTAINER_NAME" >/dev/null || return 1
 		wait_until_healthy || return 1
 		info "rolled back and healthy"
@@ -973,12 +1086,13 @@ main() {
 		# from "nothing answered", and it used to report the former either way - so an
 		# unattended check mailed a shortener diagnosis while the site was fully down.
 		container_is_answering ||
-			die "$EXIT_PARTIAL" "nothing answers on http://localhost:${HOST_PORT}/ - the site is down, so the shortener could not be checked.
+			die "$EXIT_PARTIAL" "nothing answers on http://${HOST_BIND_ADDRESS}:${HOST_PORT}/ - the site is down, so the shortener could not be checked.
   Look at the container first:
     docker ps -a --filter name=$CONTAINER_NAME
     docker logs --tail $LOG_TAIL_LINES $CONTAINER_NAME"
 		smoke_test_shortener ||
 			die "$EXIT_PARTIAL" "$(rejected_origins_summary)"
+		require_loopback_publish
 		info "check passed"
 		exit 0
 	fi

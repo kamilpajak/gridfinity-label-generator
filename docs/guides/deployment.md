@@ -504,10 +504,16 @@ the exact origins the site is served from, scheme included, no trailing slash.
 
 Analytics (optional but recommended):
 
-| Variable                | Value                                      | Description          |
-| ----------------------- | ------------------------------------------ | -------------------- |
-| `PUBLIC_MATOMO_URL`     | `https://statistics.gridfinitylabels.com/` | Matomo analytics URL |
-| `PUBLIC_MATOMO_SITE_ID` | `1`                                        | Matomo site ID       |
+| Variable                | Value                                        | Description          |
+| ----------------------- | -------------------------------------------- | -------------------- |
+| `PUBLIC_MATOMO_URL`     | your own Matomo URL, trailing slash included | Matomo analytics URL |
+| `PUBLIC_MATOMO_SITE_ID` | the site id in your own Matomo               | Matomo site ID       |
+
+Both name an endpoint, so the Value column deliberately does not print the maintainer's
+own, the way `ORIGIN` above does not. A fork that copied them verbatim would report every
+page view into someone else's Matomo instance, and `deploy.sh` cannot catch that: both are
+optional, any non-empty value is accepted, and nothing compares them against anything.
+Leave both empty and analytics stays off.
 
 Affiliate links (optional, leave unset to hide affiliate links):
 

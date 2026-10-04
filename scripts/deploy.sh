@@ -745,12 +745,34 @@ wait_until_healthy() {
 # either way. This is what turns the bind address from a one-time proof into something the
 # daily --check-only enforces.
 require_loopback_publish() {
-	local bound
-	bound="$(docker inspect -f "{{with index .HostConfig.PortBindings \"${CONTAINER_PORT}/tcp\"}}{{(index . 0).HostIp}}{{end}}" "$CONTAINER_NAME" 2>/dev/null || true)"
-	if [ "$bound" != "$HOST_BIND_ADDRESS" ]; then
-		die "$EXIT_PARTIAL" "$CONTAINER_NAME publishes port ${CONTAINER_PORT} on '${bound:-all interfaces}', not $HOST_BIND_ADDRESS.
+	# Every binding of every published port, one "port address" line each. Deliberately not
+	# `index 0` of one port: a container can carry SEVERAL bindings for the same port, and
+	# `-p 127.0.0.1:8081:80 -p 8081:80` puts the loopback one first - so reading the first
+	# entry passed while the app was simultaneously answering on every interface. Reproduced
+	# against a real container before this loop existed. An empty HostIp is how docker spells
+	# "all interfaces", so it is named rather than left blank.
+	local bindings
+	bindings="$(docker inspect -f '{{range $port, $list := .HostConfig.PortBindings}}{{range $list}}{{$port}} {{if .HostIp}}{{.HostIp}}{{else}}all-interfaces{{end}}
+{{end}}{{end}}' "$CONTAINER_NAME" 2>/dev/null || true)"
+
+	if [ -z "$(trim "$bindings")" ]; then
+		die "$EXIT_PARTIAL" "could not read the published ports of $CONTAINER_NAME - it publishes
+  nothing, or it is not there at all. Look at it before trusting the site:
+    docker ps -a --filter name=$CONTAINER_NAME
+  Nothing was touched by this check."
+	fi
+
+	local wrong=() port addr
+	while read -r port addr; do
+		[ -n "$port" ] || continue
+		[ "$addr" = "$HOST_BIND_ADDRESS" ] || wrong+=("$port on $addr")
+	done <<<"$bindings"
+
+	if [ "${#wrong[@]}" -gt 0 ]; then
+		die "$EXIT_PARTIAL" "$CONTAINER_NAME publishes ${wrong[*]}, not $HOST_BIND_ADDRESS.
   There is no firewall in front of docker's own DNAT rules, so the app is answering on this
-  host's public address, bypassing the tunnel. Redeploy with this script to fix it:
+  host's public address, bypassing the tunnel - no TLS, no WAF, no logs. Redeploy with this
+  script to fix it:
     cd /opt/gridscribe && sudo ./scripts/deploy.sh
   Nothing was touched by this check."
 	fi

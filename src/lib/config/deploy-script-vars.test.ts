@@ -603,7 +603,13 @@ describe('scripts/deploy.sh port publishing', () => {
 	});
 
 	it('keeps the loopback address in exactly one place', () => {
-		const occurrences = script.split(LOOPBACK_PUBLISH_HOSTS[0]).length - 1;
+		// Comment lines are exempt: the rationale for the bind address legitimately spells the
+		// address out, and the rule is about a second place the code could read it from.
+		const code = script
+			.split('\n')
+			.filter((line) => !COMMENT_LINE_PATTERN.test(line))
+			.join('\n');
+		const occurrences = code.split(LOOPBACK_PUBLISH_HOSTS[0]).length - 1;
 
 		expect(
 			occurrences,

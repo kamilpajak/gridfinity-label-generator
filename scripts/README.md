@@ -229,3 +229,43 @@ pnpm validate-images
 - Node.js 18+ (ES modules)
 - Playwright (image/metadata scraping)
 - Sharp (image processing)
+
+---
+
+## Deployment
+
+### deploy.sh
+
+Runs on the VPS, not locally. It replaces the running container with an image from
+ghcr.io and passes the full environment the app needs.
+
+Run it under `sudo`: it reads a root-owned `600` env file and appends to
+`/var/log/gridscribe-deployments.log`.
+
+```bash
+./scripts/deploy.sh --help             # usage, options and exit codes (no env file needed)
+sudo ./scripts/deploy.sh --dry-run     # validate, print the docker run command, change nothing
+sudo ./scripts/deploy.sh               # deploy :latest
+sudo ./scripts/deploy.sh --tag sha-abc1234
+sudo ./scripts/deploy.sh --check-only  # verify the deployment that is already running
+```
+
+Values come from `/etc/gridscribe/deploy.env` on the VPS, created from
+`deploy.env.example` in this directory. The script reads that file line by line — it does
+not source it — so a line that is not `NAME=value` is refused rather than run. Keep it
+root-owned anyway; it holds operator values. Every value in the template is empty,
+including `ORIGIN` and `PUBLIC_ALLOWED_ORIGINS`: they have to name the domain this host
+serves, and nothing in the deploy can work that out on its own. The file is for the app's
+environment only — an assignment to one of the script's own options, such as `TAG` or
+`DRY_RUN`, or to one of its fixed settings, such as `HOST_PORT`, is refused with exit
+`2`.
+
+The script names every variable it passes, in `REQUIRED_VARS`, `OPTIONAL_VARS` and
+`REFUSED_VARS`. The test `src/lib/config/deploy-script-vars.test.ts` fails when `src/`
+starts reading a `PUBLIC_*` variable none of those lists knows about, when a listed
+variable never reaches the container, when either committed template (`deploy.env.example`
+here or `.env.example` in the repository root) carries a value at all, and when one of the
+two hand-typed `docker run` commands in the deployment guide stops passing a variable the
+script passes.
+
+See [`../docs/guides/deployment.md`](../docs/guides/deployment.md).

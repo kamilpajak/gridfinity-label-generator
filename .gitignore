@@ -38,6 +38,22 @@ ehthumbs.db
 .env.*
 !.env.example
 !.env.test
+# Filled-in VPS deploy env (real operator values); template is scripts/deploy.env.example.
+# A glob, not one literal path: the generic `.env.*` rule above only matches basenames
+# that start with `.env.`, so a per-environment copy such as deploy.env.prod was
+# committable and would have published real Matomo ids and contact details.
+#
+# No `scripts/` in front of it. A pattern containing a slash is anchored to the
+# repository root, so `scripts/deploy.env*` left a copy outside that one directory
+# committable - and `cp scripts/deploy.env.example deploy.env` in the repository root,
+# while reproducing a deploy problem, is the likeliest way to make one. The negation
+# below still wins for the template, because git applies the last matching pattern.
+#
+# It matches the basename at any depth, so deploy.env, deploy.env.prod and
+# etc/deploy.env are covered. A copy under some other name is not: nothing can guess
+# that gridscribe.env holds operator values.
+deploy.env*
+!scripts/deploy.env.example
 
 # Vite
 vite.config.js.timestamp-*

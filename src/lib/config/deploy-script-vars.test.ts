@@ -83,8 +83,6 @@ const SITE_ORIGIN_VAR = 'ORIGIN';
 const SHELL_COMMENT_PATTERN = /#.*$/;
 const COMMENT_LINE_PATTERN = /^\s*#/;
 const ENV_ASSIGNMENT_PATTERN = /^\s*(?:export\s+)?([A-Z][A-Z0-9_]*)=(.*)$/;
-/** A quoted `NAME="value"` anywhere in a line, including inside a comment. */
-const INLINE_ASSIGNMENT_PATTERN = /([A-Z][A-Z0-9_]*)=(["'])([^"']*)\2/g;
 /** A trailing ` # …` after a value, which is a comment and not part of the value. */
 const TRAILING_COMMENT_PATTERN = /\s+#.*$/;
 const SURROUNDING_QUOTES_PATTERN = /^(['"])(.*)\1$/;
@@ -99,7 +97,7 @@ const REFUSED_VARS_COMMENT_PATTERN = /((?:^#.*\n)+)readonly REFUSED_VARS=\(/m;
 const FENCED_BASH_BLOCK_PATTERN = /```bash\n([\s\S]*?)```/g;
 /** A line inside such a block whose command IS `docker run`. */
 const DOCKER_RUN_COMMAND_PATTERN = /^\s*(?:sudo\s+)?docker\s+run\b/;
-/** A URL inside an example value, whose host must be a reserved example host. */
+/** A URL anywhere on a comment line, whose host must be a reserved example host. */
 const URL_IN_VALUE_PATTERN = /https?:\/\/[^\s,"'<>]+/g;
 /** `${ARRAY[@]}` — how the builder iterates one of the variable arrays. */
 const arrayExpansion = (arrayName: string) => `\${${arrayName}[@]}`;
@@ -206,16 +204,23 @@ function templateValue(template: string, name: string): string | undefined {
  * show an example value in a comment above the assignment, which is the one place the
  * assignment parser never looks — so a real endpoint or key could be committed there with
  * every guard green. Reproduced with a live-looking Sentry DSN in a comment.
+ *
+ * This scans every URL on a comment line, not only URLs inside a `NAME="value"` shape.
+ * That shape is the convention in scripts/deploy.env.example, but .env.example writes its
+ * examples as bare quoted URLs in prose, so the narrower version found nothing there and
+ * passed vacuously on one of the two files it is meant to cover. An unquoted
+ * `# NAME=https://real-host/`, a bare URL in prose and a trailing inline comment all
+ * escaped it as well.
  */
-function templateCommentExamples(template: string): { name: string; value: string }[] {
-	const examples: { name: string; value: string }[] = [];
+function templateCommentUrls(template: string): { line: string; host: string }[] {
+	const found: { line: string; host: string }[] = [];
 	for (const line of template.split('\n')) {
 		if (!COMMENT_LINE_PATTERN.test(line)) continue;
-		for (const [, name, , value] of line.matchAll(INLINE_ASSIGNMENT_PATTERN)) {
-			examples.push({ name, value });
+		for (const host of urlHostsIn(line)) {
+			found.push({ line: line.trim(), host });
 		}
 	}
-	return examples;
+	return found;
 }
 
 /** Hosts named by any URL inside one value. */
@@ -363,7 +368,7 @@ describe('scripts/deploy.sh environment coverage', () => {
 describe.each(COMMITTED_ENV_TEMPLATES)('$label', ({ label, path }) => {
 	const template = readFileSync(path, 'utf8');
 	const assignments = templateAssignments(template);
-	const commentExamples = templateCommentExamples(template);
+	const commentUrls = templateCommentUrls(template);
 
 	it('commits no value at all', () => {
 		// A rule, not a list of operator-specific prefixes: the next variable anyone adds
@@ -382,28 +387,39 @@ describe.each(COMMITTED_ENV_TEMPLATES)('$label', ({ label, path }) => {
 		).toEqual([]);
 	});
 
-	it('keeps example values in comments on reserved example hosts', () => {
+	it('names only reserved example hosts in comments', () => {
 		// The convention is to put the example value in a comment, which is exactly where
 		// the assignment rule above cannot see it.
 		//
-		// What this rule checks, precisely: every URL inside such an example names a host
+		// What this rule checks, precisely: every URL on a comment line names a host
 		// reserved for documentation. That covers the committed-endpoint shape — an
 		// analytics instance, an error-reporting DSN, an API host — and a DSN carries its
 		// key in the URL, so it covers that key too. It does NOT check an example value
 		// with no URL in it: an Amazon Associates tag in a comment would pass. The
 		// surrounding prose tells the reader to keep those fake; nothing enforces it.
-		const realHosts = commentExamples.flatMap(({ name, value }) =>
-			urlHostsIn(value)
-				.filter((host) => !isReservedExampleHost(host))
-				.map((host) => `${name} -> ${host}`)
-		);
+		const realHosts = commentUrls
+			.filter(({ host }) => !isReservedExampleHost(host))
+			.map(({ host, line }) => `${host}  (in: ${line})`);
 
 		expect(
 			realHosts,
-			`An example value in a comment in ${label} names a host that is not reserved for ` +
-				'documentation. Use example.com, example.org, example.net, or a .test / .invalid / ' +
-				'.example name, so a committed example URL can never be a real endpoint.'
+			`A comment in ${label} names a host that is not reserved for documentation. Use ` +
+				'example.com, example.org, example.net, or a .test / .invalid / .example name. If ' +
+				'this is a link to real documentation rather than an example value, refer to it ' +
+				'without the URL — this rule cannot tell the two apart.'
 		).toEqual([]);
+	});
+
+	it('actually has a comment URL to check', () => {
+		// Without this the rule above goes quiet the moment a template's comment style
+		// changes, which is how the narrower version it replaced came to pass on
+		// .env.example while checking nothing there.
+		expect(
+			commentUrls.length,
+			`No URL was found in any comment in ${label}, so the reserved-host rule above ` +
+				'checked nothing. Either the template lost its example values or the comment ' +
+				'scanner no longer matches its style.'
+		).toBeGreaterThan(0);
 	});
 });
 

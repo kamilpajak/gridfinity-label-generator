@@ -255,12 +255,12 @@ misconfigured path is found now rather than in six months of silent mail.
 
 The script and its `--help` use the same set.
 
-| Code | Meaning                                                                                                                                                                                                                                                                                                                                                                |
-| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `0`  | Deployed, healthy, and the shortener accepted the site's own origin. Also a passing `--check-only`                                                                                                                                                                                                                                                                     |
-| `2`  | Usage error, the env file is malformed or a required variable is missing, or a stale `gridscribe-previous` container is in the way **while the site is still answering**. Nothing was touched and the running container keeps serving. A stale copy found while nothing is answering is **not** this code — the run deploys over it, as the two bullets above describe |
-| `7`  | The deploy did not land and the previous version is serving again: the image could not be pulled, a check failed, or the run was interrupted. Safe to retry                                                                                                                                                                                                            |
-| `8`  | Partial. The container was replaced and the rollback also failed, so the live site needs attention now; or `--check-only` found the shortener rejecting an origin the site serves; or `--check-only` found nothing answering on port 8081 at all                                                                                                                       |
+| Code | Meaning                                                                                                                                                                                                                                                                                                                                                                      |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `0`  | Deployed, healthy, and the shortener accepted the site's own origin. Also a passing `--check-only`                                                                                                                                                                                                                                                                           |
+| `2`  | Usage error, the env file is malformed or a required variable is missing, or a stale `gridscribe-previous` container is in the way **while the site is still answering**. Nothing was touched and the running container keeps serving. A stale copy found while nothing is answering is **not** this code — the run deploys over it, as the two bullets above describe       |
+| `7`  | The deploy did not land and the previous version is serving again: the image could not be pulled, a check failed, or the run was interrupted. Safe to retry                                                                                                                                                                                                                  |
+| `8`  | Partial. The container was replaced and the rollback also failed, so the live site needs attention now; or a **first** deploy failed or was interrupted, so nothing is serving and there was no previous container to fall back to; or `--check-only` found the shortener rejecting an origin the site serves; or `--check-only` found nothing answering on port 8081 at all |
 
 ---
 
@@ -321,12 +321,24 @@ If the script itself is broken, start the container by hand — but from the env
 from a retyped `-e` list. Retyping that list from memory is how the shortener broke in the
 first place.
 
-Read the file with `.`, the same way `deploy.sh` does, and pass bare `-e NAME` flags so
-docker takes each value from the shell. Do **not** use `--env-file` here: it does not
-strip quotes, so `ORIGIN` would arrive as `"https://gridfinitylabels.com"` and
-adapter-node would refuse to start with `Invalid ORIGIN`, while an unquoted `ORIGIN` next
-to a still-quoted `PUBLIC_ALLOWED_ORIGINS` starts fine and answers `403` to every
-shortener call — silently, which is the whole failure this page exists to prevent.
+The easiest correct command comes from the script itself: `sudo ./scripts/deploy.sh
+--dry-run` prints the exact `docker run` with every value already filled in, ready to
+paste. Use that whenever validation still works and only the deploy logic is broken.
+
+If the script cannot run at all, read the file with `.` and pass bare `-e NAME` flags so
+docker takes each value from the shell. Two warnings about this fallback, because it is
+**not** what `deploy.sh` does:
+
+- Sourcing runs the file. `deploy.sh` parses it line by line, refuses any line that is not
+  an assignment, and expands nothing inside a value. `.` executes every line as root and
+  expands `$`, backticks and `$(...)`, so a value like `dept $USER` arrives changed and a
+  stray command in the file runs. Read the file before sourcing it if anyone else could
+  have edited it.
+- Do **not** use `--env-file` instead: it does not strip quotes, so `ORIGIN` would arrive
+  as `"https://gridfinitylabels.com"` and adapter-node would refuse to start with
+  `Invalid ORIGIN`, while an unquoted `ORIGIN` next to a still-quoted
+  `PUBLIC_ALLOWED_ORIGINS` starts fine and answers `403` to every shortener call —
+  silently, which is the whole failure this page exists to prevent.
 
 Run it as root (`sudo -i`): `/etc/gridscribe/deploy.env` is mode `600` and root-owned.
 

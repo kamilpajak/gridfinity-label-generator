@@ -155,8 +155,9 @@ OPTIONS
 OUTPUT
   Warnings and errors go to stderr. Progress goes to stderr too, but only when stderr
   is a terminal, so an unattended run that succeeds writes nothing there and a cron
-  entry mails only real failures. On success stdout holds the deployed image digest
-  reference and nothing else.
+  entry mails only real failures. --dry-run is the exception: it always writes the
+  command and the warning about the values in it, since that output is the point of the
+  run. On success stdout holds the deployed image digest reference and nothing else.
 
 EXIT CODES
   0  deployed, healthy, and the shortener accepted the site's own origin
@@ -169,11 +170,13 @@ EXIT CODES
   7  the deploy did not land and the previous version is serving again: the image
      could not be pulled, the new container failed a check, or the run was
      interrupted. Safe to retry once the cause is fixed
-  8  partial, and the live site needs attention. One of three things: the container was
-     replaced and the rollback also failed; or --check-only found the running
-     deployment rejecting an origin, so the site is up but the shortener is broken for
-     the origins the error names; or --check-only found nothing answering on the port
-     at all, so the site is down and the shortener could not be checked
+  8  partial, and the live site needs attention. One of four things: the container was
+     replaced and the rollback also failed; or a FIRST deploy failed or was interrupted,
+     so nothing is serving and there was no previous container to fall back to; or
+     --check-only found the running deployment rejecting an origin, so the site is up
+     but the shortener is broken for the origins the error names; or --check-only found
+     nothing answering on the port at all, so the site is down and the shortener could
+     not be checked
 
 EXAMPLES
   Run under sudo: the env file is root-owned and mode 600, and the deployment log is
@@ -783,8 +786,16 @@ stash_current_container() {
 	# 000 while the next run exited 2 claiming the running container keeps serving.
 	if docker inspect "$PREVIOUS_CONTAINER_NAME" >/dev/null 2>&1; then
 		if container_is_answering; then
-			die "$EXIT_USAGE" "a container named $PREVIOUS_CONTAINER_NAME is still here, so an earlier deploy did not finish.
-  $CONTAINER_NAME is answering on http://localhost:${HOST_PORT}/, so the site is up and
+			# container_is_answering only proves that SOMETHING holds the port. It
+			# does not say which container, and on this path the obvious other
+			# candidate is $PREVIOUS_CONTAINER_NAME: an operator who stopped
+			# $CONTAINER_NAME to look at the stale copy leaves exactly that state.
+			# The earlier message named $CONTAINER_NAME either way and offered
+			# `docker rm -f $PREVIOUS_CONTAINER_NAME` first, which in that state
+			# deletes the container that is actually serving the site. So ask.
+			if [ "$(docker inspect -f '{{.State.Running}}' "$CONTAINER_NAME" 2>/dev/null)" = "true" ]; then
+				die "$EXIT_USAGE" "a container named $PREVIOUS_CONTAINER_NAME is still here, so an earlier deploy did not finish.
+  $CONTAINER_NAME is running and the site answers on http://localhost:${HOST_PORT}/, so
   this run changed nothing. Drop the stale copy, then deploy again:
     docker rm -f $PREVIOUS_CONTAINER_NAME
   Or, to go back to the stale copy instead, because it is the last container known to
@@ -792,6 +803,16 @@ stash_current_container() {
     docker rm -f $CONTAINER_NAME
     docker rename $PREVIOUS_CONTAINER_NAME $CONTAINER_NAME
     docker start $CONTAINER_NAME"
+			fi
+			die "$EXIT_USAGE" "a container named $PREVIOUS_CONTAINER_NAME is still here, so an earlier deploy did not finish.
+  The site answers on http://localhost:${HOST_PORT}/, but $CONTAINER_NAME is NOT running,
+  so something else holds that port - most likely $PREVIOUS_CONTAINER_NAME itself. This
+  run changed nothing. Check which container is serving before you delete anything:
+    docker ps --filter publish=${HOST_PORT}
+  To put the serving container back under the name this script expects:
+    docker rm -f $CONTAINER_NAME
+    docker rename $PREVIOUS_CONTAINER_NAME $CONTAINER_NAME
+  Then deploy again."
 		fi
 
 		# Nothing answers, so the site is down and re-running the deploy is the
@@ -847,6 +868,20 @@ rollback() {
 	return 0
 }
 
+# rollback() returns non-zero for two different situations and they need different
+# words. On a first deploy nothing was replaced and there was no previous container at
+# all, so saying the restore failed sends the operator looking for a rollback that never
+# happened. rollback() leaves PREVIOUS_SAVED at 0 when there was nothing to restore and
+# at 1 when a restore was attempted and failed, so the distinction is readable here.
+rollback_failure() {
+	local what="$1"
+	if [ "$PREVIOUS_SAVED" -eq 0 ]; then
+		printf '%s' "$what, and this was a first deploy - there was no previous container to fall back to, so nothing is serving. The live site needs attention now."
+	else
+		printf '%s' "$what and the previous one could not be restored - see the warning above. The live site needs attention now."
+	fi
+}
+
 discard_previous_container() {
 	if [ "$PREVIOUS_SAVED" -eq 1 ]; then
 		docker rm -f "$PREVIOUS_CONTAINER_NAME" >/dev/null 2>&1 ||
@@ -868,7 +903,7 @@ on_interrupt() {
 	if rollback; then
 		die "$EXIT_NOT_DEPLOYED" "interrupted; rolled back to the previous container"
 	fi
-	die "$EXIT_PARTIAL" "interrupted, and the previous container could not be restored - see the warning above. The live site needs attention now."
+	die "$EXIT_PARTIAL" "$(rollback_failure "interrupted")"
 }
 
 # Armed only around the mutating phase, so interrupting --dry-run or --check-only
@@ -914,7 +949,12 @@ main() {
 	build_run_args "$image_ref"
 
 	if [ "$DRY_RUN" -eq 1 ]; then
-		info "dry run - nothing was changed. The command that would run (contains values, do not paste this into an issue):"
+		# Not info(): that is TTY-gated, so redirecting this to a file used to leave
+		# the argv alone in it - the operator's real values with no warning attached
+		# and nothing saying that nothing was deployed. Capturing a dry run to a file
+		# before pasting it somewhere is the normal thing to do, which is exactly when
+		# the warning has to travel with the values.
+		printf '%s\n' "dry run - nothing was changed. The command that would run (contains values, do not paste this into an issue):" >&2
 		printf '%q ' "${RUN_ARGS[@]}" >&2
 		printf '\n' >&2
 		exit 0
@@ -940,20 +980,20 @@ main() {
 	info "starting the new container"
 	NEW_CONTAINER_OWNS_NAME=1
 	if ! "${RUN_ARGS[@]}" >/dev/null; then
-		rollback || die "$EXIT_PARTIAL" "the new container would not start and the previous one could not be restored - see the warning above. The live site needs attention now."
+		rollback || die "$EXIT_PARTIAL" "$(rollback_failure "the new container would not start")"
 		die "$EXIT_NOT_DEPLOYED" "the new container would not start; rolled back to the previous one"
 	fi
 
 	if ! wait_until_healthy; then
 		warn "the new container did not answer within ${HEALTH_TIMEOUT_SECONDS}s"
 		dump_container_logs
-		rollback || die "$EXIT_PARTIAL" "the new container is unhealthy and the previous one could not be restored - see the warning above. The live site needs attention now."
+		rollback || die "$EXIT_PARTIAL" "$(rollback_failure "the new container is unhealthy")"
 		die "$EXIT_NOT_DEPLOYED" "deploy failed the health check; rolled back to the previous container"
 	fi
 
 	if ! smoke_test_shortener; then
 		dump_container_logs
-		rollback || die "$EXIT_PARTIAL" "the shortener check failed and the previous container could not be restored - see the warning above. The live site needs attention now."
+		rollback || die "$EXIT_PARTIAL" "$(rollback_failure "the shortener check failed")"
 		die "$EXIT_NOT_DEPLOYED" "deploy rejected and rolled back to the previous container: $(rejected_origins_summary)"
 	fi
 

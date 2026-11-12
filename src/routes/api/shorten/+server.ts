@@ -1,4 +1,3 @@
-import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { isValidUrl, isPrivateOrLocalUrl, isAllowedOrigin } from '#lib/utils/api-security.ts';
 import { RateLimiter } from '#lib/utils/rate-limiter.ts';
@@ -95,7 +94,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 		// 1. ORIGIN VALIDATION
 		const origin = request.headers.get('origin');
 		if (!isAllowedOrigin(origin)) {
-			return json({ error: 'Forbidden' }, { status: 403 });
+			return Response.json({ error: 'Forbidden' }, { status: 403 });
 		}
 
 		// 2. RATE LIMITING - Per-user
@@ -103,7 +102,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 		const perUserLimit = perUserRateLimiter.check(clientIp);
 
 		if (!perUserLimit.allowed) {
-			return json(
+			return Response.json(
 				{ error: 'Rate limit exceeded' },
 				{
 					status: 429,
@@ -118,7 +117,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 		const globalLimit = globalRateLimiter.check('GLOBAL');
 
 		if (!globalLimit.allowed) {
-			return json(
+			return Response.json(
 				{ error: 'Rate limit exceeded' },
 				{
 					status: 429,
@@ -133,25 +132,25 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 		const { url } = await request.json();
 
 		if (!url) {
-			return json({ error: 'URL is required' }, { status: 400 });
+			return Response.json({ error: 'URL is required' }, { status: 400 });
 		}
 
 		// 5. URL FORMAT VALIDATION
 		if (!isValidUrl(url)) {
-			return json({ error: 'Invalid URL format' }, { status: 400 });
+			return Response.json({ error: 'Invalid URL format' }, { status: 400 });
 		}
 
 		// 6. SSRF PROTECTION
 		if (isPrivateOrLocalUrl(url)) {
-			return json({ error: 'Invalid URL' }, { status: 400 });
+			return Response.json({ error: 'Invalid URL' }, { status: 400 });
 		}
 
 		// 7. SHORTEN URL
 		const shortUrl = await shortenUrl(url);
 
-		return json({ shortUrl });
+		return Response.json({ shortUrl });
 	} catch (error) {
 		console.error('URL shortening error:', error);
-		return json({ error: 'Internal server error' }, { status: 500 });
+		return Response.json({ error: 'Internal server error' }, { status: 500 });
 	}
 };

@@ -19,9 +19,9 @@ const AFFILIATE_KEYS = [
 	'PUBLIC_AFFILIATE_MAGNETS'
 ] as const;
 
-// Read public env only in the browser. During prerender/SSR `$app/env/public`
-// is unavailable (SvelteKit throws), and the privacy modal is only ever rendered
-// client-side (it starts closed), so an empty value at build time is correct.
+// Read public env only in the browser. During prerender/SSR these dynamic values
+// are unset, and the privacy modal is only ever rendered client-side (it starts
+// closed), so an empty value during prerender is correct.
 const read = (key: `PUBLIC_${string}`): string => (browser ? (env[key] ?? '') : '').trim();
 
 /** Analytics is active only when a Matomo endpoint AND site id are configured. */

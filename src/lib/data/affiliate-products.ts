@@ -17,7 +17,7 @@ import * as publicEnv from '$app/env/public';
 const env: Record<string, string | undefined> = { ...publicEnv };
 
 /** Read a public affiliate env var, but only in the browser (dynamic public env
- * cannot be accessed during prerendering). Returns null when unset/prerendered. */
+ * is unset during prerendering). Returns null when unset/prerendered. */
 function affiliateEnv(key: `PUBLIC_${string}`): string | null {
 	return browser ? env[key] || null : null;
 }

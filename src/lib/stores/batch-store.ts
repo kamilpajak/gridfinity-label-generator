@@ -1,6 +1,6 @@
 import { writable, get } from 'svelte/store';
-import type { BatchState, BatchLabel, BatchLabelConfig, TapeHeight } from '$lib/types/batch';
-import { DEFAULT_BATCH_STATE } from '$lib/types/batch';
+import type { BatchState, BatchLabel, BatchLabelConfig, TapeHeight } from '#lib/types/batch.ts';
+import { DEFAULT_BATCH_STATE } from '#lib/types/batch.ts';
 
 /** Generate a stable unique id for a batch label. */
 function newLabelId(): string {

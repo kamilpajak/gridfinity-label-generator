@@ -3,8 +3,8 @@
  * Provides type-safe Matomo tracking for SvelteKit with GDPR considerations
  */
 
-import { dev } from '$app/environment';
-import { env } from '$env/dynamic/public';
+import { dev } from '$app/env';
+import * as env from '$app/env/public';
 
 type MatomoCommand =
 	| ['disableCookies']

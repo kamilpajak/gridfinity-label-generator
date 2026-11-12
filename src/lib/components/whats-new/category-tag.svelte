@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ChangeCategory } from '$lib/types/changelog';
+	import type { ChangeCategory } from '#lib/types/changelog.ts';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import Wrench from '@lucide/svelte/icons/wrench';
 	import Pencil from '@lucide/svelte/icons/pencil';

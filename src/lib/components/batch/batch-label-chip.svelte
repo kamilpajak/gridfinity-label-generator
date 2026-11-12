@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { BatchLabelConfig, TapeHeight } from '$lib/types/batch';
-	import { deriveLabelText, renderBatchLabelToCanvas } from '$lib/utils/batch-renderer';
+	import type { BatchLabelConfig, TapeHeight } from '#lib/types/batch.ts';
+	import { deriveLabelText, renderBatchLabelToCanvas } from '#lib/utils/batch-renderer.ts';
 
 	interface Props {
 		config: BatchLabelConfig;

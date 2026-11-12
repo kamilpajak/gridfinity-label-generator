@@ -1,5 +1,7 @@
 import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
+import adapter from '@sveltejs/adapter-node';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import { readdirSync, existsSync } from 'fs';
@@ -18,7 +20,13 @@ function discoverAvailableSvgs(): string[] {
 }
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()],
+	plugins: [
+		tailwindcss(),
+		sveltekit({
+			adapter: adapter(),
+			preprocess: vitePreprocess()
+		})
+	],
 	define: {
 		__AVAILABLE_SVGS__: JSON.stringify(discoverAvailableSvgs())
 	},

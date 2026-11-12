@@ -4,7 +4,7 @@
 	 * Only tries SVG if it's in the AVAILABLE_SVGS list to avoid 404 attempts.
 	 */
 
-	import { AVAILABLE_SVGS } from '$lib/utils/label-renderer';
+	import { AVAILABLE_SVGS } from '#lib/utils/label-renderer.ts';
 
 	interface Props {
 		/** Original image path (typically .png) */

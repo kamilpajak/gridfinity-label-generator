@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as Command from '$lib/components/ui/command';
-	import type { ISODINStandard } from '$lib/data/standards';
-	import { formatDesignations } from '$lib/data/standards';
-	import { UI_TEXT } from '$lib/constants/ui-text';
+	import * as Command from '#lib/components/ui/command/index.ts';
+	import type { ISODINStandard } from '#lib/data/standards.ts';
+	import { formatDesignations } from '#lib/data/standards.ts';
+	import { UI_TEXT } from '#lib/constants/ui-text.ts';
 	import StandardImage from './standard-image.svelte';
-	import { fuzzyMatchDescription } from '$lib/utils/search-aliases';
+	import { fuzzyMatchDescription } from '#lib/utils/search-aliases.ts';
 
 	interface Props {
 		/** Array of standards to search through */

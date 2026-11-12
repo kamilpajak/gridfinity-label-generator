@@ -4,7 +4,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { exportBatchTapeAsPNG } from './batch-exporter';
-import type { BatchRenderData } from '$lib/types/batch';
+import type { BatchRenderData } from '#lib/types/batch.ts';
 import * as batchRenderer from './batch-renderer';
 
 // Mock the batch renderer

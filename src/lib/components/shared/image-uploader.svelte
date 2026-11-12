@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import type { CustomImage } from '$lib/types/batch';
+	import { Button } from '#lib/components/ui/button/index.ts';
+	import type { CustomImage } from '#lib/types/batch.ts';
 	import {
 		validateImageFile,
 		processImageInBrowser,
 		isSvgFile,
 		processImage,
 		ALLOWED_TYPES
-	} from '$lib/utils/image-utils';
+	} from '#lib/utils/image-utils.ts';
 	import ImageIcon from '@lucide/svelte/icons/image';
 	import XIcon from '@lucide/svelte/icons/x';
 	import LoaderIcon from '@lucide/svelte/icons/loader';

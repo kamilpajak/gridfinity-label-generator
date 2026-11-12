@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderBatchTape } from './batch-renderer';
-import type { BatchRenderData } from '$lib/types/batch';
+import type { BatchRenderData } from '#lib/types/batch.ts';
 
 // Mock label-constraint-solver module
 vi.mock('./label-constraint-solver', () => ({

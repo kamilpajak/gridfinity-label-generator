@@ -1,4 +1,4 @@
-import type { ChangelogEntry, ChangeCategory } from '$lib/types/changelog';
+import type { ChangelogEntry, ChangeCategory } from '#lib/types/changelog.ts';
 
 const CATEGORY_MAP: Record<string, ChangeCategory> = {
 	added: 'added',

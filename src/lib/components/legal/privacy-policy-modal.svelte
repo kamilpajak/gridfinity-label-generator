@@ -9,13 +9,13 @@
 	import Server from '@lucide/svelte/icons/server';
 	import Lock from '@lucide/svelte/icons/lock';
 	import Info from '@lucide/svelte/icons/info';
-	import ModalWrapper from '$lib/components/shared/modal-wrapper.svelte';
+	import ModalWrapper from '#lib/components/shared/modal-wrapper.svelte';
 	import {
 		isAnalyticsEnabled,
 		isAffiliateEnabled,
 		getContactEmail,
 		getDataController
-	} from '$lib/config/deployment';
+	} from '#lib/config/deployment.ts';
 
 	interface Props {
 		open: boolean;

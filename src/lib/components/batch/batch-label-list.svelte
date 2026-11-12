@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { batchStore } from '$lib/stores/batch-store';
+	import { batchStore } from '#lib/stores/batch-store.ts';
 	import BatchLabelChip from './batch-label-chip.svelte';
 	import { dndzone, SHADOW_ITEM_MARKER_PROPERTY_NAME, type DndEvent } from 'svelte-dnd-action';
 	import { flip } from 'svelte/animate';
 	import GripVerticalIcon from '@lucide/svelte/icons/grip-vertical';
 	import XIcon from '@lucide/svelte/icons/x';
-	import type { BatchLabel } from '$lib/types/batch';
-	import { deriveLabelText } from '$lib/utils/batch-renderer';
+	import type { BatchLabel } from '#lib/types/batch.ts';
+	import { deriveLabelText } from '#lib/utils/batch-renderer.ts';
 
 	const batchState = $derived($batchStore);
 	const height = $derived(batchState.height);

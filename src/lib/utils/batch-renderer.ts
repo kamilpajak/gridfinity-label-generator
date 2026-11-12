@@ -4,11 +4,11 @@
  * Renders multiple labels horizontally on a single canvas with cutting lines
  */
 
-import type { BatchRenderData, BatchLabelConfig, TapeHeight } from '$lib/types/batch';
+import type { BatchRenderData, BatchLabelConfig, TapeHeight } from '#lib/types/batch.ts';
 import { solveLabelLayout } from './label-constraint-solver';
 import { renderLabelToCanvas } from './label-renderer';
 import { formatPrimaryText, appendOptionalNote } from './label-formatter';
-import { getStandardById } from '$lib/data/standards';
+import { getStandardById } from '#lib/data/standards.ts';
 import { decimalToFraction } from './fraction-parser';
 
 export interface BatchRenderOptions {

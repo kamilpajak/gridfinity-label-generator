@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { generateLabelFilename } from './filename-generator';
-import { HardwareType, type ISODINStandard } from '$lib/data/standards';
+import { HardwareType, type ISODINStandard } from '#lib/data/standards.ts';
 
 describe('generateLabelFilename', () => {
 	describe('Fastener mode', () => {

@@ -11,8 +11,8 @@
 		getProductsByCategory,
 		getProductIconName,
 		type AffiliateProduct
-	} from '$lib/data/affiliate-products';
-	import { trackEvent } from '$lib/matomo';
+	} from '#lib/data/affiliate-products.ts';
+	import { trackEvent } from '#lib/matomo.ts';
 
 	// Group products by category using shared utility
 	const printers = getProductsByCategory('printer');

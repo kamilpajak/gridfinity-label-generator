@@ -3,17 +3,18 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 // Allowed origins are env-driven (PUBLIC_ALLOWED_ORIGINS). Mock it so the test
 // origin (the reference deployment) is accepted.
-vi.mock('$env/dynamic/public', () => ({
-	env: { PUBLIC_ALLOWED_ORIGINS: 'https://gridfinitylabels.com,https://www.gridfinitylabels.com' }
+vi.mock('$app/env/public', () => ({
+	PUBLIC_ALLOWED_ORIGINS: 'https://gridfinitylabels.com,https://www.gridfinitylabels.com'
 }));
 
 // Mock RateLimiter with low limits suitable for testing.
 // Production uses 100,000 requests/hour — tests need limits they can actually exhaust.
 // Server creates perUser first (100k), then global (100k).
 // We replace both with testable limits: perUser=20, global=180.
-vi.mock('$lib/utils/rate-limiter', async () => {
-	const actual =
-		await vi.importActual<typeof import('$lib/utils/rate-limiter')>('$lib/utils/rate-limiter');
+vi.mock('#lib/utils/rate-limiter.ts', async () => {
+	const actual = await vi.importActual<typeof import('#lib/utils/rate-limiter.ts')>(
+		'#lib/utils/rate-limiter.ts'
+	);
 	const limits = [20, 180]; // perUser, global (by construction order)
 	let instanceCount = 0;
 	return {

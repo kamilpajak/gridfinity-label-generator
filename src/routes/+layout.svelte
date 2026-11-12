@@ -2,7 +2,7 @@
 	import '../app.css';
 	import { onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
-	import { initMatomo, trackPageView } from '$lib/matomo';
+	import { initMatomo, trackPageView } from '#lib/matomo.ts';
 
 	let { children } = $props();
 

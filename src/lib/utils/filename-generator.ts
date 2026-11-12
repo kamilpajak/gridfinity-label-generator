@@ -4,7 +4,7 @@
  * Generates descriptive filenames for exported labels based on their configuration.
  */
 
-import { shouldDisableLength, type ISODINStandard } from '$lib/data/standards';
+import { shouldDisableLength, type ISODINStandard } from '#lib/data/standards.ts';
 
 export interface FilenameOptions {
 	labelMode: 'fastener' | 'general';

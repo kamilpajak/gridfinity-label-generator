@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { renderBatchTape } from '$lib/utils/batch-renderer';
-	import { exportBatchTapeAsPNG } from '$lib/utils/batch-exporter';
-	import type { BatchRenderData } from '$lib/types/batch';
+	import { renderBatchTape } from '#lib/utils/batch-renderer.ts';
+	import { exportBatchTapeAsPNG } from '#lib/utils/batch-exporter.ts';
+	import type { BatchRenderData } from '#lib/types/batch.ts';
 
 	let canvas: HTMLCanvasElement;
 	let status = 'Ready to render';

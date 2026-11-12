@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Switch } from '$lib/components/ui/switch';
-	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
-	import { Slider } from '$lib/components/ui/slider';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { Switch } from '#lib/components/ui/switch/index.ts';
+	import { ToggleGroup, ToggleGroupItem } from '#lib/components/ui/toggle-group/index.ts';
+	import { Slider } from '#lib/components/ui/slider/index.ts';
+	import * as Tooltip from '#lib/components/ui/tooltip/index.ts';
 	import InfoIcon from '@lucide/svelte/icons/info';
-	import { UI_TEXT } from '$lib/constants/ui-text';
+	import { UI_TEXT } from '#lib/constants/ui-text.ts';
 
 	interface Props {
 		showStandard: boolean;

@@ -5,7 +5,7 @@ import {
 	isLabelValid,
 	appendOptionalNote
 } from './label-formatter';
-import { HardwareType } from '$lib/data/standards';
+import { HardwareType } from '#lib/data/standards.ts';
 
 describe('formatPrimaryText', () => {
 	describe('Metric threads with pitch', () => {

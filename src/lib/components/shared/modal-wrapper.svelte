@@ -1,6 +1,6 @@
 <script lang="ts">
 	import X from '@lucide/svelte/icons/x';
-	import { createEscapeHandler, createBackdropClickHandler } from '$lib/utils/modal-utils';
+	import { createEscapeHandler, createBackdropClickHandler } from '#lib/utils/modal-utils.ts';
 	import type { Snippet } from 'svelte';
 
 	interface Props {

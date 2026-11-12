@@ -4,7 +4,7 @@
  * Provides functions for formatting label text based on mode and input values
  */
 
-import { HardwareType, shouldDisableLength, shouldDisablePitch } from '$lib/data/standards';
+import { HardwareType, shouldDisableLength, shouldDisablePitch } from '#lib/data/standards.ts';
 
 /**
  * Checks if a thread size uses metric units (mm, not inches)

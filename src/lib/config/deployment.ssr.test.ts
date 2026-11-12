@@ -1,15 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 
 // Not in the browser (prerender/SSR): env must not be read even when set.
-vi.mock('$app/environment', () => ({ browser: false }));
-vi.mock('$env/dynamic/public', () => ({
-	env: {
-		PUBLIC_MATOMO_URL: 'https://matomo.example.com/',
-		PUBLIC_MATOMO_SITE_ID: '1',
-		PUBLIC_AFFILIATE_TZE231: 'https://amzn.to/x',
-		PUBLIC_CONTACT_EMAIL: 'privacy@example.com',
-		PUBLIC_PRIVACY_CONTROLLER: 'Example Ltd'
-	}
+vi.mock('$app/env', () => ({ browser: false }));
+vi.mock('$app/env/public', () => ({
+	PUBLIC_MATOMO_URL: 'https://matomo.example.com/',
+	PUBLIC_MATOMO_SITE_ID: '1',
+	PUBLIC_AFFILIATE_TZE231: 'https://amzn.to/x',
+	PUBLIC_CONTACT_EMAIL: 'privacy@example.com',
+	PUBLIC_PRIVACY_CONTROLLER: 'Example Ltd'
 }));
 
 import {

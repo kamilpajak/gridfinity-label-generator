@@ -5,7 +5,11 @@ import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript-eslint';
-import svelteConfig from './svelte.config.js';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+
+// svelte.config.js was removed in the SvelteKit 3 migration; the Svelte ESLint
+// parser only needs the preprocessor config, provided inline here.
+const svelteConfig = { preprocess: vitePreprocess() };
 
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 

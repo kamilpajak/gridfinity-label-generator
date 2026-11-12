@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { solveLabelLayout } from '$lib/utils/label-constraint-solver';
-	import { enrichWithCoverageMetrics } from '$lib/utils/layout-metrics';
-	import { renderLabelToCanvas } from '$lib/utils/label-renderer';
-	import { formatPrimaryText } from '$lib/utils/label-formatter';
-	import type { SolverOutput } from '$lib/utils/label-constraint-solver';
-	import { standards } from '$lib/data/standards';
-	import type { ISODINStandard } from '$lib/data/standards';
+	import { solveLabelLayout } from '#lib/utils/label-constraint-solver.ts';
+	import { enrichWithCoverageMetrics } from '#lib/utils/layout-metrics.ts';
+	import { renderLabelToCanvas } from '#lib/utils/label-renderer.ts';
+	import { formatPrimaryText } from '#lib/utils/label-formatter.ts';
+	import type { SolverOutput } from '#lib/utils/label-constraint-solver.ts';
+	import { standards } from '#lib/data/standards.ts';
+	import type { ISODINStandard } from '#lib/data/standards.ts';
 
 	interface TestCase {
 		name: string;

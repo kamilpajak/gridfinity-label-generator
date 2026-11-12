@@ -10,7 +10,7 @@
 // but we re-assert it here so the filesystem reads below never run in production.
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { dev } from '$app/environment';
+import { dev } from '$app/env';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 

@@ -11,7 +11,7 @@ overrides:
   'ajv@8': '^8.18.0'
   'brace-expansion@1': '^1.1.13'
   'brace-expansion@2': '^2.0.3'
-  'cookie': '^0.7.0'
+  'cookie@0': '^0.7.0'
   'fast-uri': '^3.1.2'
   'flatted': '^3.4.2'
   'js-yaml@4': '^4.3.2'

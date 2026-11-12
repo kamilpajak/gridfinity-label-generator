@@ -4,7 +4,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { measureCapHeight, getCachedCapHeight, clearCapHeightCache } from './font-metrics';
-import { PRIMARY_FONT, SECONDARY_FONT } from '$lib/constants/fonts';
+import { PRIMARY_FONT, SECONDARY_FONT } from '#lib/constants/fonts.ts';
 
 // Helper to check if fonts loaded properly (different cap-heights)
 function areFontsLoadedProperly(primary: number, secondary: number): boolean {

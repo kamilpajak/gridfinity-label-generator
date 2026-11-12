@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { batchStore } from '$lib/stores/batch-store';
-	import { exportBatchTapeAsPNG } from '$lib/utils/batch-exporter';
+	import { Button } from '#lib/components/ui/button/index.ts';
+	import { batchStore } from '#lib/stores/batch-store.ts';
+	import { exportBatchTapeAsPNG } from '#lib/utils/batch-exporter.ts';
 	import BatchLabelList from './batch-label-list.svelte';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 	import ListIcon from '@lucide/svelte/icons/list';

@@ -62,9 +62,10 @@ describe('matomo', () => {
 		it('should return early when window is undefined', async () => {
 			(globalThis as unknown as { window: undefined }).window = undefined;
 
-			vi.doMock('$app/environment', () => ({ dev: false }));
-			vi.doMock('$env/dynamic/public', () => ({
-				env: { PUBLIC_MATOMO_URL: 'https://example.com/', PUBLIC_MATOMO_SITE_ID: '1' }
+			vi.doMock('$app/env', () => ({ dev: false }));
+			vi.doMock('$app/env/public', () => ({
+				PUBLIC_MATOMO_URL: 'https://example.com/',
+				PUBLIC_MATOMO_SITE_ID: '1'
 			}));
 
 			const { initMatomo } = await import('./matomo');
@@ -77,9 +78,10 @@ describe('matomo', () => {
 
 	describe('initMatomo - development mode', () => {
 		it('should return early and log in development mode', async () => {
-			vi.doMock('$app/environment', () => ({ dev: true }));
-			vi.doMock('$env/dynamic/public', () => ({
-				env: { PUBLIC_MATOMO_URL: 'https://example.com/', PUBLIC_MATOMO_SITE_ID: '1' }
+			vi.doMock('$app/env', () => ({ dev: true }));
+			vi.doMock('$app/env/public', () => ({
+				PUBLIC_MATOMO_URL: 'https://example.com/',
+				PUBLIC_MATOMO_SITE_ID: '1'
 			}));
 
 			const consoleSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
@@ -94,10 +96,8 @@ describe('matomo', () => {
 
 	describe('initMatomo - missing config', () => {
 		it('should return early when Matomo URL is missing', async () => {
-			vi.doMock('$app/environment', () => ({ dev: false }));
-			vi.doMock('$env/dynamic/public', () => ({
-				env: { PUBLIC_MATOMO_URL: '', PUBLIC_MATOMO_SITE_ID: '1' }
-			}));
+			vi.doMock('$app/env', () => ({ dev: false }));
+			vi.doMock('$app/env/public', () => ({ PUBLIC_MATOMO_URL: '', PUBLIC_MATOMO_SITE_ID: '1' }));
 
 			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
@@ -111,9 +111,10 @@ describe('matomo', () => {
 		});
 
 		it('should return early when site ID is missing', async () => {
-			vi.doMock('$app/environment', () => ({ dev: false }));
-			vi.doMock('$env/dynamic/public', () => ({
-				env: { PUBLIC_MATOMO_URL: 'https://example.com/', PUBLIC_MATOMO_SITE_ID: '' }
+			vi.doMock('$app/env', () => ({ dev: false }));
+			vi.doMock('$app/env/public', () => ({
+				PUBLIC_MATOMO_URL: 'https://example.com/',
+				PUBLIC_MATOMO_SITE_ID: ''
 			}));
 
 			const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -130,9 +131,10 @@ describe('matomo', () => {
 
 	describe('initMatomo - production mode', () => {
 		beforeEach(() => {
-			vi.doMock('$app/environment', () => ({ dev: false }));
-			vi.doMock('$env/dynamic/public', () => ({
-				env: { PUBLIC_MATOMO_URL: 'https://analytics.example.com/', PUBLIC_MATOMO_SITE_ID: '1' }
+			vi.doMock('$app/env', () => ({ dev: false }));
+			vi.doMock('$app/env/public', () => ({
+				PUBLIC_MATOMO_URL: 'https://analytics.example.com/',
+				PUBLIC_MATOMO_SITE_ID: '1'
 			}));
 		});
 
@@ -188,9 +190,10 @@ describe('matomo', () => {
 
 	describe('trackPageView', () => {
 		beforeEach(() => {
-			vi.doMock('$app/environment', () => ({ dev: false }));
-			vi.doMock('$env/dynamic/public', () => ({
-				env: { PUBLIC_MATOMO_URL: 'https://example.com/', PUBLIC_MATOMO_SITE_ID: '1' }
+			vi.doMock('$app/env', () => ({ dev: false }));
+			vi.doMock('$app/env/public', () => ({
+				PUBLIC_MATOMO_URL: 'https://example.com/',
+				PUBLIC_MATOMO_SITE_ID: '1'
 			}));
 		});
 
@@ -223,9 +226,10 @@ describe('matomo', () => {
 
 	describe('trackEvent', () => {
 		beforeEach(() => {
-			vi.doMock('$app/environment', () => ({ dev: false }));
-			vi.doMock('$env/dynamic/public', () => ({
-				env: { PUBLIC_MATOMO_URL: 'https://example.com/', PUBLIC_MATOMO_SITE_ID: '1' }
+			vi.doMock('$app/env', () => ({ dev: false }));
+			vi.doMock('$app/env/public', () => ({
+				PUBLIC_MATOMO_URL: 'https://example.com/',
+				PUBLIC_MATOMO_SITE_ID: '1'
 			}));
 		});
 

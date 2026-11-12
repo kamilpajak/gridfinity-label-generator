@@ -1,14 +1,19 @@
 <script lang="ts">
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { Switch } from '$lib/components/ui/switch';
-	import { ToggleGroup, ToggleGroupItem } from '$lib/components/ui/toggle-group';
+	import * as Tabs from '#lib/components/ui/tabs/index.ts';
+	import { Switch } from '#lib/components/ui/switch/index.ts';
+	import { ToggleGroup, ToggleGroupItem } from '#lib/components/ui/toggle-group/index.ts';
 	import { untrack } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import { Input } from '$lib/components/ui/input';
-	import { Select, SelectContent, SelectItem, SelectTrigger } from '$lib/components/ui/select';
-	import * as Popover from '$lib/components/ui/popover';
-	import { Button } from '$lib/components/ui/button';
-	import StandardSearch from '$lib/components/shared/standard-search.svelte';
+	import { Input } from '#lib/components/ui/input/index.ts';
+	import {
+		Select,
+		SelectContent,
+		SelectItem,
+		SelectTrigger
+	} from '#lib/components/ui/select/index.ts';
+	import * as Popover from '#lib/components/ui/popover/index.ts';
+	import { Button } from '#lib/components/ui/button/index.ts';
+	import StandardSearch from '#lib/components/shared/standard-search.svelte';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
 	import DownloadIcon from '@lucide/svelte/icons/download';
 	import RotateCcwIcon from '@lucide/svelte/icons/rotate-ccw';
@@ -16,10 +21,10 @@
 	import SendIcon from '@lucide/svelte/icons/send';
 	import CodeIcon from '@lucide/svelte/icons/code';
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
-	import WhatsNewModal from '$lib/components/whats-new/whats-new-modal.svelte';
-	import WhatsNewButton from '$lib/components/whats-new/whats-new-button.svelte';
-	import RecommendedProducts from '$lib/components/affiliate/recommended-products.svelte';
-	import PrivacyPolicyModal from '$lib/components/legal/privacy-policy-modal.svelte';
+	import WhatsNewModal from '#lib/components/whats-new/whats-new-modal.svelte';
+	import WhatsNewButton from '#lib/components/whats-new/whats-new-button.svelte';
+	import RecommendedProducts from '#lib/components/affiliate/recommended-products.svelte';
+	import PrivacyPolicyModal from '#lib/components/legal/privacy-policy-modal.svelte';
 
 	let { data } = $props();
 	import {
@@ -28,27 +33,27 @@
 		getStandardById,
 		shouldDisableLength,
 		shouldDisablePitch
-	} from '$lib/data/standards';
-	import { getPitchOptions, getThreadSizes } from '$lib/data/thread-pitch';
-	import LabelPreview from '$lib/components/label/label-preview.svelte';
-	import LabelSettingsContent from '$lib/components/label/label-settings-content.svelte';
+	} from '#lib/data/standards.ts';
+	import { getPitchOptions, getThreadSizes } from '#lib/data/thread-pitch.ts';
+	import LabelPreview from '#lib/components/label/label-preview.svelte';
+	import LabelSettingsContent from '#lib/components/label/label-settings-content.svelte';
 	import {
 		formatPrimaryText,
 		formatSecondaryText,
 		appendOptionalNote
-	} from '$lib/utils/label-formatter';
-	import { exportCanvasLabelAsPNG } from '$lib/utils/label-exporter';
-	import { validateLength, type ValidationResult } from '$lib/utils/input-validator';
-	import BatchModePanel from '$lib/components/batch/batch-mode-panel.svelte';
-	import { batchStore } from '$lib/stores/batch-store';
-	import { formStateToBatchConfig } from '$lib/utils/batch-config';
+	} from '#lib/utils/label-formatter.ts';
+	import { exportCanvasLabelAsPNG } from '#lib/utils/label-exporter.ts';
+	import { validateLength, type ValidationResult } from '#lib/utils/input-validator.ts';
+	import BatchModePanel from '#lib/components/batch/batch-mode-panel.svelte';
+	import { batchStore } from '#lib/stores/batch-store.ts';
+	import { formStateToBatchConfig } from '#lib/utils/batch-config.ts';
 	import PlusIcon from '@lucide/svelte/icons/plus';
-	import ImageUploader from '$lib/components/shared/image-uploader.svelte';
-	import type { CustomImage } from '$lib/types/batch';
-	import { UI_TEXT } from '$lib/constants/ui-text';
+	import ImageUploader from '#lib/components/shared/image-uploader.svelte';
+	import type { CustomImage } from '#lib/types/batch.ts';
+	import { UI_TEXT } from '#lib/constants/ui-text.ts';
 
 	const DEBOUNCE_DELAY_MS = 300;
-	import { debounce } from '$lib/utils/debounce';
+	import { debounce } from '#lib/utils/debounce.ts';
 
 	let showStandard = $state(true);
 	let showHardwareImage = $state(true);

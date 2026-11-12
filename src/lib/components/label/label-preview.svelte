@@ -1,8 +1,8 @@
 <script lang="ts">
 	// Fonts are now imported globally in app.css
 	import { onDestroy } from 'svelte';
-	import type { ISODINStandard } from '$lib/data/standards';
-	import type { CustomImage } from '$lib/types/batch';
+	import type { ISODINStandard } from '#lib/data/standards.ts';
+	import type { CustomImage } from '#lib/types/batch.ts';
 	import TagIcon from '@lucide/svelte/icons/tag';
 
 	/** Display scale for the preview chip (px per mm) — physically proportioned,
@@ -18,9 +18,9 @@
 		solveLabelLayout,
 		type LabelDimensions,
 		type SolverOutput
-	} from '$lib/utils/label-constraint-solver';
-	import { renderLabelToCanvas, resolveImageWithSvgPriority } from '$lib/utils/label-renderer';
-	import { enrichWithCoverageMetrics } from '$lib/utils/layout-metrics';
+	} from '#lib/utils/label-constraint-solver.ts';
+	import { renderLabelToCanvas, resolveImageWithSvgPriority } from '#lib/utils/label-renderer.ts';
+	import { enrichWithCoverageMetrics } from '#lib/utils/layout-metrics.ts';
 
 	interface Props {
 		primaryText: string;

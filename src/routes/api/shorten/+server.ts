@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { isValidUrl, isPrivateOrLocalUrl, isAllowedOrigin } from '$lib/utils/api-security';
-import { RateLimiter } from '$lib/utils/rate-limiter';
+import { isValidUrl, isPrivateOrLocalUrl, isAllowedOrigin } from '#lib/utils/api-security.ts';
+import { RateLimiter } from '#lib/utils/rate-limiter.ts';
 
 // Per-user rate limiter: Extremely high limit (to be adjusted later based on usage)
 const perUserRateLimiter = new RateLimiter({

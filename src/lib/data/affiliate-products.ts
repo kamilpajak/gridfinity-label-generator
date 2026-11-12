@@ -9,8 +9,12 @@
  * (see .env.example). When unset, products render without a clickable link.
  */
 
-import { browser } from '$app/environment';
-import { env } from '$env/dynamic/public';
+import { browser } from '$app/env';
+import * as publicEnv from '$app/env/public';
+
+// Flatten the namespace into a plain record so dynamic `env[key]` access
+// returns undefined for unset keys instead of throwing.
+const env: Record<string, string | undefined> = { ...publicEnv };
 
 /** Read a public affiliate env var, but only in the browser (dynamic public env
  * cannot be accessed during prerendering). Returns null when unset/prerendered. */

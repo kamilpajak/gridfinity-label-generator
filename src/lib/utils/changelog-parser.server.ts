@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseChangelog } from './changelog-parser';
-import type { ChangelogEntry } from '$lib/types/changelog';
+import type { ChangelogEntry } from '#lib/types/changelog.ts';
 
 export interface AppMetadata {
 	appVersion: string;

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { renderLabelToCanvas } from '$lib/utils/label-renderer';
-	import { solveLabelLayout } from '$lib/utils/label-constraint-solver';
-	import { renderBatchTape } from '$lib/utils/batch-renderer';
-	import type { BatchRenderData } from '$lib/types/batch';
+	import { renderLabelToCanvas } from '#lib/utils/label-renderer.ts';
+	import { solveLabelLayout } from '#lib/utils/label-constraint-solver.ts';
+	import { renderBatchTape } from '#lib/utils/batch-renderer.ts';
+	import type { BatchRenderData } from '#lib/types/batch.ts';
 
 	let status = $state('Ready');
 	let singleCanvas: HTMLCanvasElement;

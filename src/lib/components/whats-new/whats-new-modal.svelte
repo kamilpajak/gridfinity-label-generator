@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { ChangelogEntry } from '$lib/types/changelog';
-	import { getRelativeDate } from '$lib/utils/changelog-parser';
+	import type { ChangelogEntry } from '#lib/types/changelog.ts';
+	import { getRelativeDate } from '#lib/utils/changelog-parser.ts';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import CheckCircle2 from '@lucide/svelte/icons/check-circle-2';
 	import CategoryTag from './category-tag.svelte';
-	import ModalWrapper from '$lib/components/shared/modal-wrapper.svelte';
+	import ModalWrapper from '#lib/components/shared/modal-wrapper.svelte';
 
 	interface Props {
 		open: boolean;

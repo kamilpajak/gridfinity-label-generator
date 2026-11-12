@@ -5,7 +5,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { exportCanvasLabelAsPNG } from './label-exporter';
 import { exportBatchTapeAsPNG } from './batch-exporter';
-import type { BatchRenderData } from '$lib/types/batch';
+import type { BatchRenderData } from '#lib/types/batch.ts';
 
 describe('Export dimensions integration', () => {
 	let capturedCanvases: HTMLCanvasElement[] = [];

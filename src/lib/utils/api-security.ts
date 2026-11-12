@@ -8,7 +8,7 @@
  */
 
 import * as ipaddr from 'ipaddr.js';
-import { env } from '$env/dynamic/public';
+import * as env from '$app/env/public';
 
 // localhost dev origins are always allowed; production/self-host origins come from
 // PUBLIC_ALLOWED_ORIGINS (comma-separated) so forks can serve /api/shorten from

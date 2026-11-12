@@ -7,7 +7,7 @@
 import QRCode from 'qrcode';
 import type { SolverOutput } from './label-constraint-solver';
 import { shortenUrl, shouldShortenUrl, isValidUrl } from './url-shortener';
-import type { ISODINStandard } from '$lib/data/standards';
+import type { ISODINStandard } from '#lib/data/standards.ts';
 import { LRUCache } from './lru-cache';
 
 export interface RenderOptions {

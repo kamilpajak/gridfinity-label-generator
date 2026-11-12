@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { formStateToBatchConfig, type FormStateSnapshot } from './batch-config';
-import type { FastenerLabelConfig, GeneralLabelConfig } from '$lib/types/batch';
+import type { FastenerLabelConfig, GeneralLabelConfig } from '#lib/types/batch.ts';
 
 /** A fully-populated snapshot; individual tests override just what they need. */
 function snapshot(overrides: Partial<FormStateSnapshot> = {}): FormStateSnapshot {

@@ -1,4 +1,4 @@
-import type { BatchLabelConfig, CustomImage } from '$lib/types/batch';
+import type { BatchLabelConfig, CustomImage } from '#lib/types/batch.ts';
 import { parseFraction } from './fraction-parser';
 
 /**

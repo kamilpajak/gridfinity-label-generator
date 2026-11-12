@@ -9,7 +9,7 @@
 import { Solver, Variable, Constraint, Expression, Operator, Strength } from '@lume/kiwi';
 import { measureText, calculateOptimalFontSize } from './text-measurer';
 import { getCachedFontMetrics, getCachedCapHeight } from './font-metrics';
-import { PRIMARY_FONT, SECONDARY_FONT } from '$lib/constants/fonts';
+import { PRIMARY_FONT, SECONDARY_FONT } from '#lib/constants/fonts.ts';
 
 export interface LabelDimensions {
 	width: number; // Physical label width

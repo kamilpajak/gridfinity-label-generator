@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { get } from 'svelte/store';
 import { batchStore } from './batch-store';
-import type { FastenerLabelConfig, GeneralLabelConfig } from '$lib/types/batch';
+import type { FastenerLabelConfig, GeneralLabelConfig } from '#lib/types/batch.ts';
 
 // Mock localStorage
 const localStorageMock = (() => {

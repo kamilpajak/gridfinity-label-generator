@@ -8,7 +8,7 @@ import { renderLabelToCanvas, resolveImageWithSvgPriority } from './label-render
 import { solveLabelLayout } from './label-constraint-solver';
 import { enrichWithCoverageMetrics } from './layout-metrics';
 import { generateLabelFilename } from './filename-generator';
-import type { ISODINStandard } from '$lib/data/standards';
+import type { ISODINStandard } from '#lib/data/standards.ts';
 
 export interface CanvasExportOptions {
 	labelWidth: number;
